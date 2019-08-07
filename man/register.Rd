@@ -11,7 +11,7 @@ register(input, what = NULL, export = FALSE, ...)
 properties.}
 
 \item{what}{[\code{character(1)}]\cr properties that should be registered as
-deviating from the default. Possible values are \code{algorithm},
+deviating from the default. Possible values are \code{schema},
 \code{format}, \code{clusters}, \code{commodities}, \code{adminUnits},
 \code{years}.}
 
@@ -25,10 +25,10 @@ This functions registers properties of tables in preparation of
 rectangularisation.
 }
 \details{
-Property-specific arguments are:\itemize{ \item \code{algorithm}:
-  \itemize{\item \code{name = ...}} An algorithm is a list of table
+Property-specific arguments are:\itemize{ \item \code{schema}:
+  \itemize{\item \code{name = ...}} A schema is a list of table
   properties. When calling it, \code{register} sets all of the properties
-  specified in the algorithm. \item \code{format:} \itemize{ \item \code{type
+  specified in the schema. \item \code{format:} \itemize{ \item \code{type
   = "long" | "wide"} - if each variable is in one column, the table is long;
   if some variables are spread over several columns, the table is wide.}
   \item \code{clusters:} \itemize{\item \code{row} - the row number(s) of the

@@ -5,16 +5,16 @@
 #' @param input [\code{data.frame(1)}]\cr table for which to register
 #'   properties.
 #' @param what [\code{character(1)}]\cr properties that should be registered as
-#'   deviating from the default. Possible values are \code{algorithm},
+#'   deviating from the default. Possible values are \code{schema},
 #'   \code{format}, \code{clusters}, \code{commodities}, \code{adminUnits},
 #'   \code{years}.
 #' @param export [\code{logical(1)}]\cr whether or not to export the meta data
 #'   as \code{XML}.
 #' @param ... [\code{various}]\cr property specific arguments; see Details.
-#' @details Property-specific arguments are:\itemize{ \item \code{algorithm}:
-#'   \itemize{\item \code{name = ...}} An algorithm is a list of table
+#' @details Property-specific arguments are:\itemize{ \item \code{schema}:
+#'   \itemize{\item \code{name = ...}} A schema is a list of table
 #'   properties. When calling it, \code{register} sets all of the properties
-#'   specified in the algorithm. \item \code{format:} \itemize{ \item \code{type
+#'   specified in the schema. \item \code{format:} \itemize{ \item \code{type
 #'   = "long" | "wide"} - if each variable is in one column, the table is long;
 #'   if some variables are spread over several columns, the table is wide.}
 #'   \item \code{clusters:} \itemize{\item \code{row} - the row number(s) of the
@@ -40,7 +40,7 @@ register <- function(input, what = NULL, export = FALSE, ...){
   # check validity of arguments
   assertDataFrame(x = input)
   assertCharacter(x = what, any.missing = FALSE)
-  assertChoice(x = what, choices = c("algorithm", "format", "clusters", "commodities", "adminUnits", "years"))
+  assertChoice(x = what, choices = c("schema", "format", "clusters", "commodities", "adminUnits", "years"))
   assertList(x = args)
 
   # check whether there is already a metadata object
@@ -52,11 +52,11 @@ register <- function(input, what = NULL, export = FALSE, ...){
   }
 
   # modify 'meta' according to what has been specified
-  if(what == "algorithm"){
+  if(what == "schema"){
     assertNames(x = names(args), must.include = "name")
     meta <- get(x = eval(parse(text = args$name)))
 
-    # check whether the algorithm can be used on 'input'
+    # check whether the schema can be used on 'input'
 
   } else {
     if(what == "format"){
