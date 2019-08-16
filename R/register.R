@@ -1,4 +1,4 @@
-#' Register table properties
+#' Register table properties (function is outdated)
 #'
 #' This functions registers properties of tables in preparation of
 #' rectangularisation.
@@ -33,6 +33,8 @@
 #' @export
 
 register <- function(input, what = NULL, export = FALSE, ...){
+
+  warning("this function is outdated!")
 
   # set internal objects
   args <- exprs(..., .named = TRUE)

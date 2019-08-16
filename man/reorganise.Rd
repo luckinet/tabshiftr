@@ -10,7 +10,7 @@ reorganise(input = NULL)
 \item{input}{[\code{data.frame(1)}]\cr table to rectangularise.}
 }
 \description{
-This function takes the output from \code{\link{register}} and rearranges
+This function takes the output from \code{\link{record}} and rearranges
 columns and rows so that the resulting table has a perfectly rectangular
 format.
 }

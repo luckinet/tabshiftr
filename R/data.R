@@ -3,4 +3,4 @@
 #' @format The object of class list contains the two lists \code{body},
 #'   describing information about the table bodies and \code{variables},
 #'   describing the variables within each table.
-"reg_default"
+"meta_default"
