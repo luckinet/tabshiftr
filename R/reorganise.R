@@ -66,7 +66,12 @@ reorganise <- function(input = NULL){
 
     # get meta data on identifying variables
     if(varProp$type == "id"){
-      idVars <- c(idVars, names(variables)[i])
+      if(!is.null(varProp$name)){
+        idVars <- c(idVars, varProp$name)
+        names(variables)[i] <- varProp$name
+      } else {
+        idVars <- c(idVars, varName)
+      }
       if(varProp$form == "long" & length(varProp$col) == 1){
         idTidy <- c(idTidy, TRUE)
         tidyCols <- c(tidyCols, varProp$col)
@@ -77,7 +82,12 @@ reorganise <- function(input = NULL){
 
     # get values variables
     if(varProp$type == "values"){
-      valVars <- c(valVars, names(variables)[i])
+      if(!is.null(varProp$name)){
+        valVars <- c(valVars, varProp$name)
+        names(variables)[i] <- varProp$name
+      } else {
+        valVars <- c(valVars, varName)
+      }
       if(is.null(varProp$id) & length(varProp$col) == 1){
         valsTidy <- c(valsTidy, TRUE)
         tidyCols <- c(tidyCols, varProp$col)
@@ -138,23 +148,11 @@ reorganise <- function(input = NULL){
   }
 
   # combine variable names
-  varNames <- clustNames <- c(idVars, valVars)
-
-  # update variable names, for when the 'name' of any variable has been set
-  varNames <- unlist(lapply(
-    seq_along(current$variables), function(x){
-      vals <- current$variables[[x]]
-      if(!is.null(vals$name)){
-        vals$name
-      } else {
-        varNames[x]
-      }
-    }
-  ))
+  varNames <- c(idVars, valVars)
 
   if(!is.null(outsideCluster)){
     # update cluster names, exclude variables that are not inside a cluster
-    clustNames <- clustNames[-which(clustNames %in% outsideCluster)]
+    varNames <- varNames[-which(varNames %in% outsideCluster)]
 
     # update likewise the identifying variables included in each cluster
     idTidy <- idTidy[-which(idVars %in% outsideCluster)]
@@ -201,8 +199,8 @@ reorganise <- function(input = NULL){
             select(-varProp$col)
         }
         theIDs <- c(theIDs, list(id))
-        if(missingTidy %in% clustNames){
-          clustNames <- clustNames[-which(names(variables) == missingTidy)]
+        if(missingTidy %in% varNames){
+          varNames <- varNames[-which(names(variables) == missingTidy)]
           idVars <- idVars[-which(names(variables) == missingTidy)]
           idTidy <- idTidy[-which(names(variables) == missingTidy)]
         }
@@ -214,7 +212,7 @@ reorganise <- function(input = NULL){
       filter_all(any_vars(!is.na(.)))
 
     # if not all ids and all vals are tidy, rearrange the data
-    spreadVars <- gatherVars <- mergeRows <- newNames <- NULL
+    spreadVars <- gatherVars <- mergeRows <- newNames <- newTidy <- NULL
     toGather <- rep(FALSE, dim(data)[2])
     if(!all(idTidy)){
       # identifiers might be not tidy because they are in separate clusters, but
@@ -226,16 +224,26 @@ reorganise <- function(input = NULL){
           varName <- idVars[j]
           varProp <- variables[[varName]]
 
-          # if the variable is long within the cluster, it is tidy, so we don't
-          # make this variable a gather variable
+          # if the variable is long within the cluster, it is made up of several
+          # columns
           if(varProp$form != "long"){
             toGather[varProp$col] <- TRUE
             mergeRows <- c(mergeRows, varProp$row)
             gatherVars <- c(gatherVars, varName)
             spreadVars <- "key"
+          } else {
+            newTidy <- c(newTidy, varProp$col)
+            if(is.null(names(newTidy))){
+              newNames <- paste0(varName, 1:length(varProp$col))
+            } else {
+              newNames <- names(newTidy)
+            }
+            varNames <- varNames[-which(varNames %in% varName)]
           }
         }
       }
+      tidyCols <- c(newTidy, tidyCols)
+      varNames <- c(newNames, varNames)
     }
 
     # If it is not the first row that has been registered for containing an
@@ -248,6 +256,7 @@ reorganise <- function(input = NULL){
       }
     }
 
+    # determine which variables to gather or spread
     if(!all(valsTidy)){
       for(j in seq_along(valVars)){
         if(!valsTidy[j]){
@@ -295,12 +304,12 @@ reorganise <- function(input = NULL){
     }
 
     if(is.null(newNames)){
-      if(all(temp[1,] == clustNames)){
+      if(all(temp[1,] == varNames)){
         # it the column names are exactly the same as the first row, set the names
         # and remove the first row
         temp <- temp %>%
           slice(-1)
-        newNames <- clustNames
+        newNames <- varNames
       } else if(!is.null(mergeRows)){
         # if there are rows to merge, set column names from those.
         newNames <- temp %>%
@@ -319,10 +328,10 @@ reorganise <- function(input = NULL){
         temp <- temp %>%
           slice(-1)
       } else {
-        newNames <- clustNames
+        newNames <- varNames
       }
     }
-    colnames(temp) <- newNames
+    colnames(temp) <- varNames
 
     # gather all gather variables
     if(any(toGather)){

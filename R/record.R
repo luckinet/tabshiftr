@@ -31,7 +31,7 @@ record <- function(input, schema = NULL, ...){
 
   # check validity of arguments
   assertDataFrame(x = input)
-  assertList(x = schema)
+  # assertList(x = schema)
 
   meta <- eval(parse(text = schema))
 
