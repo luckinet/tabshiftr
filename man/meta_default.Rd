@@ -3,14 +3,86 @@
 \docType{data}
 \name{meta_default}
 \alias{meta_default}
-\title{The default algorithm to register messy tables}
-\format{The object of class list contains the two lists \code{body},
-  describing information about the table bodies and \code{variables},
-  describing the variables within each table.}
+\title{Default template of a schema description}
+\format{The list of lists describes at which position in a table which
+  information can be found. It contains the two obligatory lists
+  \code{clusters} and \code{variables}.
+
+  Theoretically, there is no limit to how data can be arranged in a
+  spreadsheet. However, mostly it is the case that data are gathered in areas
+  of a spreadsheet that can be outlined by a rectangle. Those rectangles,
+  including more or less coherent tables, are what is considered 'cluster' in
+  arealDB. Clusters are described by the properties:
+  \itemize{
+    \item \code{row}:\cr the vertical cell values of the top-left cell of
+      each cluster.
+    \item \code{col}:\cr the horizontal cell value of the top-left cell of
+      each cluster.
+    \item \code{width}:\cr the width in cells of each cluster.
+    \item \code{height}:\cr the height in cells of each cluster.
+    \item \code{id}:\cr it may be the case that data in a spreadsheet are
+      clustered according to one of the variables. In such cases, this
+      variable needs to be registered here.
+  }
+
+  Each element in \code{variables} is itself a list that describes one of the
+  variables that shall be comprised in the final database. Variables are
+  either so-called \emph{identifying (or ID) variables}, which indicate
+  observation units, or \emph{values variables}, which carry the observed
+  values.
+  Identifying variables are described by the properties: \itemize{
+    \item \code{type}:\cr the value \code{"id"} signals that this is an
+      identifying variable.
+    \item \code{name}:\cr a name that would be assigned as column name in the
+      database instead of the list name.
+    \item \code{form}: whether the variable is recorded in \code{"long"} or
+      \code{"wide"} form. Variables that are recorded in long form are spread
+      along one column and in wide form they are spread along one row.
+    \item \code{row}:\cr the row(s) in which the variable values are recorded.
+    \item \code{col}:\cr the column(s) in which the variable values are
+      recorded.
+    \item \code{rel}: (logical)\cr whether or not the values in \code{row}
+      and \code{col} are relative to the cluster positions or whether they
+      refer to the overall table.
+  }
+
+  Values variables are described by the properties: \itemize{
+    \item \code{type}: the value \code{"values"} signals that this is a
+      values variable.
+    \item \code{unit}: the unit in which the values shall be recorded
+      \bold{in the database}.
+    \item \code{factor}: a factor to transform the values to \code{unit}. For
+      instance, if values are recorded in acres, but shall be contained in
+      the database in hectare, the factor would be 0.40468.
+    \item \code{row}:\cr the row(s) in which the variable values are recorded.
+    \item \code{col}:\cr the column(s) in which the variable values are
+      recorded.
+    \item \code{rel}: (logical)\cr whether or not the values in \code{row}
+      and \code{col} are relative to the cluster positions or whether they
+      refer to the overall table.
+    \item \code{id}: if the variable is recorded, together with other
+      variables, so that the variable names are listed in one column and the
+      respective values are listed in another column, give here the name of
+      the column that contains the variable names.
+    \item \code{level}: if the variable is recorded, together with other
+      variables, so that the variable names are listed in one column and the
+      respective values are listed in another column, give here the level in
+      the names column that stands for the values of this variable.
+  }
+  The default schema description contains the two variables
+  \code{territories} and \code{period}, which are the bare minimum
+  identifying variables in an areal database. However, further identifying
+  and values variables would be added when more variables are contained in a
+  table.
+
+  For some ID variables it can be the case that information that are part
+  of one variable are distributed across several columns (or rows), even in a
+  tidy table. In these cases the respective columns specification should be
+  provided as named vector of column numbers.}
 \usage{
 meta_default
 }
 \description{
-The default algorithm to register messy tables
+Default template of a schema description
 }
 \keyword{datasets}
