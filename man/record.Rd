@@ -9,30 +9,16 @@ record(input, schema = NULL, ...)
 \arguments{
 \item{input}{[\code{data.frame(1)}]\cr table for which to record properties.}
 
-\item{schema}{[\code{symbol(1)}]\cr the schema documentation that has been
+\item{schema}{[\code{symbol(1)}]\cr the schema description that has been
 saved in the global environment.}
 
 \item{...}{[\code{various}]\cr property specific arguments; see Details.}
 }
 \description{
-This functions records properties of tables and stores them in a meta data
-object in preparation of rectangularisation.
+This functions records properties of tables and stores them in a schema
+description in preparation of reorganisation.
 }
 \details{
-Property-specific arguments are:\itemize{ \item \code{algorithm}:
-  \itemize{\item \code{name = ...}} An algorithm is a list of table
-  properties. When calling it, \code{register} sets all of the properties
-  specified in the algorithm. \item \code{format:} \itemize{ \item \code{type
-  = "long" | "wide"} - if each variable is in one column, the table is long;
-  if some variables are spread over several columns, the table is wide.}
-  \item \code{clusters:} \itemize{\item \code{row} - the row number(s) of the
-  top-left corner of each cluster. \item \code{col} - the column number(s) of
-  the top-left corner of each cluster. \item \code{width} - the width of
-  clusters (in number of cells) can either have one value (when all clusters
-  have the same width) or as many values as there are clusters. \item
-  \code{height} - the height of clusters (in number of cells) can either have
-  one value (when all clusters have the same height) or as many values as
-  there are clusters.} This could for instance be \code{'row = c(2, 52), col
-  = 3, width = 4'}, if there are 2 rows of clusters that are 4 wide, starting
-  at cell 2,3 and 52,3 \item \code{commodities}: }
+Read the vignette for the basics of schema descriptions, a default
+  schema description is stored in \code{\link{meta_default}}.
 }
