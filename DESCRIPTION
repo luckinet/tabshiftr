@@ -18,7 +18,8 @@ Imports: checkmate,
   tibble,
   dplyr,
   tidyr,
-  magrittr
+  magrittr,
+  tidyselect
 RoxygenNote: 6.1.1
 Suggests: 
     testthat,
