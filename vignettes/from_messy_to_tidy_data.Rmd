@@ -2,24 +2,7 @@
 title: "Awesome title about messy data and how to clean them!"
 author: ..., Steffen Ehrmann, Stephan Mäs, Carsten Meyer, Lars Bernard
 date: "`r Sys.Date()`"
-output:
-  bookdown::html_document2:
-    fig_caption: yes
-    number_sections: yes
-    theme: spacelab
-    highlight: pygments
-    toc: yes
-    toc_float: yes
-  bookdown::pdf_document2:
-    fig_caption: yes
-    highlight: pygments
-    keep_tex: yes
-    number_sections: yes
-    toc: no
-  bookdown::word_document2:
-    fig_caption: yes
 bibliography: references.bib
-documentclass: article
 fontsize: 12pt
 linestretch: 1.15
 link-citations: yes
@@ -35,6 +18,11 @@ tags:
 - ...
 # csl: harvard-staffordshire-university.csl
 biblio-style: apalike
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{bla}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r, include = FALSE}
@@ -380,18 +368,6 @@ A schema description shall be composed according to the following rules:
 7. Determine unit and transformation factor for each values variable.
 
 ## Session Information
-```{r reset, include=FALSE}
-# more the processed files back to stage1 for the next compilation of this document
-file.copy(from = "/home/se87kuhe/my_science/work_in_process/arealDB/newProject/adb_geometries/stage2/processed/bra_2__ibge.gpkg", to = "/home/se87kuhe/my_science/work_in_process/arealDB/newProject/adb_geometries/stage2/bra_2__ibge.gpkg")
-file.remove("/home/se87kuhe/my_science/work_in_process/arealDB/newProject/adb_geometries/stage2/processed/bra_2__ibge.gpkg")
-
-file.copy(from = "/home/se87kuhe/my_science/work_in_process/arealDB/newProject/adb_geometries/stage2/processed/bra_3__ibge.gpkg", to = "/home/se87kuhe/my_science/work_in_process/arealDB/newProject/adb_geometries/stage2/bra_3__ibge.gpkg")
-file.remove("/home/se87kuhe/my_science/work_in_process/arealDB/newProject/adb_geometries/stage2/processed/bra_3__ibge.gpkg")
-
-file.remove("/home/se87kuhe/my_science/work_in_process/arealDB/newProject/adb_geometries/stage3/brazil.gpkg")
-file.remove("/home/se87kuhe/my_science/work_in_process/arealDB/newProject/adb_geometries/stage3/united states of america.gpkg")
-```
-
 ```{r session info}
 sessionInfo()
 ```
