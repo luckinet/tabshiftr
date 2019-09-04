@@ -4,10 +4,13 @@
 \alias{reorganise}
 \title{Rectangrise a table}
 \usage{
-reorganise(input = NULL)
+reorganise(input = NULL, schema = NULL)
 }
 \arguments{
 \item{input}{[\code{data.frame(1)}]\cr table to rectangularise.}
+
+\item{schema}{[\code{symbol(1)}]\cr the schema description for reorganising
+\code{input}.}
 }
 \description{
 This function takes the output from \code{\link{record}} and rearranges

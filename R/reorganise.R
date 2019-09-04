@@ -4,16 +4,18 @@
 #' columns and rows so that the resulting table has a perfectly rectangular
 #' format.
 #' @param input [\code{data.frame(1)}]\cr table to rectangularise.
+#' @param schema [\code{symbol(1)}]\cr the schema description for reorganising
+#'   \code{input}.
 #' @importFrom checkmate assertDataFrame
 #' @importFrom dplyr filter_all any_vars bind_rows slice group_by ungroup select
-#'   mutate arrange bind_cols
+#'   mutate arrange bind_cols rename
 #' @importFrom tibble rownames_to_column as_tibble
 #' @importFrom tidyr fill drop_na gather spread separate unite
 #' @importFrom tidyselect everything
 #' @importFrom magrittr %>%
 #' @export
 
-reorganise <- function(input = NULL){
+reorganise <- function(input = NULL, schema = NULL){
 
   # variables used here ----
   # varProp        = the description of a single variable
@@ -32,17 +34,12 @@ reorganise <- function(input = NULL){
 
   # check validity of arguments
   assertDataFrame(x = input)
-
-  # check whether there is already a metadata object
-  if(!exists(x = "meta_object", envir = baseenv())){
-    stop("please first use 'record()' to specify the table properties.")
-  } else{
-    current <- get(x = "meta_object", envir = baseenv())
-  }
+  assertList(x = schema, len = 2)
+  assertNames(x = names(schema), permutation.of = c("clusters", "variables"))
 
   # derive subsets for convenience
-  clusters <- current$clusters
-  variables <- current$variables
+  clusters <- schema$clusters
+  variables <- schema$variables
   origNames <- names(variables)
 
   # 1. clusters -----
@@ -173,7 +170,7 @@ reorganise <- function(input = NULL){
   }
 
   # 3. go through all clusters and process them ----
-  theValues <- theIDs <- list()
+  theValues <- list()
   for(i in 1:nClusters){
     # cut out table (named 'data' from here on) based on cluster information
     clusterRows <- clusters$top[i]:(clusters$top[i]+clusters$height[i] - 1)
@@ -189,16 +186,13 @@ reorganise <- function(input = NULL){
       varName <- names(variables)[j]
       if(varName %in% clusterID){
         if(!is.null(varProp$row[i]) & !is.null(varProp$col[i])){
-          id <- data %>%
-            slice(varProp$row[i]) %>%
-            select(varProp$col[i]) %>%
-            filter(!is.na(.)) %>%
-            unlist(use.names = FALSE)
+          theID <- unlist(data[varProp$row[i], varProp$col[i]], use.names = FALSE)
+          theID <- theID[!is.na(theID)]
           data <- data %>%
             slice(-varProp$row[i])
           validRows[clusters$top[i] + varProp$row[i] - 1] <- FALSE
         } else if(!is.null(varProp$row[i])){
-          id <- data %>%
+          theID <- data %>%
             slice(varProp$row[i]) %>%
             filter(!is.na(.)) %>%
             unlist(use.names = FALSE)
@@ -206,14 +200,11 @@ reorganise <- function(input = NULL){
             slice(-varProp$row[i])
           validRows[clusters$top[i] + varProp$row[i] - 1] <- FALSE
         } else {
-          id <- data %>%
-            select(varProp$col[i]) %>%
-            filter(!is.na(.)) %>%
-            unlist(use.names = FALSE)
+          theID <- unlist(data[,varProp$col[i]], use.names = FALSE)
+          theID <- theID[!is.na(theID)]
           data <- data %>%
             select(-varProp$col[i])
         }
-        theIDs <- c(theIDs, list(id))
 
         # remove that variable from some other variables
         if(clusterID %in% clustNames){
@@ -379,17 +370,16 @@ reorganise <- function(input = NULL){
     # if a tidy column is outside of clusters, reconstruct it
     if(!is.null(outsideCluster)){
       theColumn <- variables[[which(names(variables) == outsideCluster)]]$col
-      missingCol <- input %>%
-        select(!!outsideCluster := theColumn) %>%
-        filter(validRows)
-      temp <- temp %>%
-        bind_cols(missingCol)
+      missingCol <- input[validRows, theColumn]
+      colnames(missingCol) <- outsideCluster
+      temp <- as_tibble(cbind(temp, missingCol))
     }
 
     # if a cluster id has been specified, reconstruct the column
     if(!is.null(clusters$id)){
+      temp$theID <- rep(unique(theID), dim(temp)[1])
+      colnames(temp)[which(colnames(temp) == "theID")] <- clusterID
       temp <- temp %>%
-        mutate(!!clusters$id := theIDs[[i]]) %>%
         select(names(variables))
     }
     # append cluster to the overall output list
