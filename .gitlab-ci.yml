@@ -8,6 +8,7 @@ stages:
 building:
   stage: build
   script:
+    - sudo apt-get install --yes qpdf
     - R -e 'remotes::install_deps(dependencies = TRUE)'
     - R -e 'devtools::check()'
   cache:
@@ -27,6 +28,7 @@ testing:
   only:
     - master
   script:
+    - sudo apt-get install --yes qpdf
     - Rscript -e 'install.packages(c("DT", "checkmate"))'
     - Rscript -e 'covr::gitlab(quiet = FALSE)'
   artifacts:
