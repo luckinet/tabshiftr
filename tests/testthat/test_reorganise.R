@@ -26,7 +26,7 @@ test_that("recognise several vertical clusters of otherwise tidy data", {
                                            row = NULL, col = 5, rel = FALSE,
                                            id = NULL, level = NULL)))
 
-  input <- read_csv(paste0(system.file("test_datasets", package="arealDB", mustWork = TRUE), "/table1.csv"),
+  input <- read_csv(paste0(system.file("test_datasets", package="rectr", mustWork = TRUE), "/table1.csv"),
                      col_names = FALSE) %>%
     reorganise(schema = schema)
 
@@ -60,7 +60,7 @@ test_that("recognise several horizontal clusters of otherwise tidy data", {
                                         row = NULL, col = c(4, 7), rel = FALSE,
                                         id = NULL, level = NULL)))
 
-  input <- read_csv(paste0(system.file("test_datasets", package="arealDB"), "/table2.csv"),
+  input <- read_csv(paste0(system.file("test_datasets", package="rectr"), "/table2.csv"),
                      col_names = FALSE) %>%
     reorganise(schema = schema)
 
@@ -94,7 +94,7 @@ test_that("rename variables, in already tidy table", {
                                         row = NULL, col = 5, rel = FALSE,
                                         id = NULL, level = NULL)))
 
-  input <- read_csv(paste0(system.file("test_datasets", package="arealDB"), "/table3.csv"),
+  input <- read_csv(paste0(system.file("test_datasets", package="rectr"), "/table3.csv"),
                      col_names = FALSE) %>%
     reorganise(schema = schema)
 
@@ -128,7 +128,7 @@ test_that("spread long table", {
                                         row = NULL, col = 5, rel = FALSE,
                                         id = "dimension", level = "production")))
 
-  input <- read_csv(paste0(system.file("test_datasets", package="arealDB"), "/table4.csv"),
+  input <- read_csv(paste0(system.file("test_datasets", package="rectr"), "/table4.csv"),
                      col_names = FALSE) %>%
     reorganise(schema = schema)
 
@@ -162,7 +162,7 @@ test_that("bring wide identifying variable into long form", {
                                         row = NULL, col = c(5, 6), rel = FALSE,
                                         id = NULL, level = NULL)))
 
-  input <- read_csv(paste0(system.file("test_datasets", package="arealDB"), "/table5.csv"),
+  input <- read_csv(paste0(system.file("test_datasets", package="rectr"), "/table5.csv"),
                      col_names = FALSE) %>%
     reorganise(schema = schema)
 
@@ -196,7 +196,7 @@ test_that("bring wide identifying variable into long form and spread long table"
                                         row = NULL, col = 3, rel = FALSE,
                                         id = "dimension", level = "production")))
 
-  input <- read_csv(paste0(system.file("test_datasets", package="arealDB"), "/table6.csv"),
+  input <- read_csv(paste0(system.file("test_datasets", package="rectr"), "/table6.csv"),
                      col_names = FALSE) %>%
     reorganise(schema = schema)
 
@@ -233,7 +233,7 @@ test_that("bring several wide identifying variables into long form", {
                                        row = NULL, col = c(3, 5, 7, 9), rel = FALSE,
                                        id = "dimension", level = NULL)))
 
-  input <- read_csv(paste0(system.file("test_datasets", package="arealDB"), "/table7.csv"),
+  input <- read_csv(paste0(system.file("test_datasets", package="rectr"), "/table7.csv"),
                     col_names = FALSE) %>%
     reorganise(schema = schema)
 
@@ -267,7 +267,7 @@ test_that("split a column that contains several variables in an already tidy tab
                                           row = NULL, col = 4, rel = FALSE,
                                           id = NULL, level = NULL)))
 
-  input <- read_csv(paste0(system.file("test_datasets", package="arealDB"), "/table8.csv"),
+  input <- read_csv(paste0(system.file("test_datasets", package="rectr"), "/table8.csv"),
                      col_names = FALSE) %>%
     reorganise(schema = schema)
 
