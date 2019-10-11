@@ -1,13 +1,23 @@
 Package: rectr
 Type: Package
-Title: Rectangularize messy tables
+Title: Reshape disorganised messy tables
 Version: 0.1.0
-Authors@R: person("Steffen", "Ehrmann", email = "steffen.ehrmann@idiv.de",
-    role = c("aut", "cre"), 
-    comment = c(ORCID = "0000-0002-2958-0796"))
-Description: This package registers meta data from (messy) tables and brings them to a standardised (rectangular) format.
-URL: https://
-BugReports: https://
+Authors@R: c(
+    person("Steffen", "Ehrmann", 
+           email = "steffen.ehrmann@idiv.de", 
+           role = c("aut", "cre"), 
+           comment = c(ORCID = "0000-0002-2958-0796")),
+    person("Arne", "Rümmler", 
+           email = "arne.ruemmler@tu-dresden.de", 
+           role = c("aut")),
+    person("Amelie", "Haas", 
+           email = "amelie.haas@tu-dresden.de", 
+           role = c("aut"))
+    )
+Description: Registers schema descriptions from (disorganised) messy tables and 
+    reshapes them into a standardised (tidy) format.
+URL: https://gitlab.com/luckinet/software/rectr
+BugReports: https://gitlab.com/luckinet/software/rectr/issues
 Depends:
     R (>= 2.10)
 License: GPL-3
