@@ -76,4 +76,5 @@
 #'   tidy table. In these cases the respective columns specification should be
 #'   provided as named vector of column numbers.
 #'
-"meta_default"
+"schema_default"
+
