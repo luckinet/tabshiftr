@@ -29,10 +29,10 @@ Imports: checkmate,
   dplyr,
   tidyr,
   magrittr,
-  tidyselect
+  tidyselect,
+  testthat
 RoxygenNote: 6.1.1
 Suggests: 
-    testthat,
     knitr,
     rmarkdown,
     readr
