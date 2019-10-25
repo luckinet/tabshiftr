@@ -2,7 +2,7 @@
 % Please edit documentation in R/reorganise.R
 \name{reorganise}
 \alias{reorganise}
-\title{Rectangrise a table}
+\title{Reorganise a table}
 \usage{
 reorganise(input = NULL, schema = NULL)
 }
@@ -17,35 +17,25 @@ This function takes a disorganised messy table and rearranges columns and
 rows into a tidy dataset that can be sorted into the areal database.
 }
 \section{Setting up schema descriptions}{
-
-See \code{\link{meta_default}} for a template of schema descriptions.
-\enumerate{
-  \item Clarify which are the identifying variables and which are the values
-    variables.
-  \item Determine whether there are clusters and find the origin (top left
-    cell) of each cluster Follow the next steps for each cluster...
-  \item Determine whether a table can be separated into a "long" and an
-    "other" part. The long part would consist of columns that contain
-    identifying variables that do not need to be rearranged and the other
-    part would contain data that need to be rearranged.
-  \item Find the column index of all identifying variables, \itemize{
-    \item if identifying variables are wide, additionally find their row
-    index.
-  }
-  \item Find the column index of all values variables, \itemize{
-    \item if a variable is spread over several columns, write down all
-    columns for that particular variable.
-  }
-  \item If the names of values variables are given as an identifying variable,
-    give that column name as \code{id} of the values variable, together with the
-    respective term (\code{value}) of the values variables (this indicates
-    that this \emph{key-values pair} must be spread). \itemize{
-    \item if the names of values variables are not given as column names, but
-    spread across a particular row, register a variable that describes the
-    values variables and use that variable in the \code{id} of the values
-    variable.
-  }
-  \item Determine unit and transformation factor for each values variable.
-}
+ See \code{\link{schema_default}} for a
+  template of schema descriptions. \enumerate{ \item Clarify which are the
+  identifying variables and which are the values variables. \item Determine
+  whether there are clusters and find the origin (top left \item Determine
+  whether a table can be separated into a "long" and an "other" part. The
+  long part would consist of columns that contain identifying variables that
+  do not need to be rearranged and the other part would contain data that
+  need to be rearranged. \item Find the column index of all identifying
+  variables, \itemize{ \item if identifying variables are wide, additionally
+  find their row index. } \item Find the column index of all values
+  variables, \itemize{ \item if a variable is spread over several columns,
+  write down all columns for that particular variable. } \item If the names
+  of values variables are given as an identifying variable, give that column
+  name as \code{id} of the values variable, together with the respective term
+  (\code{value}) of the values variables (this indicates that this
+  \emph{key-values pair} must be spread). \itemize{ \item if the names of
+  values variables are not given as column names, but spread across a
+  particular row, register a variable that describes the values variables and
+  use that variable in the \code{id} of the values variable. } \item
+  Determine unit and transformation factor for each values variable. }
 }
 
