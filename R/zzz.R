@@ -1,1 +1,1 @@
-globalVariables(c("key", "values", "meta_default", "rn", "val", "."))
+globalVariables(c("key", "values", "meta_default", "rn", "val", ".", "name"))
