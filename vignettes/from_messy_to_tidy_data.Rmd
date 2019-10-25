@@ -49,6 +49,28 @@ In the first section only the arrangement of clusters is discussed, while the fo
 This is definitely not an exhaustive list of possible table arrangements, but it should cover the most common cases and be extensible enough to capture many mutations of the presented tables.
 The final section contains a list of steps that should be taken one after the other to come up with a schema description.
 
+# Definitions
+
+*table*: Typically a set of values, but since we also consider data arrangements here that can't be regarded as topologically coherent "chunks" of data, we include in the definition of table also "spreadsheets" that may contain a very loose organisation of data.
+
+*long variables*: A variable that is arranged so that the name is at the top (the column name) and the values are aligned vertically below it.
+
+*wide variables*: A variable that is arranged so that its unique values (levels) are in seperate columns.
+
+*tidy variable*: see 'long variable'.
+
+*tidy table*: A table that contains only tidy variables.
+
+*simple header*: A table header that is made up of only one row. This is in contrast to a header where several variables are somehow nested to imply some order of the variables.
+
+*cluster*: A coherent set of values in some sort "rectangular form" that does not have to be tidy and may still be disorganised.
+
+*key*: A variable that treats the name of several other variables as if they were values.
+
+*messy table*: A general term for tables that contain "non-tidy" data (has not been defined further).
+
+*disorganised (messy) table*: A table that contains any sort of non-tidy data, specifically emphasizing that those may also be tables that contain (messy) clusters or other forms of loosely organised data.
+
 # Table types
 
 ## Spreadsheet contains (several) clusters
@@ -80,18 +102,18 @@ list(clusters =
             id = "period", header = FALSE),
      variables = 
        list(territories = 
-              list(type = "id", name = NULL, form = "long",
-                   row = NULL, col = 1, split = NULL, rel = FALSE),
+              list(type = "id", name = NULL, split = NULL,
+                   row = NULL, col = 1, rel = FALSE),
             period = 
-              list(type = "id", name = "year", form = "wide",
-                   row = 1, col = NULL, split = NULL, rel = FALSE),
+              list(type = "id", name = "year", split = NULL,
+                   row = 1, col = NULL, rel = FALSE),
             ...))
 ```
 
 
 ### Vertical clusters
 
-For vertically arranged clusters (Tab. 2), just like for the horizontal case, the respective rows, columns and heights need to be provided.
+For vertically arranged clusters (Tab. 2), just like for the horizontal case, the respective rows, columns (and heights) need to be provided.
 
 |  | territories | commodities | harvested | production |
 | :- | :- | :- | :- | :- |
@@ -112,11 +134,11 @@ list(clusters =
             id = "period", header = FALSE),
      variables =
        list(territories = 
-              list(type = "id", name = NULL, form = "long",
-                   row = NULL, col = 2, split = NULL, rel = TRUE),
+              list(type = "id", name = NULL, split = NULL,
+                   row = NULL, col = 2, rel = TRUE),
             period = 
-              list(type = "id", name = "year", form = "long",
-                   row = NULL, col = 1, split = NULL, rel = TRUE),
+              list(type = "id", name = "year", split = NULL,
+                   row = NULL, col = 1, rel = TRUE),
             ...))
 ```
 
@@ -133,18 +155,29 @@ list(clusters =
             id = "period", header = FALSE),
      variables =
        list(territories = 
-              list(type = "id", name = NULL, form = "long",
-                   row = NULL, col = 2, split = NULL, rel = TRUE),
+              list(type = "id", name = NULL, split = NULL,
+                   row = NULL, col = 2, rel = TRUE),
             period = 
-              list(type = "id", name = "year", form = "long",
-                   row = NULL, col = 1, split = NULL, rel = TRUE),
+              list(type = "id", name = "year", split = NULL,
+                   row = NULL, col = 1, rel = TRUE),
             ...))
 ```
 
 Additionally, given that at least the tables within each cluster are all arranged in the same way, the contained variables can be specified so that their row and column indices are given relative to the cluster position (`rel = TRUE`).
 If also that is not the case, the row and column values for each cluster need to be provided for the respective variables in the same way as for cluster positions.
 
-## Already tidy tables
+## Spreadsheet contains one table
+
+When a spreadsheet contains only one table we can still have disorganised messy data, for example when the variable names are not in a single row, or in other words, if the table header has more than one row. The names are in those cases arranged so that their order implies some sort of nesting of the variables.
+
+In those tables we have to distinguish tables where the values variable are in seperate, tidy columns (*i.e, where the name is at the top of the column and the values are below that*) from such tables where the values variables are "long" (*i.e., the variable names are in a key and the values are in another column*).
+
+In both cases we have a "tidy" basic form, where all identifying variables are in one column and several forms, where the identifying variables' *values* are used to establish the above mentioned nested order (and where the names of those identifying variable are thus ommited).
+
+* In case the values variables are in seperate columns we only have to gather potentially wide identifying variables into one column.
+* In case the values variables are listed, we first have to gather potentially wide identifying variables into one column and then have to spread out the listed value variable. 
+
+### Separate values variables
 
 In case the target variables are arranged into individual columns (Tab. 3), we have tidy data [@Wickham2014], which are already in the correct arrangement of `arealDB`.
 The variables in a tidy table may however, still need different names, units and transformation factors.
@@ -160,34 +193,109 @@ The variables in a tidy table may however, still need different names, units and
 Table: Table 3: A tidy table.
 
 ```{r, eval=FALSE}
-list(clusters = 
+list(clusters =
        list(top = NULL, left = NULL, width = NULL, height = NULL,
             id = NULL, header = TRUE),
-     variables = 
-       list(territories = 
-              list(type = "id", name = NULL, form = "long",
-                   row = NULL, col = 1, split = NULL, rel = FALSE),
-            period = 
-              list(type = "id", name = "year", form = "long",
-                   row = NULL, col = 2, split = NULL, rel = FALSE),
-            commodities = 
-              list(type = "id", name = NULL, form = "long",
-                   row = NULL, col = 3, split = NULL, rel = FALSE),
-            harvested = 
-              list(type = "values", unit = "ha", factor = 1, 
-                   row = NULL, col = 4, rel = FALSE, 
-                   id = NULL, value = NULL),
-            production = 
-              list(type = "values", unit = "t", factor = 1, 
-                   row = NULL, col = 5, rel = FALSE, 
-                   id = NULL, value = NULL)))
+     variables =
+       list(territories =
+              list(type = "id", name = NULL, split = NULL,
+                   row = NULL, col = 1, rel = FALSE),
+            year =
+              list(type = "id", name = "period", split = NULL,
+                   row = NULL, col = 2, rel = FALSE),
+            commodities =
+              list(type = "id", name = NULL, split = NULL,
+                   row = NULL, col = 3, rel = FALSE),
+            harvested =
+              list(type = "values", unit = "ha", factor = 1,
+                   row = NULL, col = 4, rel = FALSE,
+                   key = NULL, value = NULL),
+            production =
+              list(type = "values", unit = "t", factor = 1,
+                   row = NULL, col = 5, rel = FALSE,
+                   key = NULL, value = NULL)))
 ```
 
-## Long tables
+It may be the case that identifying variables are wide, one could say they are \"nested\".
+For both, nested identifying variables and nested values variables we have to record the row and the specific columns in which the variable names are found.
+Beware that in those case, the header is not simple (i.e., *not only in the first row*) and can thus not be considered (`header = FALSE`).
 
-Some tables contain a column where the levels of values variables are treated as if they were an identifying variable (`harvested` and `production`), while the values are presented in only one column (`values`), we typically have a \"long\" table (Tab. 4).
-To end up with tidy data, we need to extract the values associated with the levels of the target variables.
-Thus, we define a new column for each of them and specify `id = ` with the column name and `level = ` with the level value to extract for that variable.
+| territories | period | soybean |  | maize |  |	
+| :- | :- | :- | :- | :- | :- |
+|  |  | harvested | production | harvested | production |
+| unit 1 | year 1 | 1111 | 1112 | 1121 | 1122 |
+| unit 1 | year 2 | 1211 | 1212 | 1221 | 1222 |
+| unit 2 | year 1 | 2111 | 2112 | 2112 | 2122 |
+| unit 2 | year 2 | 2211 | 2212 | 2121 | 2222 |
+| ... |  |  |  |  |  |
+
+Table: Table 4: The values variables are nested within the identifying variable `commodities`.
+
+```{r, eval=FALSE}
+list(clusters =
+       list(top = NULL, left = NULL, width = NULL, height = NULL,
+            id = NULL, header = FALSE),
+     variables =
+       list(territories =
+              list(type = "id", name = NULL, split = NULL,
+                   row = NULL, col = 1, rel = FALSE),
+            year =
+              list(type = "id", name = "period", split = NULL,
+                   row = NULL, col = 2, rel = FALSE),
+            commodities =
+              list(type = "id", name = NULL, split = NULL,
+                   row = 1, col = c(3, 5), rel = FALSE),
+            harvested =
+              list(type = "values", unit = "ha", factor = 1,
+                   row = 2, col = c(3, 5), rel = FALSE,
+                   key = NULL, value = NULL),
+            production =
+              list(type = "values", unit = "t", factor = 1,
+                   row = 2, col = c(4, 6), rel = FALSE,
+                   key = NULL, value = NULL)))
+```
+
+In case several variables are nested within other variables, we have to specify all wide variables and in which rows they sit.
+
+| territories | year 1 |  |  |  | year 2 |  |  |  |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+|  | soybean |  | maize |  | soybean |  | maize |  |
+|  | harvested | production | harvested | production | harvested | production | harvested | production |
+| unit 1 | 1111 | 1112 | 1121 | 1122 | 1211 | 1212 | 1221 | 1222 |
+| unit 2 | 2111 | 2211 | 2121 | 2221 | 2112 | 2212 | 2122 | 2222 |
+| ... |  |  |  |  |  |  |  |  |
+
+Table: Table 5: The identifying variable `commodities` is nested in the identifying variable `period`. The target variable is spread across those nested columns.
+
+```{r, eval=FALSE}
+list(clusters =
+       list(top = NULL, left = NULL, width = NULL, height = NULL,
+            id = NULL, header = FALSE),
+     variables =
+       list(territories =
+              list(type = "id", name = NULL, split = NULL,
+                   row = NULL, col = 1, rel = FALSE),
+            year =
+              list(type = "id", name = "period", split = NULL,
+                   row = 1, col = c(2, 6), rel = FALSE),
+            commodities =
+              list(type = "id", name = NULL, split = NULL,
+                   row = 2, col = c(2, 4, 6, 8), rel = FALSE),
+            harvested =
+              list(type = "values", unit = "ha", factor = 1,
+                   row = 3, col = c(2, 4, 6, 8), rel = FALSE,
+                   key = NULL, value = NULL),
+            production =
+              list(type = "values", unit = "t", factor = 1,
+                   row = 3, col = c(3, 5, 7, 9), rel = FALSE,
+                   key = NULL, value = NULL)))
+```
+
+### Listed values variables
+
+Some tables contain a column where the names of values variables are treated as if they were an identifying variable (`harvested` and `production`), while the values are presented in only one column (`values`) (Tab. 6).
+To end up with tidy data in those cases, we need to extract the values associated with the values variables.
+Thus, we define a new column for each of the values varaibles and specify the `key = ` in which the variable names sit, and the `value = ` the variable name has, to extract that variable.
 
 | territories | period | commodities | dimension | values |
 | :- | :- | :- | :- | :- |
@@ -201,40 +309,33 @@ Thus, we define a new column for each of them and specify `id = ` with the colum
 | unit 1 | year 2 | maize | production | 1222 |
 | ... |  |  |  |  |
 
-Table: Table 4: The variable names of the target variable are treated as if they were an identifying variable.
+Table: Table 6: The variable names of the target variable are treated as if they were an identifying variable.
 
 ```{r, eval=FALSE}
-list(clusters = 
+list(clusters =
        list(top = NULL, left = NULL, width = NULL, height = NULL,
             id = NULL, header = TRUE),
-     variables = 
-       list(territories = 
-              list(type = "id", name = NULL, form = "long",
-                   row = NULL, col = 1, split = NULL, rel = FALSE),
-            period = 
-              list(type = "id", name = "year", form = "long",
-                   row = NULL, col = 2, split = NULL, rel = FALSE),
+     variables =
+       list(territories =
+              list(type = "id", name = NULL, split = NULL,
+                   row = NULL, col = 1, rel = FALSE),
+            year =
+              list(type = "id", name = "period", split = NULL,
+                   row = NULL, col = 2, rel = FALSE),
             commodities =
-              list(type = "id", name = NULL, form = "long",
-                   row = NULL, col = 3, split = NULL, rel = FALSE),
-            harvested = 
+              list(type = "id", name = NULL, split = NULL,
+                   row = NULL, col = 3, rel = FALSE),
+            harvested =
               list(type = "values", unit = "ha", factor = 1,
-                   row = NULL, col = 5, rel = FALSE, 
-                   id = "dimension", level = "harvested"),
-            production = 
+                   row = NULL, col = 5, rel = FALSE,
+                   key = "dimension", value = "harvested"),
+            production =
               list(type = "values", unit = "t", factor = 1,
-                   row = NULL, col = 5, rel = FALSE, 
-                   id = "dimension", level = "production")))
+                   row = NULL, col = 5, rel = FALSE,
+                   key = "dimension", value = "production")))
 ```
 
-## Wide tables
-
-There are different types of *wide tables*.
-In general, "wide" refers to the situation that identifying variables are not arranged as elements of a single column, but are spread over several columns.
-This may be tricky to recognise, for example, compare Tab. 5 with Tab. 3., they have almost the same arrangement.
-However, `soybean` is nothing that would be measured for the harvested area (`harvested`), vice versa it makes sense, the harvested area can be measured for the soybean. 
-
-Such a table requires two operations, first the wide identifying variable (`commodities`) needs to be gathered and second, the then long table needs to be spread (see Tab. 4).
+Moreover, (several) identifying variables may be wide and we have to proceed as mentioned above, by providing the row and columns of the wide identifying variables.
 
 | territories | period | dimension | soybean | maize |
 | :- | :- | :- | :- | :- |
@@ -244,120 +345,33 @@ Such a table requires two operations, first the wide identifying variable (`comm
 | unit 1 | year 2 | production | 1221 | 1222 |
 | ... |  |  |  |  |
 
-Table: Table 5: The identifying variable `commodities` is treated as if it were the observed variable.
+Table: Table 7: The identifying variable `commodities` is treated as if it were the observed variable.
 
 ```{r, eval=FALSE}
-list(clusters = 
+list(clusters =
        list(top = NULL, left = NULL, width = NULL, height = NULL,
-            key = NULL, header = TRUE),
-     variables = 
-       list(territories = 
-              list(type = "id", name = NULL, form = "long"
-                   row = NULL, col = 1, split = NULL, rel = FALSE),
-            period = 
-              list(type = "id", name = "year", form = "long",
-                   row = NULL, col = 2, split = NULL, rel = FALSE),
-            dimension =
-              list(type = "id", name = NULL, form = "long",
-                   row = NULL, col = 3, split = NULL, rel = FALSE),
-            commodities = 
-              list(type = "id", name = NULL, form = "wide",
-                   row = 1, col = c(4, 5), split = NULL, rel = FALSE),
-            harvested = 
+            id = NULL, header = TRUE),
+     variables =
+       list(territories =
+              list(type = "id", name = NULL, split = NULL,
+                   row = NULL, col = 1, rel = FALSE),
+            year =
+              list(type = "id", name = "period", split = NULL,
+                   row = NULL, col = 2, rel = FALSE),
+            commodities =
+              list(type = "id", name = NULL, split = NULL,
+                   row = 1, col = c(4, 5), rel = FALSE),
+            harvested =
               list(type = "values", unit = "ha", factor = 1,
-                   row = NULL, col = 3, rel = FALSE, 
-                   id = "dimension", value = "harvested"),
-            production = 
+                   row = NULL, col = c(4, 5), rel = FALSE,
+                   key = "dimension", value = "harvested"),
+            production =
               list(type = "values", unit = "t", factor = 1,
-                   row = NULL, col = 3, rel = FALSE, 
-                   id = "dimension", value = "harvested")))
+                   row = NULL, col = c(4, 5), rel = FALSE,
+                   key = "dimension", value = "production")))
 ```
 
-### Several wide identifying variables
-
-It may be the case that several identifying variables are wide, one could say they are \"nested\".
-There are two cases, first, identifying variables are nested within values variables (Tab. 6) or they are nested within other identifying variables (Tab. 7).
-
-In case identifying variables are nested within values variables, we have to specify all columns that contain the respective values variables.
-Furthermore, we have to specify the row in which the nested identifying variable sits (here `row = 2`) and specify that it's wide.
-Beware that in this case, the header is not simple and can thus not be considered (`header = FALSE`).
-
-| territories | period | harvested |  | production |  |	
-| :- | :- | :- | :- | :- | :- |
-|  |  | soybean | maize | soybean | maize |
-| unit 1 | year 1 | 1111 | 1121 | 1211 | 1221 |
-| unit 1 | year 2 | 1112 | 1122 | 1212 | 1222 |
-| unit 2 | year 1 | 2111 | 2121 | 2112 | 2122 |
-| unit 2 | year 2 | 2211 | 2221 | 2212 | 2222 |
-| ... |  |  |  |  |  |
-
-Table: Table 6: The identifying variable `commodities` is nested within the target variable.
-
-```{r, eval=FALSE}
-list(clusters = 
-       list(top = NULL, left = NULL, width = NULL, height = NULL,
-            key = NULL, header = FALSE),
-     variables = 
-       list(territories = 
-              list(type = "id", name = NULL, form = "long"
-                   row = NULL, col = 1, split = NULL, rel = FALSE),
-            period = 
-              list(type = "id", name = "year", form = "long",
-                   row = NULL, col = 2, split = NULL, rel = FALSE),
-            commodities = 
-              list(type = "id", name = NULL, form = "wide",
-                   row = 2, col = NULL, split = NULL, rel = FALSE),
-            harvested = 
-              list(type = "values", unit = "ha", factor = 1,
-                   row = NULL, col = c(3, 4), rel = FALSE, 
-                   id = NULL, value = NULL),
-            production = 
-              list(type = "values", unit = "t", factor = 1,
-                   row = NULL, col = c(5, 6), rel = FALSE, 
-                   id = NULL, value = NULL)))
-```
-
-In case (identifying) variables are nested within other identifying variables, we have to specify all wide variables and in which rows they sit.
-Moreover, if values variables are nested (here at `row = 3`), we have to provide an implicit wide variable (`dimension`), from which the measured variables (`harvested` and `production`) are gathered.
-
-| territories | year 1 |  |  |  | year 2 |  |  |  |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-|  | soybean |  | maize |  | soybean |  | maize |  |
-|  | harvested | production | harvested | production | harvested | production | harvested | production |
-| unit 1 | 1111 | 1112 | 1121 | 1122 | 1211 | 1212 | 1221 | 1222 |
-| unit 2 | 2111 | 2211 | 2121 | 2221 | 2112 | 2212 | 2122 | 2222 |
-| ... |  |  |  |  |  |  |  |  |
-
-Table: Table 7: The identifying variable `commodities` is nested in the identifying variable `period`. The target variable is spread across those nested columns.
-
-```{r, eval=FALSE}
-list(clusters = 
-       list(top = NULL, left = NULL, width = NULL, height = NULL,
-            key = NULL, header = FALSE),
-     variables = 
-       list(territories = 
-              list(type = "id", name = NULL, form = "long"
-                   row = NULL, col = 1, split = NULL, rel = FALSE),
-            period = 
-              list(type = "id", name = "year", form = "wide",
-                   row = 1, col = c(2, 6), split = NULL, rel = FALSE),
-            commodities = 
-              list(type = "id", name = NULL, form = "wide",
-                   row = 2, col = c(2, 4, 6, 8), split = NULL, rel = FALSE),
-            dimension =
-              list(type = "id", name = NULL, form = "wide",
-                   row = 3, col = NULL, split = NULL, rel = FALSE),
-            harvested = 
-              list(type = "values", unit = "ha", factor = 1,
-                   row = NULL, col = c(2, 4, 6, 8), rel = FALSE, 
-                   id = "dimension", value = NULL),
-            production = 
-              list(type = "values", unit = "t", factor = 1,
-                   row = NULL, col = c(3, 5, 7, 9), rel = FALSE, 
-                   id = "dimension", value = NULL)))
-```
-
-# Several variables in one column
+### Several variables in one column
 
 Sometimes it may even be the case that several information/variables are stored in the same column, for example when a territorial unit is given together with its parent (e.g. `unit1, year1`).
 In those cases, the resulting variables need to be specified so that they point to that same column but extract information via a regular expression.
@@ -374,25 +388,27 @@ For example, `.+?(?=,)` gives everything up until the first comma and `(?<=\s).*
 Table: Table 8: Several variables are stored in the same column.
 
 ```{r, eval=FALSE}
-list(clusters = list(top = NULL, left = NULL, width = NULL, height = NULL,
-                     id = NULL, header = TRUE),
-     variables = list(territories =
-                        list(type = "id", name = NULL, form = "long",
-                             row = NULL, col = 1, split = ".+?(?=,)", rel = FALSE),
-                      period =
-                        list(type = "id", name = "year", form = "long",
-                             row = NULL, col = 1, split = "(?<=\s).*", rel = FALSE),
-                      commodities =
-                        list(type = "id", name = NULL, form = "long",
-                             row = NULL, col = 2, split = NULL, rel = FALSE),
-                      harvested =
-                        list(type = "values", unit = "ha", factor = 1,
-                             row = NULL, col = 3, rel = FALSE,
-                             id = NULL, level = NULL),
-                      production =
-                        list(type = "values", unit = "t", factor = 1,
-                             row = NULL, col = 4, rel = FALSE,
-                             id = NULL, level = NULL)))
+list(clusters =
+       list(top = NULL, left = NULL, width = NULL, height = NULL,
+            id = NULL, header = TRUE),
+     variables =
+       list(territories =
+              list(type = "id", name = NULL, split = NULL,
+                   row = NULL, col = 1, rel = FALSE),
+            year =
+              list(type = "id", name = "period", split = ".+?(?=_)",
+                   row = NULL, col = 2, rel = FALSE),
+            commodities =
+              list(type = "id", name = NULL, split = "(?<=\\_).*",
+                   row = NULL, col = 2, rel = FALSE),
+            harvested =
+              list(type = "values", unit = "ha", factor = 1,
+                   row = NULL, col = 3, rel = FALSE,
+                   key = NULL, value = NULL),
+            production =
+              list(type = "values", unit = "t", factor = 1,
+                   row = NULL, col = 4, rel = FALSE,
+                   key = NULL, value = NULL)))
 ```
 
 
@@ -400,21 +416,23 @@ list(clusters = list(top = NULL, left = NULL, width = NULL, height = NULL,
 
 To set up a schema description, the recommended strategy is the following:
 
-1. Clarify which are the identifying variables and which are the values variables. Think, *does this variable identify some unit, or does it contain the measured values?*
+1. Clarify which are the identifying variables and which are the values variables. A variable is always a combination of **name** and **values**. Names are typically the column names, but in many disorganised messy tables that would not be where a variable name is found. Values are typically in the column below that name, but in tables with nested headers the values are mostly not in a column with their name. Think, *do the values of the variable identify some unit, or do they contain the measured values?*
 
 2. Determine whether there are clusters and find the origin (top left cell) of each cluster (Tabs. 1 & Tab. 2). Follow the next steps for each cluster...
 
-3. Determine for each identifying variable the following:
+3. Determine which identifying variable is the "key" of clusters and provide that as cluster ID. Think *which variable is split up into clusters?*
 
-  - is the variable long (all values in one column) or wide (several columns contain that variable).
-  - in case the variable is wide, additionally determine the row in which it sits (Tab. 5).
-  - in case the variable is long, determine whether it must be split off of a column.
+4. Determine for each identifying variable the following:
+
+  - are all values of this variable in one column (think: *is it "long"?*) or are they in several columns?
+  - in case the variable is not long, determine the row and columns in which its names sit (Tab. 5).
+  - in case the variable is long, determine whether it must be split off of another column (Tab. 8).
   
-4. Determine for each values variables the following:
+5. Determine for each values variables the following:
 
-  - all columns in which the variable is noted (Tab. 6).
+  - all columns in which the values of the variable sit (Tab. 6).
   - the unit and conversion factor.
-  - in case the names of the variable are given as an identifying variable, give that column name as `id` of the values variable, together with the respective term (`value`) of the values variables (Tab. 5) (this indicates that this *key-values pair* must be spread).
-  - in case the names of values variables are not given as column names, but spread across a particular row, register an implicit variable that describes the values variable (can have any name) and use that variable in `id` of the variable (Tab. 7).
+  - in case the variable is nested in a wide identifying variable, determine additionally to the columns in which the values sit also the rows in which the variable name sits (Tab. 6).
+  - in case the names of the variable are given as an identifying variable (Tab. 5), give that column name as `key` of the values variable, together with the respective term (`values`) of the values variables (this indicates that this *key-values pair* must be spread).
 
 # References
