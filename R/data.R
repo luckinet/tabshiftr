@@ -31,9 +31,9 @@
 #'       identifying variable.
 #'     \item \code{name}:\cr a name that would be assigned as column name in the
 #'       database instead of the list name.
-#'     \item \code{form}: whether the variable is recorded in \code{"long"} or
-#'       \code{"wide"} form. Variables that are recorded in long form are spread
-#'       along one column and in wide form they are spread along one row.
+#'     \item \code{split}:\cr a regular expression that matches the part of
+#'       values that are supposed to be part of the variable, when the cells
+#'       contain more than one value (for example seperated by a ",").
 #'     \item \code{row}:\cr the row(s) in which the variable values are recorded.
 #'     \item \code{col}:\cr the column(s) in which the variable values are
 #'       recorded.
@@ -56,11 +56,11 @@
 #'     \item \code{rel}: (logical)\cr whether or not the values in \code{row}
 #'       and \code{col} are relative to the cluster positions or whether they
 #'       refer to the overall table.
-#'     \item \code{id}: if the variable is recorded, together with other
+#'     \item \code{key}: if the variable is recorded, together with other
 #'       variables, so that the variable names are listed in one column and the
 #'       respective values are listed in another column, give here the name of
 #'       the column that contains the variable names.
-#'     \item \code{level}: if the variable is recorded, together with other
+#'     \item \code{value}: if the variable is recorded, together with other
 #'       variables, so that the variable names are listed in one column and the
 #'       respective values are listed in another column, give here the level in
 #'       the names column that stands for the values of this variable.
