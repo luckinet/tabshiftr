@@ -1,0 +1,17 @@
+territories,period,commodities,random,dimension,values
+unit 1,year 1,soybean,bla,harvested,1111
+unit 1,year 1,maize,bla,harvested,1121
+unit 1,year 1,soybean,bla,production,1112
+unit 1,year 1,maize,bla,production,1122
+unit 1,year 2,soybean,bla,harvested,1211
+unit 1,year 2,maize,bla,harvested,1221
+unit 1,year 2,soybean,bla,production,1212
+unit 1,year 2,maize,bla,production,1222
+unit 2,year 1,soybean,bla,harvested,2111
+unit 2,year 1,maize,bla,harvested,2121
+unit 2,year 1,soybean,bla,production,2112
+unit 2,year 1,maize,bla,production,2122
+unit 2,year 2,soybean,bla,harvested,2211
+unit 2,year 2,maize,bla,harvested,2221
+unit 2,year 2,soybean,bla,production,2212
+unit 2,year 2,maize,bla,production,2222
