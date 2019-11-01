@@ -7,7 +7,7 @@
 getNames(temp = NULL, meta = NULL)
 }
 \arguments{
-\item{temp}{a temporary table for which to derive names}
+\item{temp}{a temporary table for which to derive names.}
 
 \item{meta}{the output of \code{getMetadata} as basis to derive names.}
 }
