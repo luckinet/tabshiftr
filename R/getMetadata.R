@@ -37,7 +37,7 @@ getMetadata <- function(data = NULL, schema = NULL){
     # define some variables
     splitVars <- idVars <- valVars <- tidyVars <- outVar <- spreadVars <- gatherVars <- NULL
     splitCols <-                      tidyCols <-           spreadCols <- gatherCols <- NULL
-    mergeRows <- NULL
+    mergeRows <- valOrder <- tableVars <- NULL
 
     # go through variables and determine whether it ... ----
     for(i in seq_along(variables)){
@@ -62,10 +62,16 @@ getMetadata <- function(data = NULL, schema = NULL){
       if(varProp$type == "id"){
         assertNames(x = names(varProp), permutation.of = c("type", "name", "split", "row", "col", "rel"), .var.name = varName)
         idVars <- c(idVars, varName)
+        if(!is.null(varProp$name)){
+          tableVars <- c(tableVars, varProp$name)
+        } else {
+          tableVars <- c(tableVars, varName)
+        }
 
         # determine tidy id variables
         if(is.null(varProp$row) | varName %in% clusters$id){
           tidyVars <- c(tidyVars, varName)
+          tidyCols <- c(tidyCols, varProp$col[j])
         }
       }
 
@@ -79,6 +85,7 @@ getMetadata <- function(data = NULL, schema = NULL){
         if(is.null(varProp$key)){
           if(length(data) == length(varProp$col)){
             tidyVars <- c(tidyVars, varName)
+            tidyCols <- c(tidyCols, varProp$col[j])
           }
         }
       }
@@ -116,15 +123,29 @@ getMetadata <- function(data = NULL, schema = NULL){
         if(!is.null(varProp$row)){
           spreadVars <- c(spreadVars, "key")
           gatherCols <- c(gatherCols, varProp$col)
-          # spreadCols <- length(idVars) + 2
+          spreadCols <- length(idVars) + 2
         } else if(!is.null(varProp$key)) {
           # if not that but a key is given, use the key
           spreadVars <- c(spreadVars, varProp$key)
-          # if(!is.null(gatherVars)){
-            # spreadCols <- c(spreadCols, varProp$col)
-          # }
+          if(is.null(gatherVars)){
+            spreadCols <- c(spreadCols, varProp$col)
+          } else {
+            spreadCols <- length(idVars) + 2
+          }
+
+          if(clusters$header){
+
+            targetCol <- which(theData %>% slice(1) %in% varProp$key)
+            theTerms <- theData %>%
+              slice(-1) %>%
+              select(targetCol) %>%
+              unlist() %>%
+              unique()
+            valOrder <- c(valOrder, which(theTerms %in% varProp$value))
+
+          }
+
         }
-        spreadCols <- length(idVars) + 2
       }
       if(!is.null(spreadVars)){
         if(any(spreadVars %in% "key")){
@@ -160,10 +181,13 @@ getMetadata <- function(data = NULL, schema = NULL){
                                 cluster_id = clusters$id,
                                 merge_rows = mergeRows),
                  var_type = list(ids = idVars,
-                                 vals = valVars),
+                                 orig = tableVars,
+                                 vals = valVars,
+                                 key = valOrder),
                  table = list(header = tabNames,
                               table_rows = tabRows,
                               tidy = tidyVars,
+                              tidy_cols = tidyCols,
                               gather_into = gatherVars,
                               gather_cols = gatherCols,
                               spread_from = spreadVars,
