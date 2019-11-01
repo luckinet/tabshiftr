@@ -169,7 +169,8 @@ reorganise <- function(input = NULL, schema = NULL){
 
     if(!is.null(theMeta$table$spread_from)){
       temp <- temp %>%
-        pivot_wider(names_from = theMeta$table$spread_from,
+        pivot_wider(id_cols = theMeta$var_type$ids,
+                    names_from = theMeta$table$spread_from,
                     values_from = theMeta$table$spread_cols)
       theNames <- c(theMeta$var_type$ids, theMeta$var_type$vals)
     }
