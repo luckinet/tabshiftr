@@ -1,7 +1,7 @@
 Package: rectr
 Type: Package
 Title: Reshape disorganised messy tables
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: c(
     person("Steffen", "Ehrmann", 
            email = "steffen.ehrmann@idiv.de", 
