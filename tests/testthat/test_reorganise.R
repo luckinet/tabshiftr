@@ -273,6 +273,7 @@ test_that("bring several wide identifying variables into long form", {
 
 # spread long table ----
 test_that("spread long table", {
+  # without random other columns
   schema <- list(clusters =
                    list(top = NULL, left = NULL, width = NULL, height = NULL,
                         id = NULL, header = TRUE),
@@ -298,7 +299,39 @@ test_that("spread long table", {
 
   input <- read_csv(paste0(system.file("test_datasets",
                                        package="rectr",
-                                       mustWork = TRUE), "/table6.csv"),
+                                       mustWork = TRUE), "/table61.csv"),
+                    col_names = FALSE) %>%
+    reorganise(schema = schema)
+
+  expect_valid_table(x = input)
+
+  # with a couple of other columns
+  schema <- list(clusters =
+                   list(top = NULL, left = NULL, width = NULL, height = NULL,
+                        id = NULL, header = TRUE),
+                 variables =
+                   list(territories =
+                          list(type = "id", name = NULL, split = NULL,
+                               row = NULL, col = 1, rel = FALSE),
+                        year =
+                          list(type = "id", name = "period", split = NULL,
+                               row = NULL, col = 2, rel = FALSE),
+                        commodities =
+                          list(type = "id", name = NULL, split = NULL,
+                               row = NULL, col = 3, rel = FALSE),
+                        harvested =
+                          list(type = "values", unit = "ha", factor = 1,
+                               row = NULL, col = 6, rel = FALSE,
+                               key = "dimension", value = "harvested"),
+                        production =
+                          list(type = "values", unit = "t", factor = 1,
+                               row = NULL, col = 6, rel = FALSE,
+                               key = "dimension", value = "production")))
+  expect_valid_schema(x = schema)
+
+  input <- read_csv(paste0(system.file("test_datasets",
+                                       package="rectr",
+                                       mustWork = TRUE), "/table62.csv"),
                     col_names = FALSE) %>%
     reorganise(schema = schema)
 
