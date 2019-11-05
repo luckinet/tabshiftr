@@ -1,17 +1,15 @@
 #' Check schema description for consistency
 #' @param input an input for which to check a schema description.
 #' @param schema the schema description.
-#' @importFrom checkmate assertList assertNames
+#' @importFrom checkmate assertNames assertClass
 #' @export
 
-checkSchema <- function(input = NULL, schema = NULL){
+updateSchema <- function(input = NULL, schema = NULL){
 
-  assertList(x = schema, len = 2)
-  assertNames(x = names(schema), permutation.of = c("clusters", "variables"))
-  assertNames(x = names(schema$clusters), permutation.of = c("top", "left", "width", "height", "id", "header"))
+  assertClass(x = schema, classes = "schema")
 
   # 1. complete cluster information ----
-  clusters <- schema$clusters
+  clusters <- schema@clusters
   nClusters <- max(lengths(clusters))
   tabDim <- dim(input)
 
@@ -43,7 +41,7 @@ checkSchema <- function(input = NULL, schema = NULL){
   clusters$height <- rep(x = clusters$height, length.out = nClusters)
 
   # 2. complete variables ----
-  variables <- schema$variables
+  variables <- schema@variables
 
   outsideCluster <- NULL
   clusterID <- clusters$id
@@ -96,7 +94,10 @@ checkSchema <- function(input = NULL, schema = NULL){
     names(variables)[i] <- varName
   }
 
-  out <- list(clusters = clusters, variables = variables)
+  out <- new(Class = "schema",
+             clusters = clusters,
+             variables = variables)
+
   return(out)
 
 }
