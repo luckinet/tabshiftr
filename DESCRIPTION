@@ -1,7 +1,7 @@
 Package: rectr
 Type: Package
 Title: Reshape disorganised messy tables
-Version: 0.1.1
+Version: 0.1.2
 Authors@R: c(
     person("Steffen", "Ehrmann", 
            email = "steffen.ehrmann@idiv.de", 
@@ -23,14 +23,16 @@ Depends:
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
-Imports: checkmate,
-  rlang,
-  tibble,
-  dplyr,
-  tidyr,
-  magrittr,
-  tidyselect,
-  testthat
+Imports: 
+    checkmate,
+    rlang,
+    tibble,
+    dplyr,
+    tidyr,
+    magrittr,
+    tidyselect,
+    testthat,
+    crayon
 RoxygenNote: 6.1.1
 Suggests: 
     knitr,
