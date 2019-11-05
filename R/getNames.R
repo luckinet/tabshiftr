@@ -45,7 +45,9 @@ getNames <- function(temp = NULL, meta = NULL){
 
       # make sure that tidy variables actually have correct names
       for(i in seq_along(meta$table$tidy)){
-        outNames[meta$table$tidy_cols[i]] <- meta$table$tidy[i]
+        if(!meta$cluster$cluster_id %in%  meta$table$tidy[i]){
+          outNames[meta$table$tidy_cols[i]] <- meta$table$tidy[i]
+        }
 
       }
     }

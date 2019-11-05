@@ -7,12 +7,10 @@
 getMetadata <- function(data = NULL, schema = NULL){
 
   assertList(x = data)
-  assertList(x = schema, len = 2)
-  assertNames(x = names(schema), permutation.of = c("clusters", "variables"))
-  assertNames(x = names(schema$clusters), permutation.of = c("top", "left", "width", "height", "id", "header"))
+  assertClass(x = schema, classes = "schema")
 
-  variables <- schema$variables
-  clusters <- schema$clusters
+  variables <- schema@variables
+  clusters <- schema@clusters
 
   out <- list()
   for(j in seq_along(data)){

@@ -48,13 +48,13 @@ reorganise <- function(input = NULL, schema = NULL){
   assertDataFrame(x = input)
 
   # 1. add missing information in schema ----
-  schema <- checkSchema(input = input, schema = schema)
-  theVariables <- schema$variables
-  theClusters <- schema$clusters
+  schema <- updateSchema(input = input, schema = schema)
+  theVariables <- schema@variables
+  theClusters <- schema@clusters
 
   # get specs of the cluster variable
   if(!is.null(theClusters$id)){
-    clusterVar <- schema$variables[[theClusters$id]]
+    clusterVar <- theVariables[[theClusters$id]]
   } else {
     clusterVar <- NULL
   }
@@ -94,11 +94,14 @@ reorganise <- function(input = NULL, schema = NULL){
     temp <- temp %>%
       filter(theMeta$table$table_rows)
 
+    # select only valid columns
+
+
     # if a tidy column is outside of clusters, reconstruct it at the correct
     # position
     if(!is.null(theMeta$cluster$outside_cluster)){
       theColumn <- theVariables[[which(names(theVariables) == theMeta$cluster$outside_cluster)]]$col[i]
-      missingCol <- unlist(input[theMeta$cluster$cluster_rows, theColumn], use.names = FALSE)
+      missingCol <- unlist(input[theMeta$cluster$cluster_rows, theColumn], use.names = FALSE)[theMeta$table$table_rows]
       temp <- temp %>%
         add_column(missingCol)
       theNames <- c(theNames, theMeta$cluster$outside_cluster)
