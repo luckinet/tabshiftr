@@ -7,10 +7,10 @@
 #' @details The slot \code{variables} typically contains several lists that each
 #' record the metadata of the respective variables.
 
-out <- setClass(Class = "schema",
-                slots = c(clusters = "list",
-                          variables = "list"
-                )
+schema <- setClass(Class = "schema",
+                   slots = c(clusters = "list",
+                             variables = "list"
+                   )
 )
 
 setValidity(Class = "schema", function(object){

@@ -3,7 +3,7 @@
 \docType{class}
 \name{schema-class}
 \alias{schema-class}
-\alias{out}
+\alias{schema}
 \title{The \code{schema} class (S4) and its methods}
 \description{
 A \code{schema} stores the information of where which information is tored in
