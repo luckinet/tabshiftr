@@ -101,7 +101,7 @@ reorganise <- function(input = NULL, schema = NULL){
     # position
     if(!is.null(theMeta$cluster$outside_cluster)){
       theColumn <- theVariables[[which(names(theVariables) == theMeta$cluster$outside_cluster)]]$col[i]
-      missingCol <- unlist(input[theMeta$cluster$cluster_rows, theColumn], use.names = FALSE)[theMeta$table$table_rows]
+      missingCol <- unlist(input[theMeta$cluster$cluster_rows, theColumn], use.names = FALSE)#[theMeta$table$table_rows]
       temp <- temp %>%
         add_column(missingCol)
       theNames <- c(theNames, theMeta$cluster$outside_cluster)
