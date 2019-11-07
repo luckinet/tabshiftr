@@ -32,7 +32,8 @@ Imports:
     magrittr,
     tidyselect,
     testthat,
-    crayon
+    crayon,
+    methods
 RoxygenNote: 6.1.1
 Suggests: 
     knitr,
