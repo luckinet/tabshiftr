@@ -2,6 +2,7 @@
 #' @param input an input for which to check a schema description.
 #' @param schema the schema description.
 #' @importFrom checkmate assertNames assertClass
+#' @importFrom methods new
 #' @export
 
 updateSchema <- function(input = NULL, schema = NULL){
