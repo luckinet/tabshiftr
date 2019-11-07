@@ -3,6 +3,7 @@
 - figure out all combinations of variable combinations. I now see more and more examples where it is not perfectly clear what should be done to a table, I'll collect those cases here:
   1. a variable is wide but limited to a subset of columns. At the same time, the table contains a long column containing another variable. While this is a normal case of a wide variable, the wide variable may be somewhere "in the middle of the table", i.e., there may be unneeded columns between the wide and the long table. So far, this can't be handled.
   2.
+- make tests for "makeSchema()"
 
 # medium priority:
 
