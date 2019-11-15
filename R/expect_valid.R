@@ -11,6 +11,6 @@ expect_valid_table <- function(x = NULL){
   expect_identical(object = x$territories, expected = c("unit 1", "unit 1", "unit 1", "unit 1", "unit 2", "unit 2", "unit 2", "unit 2"))
   expect_identical(object = x$year, expected = c("year 1", "year 1", "year 2", "year 2", "year 1", "year 1", "year 2", "year 2"))
   expect_identical(object = x$commodities, expected = c("maize", "soybean", "maize", "soybean", "maize", "soybean", "maize", "soybean"))
-  expect_identical(object = x$harvested, expected = c("1121", "1111", "1221", "1211", "2121", "2111", "2221", "2211"))
-  expect_identical(object = x$production, expected = c("1122", "1112", "1222", "1212", "2122", "2112", "2222", "2212"))
+  expect_identical(object = x$harvested, expected = c(1121, 1111, 1221, 1211, 2121, 2111, 2221, 2211))
+  expect_identical(object = x$production, expected = c(1122, 1112, 1222, 1212, 2122, 2112, 2222, 2212))
 }
