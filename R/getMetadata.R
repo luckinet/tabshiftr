@@ -33,9 +33,10 @@ getMetadata <- function(data = NULL, schema = NULL){
     }
 
     # define some variables
-    splitVars <- idVars <- valVars <- tidyVars <- outVar <- spreadVars <- gatherVars <- NULL
-    splitCols <-                      tidyCols <-           spreadCols <- gatherCols <- NULL
-    mergeRows <- valOrder <- tableVars <- NULL
+    idVars <- valVars <- valFctrs<- tidyVars <- outVar <- spreadVars <- gatherVars <- NULL
+    splitCols <- tidyCols <- spreadCols <- gatherCols <- NULL
+    mergeRows <- valOrder <- tableVars <- gatherVals <- NULL
+    splitVars <- list()
 
     # go through variables and determine whether it ... ----
     for(i in seq_along(variables)){
@@ -48,13 +49,6 @@ getMetadata <- function(data = NULL, schema = NULL){
       if(!is.null(varProp$name) & !is.null(tabNames)){
         tabNames[i] <- varProp$name
       }
-
-      # ... should be split ----
-      if(!is.null(varProp$split)){
-        splitVars <- c(splitVars, variables[i])
-        # splitCols <- c(splitCols, varProp$col)
-      }
-      # splitCols <- unique(splitCols)
 
       # ... is an id variable ----
       if(varProp$type == "id"){
@@ -77,6 +71,7 @@ getMetadata <- function(data = NULL, schema = NULL){
       if(varProp$type == "values"){
         assertNames(x = names(varProp), permutation.of = c("type", "unit", "factor", "row", "col", "rel", "key", "value"), .var.name = varName)
         valVars <- c(valVars, varName)
+        valFctrs <- c(valFctrs, varProp$factor)
 
         # if the variable occurs in as many columns as there are clusters, it is
         # only in one column per cluster, and thus tidy
@@ -164,7 +159,7 @@ getMetadata <- function(data = NULL, schema = NULL){
           } else {
             tabRows[which(clustRows) %in% varProp$row[j]] <- FALSE
           }
-          clustRows[varProp$row[j]] <- FALSE
+          # clustRows[varProp$row[j]] <- FALSE
           # if it is cluster ID, don't merge
           if(!varName %in% clusters$id){
             mergeRows <- c(mergeRows, varProp$row[j])
@@ -172,6 +167,25 @@ getMetadata <- function(data = NULL, schema = NULL){
         }
       }
 
+      # ... should be split ----
+      if(!is.null(varProp$split)){
+
+        # if it is cluster ID, it is at the end of the data frame
+        if(varName %in% clusters$id){
+          split_col <- length(data[[j]]$cluster_cols) + 1
+          split_remove <- split_col + 1
+        } else {
+          split_col <- varProp$col
+          split_remove <- split_col + 1
+        }
+
+        tempSplit <- list(splitCol = split_col,
+                          splitExpr = paste0("(", varProp$split, ")"),
+                          splitRemove = split_remove)
+        splitVars <- c(splitVars, stats::setNames(object = list(tempSplit), nm = varName))
+      }
+
+      # end
     }
 
     temp <- list(cluster = list(cluster_rows = clustRows,
@@ -181,6 +195,7 @@ getMetadata <- function(data = NULL, schema = NULL){
                  var_type = list(ids = idVars,
                                  orig = tableVars,
                                  vals = valVars,
+                                 factor = valFctrs,
                                  key = valOrder),
                  table = list(header = tabNames,
                               table_rows = tabRows,
