@@ -177,11 +177,11 @@ setMethod(f = "show",
             # cat(paste0("Schema description of ", length(object@variables), " variables.\n"))
             # cat("\n")
             if(is.null(clusters$top) & is.null(clusters$left) & is.null(clusters$width) & is.null(clusters$height)){
-              clusterSpecs <- paste0(" (whole table)")
+              clusterSpecs <- paste0(" (whole spreadsheet)")
             } else {
               left <- ifelse(is.null(clusters$left), 1, clusters$left)
               top <- ifelse(is.null(clusters$top), 1, clusters$top)
-              clusterSpecs <- paste0("\n    origin: ", left, ",", top, " (left,top)",
+              clusterSpecs <- paste0("\n    origin: ", top, ",", left, " (top,left)",
                                      ifelse(!is.null(clusters$id), paste0("\n    id    : ", clusters$id), ""))
             }
             cat(paste0("  ", nClusters, " ", nClustName, clusterSpecs, "\n\n"))
@@ -207,7 +207,7 @@ setMethod(f = "show",
               if(is.null(variables[[x]]$col)){
                 ""
               } else {
-                variables[[x]]$col
+                paste0(variables[[x]]$col, collapse = ", ")
               }
             })
             nCols <- nchar(theCols)
