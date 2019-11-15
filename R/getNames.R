@@ -45,14 +45,23 @@ getNames <- function(temp = NULL, meta = NULL){
 
       # make sure that tidy variables actually have correct names
       for(i in seq_along(meta$table$tidy)){
+        testVar <- meta$table$tidy[i]
+
+        isClust <- isOut <- FALSE
+
         if(!is.null(meta$cluster$cluster_id)){
-          if(!meta$cluster$cluster_id %in%  meta$table$tidy[i]){
-            outNames[meta$table$tidy_cols[i]] <- meta$table$tidy[i]
+          if(testVar != meta$cluster$cluster_id){
+            isClust <- TRUE
           }
-        } else {
+        }
+        if(!is.null(meta$cluster$outside_cluster)){
+          if(testVar != meta$cluster$outside_cluster){
+            isOut <- TRUE
+          }
+        }
+        if(!isClust & !isOut){
           outNames[meta$table$tidy_cols[i]] <- meta$table$tidy[i]
         }
-
       }
     }
   }
