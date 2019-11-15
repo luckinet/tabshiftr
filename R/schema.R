@@ -189,8 +189,10 @@ setMethod(f = "show",
             theNames <- sapply(seq_along(variables), function(x){
               names(variables)[x]
             })
-            nNames <- nchar(theNames)
-            maxNames <- ifelse(any(nNames > 9), max(nNames), 9)
+            nNames <- sapply(seq_along(theNames), function(x){
+              ifelse(test = is.null(theNames[[x]]) , yes = 0, no = nchar(theNames[x]))
+            })
+            maxNames <- ifelse(any(nNames > 8), max(nNames), 8)
             theTypes <- sapply(seq_along(variables), function(x){
               variables[[x]]$type
             })
@@ -201,7 +203,9 @@ setMethod(f = "show",
                 variables[[x]]$row
               }
             })
-            nRow <- nchar(theRows)
+            nRow <- sapply(seq_along(theRows), function(x){
+              ifelse(test = is.null(theRows[[x]]) , yes = 0, no = nchar(theRows[x]))
+            })
             maxRows <- ifelse(any(nRow > 3), max(nRow), 3)
             theCols <- sapply(seq_along(variables), function(x){
               if(is.null(variables[[x]]$col)){
@@ -210,8 +214,10 @@ setMethod(f = "show",
                 paste0(variables[[x]]$col, collapse = ", ")
               }
             })
-            nCols <- nchar(theCols)
-            maxCols <- ifelse(any(nCols > 4), max(nCols), 4)
+            nCols <- sapply(seq_along(theCols), function(x){
+              ifelse(test = is.null(theCols[[x]]) , yes = 0, no = nchar(theCols[x]))
+            })
+            maxCols <- ifelse(any(nCols > 3), max(nCols), 3)
             theKeys <- sapply(seq_along(variables), function(x){
               if(variables[[x]]$type == "id"){
                 NULL
@@ -219,8 +225,10 @@ setMethod(f = "show",
                 variables[[x]]$key
               }
             })
-            nKeys <- nchar(theKeys)
-            maxKeys <- ifelse(any(nKeys > 4), max(nKeys), 4)
+            nKeys <- sapply(seq_along(theKeys), function(x){
+              ifelse(test = is.null(theKeys[[x]]) , yes = 0, no = nchar(theKeys[x]))
+            })
+            maxKeys <- ifelse(any(nKeys > 3), max(nKeys), 3)
             theValues <- sapply(seq_along(variables), function(x){
               if(variables[[x]]$type == "id"){
                 NULL
@@ -228,7 +236,9 @@ setMethod(f = "show",
                 variables[[x]]$value
               }
             })
-            nVals <- nchar(theValues)
+            nVals <- sapply(seq_along(theValues), function(x){
+              ifelse(test = is.null(theValues[[x]]) , yes = 0, no = nchar(theValues[x]))
+            })
             maxVals <- ifelse(any(nVals > 5), max(nVals), 5)
 
             for(i in 1:(length(variables)+1)){
