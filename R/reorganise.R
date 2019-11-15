@@ -33,6 +33,7 @@
 #'   gather pivot_wider
 #' @importFrom tidyselect everything
 #' @importFrom magrittr %>%
+#' @importFrom rlang :=
 #' @export
 
 reorganise <- function(input = NULL, schema = NULL){
@@ -94,21 +95,16 @@ reorganise <- function(input = NULL, schema = NULL){
     temp <- temp %>%
       filter(theMeta$table$table_rows)
 
-    # select only valid columns
-
-
-    # if a tidy column is outside of clusters, reconstruct it at the correct
-    # position
+    # if a tidy column is outside of clusters, reconstruct it
     if(!is.null(theMeta$cluster$outside_cluster)){
       theColumn <- theVariables[[which(names(theVariables) == theMeta$cluster$outside_cluster)]]$col[i]
-      missingCol <- unlist(input[theMeta$cluster$cluster_rows, theColumn], use.names = FALSE)#[theMeta$table$table_rows]
+      missingCol <- unlist(input[theMeta$cluster$cluster_rows, theColumn], use.names = FALSE)[theMeta$table$table_rows]
       temp <- temp %>%
         add_column(missingCol)
       theNames <- c(theNames, theMeta$cluster$outside_cluster)
     }
 
-    # if a cluster id has been specified, reconstruct the column at the correct
-    # position
+    # if a cluster id has been specified, reconstruct the column
     if(!is.null(clusterVar)){
       clusterVal <- unlist(input[clusterVar$row[i], clusterVar$col[i]], use.names = FALSE)
       temp <- temp %>%
@@ -127,43 +123,27 @@ reorganise <- function(input = NULL, schema = NULL){
     }
 
     # # split id-columns that have a split expression
-    if(!is.null(theMeta$table$split)){
-    #
-    #   for(i in seq_along(splitVars)){
-    #     theSplit <- splitVars[[length(splitVars)+1 - i]]
-    #     theExpr <- paste0("(", theSplit$split, ")")
-    #     newName <- ifelse(is.null(theSplit$name), paste0("temp", i), theSplit$name)
-    #     temp <- temp %>%
-    #       extract(col = theSplit$col, into = newName, regex = theExpr, remove = FALSE)
-    #   }
-    #   temp <- temp %>%
-    #     select(-splitCols)
+    if(length(theMeta$table$split) != 0){
+
+      for(k in seq_along(theMeta$table$split)){
+        theSplit <- theMeta$table$split[[k]]
+        splitName <- names(theMeta$table$split)[k]
+        temp <- temp %>%
+          extract(col = theSplit$splitCol,
+                  into = splitName,
+                  regex = theSplit$splitExpr, remove = FALSE)
+      }
     }
 
-    # # gather all gather variables
+    # gather all gather variables
     if(!is.null(theMeta$table$gather_into)){
-    #
-    #   # fix 'toGather' in case splitVars exist
-    #   if(!is.null(splitVars)){
-    #     cols <- sapply(seq_along(splitVars), function(x){
-    #       splitVars[[x]]$col
-    #     })
-    #     cols <- as.data.frame(table(cols))
-    #     tempGather <- as.list(toGather)
-    #
-    #     toGather <- unlist(lapply(seq_along(tempGather), function(x){
-    #       if(any(x == cols$cols)){
-    #         rep(tempGather[[x]], cols$Freq)
-    #       } else {
-    #         tempGather[[x]]
-    #       }
-    #     }))
-    #   }
-    #
-    temp <- temp %>%
-      pivot_longer(cols = theMeta$table$gather_cols)
 
-    #   # ... and separate the column containing column names
+      temp <- temp %>%
+        pivot_longer(cols = theMeta$table$gather_cols,
+                     values_to = theMeta$var_type$vals[1])
+      theNames <- NULL
+
+      # ... and separate the column containing column names
       if(!is.null(theMeta$cluster$merge_rows)){
         temp <- temp %>%
           separate(name, into = theMeta$table$gather_into, sep = "-_-_")
@@ -178,11 +158,32 @@ reorganise <- function(input = NULL, schema = NULL){
       theNames <- c(theMeta$var_type$ids, theMeta$var_type$vals)
     }
 
+    # make sure that all values variables are numeric and have the correct value
+    for(i in seq_along(theMeta$var_type$vals)){
+      varName <- theMeta$var_type$vals[i]
+      varFactor <- theMeta$var_type$factor[i]
+      theVar <- temp[varName] %>% unlist(use.names = FALSE)
+      theVar <- as.numeric(gsub(" ", "", theVar))
+
+      if(varFactor != 1){
+        theVar <- theVar * varFactor
+      }
+
+      # replace the var in 'temp'
+      if(!all(is.na(theVar))){
+        temp <- temp %>%
+          mutate(!!varName := theVar)
+      } else {
+        stop(paste0("the variable '", varName, "' does not contain any numeric values."))
+      }
+    }
+
     # sort the data
     if(!is.null(theNames)){
       colnames(temp) <- theNames
     }
     temp <- temp %>%
+      select(c(theMeta$var_type$ids, theMeta$var_type$vals)) %>%
       arrange_at(.vars = theMeta$var_type$ids)
 
     # append the data to the overall output list
