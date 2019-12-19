@@ -1,4 +1,4 @@
 library(testthat)
-library(rectr)
+library(rectifyr)
 
-test_check("rectr")
+test_check("rectifyr")
