@@ -1,4 +1,4 @@
-Package: rectr
+Package: rectifyr
 Type: Package
 Title: Reshape disorganised messy tables
 Version: 0.1.2
@@ -9,15 +9,12 @@ Authors@R: c(
            comment = c(ORCID = "0000-0002-2958-0796")),
     person("Arne", "Rümmler", 
            email = "arne.ruemmler@tu-dresden.de", 
-           role = c("aut")),
-    person("Amelie", "Haas", 
-           email = "amelie.haas@tu-dresden.de", 
            role = c("aut"))
     )
 Description: Registers schema descriptions from (disorganised) messy tables and 
     reshapes them into a standardised (tidy) format.
-URL: https://gitlab.com/luckinet/software/rectr
-BugReports: https://gitlab.com/luckinet/software/rectr/issues
+URL: https://gitlab.com/luckinet/software/rectifyr
+BugReports: https://gitlab.com/luckinet/software/rectifyr/issues
 Depends:
     R (>= 2.10)
 License: GPL-3
