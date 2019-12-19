@@ -30,7 +30,7 @@ test_that("several vertical clusters of otherwise tidy data", {
                        key = NULL, value = NULL))))
 
   input <- read_csv(paste0(system.file("test_datasets",
-                                       package="rectr",
+                                       package="rectifyr",
                                        mustWork = TRUE), "/table1.csv"),
                     col_names = FALSE)
   output <- reorganise(input = input, schema = schema)
@@ -64,7 +64,7 @@ test_that("several horizontal clusters of otherwise tidy data", {
                        key = NULL, value = NULL))))
 
   input <- read_csv(paste0(system.file("test_datasets",
-                                       package="rectr",
+                                       package="rectifyr",
                                        mustWork = TRUE), "/table2.csv"),
                     col_names = FALSE)
   output <- reorganise(input = input, schema = schema)
@@ -98,7 +98,7 @@ test_that("already tidy table", {
                        key = NULL, value = NULL))))
 
   input <- read_csv(paste0(system.file("test_datasets",
-                                       package="rectr",
+                                       package="rectifyr",
                                        mustWork = TRUE), "/table3.csv"),
                     col_names = FALSE)
   output <- reorganise(input = input, schema = schema)
@@ -133,7 +133,7 @@ test_that("bring one wide identifying variable into long form", {
                        key = NULL, value = NULL))))
 
   input <- read_csv(paste0(system.file("test_datasets",
-                                       package="rectr",
+                                       package="rectifyr",
                                        mustWork = TRUE), "/table41.csv"),
                     col_names = FALSE)
   output <- reorganise(input = input, schema = schema)
@@ -165,7 +165,7 @@ test_that("bring one wide identifying variable into long form", {
                        key = NULL, value = NULL))))
 
   input <- read_csv(paste0(system.file("test_datasets",
-                                       package="rectr",
+                                       package="rectifyr",
                                        mustWork = TRUE), "/table42.csv"),
                     col_names = FALSE)
   output <- reorganise(input = input, schema = schema)
@@ -197,7 +197,7 @@ test_that("bring one wide identifying variable into long form", {
                        key = NULL, value = NULL))))
 
   input <- read_csv(paste0(system.file("test_datasets",
-                                       package="rectr",
+                                       package="rectifyr",
                                        mustWork = TRUE), "/table43.csv"),
                     col_names = FALSE)
   output <- reorganise(input = input, schema = schema)
@@ -229,7 +229,7 @@ test_that("bring one wide identifying variable into long form", {
                        key = NULL, value = NULL))))
 
   input <- read_csv(paste0(system.file("test_datasets",
-                                       package="rectr",
+                                       package="rectifyr",
                                        mustWork = TRUE), "/table44.csv"),
                     col_names = FALSE)
   output <- reorganise(input = input, schema = schema)
@@ -263,7 +263,7 @@ test_that("bring several wide identifying variables into long form", {
                        key = NULL, value = NULL))))
 
   input <- read_csv(paste0(system.file("test_datasets",
-                                       package="rectr",
+                                       package="rectifyr",
                                        mustWork = TRUE), "/table5.csv"),
                     col_names = FALSE)
   output <- reorganise(input = input, schema = schema)
@@ -298,7 +298,7 @@ test_that("spread long table", {
                        key = "dimension", value = "production"))))
 
   input <- read_csv(paste0(system.file("test_datasets",
-                                       package="rectr",
+                                       package="rectifyr",
                                        mustWork = TRUE), "/table61.csv"),
                     col_names = FALSE)
   output <- reorganise(input = input, schema = schema)
@@ -330,7 +330,7 @@ test_that("spread long table", {
                        key = "dimension", value = "production"))))
 
   input <- read_csv(paste0(system.file("test_datasets",
-                                       package="rectr",
+                                       package="rectifyr",
                                        mustWork = TRUE), "/table62.csv"),
                     col_names = FALSE)
   output <- reorganise(input = input, schema = schema)
@@ -364,7 +364,7 @@ test_that("bring one wide identifying variable into long form and spread long ta
                        key = "dimension", value = "production"))))
 
   input <- read_csv(paste0(system.file("test_datasets",
-                                       package="rectr",
+                                       package="rectifyr",
                                        mustWork = TRUE), "/table7.csv"),
                     col_names = FALSE)
   output <- reorganise(input = input, schema = schema)
@@ -398,7 +398,7 @@ test_that("bring several wide identifying variable into long form and spread lon
                        key = "dimension", value = "production"))))
 
   input <- read_csv(paste0(system.file("test_datasets",
-                                       package="rectr",
+                                       package="rectifyr",
                                        mustWork = TRUE), "/table8.csv"),
                     col_names = FALSE)
   output <- reorganise(input = input, schema = schema)
@@ -432,7 +432,7 @@ test_that("split a column that contains several variables in an already tidy tab
   #                              key = NULL, value = NULL))))
   #
   # input <- read_csv(paste0(system.file("test_datasets",
-  #                                      package="rectr",
+  #                                      package="rectifyr",
   #                                      mustWork = TRUE), "/table9.csv"),
   #                   col_names = FALSE)
   # output <- reorganise(input = input, schema = schema)
