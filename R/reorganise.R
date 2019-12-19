@@ -27,7 +27,7 @@
 #'   Determine unit and transformation factor for each values variable. }
 #' @importFrom checkmate assertDataFrame assertList assertNames
 #' @importFrom dplyr filter_all any_vars bind_rows slice group_by ungroup select
-#'   mutate arrange bind_cols rename arrange_at filter
+#'   mutate arrange bind_cols rename arrange_at filter mutate_if
 #' @importFrom tibble rownames_to_column as_tibble add_column
 #' @importFrom tidyr fill drop_na pivot_longer spread separate unite extract
 #'   gather pivot_wider
@@ -158,12 +158,17 @@ reorganise <- function(input = NULL, schema = NULL){
       theNames <- c(theMeta$var_type$ids, theMeta$var_type$vals)
     }
 
+    # sort the data
+    if(!is.null(theNames)){
+      colnames(temp) <- theNames
+    }
+
     # make sure that all values variables are numeric and have the correct value
     for(i in seq_along(theMeta$var_type$vals)){
       varName <- theMeta$var_type$vals[i]
       varFactor <- theMeta$var_type$factor[i]
       theVar <- temp[varName] %>% unlist(use.names = FALSE)
-      theVar <- as.numeric(gsub(" ", "", theVar))
+      theVar <- suppressWarnings(as.numeric(gsub(" ", "", theVar)))
 
       if(varFactor != 1){
         theVar <- theVar * varFactor
@@ -178,12 +183,9 @@ reorganise <- function(input = NULL, schema = NULL){
       }
     }
 
-    # sort the data
-    if(!is.null(theNames)){
-      colnames(temp) <- theNames
-    }
     temp <- temp %>%
       select(c(theMeta$var_type$ids, theMeta$var_type$vals)) %>%
+      mutate_if(is.character, trimws) %>% # remove leading/trailing whitespace
       arrange_at(.vars = theMeta$var_type$ids)
 
     # append the data to the overall output list

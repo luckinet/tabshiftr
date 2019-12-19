@@ -50,12 +50,12 @@ getNames <- function(temp = NULL, meta = NULL){
         isClust <- isOut <- FALSE
 
         if(!is.null(meta$cluster$cluster_id)){
-          if(testVar != meta$cluster$cluster_id){
+          if(testVar == meta$cluster$cluster_id){
             isClust <- TRUE
           }
         }
         if(!is.null(meta$cluster$outside_cluster)){
-          if(testVar != meta$cluster$outside_cluster){
+          if(testVar == meta$cluster$outside_cluster){
             isOut <- TRUE
           }
         }
