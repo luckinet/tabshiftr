@@ -4,81 +4,76 @@
 \name{schema_default}
 \alias{schema_default}
 \title{Default template of a schema description}
-\format{The list of lists describes at which position in a table which
-  information can be found. It contains the two obligatory lists
+\format{The object of class \code{schema} describes at which position in a
+  table which information can be found. It contains the two obligatory slots
   \code{clusters} and \code{variables}.
 
-  Theoretically, there is no limit to how data can be arranged in a
-  spreadsheet. However, mostly it is the case that data are gathered in areas
-  of a spreadsheet that can be outlined by a rectangle. Those rectangles,
-  including more or less coherent tables, are what is considered 'cluster' in
-  arealDB. Clusters are described by the properties:
-  \itemize{
-    \item \code{row}:\cr the vertical cell values of the top-left cell of
-      each cluster.
-    \item \code{col}:\cr the horizontal cell value of the top-left cell of
-      each cluster.
-    \item \code{width}:\cr the width in cells of each cluster.
-    \item \code{height}:\cr the height in cells of each cluster.
-    \item \code{id}:\cr it may be the case that data in a spreadsheet are
-      clustered according to one of the variables. In such cases, this
-      variable needs to be registered here.
-  }
+  There is hardly any limit to how data can be arranged in a spreadsheet,
+  apart from the apparent organisation into a lattice of cells. However, it
+  is mostly the case that data are gathered in areas of a spreadsheet that
+  can be outlined by a rectangle. Those rectangles, including more or less
+  coherent tables, are what is considered 'cluster' in arealDB. Clusters are
+  described by the properties: \itemize{ \item \code{top}
+  [\code{integerish(1)}]:\cr The vertical cell values of the top-left cell of
+  each cluster. This can also be a vector of values in case there are several
+  clusters. \item \code{left} [\code{integerish(1)}]:\cr The horizontal cell
+  value of the top-left cell of each cluster. This can also be a vector of
+  values in case there are several clusters. \item \code{width}
+  [\code{integerish(1)}]:\cr The width of each cluster in cells. This can
+  also be a vector of values in case there are several clusters \item
+  \code{height} [\code{integerish(1)}]:\cr The height of each cluster in
+  cells. This can also be a vector of values in case there are several
+  clusters \item \code{id} [\code{character(1)}]:\cr It is typically the case
+  that data are clustered according to one of the variables of interest. In
+  such cases, this variable needs to be registered here. \item \code{header}
+  [\code{logical(1)}]:\cr In cases where a cluster contains a table in which
+  variables are nested, i.e., where column names are in more than one row,
+  \code{header} must be set to \code{FALSE}.}
 
-  Each element in \code{variables} is itself a list that describes one of the
-  variables that shall be comprised in the final database. Variables are
+  Each element in the slot \code{variables} is a list that describes one of
+  the variables that shall be comprised in the final database. Variables are
   either so-called \emph{identifying (or ID) variables}, which indicate
   observation units, or \emph{values variables}, which carry the observed
-  values.
-  Identifying variables are described by the properties: \itemize{
-    \item \code{type}:\cr the value \code{"id"} signals that this is an
-      identifying variable.
-    \item \code{name}:\cr a name that would be assigned as column name in the
-      database instead of the list name.
-    \item \code{split}:\cr a regular expression that matches the part of
-      values that are supposed to be part of the variable, when the cells
-      contain more than one value (for example seperated by a ",").
-    \item \code{row}:\cr the row(s) in which the variable values are recorded.
-    \item \code{col}:\cr the column(s) in which the variable values are
-      recorded.
-    \item \code{rel}: (logical)\cr whether or not the values in \code{row}
-      and \code{col} are relative to the cluster positions or whether they
-      refer to the overall table.
-  }
+  values. Identifying variables are described by the properties: \itemize{
+  \item \code{type} [\code{character(1)}]:\cr The value \code{"id"} signals
+  that this is an identifying variable. \item \code{name}
+  [\code{character(1)}]:\cr A name that would be assigned as column name in
+  the database instead of the list name. \item \code{split}
+  [\code{character(1)}]:\cr A regular expression that matches the part of
+  values that are supposed to be part of the variable, when the cells contain
+  more than one value (for example seperated by a ","). \item \code{row}
+  [\code{integerish(1)}]:\cr The row(s) in which the variable values are
+  recorded. \item \code{col} [\code{integerish(1)}]:\cr The column(s) in
+  which the variable values are recorded. \item \code{rel}
+  [\code{logical(1)}]:\cr Whether or not the values in \code{row} and
+  \code{col} are relative to the cluster positions or whether they refer to
+  the overall table. }
 
-  Values variables are described by the properties: \itemize{
-    \item \code{type}: the value \code{"values"} signals that this is a
-      values variable.
-    \item \code{unit}: the unit in which the values shall be recorded
-      \bold{in the database}.
-    \item \code{factor}: a factor to transform the values to \code{unit}. For
-      instance, if values are recorded in acres, but shall be contained in
-      the database in hectare, the factor would be 0.40468.
-    \item \code{row}:\cr the row(s) in which the variable values are recorded.
-    \item \code{col}:\cr the column(s) in which the variable values are
-      recorded.
-    \item \code{rel}: (logical)\cr whether or not the values in \code{row}
-      and \code{col} are relative to the cluster positions or whether they
-      refer to the overall table.
-    \item \code{key}: if the variable is recorded, together with other
-      variables, so that the variable names are listed in one column and the
-      respective values are listed in another column, give here the name of
-      the column that contains the variable names.
-    \item \code{value}: if the variable is recorded, together with other
-      variables, so that the variable names are listed in one column and the
-      respective values are listed in another column, give here the level in
-      the names column that stands for the values of this variable.
-  }
-  The default schema description contains the two variables
-  \code{territories} and \code{period}, which are the bare minimum
-  identifying variables in an areal database. However, further identifying
-  and values variables would be added when more variables are contained in a
-  table.
+  Values variables are described by the properties: \itemize{ \item
+  \code{type} [\code{character(1)}]:\cr the value \code{"values"} signals
+  that this is a values variable. \item \code{unit} [\code{character(1)}]:\cr
+  The unit in which the values shall be recorded \bold{in the database}.
+  \item \code{factor} [\code{character(1)}]:\cr A factor to transform the
+  values to \code{unit}. For instance, if values are recorded in acres, but
+  shall be contained in the database in hectare, the factor would be 0.40468.
+  \item \code{row} [\code{integerish(1)}]:\cr The row(s) in which the
+  variable values are recorded. \item \code{col} [\code{integerish(1)}]:\cr
+  The column(s) in which the variable values are recorded. \item \code{rel}
+  [\code{logical(1)}]:\cr Whether or not the values in \code{row} and
+  \code{col} are relative to the cluster positions or whether they refer to
+  the overall table. \item \code{key} [\code{character(1)}]:\cr If the
+  variable is recorded, together with other variables, so that the variable
+  names are listed in one column and the respective values are listed in
+  another column, give here the name of the column that contains the variable
+  names. \item \code{value} [\code{character(1)}]:\cr If the variable is
+  recorded, together with other variables, so that the variable names are
+  listed in one column and the respective values are listed in another
+  column, give here the level in the names column that stands for the values
+  of this variable. }
 
-  For some ID variables it can be the case that information that are part
-  of one variable are distributed across several columns (or rows), even in a
-  tidy table. In these cases the respective columns specification should be
-  provided as named vector of column numbers.}
+  The default schema description contains an example of an identifying and a
+  values variables. Further identifying and values variables would be added
+  when more variables are contained in a table.}
 \usage{
 schema_default
 }

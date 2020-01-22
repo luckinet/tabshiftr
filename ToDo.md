@@ -7,7 +7,6 @@
 
 # medium priority:
 
-- needs a convenience function that makes it more intuitive to make schema descriptions. This funciton should also check whether the specified schema description makes sense at all.
 - needs a function that exports schema descriptions into a range of formats (xml, json) that are typically used to store those information.
 - I guess it makes sense to waste a thought or two on simplifying the reorganise function into subfunctions. Those could be:
   a) a function to identify and iterate through clusters. This function would extract from schema information and provide the cluster-specific subset to the following function.
