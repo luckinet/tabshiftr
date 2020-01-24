@@ -27,23 +27,17 @@
 #'   Determine unit and transformation factor for each values variable. }
 #' @importFrom checkmate assertDataFrame assertList assertNames
 #' @importFrom dplyr filter_all any_vars bind_rows slice group_by ungroup select
-#'   mutate arrange bind_cols rename arrange_at filter mutate_if
+#'   mutate arrange bind_cols rename arrange_at filter mutate_if left_join
 #' @importFrom tibble rownames_to_column as_tibble add_column
 #' @importFrom tidyr fill drop_na pivot_longer spread separate unite extract
 #'   gather pivot_wider
 #' @importFrom tidyselect everything
 #' @importFrom magrittr %>%
 #' @importFrom rlang :=
+#' @importFrom purrr reduce
 #' @export
 
 reorganise <- function(input = NULL, schema = NULL){
-
-  # variables used here ----
-  # theVariables  = schema of the variables
-  # theClusters   = schema of the cluster
-  # clusterVar    = schema of the cluster id
-  # clusterVal    = unique value of the id variable of the i-th cluster
-  #
 
   # check validity of arguments
   assertDataFrame(x = input)
@@ -55,7 +49,19 @@ reorganise <- function(input = NULL, schema = NULL){
 
   # get specs of the cluster variable
   if(!is.null(theClusters$id)){
-    clusterVar <- theVariables[[theClusters$id]]
+    if(theClusters$id == "values"){
+      # in case values variables are cluster variables, get those that contain 'key = "cluster"'
+      clusterVar <- sapply(seq_along(theVariables), function(x){
+        if(!is.null(theVariables[[x]]$key)){
+          if(theVariables[[x]]$key == "cluster"){
+            theVariables[x]
+          }
+        }
+      })
+      clusterVar <- unlist(clusterVar, recursive = FALSE)
+    } else {
+      clusterVar <- theVariables[theClusters$id]
+    }
   } else {
     clusterVar <- NULL
   }
@@ -72,44 +78,62 @@ reorganise <- function(input = NULL, schema = NULL){
 
     # 5. ... rearrange the data ----
     theData <- data[[i]]$data
+    theHeader <- data[[i]]$header
     theMeta <- varMeta[[i]]
 
-    # fill NA to the right side of wide identifying variables (this will add the
-    # value to the left of an NA instead of the NA)
-    colnames(theData) <- formatC(c(1:dim(theData)[2]), width = nchar(dim(theData)[2]), flag = "0")
-    temp <- theData %>%
-      rownames_to_column('rn') %>%
-      gather(key, val, -rn) %>%
-      group_by(rn) %>%
-      fill(val) %>%
-      ungroup() %>%
-      spread(key, val) %>%
-      mutate(rn = as.numeric(rn)) %>%
-      arrange(rn) %>%
-      select(-rn)
-
-    # get proper names
-    theNames <- getNames(temp = temp, meta = theMeta)
+    # make required columnnames
+    theNames <- getNames(header = theHeader, meta = theMeta)
 
     # select only valid rows
-    temp <- temp %>%
+    temp <- theData %>%
       filter(theMeta$table$table_rows)
 
-    # if a tidy column is outside of clusters, reconstruct it
+    # if a column is outside of clusters, reconstruct it
     if(!is.null(theMeta$cluster$outside_cluster)){
-      theColumn <- theVariables[[which(names(theVariables) == theMeta$cluster$outside_cluster)]]$col[i]
-      missingCol <- unlist(input[theMeta$cluster$cluster_rows, theColumn], use.names = FALSE)[theMeta$table$table_rows]
-      temp <- temp %>%
-        add_column(missingCol)
-      theNames <- c(theNames, theMeta$cluster$outside_cluster)
+      outVar <- theMeta$cluster$outside_cluster
+      for(j in seq_along(outVar)){
+        if(any(outVar[j] %in% theMeta$table$tidy)){
+          # tidy columns
+          theColumn <- theVariables[[which(names(theVariables) == outVar)]]$col[i]
+          missingCol <- unlist(input[theMeta$cluster$cluster_rows, theColumn], use.names = FALSE)[theMeta$table$table_rows]
+          temp <- temp %>%
+            add_column(missingCol)
+          theNames <- c(theNames, outVar)
+        } else {
+          # non-tidy columns
+          # if there is a variable outside of clusters, this may be for names, but
+          # only if it is not tidy (i.e., for gathering)
+          if(!outVar[j] %in% theMeta$table$gather_into){
+            stop("you have specified '", outVar, "' to be outside of clusters but not registered it for gathering.")
+          } else {
+            # we update the 'theNames' from 'input'
+            varProp <- theVariables[[which(names(theVariables) == outVar[j])]]
+            theNames[theMeta$table$gather_cols] <- unlist(input[unique(varProp$row), unique(varProp$col)])
+          }
+        }
+      }
     }
 
     # if a cluster id has been specified, reconstruct the column
     if(!is.null(clusterVar)){
-      clusterVal <- unlist(input[clusterVar$row[i], clusterVar$col[i]], use.names = FALSE)
+      if(length(clusterVar) > 1){
+        clusterVal <- names(clusterVar)[clusterVar[[i]]$value]
+        clustName <- "cluster"
+
+        # in case there is more than one clusterVar, it should have been
+        # 'cluster_id == "values"'
+      } else {
+        clusterVal <- unlist(input[clusterVar[[1]]$row[i], clusterVar[[1]]$col[i]], use.names = FALSE)
+        clustName <- theClusters$id
+      }
       temp <- temp %>%
         add_column(rep(unique(clusterVal), dim(temp)[1]))
-      theNames <- c(theNames, theClusters$id)
+      theNames <- c(theNames, clustName)
+    }
+    if(length(clusterVar) > 1){
+      valuesInCluster <- theMeta$var_type$vals[i]
+    } else {
+      valuesInCluster <- theMeta$var_type$vals
     }
 
     colnames(temp) <- theNames
@@ -138,9 +162,10 @@ reorganise <- function(input = NULL, schema = NULL){
     # gather all gather variables
     if(!is.null(theMeta$table$gather_into)){
 
+      spreadCols <- valuesInCluster[1]
       temp <- temp %>%
         pivot_longer(cols = theMeta$table$gather_cols,
-                     values_to = theMeta$var_type$vals[1])
+                     values_to = spreadCols)
       theNames <- NULL
 
       # ... and separate the column containing column names
@@ -148,15 +173,19 @@ reorganise <- function(input = NULL, schema = NULL){
         temp <- temp %>%
           separate(name, into = theMeta$table$gather_into, sep = "-_-_")
       }
+    } else {
+      spreadCols <- theMeta$table$spread_cols
     }
 
+    # spread all spread variables
     if(!is.null(theMeta$table$spread_from)){
       temp <- temp %>%
         pivot_wider(id_cols = theMeta$var_type$ids,
                     names_from = theMeta$table$spread_from,
-                    values_from = theMeta$table$spread_cols)
-      theNames <- c(theMeta$var_type$ids, theMeta$var_type$vals)
+                    values_from = spreadCols)
+      theNames <- c(theMeta$var_type$ids, valuesInCluster)
     }
+    # return(temp)
 
     # sort the data
     if(!is.null(theNames)){
@@ -164,9 +193,9 @@ reorganise <- function(input = NULL, schema = NULL){
     }
 
     # make sure that all values variables are numeric and have the correct value
-    for(i in seq_along(theMeta$var_type$vals)){
-      varName <- theMeta$var_type$vals[i]
-      varFactor <- theMeta$var_type$factor[i]
+    for(j in seq_along(valuesInCluster)){
+      varName <- valuesInCluster[j]
+      varFactor <- theMeta$var_type$factor[j]
       theVar <- temp[varName] %>% unlist(use.names = FALSE)
       theVar <- suppressWarnings(as.numeric(gsub(" ", "", theVar)))
 
@@ -184,7 +213,7 @@ reorganise <- function(input = NULL, schema = NULL){
     }
 
     temp <- temp %>%
-      select(c(theMeta$var_type$ids, theMeta$var_type$vals)) %>%
+      select(c(theMeta$var_type$ids, valuesInCluster)) %>%
       mutate_if(is.character, trimws) %>% # remove leading/trailing whitespace
       arrange_at(.vars = theMeta$var_type$ids)
 
@@ -192,9 +221,11 @@ reorganise <- function(input = NULL, schema = NULL){
     theValues <- c(theValues, list(temp))
   }
 
-
-  # row bind the values of all clusters
-  out <- bind_rows(theValues)
+  if(length(clusterVar) > 1){
+    out <- theValues %>% reduce(left_join)
+  } else {
+    out <- bind_rows(theValues)
+  }
 
   return(out)
 }

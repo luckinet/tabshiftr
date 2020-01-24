@@ -1,0 +1,31 @@
+authors:
+  Steffen Ehrmann:
+    href:  https://orcid.org/0000-0002-2958-0796
+  Arne Rümmler:
+    href:
+title: rectifyr
+url: http://EhrmannS.github.io/rectifyr
+development:
+  mode: unreleased
+
+navbar:
+  left:
+    - text: "Get Started"
+      href: articles/rectifyr.html
+    - text: "Reference"
+      href: reference/index.html
+    - text: "Changelog"
+      href: news/index.html
+  right:
+    - text: "Vignettes"
+      menu:
+      - text: Use Cases
+        href: articles/usecases.html
+      - text: Landscape metrics
+        href: articles/landscape_metrics.html
+      - text: Benchmarks
+        href: articles/benchmarks.html
+    - icon: fa-twitter fa-lg
+      href: http://www.twitter.com/DerEhrmann
+    - icon: fa-github
+      href: https://github.com/EhrmannS/lomm

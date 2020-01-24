@@ -21,17 +21,6 @@ getMetadata <- function(data = NULL, schema = NULL){
     tabRows <- rep(TRUE, dim(theData)[1])
     tabRows <- tabRows & rowSums(is.na(theData)) != ncol(theData)
 
-    # remove header row, if it is included
-    if(clusters$header){
-      tabRows[1] <- FALSE
-      tabNames <- theData %>%
-        slice(1) %>%
-        unlist()
-      names(tabNames) <- NULL
-    } else {
-      tabNames <- NULL
-    }
-
     # define some variables
     idVars <- valVars <- valFctrs<- tidyVars <- outVar <- spreadVars <- gatherVars <- NULL
     splitCols <- tidyCols <- spreadCols <- gatherCols <- NULL
@@ -44,11 +33,6 @@ getMetadata <- function(data = NULL, schema = NULL){
       varProp <- variables[[i]]
       varName <- names(variables)[i]
       assertNames(x = names(varProp), must.include = "type")
-
-      # replace the variable name, if it's given
-      if(!is.null(varProp$name) & !is.null(tabNames)){
-        tabNames[i] <- varProp$name
-      }
 
       # ... is an id variable ----
       if(varProp$type == "id"){
@@ -108,7 +92,11 @@ getMetadata <- function(data = NULL, schema = NULL){
           # if it is cluster ID, don't gather/spread ...
           if(!varName %in% clusters$id){
             gatherVars <- c(gatherVars, varName)
-            gatherCols <- c(gatherCols, varProp$col)
+            if(!varProp$rel){
+              gatherCols <- c(gatherCols, varProp$col - clusters$left[j] + 1)
+            } else {
+              gatherCols <- c(gatherCols, varProp$col)
+            }
           }
         }
       } else {
@@ -125,19 +113,6 @@ getMetadata <- function(data = NULL, schema = NULL){
           } else {
             spreadCols <- length(idVars) + 2
           }
-
-          if(clusters$header){
-
-            targetCol <- which(theData %>% slice(1) %in% varProp$key)
-            theTerms <- theData %>%
-              slice(-1) %>%
-              select(targetCol) %>%
-              unlist() %>%
-              unique()
-            valOrder <- c(valOrder, which(theTerms %in% varProp$value))
-
-          }
-
         }
       }
       if(!is.null(spreadVars)){
@@ -154,9 +129,9 @@ getMetadata <- function(data = NULL, schema = NULL){
       if(!is.null(varProp$row)){
         # only add merge row when it hasn't been added yet
         if(!any(mergeRows %in% varProp$row[j])){
-          if(varProp$rel){
-            tabRows[varProp$row[j]] <- FALSE
-          } else {
+          if(!varProp$rel){
+            # tabRows[varProp$row[j]] <- FALSE
+          # } else {
             tabRows[which(clustRows) %in% varProp$row[j]] <- FALSE
           }
           # clustRows[varProp$row[j]] <- FALSE
@@ -195,10 +170,8 @@ getMetadata <- function(data = NULL, schema = NULL){
                  var_type = list(ids = idVars,
                                  orig = tableVars,
                                  vals = valVars,
-                                 factor = valFctrs,
-                                 key = valOrder),
-                 table = list(header = tabNames,
-                              table_rows = tabRows,
+                                 factor = valFctrs),
+                 table = list(table_rows = tabRows,
                               tidy = tidyVars,
                               tidy_cols = tidyCols,
                               gather_into = gatherVars,

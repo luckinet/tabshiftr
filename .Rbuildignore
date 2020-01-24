@@ -4,3 +4,7 @@
 ^Meta$
 ^\.gitlab-ci\.yml$
 ToDo.md
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^README\.Rmd$

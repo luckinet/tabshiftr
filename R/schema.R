@@ -6,6 +6,8 @@
 #' @slot variables [\code{named list(.)}]\cr metadata of variables
 #' @details The slot \code{variables} typically contains several lists that each
 #' record the metadata of the respective variables.
+#' @importFrom rlang is_integerish
+#' @importFrom stringr str_sub
 
 schema <- setClass(Class = "schema",
                    slots = c(clusters = "list",
@@ -52,8 +54,10 @@ setValidity(Class = "schema", function(object){
       }
     }
     if(!is.null(object@clusters$header)){
-      if(!is.logical(object@clusters$header)){
-        errors <- c(errors, "'schema$clusters$header' must either be 'TRUE' or 'FALSE'.")
+      # if(!is.logical(object@clusters$header)){
+        # errors <- c(errors, "'schema$clusters$header' must either be 'TRUE' or 'FALSE'.")
+        if(!is_integerish(object@clusters$header)){
+          errors <- c(errors, "'schema$clusters$header' must an integersih value.")
       }
     }
   }
@@ -141,8 +145,14 @@ setValidity(Class = "schema", function(object){
           }
         }
         if(!is.null(theVariable$value)){
-          if(!is.character(theVariable$value)){
-            errors <- c(errors, paste0("'schema$variables$", theName, "$value' must have a character value."))
+          if(theVariable$key == "cluster"){
+            if(!rlang::is_integerish(theVariable$value)){
+              errors <- c(errors, paste0("'schema$variables$", theName, "$value' must have an integer value."))
+            }
+          } else {
+            if(!is.character(theVariable$value)){
+              errors <- c(errors, paste0("'schema$variables$", theName, "$value' must have a character value."))
+            }
           }
         }
 
@@ -179,9 +189,17 @@ setMethod(f = "show",
             if(is.null(clusters$top) & is.null(clusters$left) & is.null(clusters$width) & is.null(clusters$height)){
               clusterSpecs <- paste0(" (whole spreadsheet)")
             } else {
-              left <- ifelse(is.null(clusters$left), 1, clusters$left)
-              top <- ifelse(is.null(clusters$top), 1, clusters$top)
-              clusterSpecs <- paste0("\n    origin: ", top, ",", left, " (top,left)",
+              if(is.null(clusters$left)){
+                left <- 1
+              } else {
+                left <- clusters$left
+              }
+              if(is.null(clusters$top)){
+                top <- 1
+              } else {
+                top <- clusters$top
+              }
+              clusterSpecs <- paste0("\n    origin: ", paste(top, left, collapse = ", ", sep = "|"), "  (top|left)",
                                      ifelse(!is.null(clusters$id), paste0("\n    id    : ", clusters$id), ""))
             }
             cat(paste0("  ", nClusters, " ", nClustName, clusterSpecs, "\n\n"))
@@ -200,22 +218,36 @@ setMethod(f = "show",
               if(is.null(variables[[x]]$row)){
                 ""
               } else {
-                variables[[x]]$row
+                temp <- unique(variables[[x]]$row)
+                # make a short sequence of 'theRows'
+                dists <- temp - c(temp[1]-1, temp)[-(length(temp)+1)]
+                if(all(dists == 1) & length(temp) > 1){
+                  paste0(min(temp), ":", max(temp))
+                } else {
+                  temp
+                }
               }
             })
             nRow <- sapply(seq_along(theRows), function(x){
-              ifelse(test = is.null(theRows[[x]]) , yes = 0, no = nchar(theRows[x]))
+              ifelse(test = is.null(theRows[[x]]) , yes = 0, no = nchar(paste0(theRows[[x]], collapse = ", ")))
             })
             maxRows <- ifelse(any(nRow > 3), max(nRow), 3)
             theCols <- sapply(seq_along(variables), function(x){
               if(is.null(variables[[x]]$col)){
                 ""
               } else {
-                paste0(variables[[x]]$col, collapse = ", ")
+                temp <- unique(variables[[x]]$col)
+                # make a short sequence of 'theRows'
+                dists <- temp - c(temp[1]-1, temp)[-(length(temp)+1)]
+                if(all(dists == 1) & length(temp) > 1){
+                  paste0(min(temp), ":", max(temp))
+                } else {
+                  temp
+                }
               }
             })
             nCols <- sapply(seq_along(theCols), function(x){
-              ifelse(test = is.null(theCols[[x]]) , yes = 0, no = nchar(theCols[x]))
+              ifelse(test = is.null(theCols[[x]]) , yes = 0, no = nchar(paste0(theCols[[x]], collapse = ", ")))
             })
             maxCols <- ifelse(any(nCols > 3), max(nCols), 3)
             theKeys <- sapply(seq_along(variables), function(x){
@@ -240,44 +272,50 @@ setMethod(f = "show",
               ifelse(test = is.null(theValues[[x]]) , yes = 0, no = nchar(theValues[x]))
             })
             maxVals <- ifelse(any(nVals > 5), max(nVals), 5)
+            theRels <- sapply(seq_along(variables), function(x){
+              str_sub(as.character(variables[[x]]$rel), 1, 1)
+            })
 
             for(i in 1:(length(variables)+1)){
 
               if(i == 1){
-                whiteSpace1 <- paste0(rep(" ", times = maxNames-8+1), collapse = "")
-                whiteSpace2 <- "   "
-                whiteSpace3 <- paste0(rep(" ", times = maxRows-2), collapse = "")
-                whiteSpace4 <- paste0(rep(" ", times = maxCols-2), collapse = "")
-                whiteSpace5 <- paste0(rep(" ", times = maxKeys-2), collapse = "")
+                whiteSpace1 <- paste0(rep(" ", times = maxNames+2-8+1), collapse = "")
+                whiteSpace2 <- "     "
+                whiteSpace3 <- paste0(rep(" ", times = maxRows), collapse = "")
+                whiteSpace4 <- paste0(rep(" ", times = maxCols), collapse = "")
+                whiteSpace5 <- paste0(rep(" ", times = maxKeys), collapse = "")
                 whiteSpace6 <- paste0(rep(" ", times = maxVals-2), collapse = "")
 
-                cat(paste0("  ", "variable", whiteSpace1,
+                cat(paste0("   ", "variable", whiteSpace1,
                            "type", whiteSpace2,
                            "row", whiteSpace3,
                            "col", whiteSpace4,
                            "key", whiteSpace5,
                            "value", whiteSpace6,
+                           "rel",
                            "\n"))
-                cat(" ", paste(paste0(rep("-", maxNames), collapse = ""),
-                               paste0(rep("-", 6), collapse = ""),
-                               paste0(rep("-", maxRows), collapse = ""),
-                               paste0(rep("-", maxCols), collapse = ""),
-                               paste0(rep("-", maxKeys), collapse = ""),
-                               paste0(rep("-", maxVals), collapse = ""), collapse = " "), "\n")
+                cat(" ", paste(paste0(rep("-", maxNames+2), collapse = ""),
+                               paste0(rep("-", 8), collapse = ""),
+                               paste0(rep("-", maxRows+2), collapse = ""),
+                               paste0(rep("-", maxCols+2), collapse = ""),
+                               paste0(rep("-", maxKeys+2), collapse = ""),
+                               paste0(rep("-", maxVals+2), collapse = ""),
+                               paste0(rep("-", 5), collapse = ""), collapse = " "), "\n")
               } else {
-                whiteSpace1 <- paste0(rep(" ", times = maxNames-nchar(theNames[[i-1]])+1), collapse = "")
-                whiteSpace2 <- ifelse(theTypes[[i-1]] == "id", "     ", " ")
-                whiteSpace3 <- paste0(rep(" ", times = maxRows-nRow[[i-1]]+1), collapse = "")
-                whiteSpace4 <- paste0(rep(" ", times = maxCols-nCols[[i-1]]+1), collapse = "")
-                whiteSpace5 <- paste0(rep(" ", times = maxKeys-nKeys[[i-1]]+1), collapse = "")
-                whiteSpace6 <- paste0(rep(" ", times = maxVals-nVals[[i-1]]+1), collapse = "")
+                whiteSpace1 <- paste0(rep(" ", times = maxNames+2-nchar(theNames[[i-1]])+1), collapse = "")
+                whiteSpace2 <- ifelse(theTypes[[i-1]] == "id", "       ", "   ")
+                whiteSpace3 <- paste0(rep(" ", times = maxRows+2-nRow[[i-1]]+1), collapse = "")
+                whiteSpace4 <- paste0(rep(" ", times = maxCols+2-nCols[[i-1]]+1), collapse = "")
+                whiteSpace5 <- paste0(rep(" ", times = maxKeys+2-nKeys[[i-1]]+1), collapse = "")
+                whiteSpace6 <- paste0(rep(" ", times = maxVals+2-nVals[[i-1]]+1), collapse = "")
 
-                cat(paste0("  ", yellow(theNames[[i-1]]), whiteSpace1,
+                cat(paste0("   ", yellow(theNames[[i-1]]), whiteSpace1,
                            theTypes[[i-1]], whiteSpace2,
                            paste0(theRows[[i-1]], collapse = ", "), whiteSpace3,
                            paste0(theCols[[i-1]], collapse = ", "), whiteSpace4,
                            theKeys[[i-1]], whiteSpace5,
                            theValues[[i-1]], whiteSpace6,
+                           theRels[[i-1]], "  ",
                            "\n"))
               }
 

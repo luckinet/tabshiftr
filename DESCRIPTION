@@ -30,7 +30,9 @@ Imports:
     tidyselect,
     testthat,
     crayon,
-    methods
+    methods,
+    purrr,
+    stringr
 RoxygenNote: 6.1.1
 Suggests: 
     knitr,

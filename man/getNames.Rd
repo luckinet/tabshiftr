@@ -4,10 +4,10 @@
 \alias{getNames}
 \title{get the names from a schema description}
 \usage{
-getNames(temp = NULL, meta = NULL)
+getNames(header = NULL, meta = NULL)
 }
 \arguments{
-\item{temp}{a temporary table for which to derive names.}
+\item{header}{the header from which to derive names.}
 
 \item{meta}{the output of \code{getMetadata} as basis to derive names.}
 }

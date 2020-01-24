@@ -371,6 +371,54 @@ list(clusters =
                    key = "dimension", value = "production")))
 ```
 
+An even more complicated case of listed values variables is present in a clustered table that is arranged according to the values variables.
+Here, we need to specify first of all in `clusters` `"id = "values"` to indicate that the values variable is the cluster ID.
+Next, we need to set up the values variables so that they contain `"key = "cluster"` and in `value` the number of the cluster this variable can be found in.
+Moreover, we provide the column(s) and all rows that contain the values of each values variable.
+This is in contrast to nested values variables, where the rows of the variable names need to be provided.
+
+
+|  | territories | period | commodities | values |
+| :- | :- | :- | :- | :- |
+| harvested |  |  |  |  |
+|  | unit 1 | year 1 | soybean | 1111 |
+|  | unit 1 | year 1 | maize | 1121 |
+|  | unit 1 | year 2 | soybean | 1211 |
+|  | unit 1 | year 2 | maize | 1221 |
+|  | ... |  |  |  |
+| production |  |  |  |  |
+|  | unit 1 | year 1 | soybean | 1112 |
+|  | unit 1 | year 1 | maize | 1122 |
+|  | unit 1 | year 2 | soybean | 1212 |
+|  | unit 1 | year 2 | maize | 1222 |
+|  | ... |  |  |  |
+
+Table: Table 8: Vertical clusters of the values variables.
+
+```{r, eval=FALSE}
+    list(clusters =
+           list(top = c(3, 12), left = 2, width = NULL, height = 8,
+                id = "values", header = FALSE),
+         variables =
+           list(territories =
+                  list(type = "id", name = NULL, split = NULL,
+                       row = NULL, col = 2, rel = FALSE),
+                year =
+                  list(type = "id", name = NULL, split = NULL,
+                       row = NULL, col = 3, rel = FALSE),
+                commodities =
+                  list(type = "id", name = NULL, split = NULL,
+                       row = NULL, col = 4, rel = FALSE),
+                harvested =
+                  list(type = "values", unit = "ha", factor = 1,
+                       row = c(3:10), col = 5, rel = FALSE,
+                       key = "cluster", value = 1),
+                production =
+                  list(type = "values", unit = "t", factor = 1,
+                       row = c(13:20), col = 5, rel = FALSE,
+                       key = "cluster", value = 2)))
+```
+
 ### Several variables in one column
 
 Sometimes it may even be the case that several information/variables are stored in the same column, for example when a territorial unit is given together with its parent (e.g. `unit1, year1`).
@@ -385,7 +433,7 @@ For example, `.+?(?=,)` gives everything up until the first comma and `(?<=\s).*
 | unit 1, year 2 | maize | 1221 | 1222 |
 | ... |  |  |  |
 
-Table: Table 8: Several variables are stored in the same column.
+Table: Table 9: Several variables are stored in the same column.
 
 ```{r, eval=FALSE}
 list(clusters =
@@ -416,23 +464,25 @@ list(clusters =
 
 To set up a schema description, the recommended strategy is the following:
 
-1. Clarify which are the identifying variables and which are the values variables. A variable is always a combination of **name** and **values**. Names are typically the column names, but in many disorganised messy tables that would not be where a variable name is found. Values are typically in the column below that name, but in tables with nested headers the values are mostly not in a column with their name. Think, *do the values of the variable identify some unit, or do they contain the measured values?*
+1. Clarify which are the identifying variables and which are the values variables and create a new entry in the schema. A variable is always a combination of **name** and **values**. Names are typically the column names, but in many disorganised messy tables that would not be where a variable name is found. Values are typically in the column below that name, but in tables with nested headers the values are mostly not in a column with their name. Think, *do the values of the variable identify some unit, or do they contain the measured values?*
 
 2. Determine whether there are clusters and find the origin (top left cell) of each cluster (Tabs. 1 & Tab. 2). Follow the next steps for each cluster...
 
-3. Determine which identifying variable is the "key" of clusters and provide that as cluster ID. Think *which variable is split up into clusters?*
+3. Determine which variable is the "key" of clusters and provide that as cluster ID. In case the key is an identifying variable, provide this variables' name and if it's a values variable, provide simply `"values"` as cluster ID. Think *which variable is split up into clusters?*
 
 4. Determine for each identifying variable the following:
 
   - are all values of this variable in one column (think: *is it "long"?*) or are they in several columns?
   - in case the variable is not long, determine the row and columns in which its names sit (Tab. 5).
-  - in case the variable is long, determine whether it must be split off of another column (Tab. 8).
+  - in case the variable is long, determine whether it must be split off of another column (Tab. 9).
   
 5. Determine for each values variables the following:
 
   - all columns in which the values of the variable sit (Tab. 6).
   - the unit and conversion factor.
-  - in case the variable is nested in a wide identifying variable, determine additionally to the columns in which the values sit also the rows in which the variable name sits (Tab. 6).
-  - in case the names of the variable are given as an identifying variable (Tab. 5), give that column name as `key` of the values variable, together with the respective term (`values`) of the values variables (this indicates that this *key-values pair* must be spread).
+  - in case the variable is not tidy, one of the three following cases should apply:
+    * in case the variable is nested in a wide identifying variable, determine additionally to the columns in which the values sit also the rows in which the **variable name** sits (Tab. 4 & Tab. 5).
+    * in case the names of the variable are given as an identifying variable (Tab. 6), give that column name as `key` of the values variable, together with the respective term (`values`) of the values variables (this indicates that this *key-values pair* must be spread).
+    * in case the names of the variable are the names of clusters, specify `key = "cluster"`, in `values` the cluster number the variable refers to (Tab. 8).
 
 # References

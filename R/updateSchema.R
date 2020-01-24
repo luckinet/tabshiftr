@@ -11,7 +11,8 @@ updateSchema <- function(input = NULL, schema = NULL){
 
   # 1. complete cluster information ----
   clusters <- schema@clusters
-  nClusters <- max(lengths(clusters))
+  nClusters <- max(lengths(clusters[-which(names(clusters) == "header")]))
+  if(nClusters == 0) nClusters <- 1
   tabDim <- dim(input)
 
   # set cluster start if it is NULL
@@ -79,7 +80,7 @@ updateSchema <- function(input = NULL, schema = NULL){
         }
         if(!is.null(varProp$col)){
           if(!all(varProp$col < clusters$left) & rowIn){
-            varProp$col <- varProp$col - clusters$left +1
+            varProp$col <- varProp$col - clusters$left + 1
             varProp$rel <- TRUE
           }
         }
@@ -87,7 +88,7 @@ updateSchema <- function(input = NULL, schema = NULL){
     } else {
       # make sure that the clusterID is not a relative value
       if(varProp$rel){
-        stop(paste0("the cluster ID '", varName, "' must not have relative values"))
+        stop(paste0("the cluster ID '", varName, "' must not have relative values."))
       }
     }
 

@@ -1,0 +1,20 @@
+,territories,period,commodities,value
+harvested,,,,
+,unit 1,year 1,soybean,1111
+,unit 1,year 1,maize,1121
+,unit 1,year 2,soybean,1211
+,unit 1,year 2,maize,1221
+,unit 2,year 1,soybean,2111
+,unit 2,year 1,maize,2121
+,unit 2,year 2,soybean,2211
+,unit 2,year 2,maize,2221
+,,,,
+production,,,,
+,unit 1,year 1,soybean,1112
+,unit 1,year 1,maize,1122
+,unit 1,year 2,soybean,1212
+,unit 1,year 2,maize,1222
+,unit 2,year 1,soybean,2112
+,unit 2,year 1,maize,2122
+,unit 2,year 2,soybean,2212
+,unit 2,year 2,maize,2222
