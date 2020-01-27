@@ -1,5 +1,4 @@
 Package: rectifyr
-Type: Package
 Title: Reshape disorganised messy tables
 Version: 0.1.2
 Authors@R: c(
@@ -11,8 +10,8 @@ Authors@R: c(
            email = "arne.ruemmler@tu-dresden.de", 
            role = c("aut"))
     )
-Description: Registers schema descriptions from (disorganised) messy tables and 
-    reshapes them into a standardised (tidy) format.
+Description: Registers schema descriptions of (disorganised) messy tables and 
+    reorganises them into a standardised (tidy) format.
 URL: https://gitlab.com/luckinet/software/rectifyr
 BugReports: https://gitlab.com/luckinet/software/rectifyr/issues
 Depends:

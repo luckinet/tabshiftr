@@ -1,8 +1,18 @@
 ---
 title: "rectifyr - An overview"
-output: rmarkdown::html_vignette
+author: "Steffen Ehrmann"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: yes
+    toc_float: true
+    number_sections: true
+    fig_width: 7
+    fig_caption: true
+    theme: spacelab
+    highlight: pygments
 vignette: >
-  %\VignetteIndexEntry{rectifyr - An overview}
+  %\VignetteIndexEntry{An overview}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -14,6 +24,4 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
-library(rectifyr)
-```
+# Introduction

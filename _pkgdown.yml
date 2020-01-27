@@ -8,6 +8,14 @@ url: http://EhrmannS.github.io/rectifyr
 development:
   mode: unreleased
 
+reference:
+  - title: make a schema description
+    contents:
+      - makeSchema
+  - title: reorganise tables
+    contents:
+      - reorganise
+
 navbar:
   left:
     - text: "Get Started"
@@ -17,15 +25,7 @@ navbar:
     - text: "Changelog"
       href: news/index.html
   right:
-    - text: "Vignettes"
-      menu:
-      - text: Use Cases
-        href: articles/usecases.html
-      - text: Landscape metrics
-        href: articles/landscape_metrics.html
-      - text: Benchmarks
-        href: articles/benchmarks.html
     - icon: fa-twitter fa-lg
       href: http://www.twitter.com/DerEhrmann
     - icon: fa-github
-      href: https://github.com/EhrmannS/lomm
+      href: https://github.com/EhrmannS/rectifyr
