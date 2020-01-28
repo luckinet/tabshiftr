@@ -17,8 +17,8 @@ This function takes a disorganised messy table and rearranges columns and
 rows into a tidy dataset that can be sorted into the areal database.
 }
 \section{Setting up schema descriptions}{
- See \code{\link{schema_default}} for a
-  template of schema descriptions. \enumerate{ \item Clarify which are the
+ See \code{\link{schema_default}} for
+  a template of schema descriptions. \enumerate{ \item Clarify which are the
   identifying variables and which are the values variables. \item Determine
   whether there are clusters and find the origin (top left \item Determine
   whether a table can be separated into a "long" and an "other" part. The
