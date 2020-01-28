@@ -5,8 +5,8 @@
 #' @param input [\code{data.frame(1)}]\cr table to rectangularise.
 #' @param schema [\code{symbol(1)}]\cr the schema description for reorganising
 #'   \code{input}.
-#' @section Setting up schema descriptions: See \code{\link{schema_default}} for a
-#'   template of schema descriptions. \enumerate{ \item Clarify which are the
+#' @section Setting up schema descriptions: See \code{\link{schema_default}} for
+#'   a template of schema descriptions. \enumerate{ \item Clarify which are the
 #'   identifying variables and which are the values variables. \item Determine
 #'   whether there are clusters and find the origin (top left \item Determine
 #'   whether a table can be separated into a "long" and an "other" part. The
@@ -28,6 +28,7 @@
 #' @importFrom checkmate assertDataFrame assertList assertNames
 #' @importFrom dplyr filter_all any_vars bind_rows slice group_by ungroup select
 #'   mutate arrange bind_cols rename arrange_at filter mutate_if left_join
+#'   mutate_all
 #' @importFrom tibble rownames_to_column as_tibble add_column
 #' @importFrom tidyr fill drop_na pivot_longer spread separate unite extract
 #'   gather pivot_wider
@@ -41,6 +42,9 @@ reorganise <- function(input = NULL, schema = NULL){
 
   # check validity of arguments
   assertDataFrame(x = input)
+
+  input <- input %>%
+    mutate_all(as.character)
 
   # 1. add missing information in schema ----
   schema <- updateSchema(input = input, schema = schema)
@@ -86,7 +90,7 @@ reorganise <- function(input = NULL, schema = NULL){
 
     # select only valid rows
     temp <- theData %>%
-      filter(theMeta$table$table_rows)
+      filter(theMeta$table$data_rows)
 
     # if a column is outside of clusters, reconstruct it
     if(!is.null(theMeta$cluster$outside_cluster)){
@@ -95,21 +99,13 @@ reorganise <- function(input = NULL, schema = NULL){
         if(any(outVar[j] %in% theMeta$table$tidy)){
           # tidy columns
           theColumn <- theVariables[[which(names(theVariables) == outVar)]]$col[i]
-          missingCol <- unlist(input[theMeta$cluster$cluster_rows, theColumn], use.names = FALSE)[theMeta$table$table_rows]
+          missingCol <- unlist(input[theMeta$cluster$cluster_rows, theColumn], use.names = FALSE)[theMeta$table$data_rows]
           temp <- temp %>%
             add_column(missingCol)
           theNames <- c(theNames, outVar)
         } else {
           # non-tidy columns
-          # if there is a variable outside of clusters, this may be for names, but
-          # only if it is not tidy (i.e., for gathering)
-          if(!outVar[j] %in% theMeta$table$gather_into){
-            stop("you have specified '", outVar, "' to be outside of clusters but not registered it for gathering.")
-          } else {
-            # we update the 'theNames' from 'input'
-            varProp <- theVariables[[which(names(theVariables) == outVar[j])]]
-            theNames[theMeta$table$gather_cols] <- unlist(input[unique(varProp$row), unique(varProp$col)])
-          }
+          # ... !?
         }
       }
     }

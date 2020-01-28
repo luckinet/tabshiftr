@@ -16,10 +16,10 @@ getMetadata <- function(data = NULL, schema = NULL){
   for(j in seq_along(data)){
 
     theData <- data[[j]]$data
-
     clustRows <- data[[j]]$cluster_rows
-    tabRows <- rep(TRUE, dim(theData)[1])
-    tabRows <- tabRows & rowSums(is.na(theData)) != ncol(theData)
+    tableRows <- seq_along(clustRows)
+    tableRows <- tableRows[clustRows]
+    dataRows <- rep(TRUE, length(tableRows))
 
     # define some variables
     idVars <- valVars <- valFctrs<- tidyVars <- outVar <- spreadVars <- gatherVars <- NULL
@@ -131,8 +131,8 @@ getMetadata <- function(data = NULL, schema = NULL){
         if(!any(mergeRows %in% varProp$row[j])){
           if(!varProp$rel){
             # tabRows[varProp$row[j]] <- FALSE
-          # } else {
-            tabRows[which(clustRows) %in% varProp$row[j]] <- FALSE
+            # } else {
+            dataRows[which(tableRows %in% varProp$row[j])] <- FALSE
           }
           # clustRows[varProp$row[j]] <- FALSE
           # if it is cluster ID, don't merge
@@ -171,7 +171,7 @@ getMetadata <- function(data = NULL, schema = NULL){
                                  orig = tableVars,
                                  vals = valVars,
                                  factor = valFctrs),
-                 table = list(table_rows = tabRows,
+                 table = list(data_rows = dataRows,
                               tidy = tidyVars,
                               tidy_cols = tidyCols,
                               gather_into = gatherVars,

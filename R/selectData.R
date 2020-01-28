@@ -13,14 +13,26 @@ selectData <- function(input = NULL, clusters = NULL){
   assertNames(x = names(clusters), permutation.of = c("top", "left", "width", "height", "id", "header"))
 
   out <- list()
-  for(i in seq_along(clusters$left)){
+  nrClusters <- max(lengths(clusters[-which(names(clusters) == "header")]))
+  for(i in 1:nrClusters){
     clusterRows <- clusters$top[i]:(clusters$top[i]+clusters$height[i] - 1)
     clusterCols <- clusters$left[i]:(clusters$left[i]+clusters$width[i] - 1)
-    temp <- input[clusterRows, clusterCols]
+    tempCols <- input[, clusterCols]
 
-    if(length(clusters$left) == 1){
-      temp <- temp[-clusters$header, ]
+    # determine which rows/cols contain valid data
+    clustRows <- rep(FALSE, dim(input)[1])
+    clustRows[clusterRows] <- TRUE
+    clustCols <- rep(FALSE, dim(input)[2])
+    clustCols[clusterCols] <- TRUE
+
+    # remove rows from 'temp' that are header rows within a cluster
+    if(any(clusters$header >= clusters$top[i])){
+      toRemove <- clusters$header[clusters$header >= clusters$top[i]]
+      clustRows[toRemove] <- FALSE
     }
+    # and remove rows that contain only NAs
+    clustRows <- clustRows & rowSums(is.na(tempCols)) != ncol(tempCols)
+    temp <- tempCols[clustRows, ]
 
     # determine header
     header <- input[clusters$header, clusterCols]
@@ -40,16 +52,10 @@ selectData <- function(input = NULL, clusters = NULL){
       select(-rn)
     names(header) <- NULL
 
-    # determine which rows/cols contain valid data
-    clustRows <- rep(FALSE, dim(input)[1])
-    clustRows[clusterRows] <- TRUE
-    clustCols <- rep(FALSE, dim(input)[2])
-    clustCols[clusterCols] <- TRUE
-
-    tempOut <- list(header = header,
-                    data = temp,
-                    cluster_rows = clustRows,
-                    cluster_cols = clustCols)
+    tempOut <- list(cluster_rows = clustRows,
+                    cluster_cols = clustCols,
+                    header = header,
+                    data = temp)
 
     out <- c(out, list(tempOut))
   }
