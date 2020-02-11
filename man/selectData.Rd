@@ -4,7 +4,7 @@
 \alias{selectData}
 \title{Select data chunks from a spreadsheet}
 \usage{
-selectData(input = NULL, clusters = NULL)
+selectData(input = NULL, clusters = NULL, header = NULL)
 }
 \arguments{
 \item{input}{the raw table from which to select clusters}
