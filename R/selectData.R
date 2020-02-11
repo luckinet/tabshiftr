@@ -7,13 +7,18 @@
 #' @importFrom tibble rownames_to_column
 #' @export
 
-selectData <- function(input = NULL, clusters = NULL){
+selectData <- function(input = NULL, clusters = NULL, header = NULL){
 
   assertDataFrame(x = input)
-  assertNames(x = names(clusters), permutation.of = c("top", "left", "width", "height", "id", "header"))
+
+  # assume the header is in row 1, if not set
+  if(is.null(header$row)){
+    header$row <- 1L
+    message("  ... you did not set 'header', so I assume it is in the first row.")
+  }
 
   out <- list()
-  nrClusters <- max(lengths(clusters[-which(names(clusters) == "header")]))
+  nrClusters <- max(lengths(clusters))
   for(i in 1:nrClusters){
     clusterRows <- clusters$top[i]:(clusters$top[i]+clusters$height[i] - 1)
     clusterCols <- clusters$left[i]:(clusters$left[i]+clusters$width[i] - 1)
@@ -25,9 +30,16 @@ selectData <- function(input = NULL, clusters = NULL){
     clustCols <- rep(FALSE, dim(input)[2])
     clustCols[clusterCols] <- TRUE
 
+    # adapt values if header is relative
+    if(header$rel){
+      tempHeader <- clusters$top[i]+header$row-1
+    } else {
+      tempHeader <- header$row
+    }
+
     # remove rows from 'temp' that are header rows within a cluster
-    if(any(clusters$header >= clusters$top[i])){
-      toRemove <- clusters$header[clusters$header >= clusters$top[i]]
+    if(any(tempHeader >= clusters$top[i])){
+      toRemove <- tempHeader[tempHeader >= clusters$top[i]]
       clustRows[toRemove] <- FALSE
     }
     # and remove rows that contain only NAs
@@ -35,12 +47,12 @@ selectData <- function(input = NULL, clusters = NULL){
     temp <- tempCols[clustRows, ]
 
     # determine header
-    header <- input[clusters$header, clusterCols]
+    tempHeader <- input[tempHeader, clusterCols]
 
     # fill NA to the right side of wide identifying variables (this will add the
     # value to the left of an NA instead of the NA)
-    colnames(header) <- formatC(c(1:dim(header)[2]), width = nchar(dim(header)[2]), flag = "0")
-    header <- header %>%
+    colnames(tempHeader) <- formatC(c(1:dim(tempHeader)[2]), width = nchar(dim(tempHeader)[2]), flag = "0")
+    tempHeader <- tempHeader %>%
       rownames_to_column('rn') %>%
       gather(key, val, -rn) %>%
       group_by(rn) %>%
@@ -50,11 +62,11 @@ selectData <- function(input = NULL, clusters = NULL){
       mutate(rn = as.numeric(rn)) %>%
       arrange(rn) %>%
       select(-rn)
-    names(header) <- NULL
+    names(tempHeader) <- NULL
 
     tempOut <- list(cluster_rows = clustRows,
                     cluster_cols = clustCols,
-                    header = header,
+                    header = tempHeader,
                     data = temp)
 
     out <- c(out, list(tempOut))
