@@ -8,3 +8,4 @@ ToDo.md
 ^docs$
 ^pkgdown$
 ^README\.Rmd$
+^presentation$
