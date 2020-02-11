@@ -9,6 +9,8 @@ makeSchema <- function(schema = NULL){
 
   out <- new(Class = "schema",
              clusters = schema$clusters,
+             header = schema$header,
+             meta = schema$meta,
              variables = schema$variables)
 
   return(out)
