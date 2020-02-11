@@ -50,6 +50,7 @@ reorganise <- function(input = NULL, schema = NULL){
   schema <- updateSchema(input = input, schema = schema)
   theVariables <- schema@variables
   theClusters <- schema@clusters
+  theHeader <- schema@header
 
   # get specs of the cluster variable
   if(!is.null(theClusters$id)){
@@ -71,7 +72,9 @@ reorganise <- function(input = NULL, schema = NULL){
   }
 
   # 2. use cluster information to make list of data ----
-  data <- selectData(input = input, clusters = theClusters)
+  data <- selectData(input = input,
+                     clusters = theClusters,
+                     header = theHeader)
 
   # 3. for each element in 'data' determine metadata ---
   varMeta <- getMetadata(data = data, schema = schema)
@@ -134,27 +137,6 @@ reorganise <- function(input = NULL, schema = NULL){
 
     colnames(temp) <- theNames
 
-    # # if there is nothing to gather and spread, there are only tidy columns
-    # # available. select those, remove the first row and assign tidy names
-    if(is.null(theMeta$table$gather_into) & is.null(theMeta$table$spread_from)){
-      temp <- temp %>%
-        select(theMeta$table$tidy)
-      theNames <- NULL
-    }
-
-    # # split id-columns that have a split expression
-    if(length(theMeta$table$split) != 0){
-
-      for(k in seq_along(theMeta$table$split)){
-        theSplit <- theMeta$table$split[[k]]
-        splitName <- names(theMeta$table$split)[k]
-        temp <- temp %>%
-          extract(col = theSplit$splitCol,
-                  into = splitName,
-                  regex = theSplit$splitExpr, remove = FALSE)
-      }
-    }
-
     # gather all gather variables
     if(!is.null(theMeta$table$gather_into)){
 
@@ -165,10 +147,8 @@ reorganise <- function(input = NULL, schema = NULL){
       theNames <- NULL
 
       # ... and separate the column containing column names
-      if(!is.null(theMeta$cluster$merge_rows)){
-        temp <- temp %>%
-          separate(name, into = theMeta$table$gather_into, sep = "-_-_")
-      }
+      temp <- temp %>%
+        separate(name, into = theMeta$table$gather_into, sep = "-_-_")
     } else {
       spreadCols <- theMeta$table$spread_cols
     }
@@ -181,11 +161,34 @@ reorganise <- function(input = NULL, schema = NULL){
                     values_from = spreadCols)
       theNames <- c(theMeta$var_type$ids, valuesInCluster)
     }
-    # return(temp)
 
     # sort the data
     if(!is.null(theNames)){
       colnames(temp) <- theNames
+    }
+
+    # split id-columns that have a split expression
+    if(length(theMeta$table$split) != 0){
+      for(k in seq_along(theMeta$table$split)){
+        theSplit <- theMeta$table$split[[k]]
+        splitName <- names(theMeta$table$split)[k]
+        splitCol <- which(colnames(temp) == splitName)
+        if(length(splitCol) == 0){
+          splitCol <- theSplit$splitCol
+        }
+        temp <- temp %>%
+          tidyr::extract(col = splitCol,
+                         into = splitName,
+                         regex = theSplit$splitExpr, remove = FALSE)
+      }
+    }
+
+    # if there is nothing to gather and spread, there are only tidy columns
+    # available. select those, remove the first row and assign tidy names
+    if(is.null(theMeta$table$gather_into) & is.null(theMeta$table$spread_from)){
+      temp <- temp %>%
+        select(theMeta$table$tidy)
+      theNames <- NULL
     }
 
     # make sure that all values variables are numeric and have the correct value
@@ -200,11 +203,11 @@ reorganise <- function(input = NULL, schema = NULL){
       }
 
       # replace the var in 'temp'
-      if(!all(is.na(theVar))){
-        temp <- temp %>%
-          mutate(!!varName := theVar)
-      } else {
-        stop(paste0("the variable '", varName, "' does not contain any numeric values."))
+      temp <- temp %>%
+        mutate(!!varName := as.numeric(theVar))
+
+      if(all(is.na(theVar))){ # this could be improved further by letting the user know that XY% values other than NA/NULL/Inf were discarded and that probably the data-specs in the schema dont fit
+        message(paste0("the variable '", varName, "' in cluster ", i," does not contain any numeric values.\n   -> did you set the correct the correct dec(imal) seperator?"))
       }
     }
 
