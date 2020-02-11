@@ -9,7 +9,9 @@ test_that("several vertical clusters of otherwise tidy data", {
   schema <- makeSchema(
     list(clusters =
            list(top = c(3, 10), left = 2, width = NULL, height = NULL,
-                id = "territories", header = 1),
+                id = "territories"),
+         header = list(row = 1, rel = FALSE),
+         meta = list(dec = NULL, na = NULL, types = NULL),
          variables =
            list(territories =
                   list(type = "id", name = NULL, split = NULL,
@@ -43,7 +45,9 @@ test_that("several horizontal clusters of otherwise tidy data", {
   schema <- makeSchema(
     list(clusters =
            list(top = 2, left = c(2, 5), width = NULL, height = NULL,
-                id = "territories", header = 1),
+                id = "territories"),
+         header = list(row = 1, rel = FALSE),
+         meta = list(dec = NULL, na = NULL, types = NULL),
          variables =
            list(territories =
                   list(type = "id", name = NULL, split = NULL,
@@ -77,7 +81,9 @@ test_that("already tidy table", {
   schema <- makeSchema(
     list(clusters =
            list(top = NULL, left = NULL, width = NULL, height = NULL,
-                id = NULL, header = 1),
+                id = NULL),
+         header = list(row = 1, rel = FALSE),
+         meta = list(dec = NULL, na = NULL, types = NULL),
          variables =
            list(territories =
                   list(type = "id", name = NULL, split = NULL,
@@ -112,7 +118,9 @@ test_that("bring one wide identifying variable into long form", {
   schema <- makeSchema(
     list(clusters =
            list(top = NULL, left = NULL, width = NULL, height = NULL,
-                id = NULL, header = c(1, 2)),
+                id = NULL),
+         header = list(row = c(1, 2), rel = FALSE),
+         meta = list(dec = NULL, na = NULL, types = NULL),
          variables =
            list(territories =
                   list(type = "id", name = NULL, split = NULL,
@@ -144,7 +152,9 @@ test_that("bring one wide identifying variable into long form", {
   schema <- makeSchema(
     list(clusters =
            list(top = NULL, left = NULL, width = NULL, height = NULL,
-                id = NULL, header = c(1, 2)),
+                id = NULL),
+         header = list(row = c(1, 2), rel = FALSE),
+         meta = list(dec = NULL, na = NULL, types = NULL),
          variables =
            list(territories =
                   list(type = "id", name = NULL, split = NULL,
@@ -176,7 +186,9 @@ test_that("bring one wide identifying variable into long form", {
   schema <- makeSchema(
     list(clusters =
            list(top = NULL, left = NULL, width = NULL, height = NULL,
-                id = NULL, header = c(1, 2)),
+                id = NULL),
+         header = list(row = c(1, 2), rel = FALSE),
+         meta = list(dec = NULL, na = NULL, types = NULL),
          variables =
            list(territories =
                   list(type = "id", name = NULL, split = NULL,
@@ -208,7 +220,9 @@ test_that("bring one wide identifying variable into long form", {
   schema <- makeSchema(
     list(clusters =
            list(top = NULL, left = NULL, width = NULL, height = NULL,
-                id = NULL, header = c(1, 2)),
+                id = NULL),
+         header = list(row = c(1, 2), rel = FALSE),
+         meta = list(dec = NULL, na = NULL, types = NULL),
          variables =
            list(territories =
                   list(type = "id", name = NULL, split = NULL,
@@ -242,7 +256,9 @@ test_that("bring several wide identifying variables into long form", {
   schema <- makeSchema(
     list(clusters =
            list(top = NULL, left = NULL, width = NULL, height = NULL,
-                id = NULL, header = c(1:3)),
+                id = NULL),
+         header = list(row = c(1:3), rel = FALSE),
+         meta = list(dec = NULL, na = NULL, types = NULL),
          variables =
            list(territories =
                   list(type = "id", name = NULL, split = NULL,
@@ -277,7 +293,9 @@ test_that("spread long table", {
   schema <- makeSchema(
     list(clusters =
            list(top = NULL, left = NULL, width = NULL, height = NULL,
-                id = NULL, header = 1),
+                id = NULL),
+         header = list(row = 1, rel = FALSE),
+         meta = list(dec = NULL, na = NULL, types = NULL),
          variables =
            list(territories =
                   list(type = "id", name = NULL, split = NULL,
@@ -309,7 +327,9 @@ test_that("spread long table", {
   schema <- makeSchema(
     list(clusters =
            list(top = NULL, left = NULL, width = NULL, height = NULL,
-                id = NULL, header = 1),
+                id = NULL),
+         header = list(row = 1, rel = FALSE),
+         meta = list(dec = NULL, na = NULL, types = NULL),
          variables =
            list(territories =
                   list(type = "id", name = NULL, split = NULL,
@@ -343,7 +363,9 @@ test_that("bring one wide identifying variable into long form and spread long ta
   schema <- makeSchema(
     list(clusters =
            list(top = NULL, left = NULL, width = NULL, height = NULL,
-                id = NULL, header = 1),
+                id = NULL),
+         header = list(row = 1, rel = FALSE),
+         meta = list(dec = NULL, na = NULL, types = NULL),
          variables =
            list(territories =
                   list(type = "id", name = NULL, split = NULL,
@@ -377,7 +399,9 @@ test_that("bring several wide identifying variable into long form and spread lon
   schema <- makeSchema(
     list(clusters =
            list(top = NULL, left = NULL, width = NULL, height = NULL,
-                id = NULL, header = c(1, 2)),
+                id = NULL),
+         header = list(row = c(1, 2), rel = FALSE),
+         meta = list(dec = NULL, na = NULL, types = NULL),
          variables =
            list(territories =
                   list(type = "id", name = NULL, split = NULL,
@@ -408,36 +432,38 @@ test_that("bring several wide identifying variable into long form and spread lon
 
 # split a column that contains several id variables in an already tidy table ----
 test_that("split a column that contains several variables in an already tidy table", {
-  # schema <- makeSchema(
-  # list(clusters =
-  #                  list(top = NULL, left = NULL, width = NULL, height = NULL,
-  #                       id = NULL, header = TRUE),
-  #                variables =
-  #                  list(territories =
-  #                         list(type = "id", name = NULL, split = NULL,
-  #                              row = NULL, col = 1, rel = FALSE),
-  #                       year =
-  #                         list(type = "id", name = "period", split = ".+?(?=_)",
-  #                              row = NULL, col = 2, rel = FALSE),
-  #                       commodities =
-  #                         list(type = "id", name = NULL, split = "(?<=\\_).*",
-  #                              row = NULL, col = 2, rel = FALSE),
-  #                       harvested =
-  #                         list(type = "values", unit = "ha", factor = 1,
-  #                              row = NULL, col = 3, rel = FALSE,
-  #                              key = NULL, value = NULL),
-  #                       production =
-  #                         list(type = "values", unit = "t", factor = 1,
-  #                              row = NULL, col = 4, rel = FALSE,
-  #                              key = NULL, value = NULL))))
-  #
-  # input <- read_csv(paste0(system.file("test_datasets",
-  #                                      package="rectifyr",
-  #                                      mustWork = TRUE), "/table9.csv"),
-  #                   col_names = FALSE)
-  # output <- reorganise(input = input, schema = schema)
-  #
-  # expect_valid_table(x = output)
+  schema <- makeSchema(
+    list(clusters =
+           list(top = NULL, left = NULL, width = NULL, height = NULL,
+                id = NULL),
+         header = list(row = 1, rel = FALSE),
+         meta = list(dec = NULL, na = NULL, types = NULL),
+         variables =
+           list(territories =
+                  list(type = "id", name = NULL, split = NULL,
+                       row = NULL, col = 1, rel = FALSE),
+                year =
+                  list(type = "id", name = NULL, split = ".+?(?=_)",
+                       row = NULL, col = 2, rel = FALSE),
+                commodities =
+                  list(type = "id", name = NULL, split = "(?<=\\_).*",
+                       row = NULL, col = 2, rel = FALSE),
+                harvested =
+                  list(type = "values", unit = "ha", factor = 1,
+                       row = NULL, col = 3, rel = FALSE,
+                       key = NULL, value = NULL),
+                production =
+                  list(type = "values", unit = "t", factor = 1,
+                       row = NULL, col = 4, rel = FALSE,
+                       key = NULL, value = NULL))))
+
+  input <- read_csv(paste0(system.file("test_datasets",
+                                       package="rectifyr",
+                                       mustWork = TRUE), "/table9.csv"),
+                    col_names = FALSE)
+  output <- reorganise(input = input, schema = schema)
+
+  expect_valid_table(x = output)
 })
 
 # vertical clusters that are aggregated per values variable ----
@@ -445,7 +471,9 @@ test_that("vertical clusters that are aggregated per values variable", {
   schema <- makeSchema(
     list(clusters =
            list(top = c(3, 13), left = 2, width = NULL, height = 8,
-                id = "values", header = 1),
+                id = "values"),
+         header = list(row = 1, rel = FALSE),
+         meta = list(dec = NULL, na = NULL, types = NULL),
          variables =
            list(territories =
                   list(type = "id", name = NULL, split = NULL,
@@ -479,7 +507,9 @@ test_that("vertical clusters that are aggregated per values variable", {
   schema <- makeSchema(
     list(clusters =
            list(top = c(3, 9), left = 2, width = NULL, height = 4,
-                id = "values", header = 1),
+                id = "values"),
+         header = list(row = 1, rel = FALSE),
+         meta = list(dec = NULL, na = NULL, types = NULL),
          variables =
            list(territories =
                   list(type = "id", name = NULL, split = NULL,
@@ -513,7 +543,9 @@ test_that("vertical clusters per values variable with a two nested wide identify
   schema <- makeSchema(
     list(clusters =
            list(top = c(4, 8), left = 2, width = NULL, height = 2,
-                id = "values", header = c(1, 2)),
+                id = "values"),
+         header = list(row = c(1, 2), rel = FALSE),
+         meta = list(dec = NULL, na = NULL, types = NULL),
          variables =
            list(territories =
                   list(type = "id", name = NULL, split = NULL,
@@ -543,5 +575,35 @@ test_that("vertical clusters per values variable with a two nested wide identify
 })
 
 test_that("relative values work in all cases", {
+  schema <- makeSchema(
+    list(clusters =
+           list(top = c(3, 10), left = 2, width = NULL, height = 4,
+                id = "territories"),
+         header = list(row = 1, rel = FALSE),
+         meta = list(dec = NULL, na = NULL, types = NULL),
+         variables =
+           list(territories =
+                  list(type = "id", name = NULL, split = NULL,
+                       row = c(2, 9), col = 1, rel = FALSE),
+                year =
+                  list(type = "id", name = "period", split = NULL,
+                       row = NULL, col = 1, rel = TRUE),
+                commodities =
+                  list(type = "id", name = NULL, split = NULL,
+                       row = NULL, col = 2, rel = TRUE),
+                harvested =
+                  list(type = "values", unit = "ha", factor = 1,
+                       row = NULL, col = 3, rel = TRUE,
+                       key = NULL, value = NULL),
+                production =
+                  list(type = "values", unit = "t", factor = 1,
+                       row = NULL, col = 4, rel = TRUE,
+                       key = NULL, value = NULL))))
 
+  input <- read_csv(paste0(system.file("test_datasets",
+                                       package="rectifyr",
+                                       mustWork = TRUE), "/table1.csv"),
+                    col_names = FALSE)
+  output <- reorganise(input = input, schema = schema)
+  expect_valid_table(x = output)
 })
