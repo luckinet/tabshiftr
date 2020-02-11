@@ -11,6 +11,8 @@
 
 schema <- setClass(Class = "schema",
                    slots = c(clusters = "list",
+                             header = "list",
+                             meta = "list",
                              variables = "list"
                    )
 )
@@ -25,8 +27,8 @@ setValidity(Class = "schema", function(object){
     if(!is.list(object@clusters)){
       errors <- c(errors, "the slot 'clusters' is not a list.")
     }
-    if(!all(c("top", "left", "width", "height", "id", "header") %in% names(object@clusters))){
-      errors <- c(errors, "'names(schema$clusters)' must be a permutation of set {top,left,width,height,id,header}")
+    if(!all(c("top", "left", "width", "height", "id") %in% names(object@clusters))){
+      errors <- c(errors, "'names(schema$clusters)' must be a permutation of set {top,left,width,height,id}")
     }
     if(!is.null(object@clusters$top)){
       if(!is.numeric(object@clusters$top)){
@@ -53,11 +55,64 @@ setValidity(Class = "schema", function(object){
         errors <- c(errors, "'schema$clusters$id' must have a character value.")
       }
     }
-    if(!is.null(object@clusters$header)){
-      # if(!is.logical(object@clusters$header)){
-        # errors <- c(errors, "'schema$clusters$header' must either be 'TRUE' or 'FALSE'.")
-        if(!is_integerish(object@clusters$header)){
-          errors <- c(errors, "'schema$clusters$header' must an integersih value.")
+    # if(!is.null(object@clusters$header)){
+    #   # if(!is.logical(object@clusters$header)){
+    #     # errors <- c(errors, "'schema$clusters$header' must either be 'TRUE' or 'FALSE'.")
+    #     if(!is_integerish(object@clusters$header)){
+    #       errors <- c(errors, "'schema$clusters$header' must an integersih value.")
+    #   }
+    # }
+  }
+
+  if(!.hasSlot(object = object, name = "header")){
+    errors <- c(errors, "the schema does not have a 'header' slot.")
+  } else {
+    if(!is.list(object@header)){
+      errors <- c(errors, "the slot 'header' is not a list.")
+    }
+    if(length(object@header) == 0){
+      errors <- c(errors, "the slot 'header' does not contain any entries.")
+    }
+    if(!all(c("row", "rel") %in% names(object@header))){
+      errors <- c(errors, "'names(schema$header)' must be a permutation of set {row,rel}")
+    }
+    if(!is.null(object@header$row)){
+      if(!is.numeric(object@header$row)){
+        errors <- c(errors, "'schema$header$row' must have a numeric value.")
+      }
+    }
+    if(!is.null(object@header$rel)){
+      if(!is.logical(object@header$rel)){
+        errors <- c(errors, "'schema$header$rel' must have a logical value.")
+      }
+    }
+  }
+
+  if(!.hasSlot(object = object, name = "meta")){
+    errors <- c(errors, "the schema does not have a 'meta' slot.")
+  } else {
+    if(!is.list(object@meta)){
+      errors <- c(errors, "the slot 'meta' is not a list.")
+    }
+    if(length(object@meta) == 0){
+      errors <- c(errors, "the slot 'meta' does not contain any entries.")
+    }
+    if(!all(c("dec", "na", "types") %in% names(object@meta))){
+      errors <- c(errors, "'names(schema$meta)' must be a permutation of set {dec,na,types}")
+    }
+    if(!is.null(object@meta$dec)){
+      if(!is.character(object@meta$dec)){
+        errors <- c(errors, "'schema$meta$dec' must have a character value.")
+      }
+    }
+    if(!is.null(object@meta$na)){
+      if(!is.character(object@meta$na)){
+        errors <- c(errors, "'schema$meta$na' must have a character value.")
+      }
+    }
+    if(!is.null(object@meta$types)){
+      if(!is.character(object@meta$types)){
+        errors <- c(errors, "'schema$meta$types' must have a character value.")
       }
     }
   }
