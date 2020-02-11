@@ -14,14 +14,12 @@ getNames <- function(header = NULL, meta = NULL){
   assertNames(x = names(meta), permutation.of = c("cluster", "var_type", "table"))
 
   if(!is.null(meta$table$gather_into)){
-    if(!is.null(meta$cluster$merge_rows)){
       theNames <- header %>%
         t() %>%
         as_tibble(.name_repair = "unique") %>%
-        select(meta$cluster$merge_rows) %>%
+        select(meta$cluster$header) %>%
         unite(col = "name", sep = "-_-_", na.rm = TRUE) %>%
         unlist()
-    }
   } else {
     theNames <- header
   }

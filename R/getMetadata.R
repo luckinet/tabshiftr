@@ -2,6 +2,7 @@
 #' @param data a list containing the values of \code{selectData}.
 #' @param schema the schema description that is the basis to derive metadata.
 #' @importFrom checkmate assertList assertNames
+#' @importFrom stats setNames
 #' @export
 
 getMetadata <- function(data = NULL, schema = NULL){
@@ -22,9 +23,9 @@ getMetadata <- function(data = NULL, schema = NULL){
     dataRows <- rep(TRUE, length(tableRows))
 
     # define some variables
-    idVars <- valVars <- valFctrs<- tidyVars <- outVar <- spreadVars <- gatherVars <- NULL
+    idVars <- valVars <- valFctrs <- tidyVars <- outVar <- spreadVars <- gatherVars <- NULL
     splitCols <- tidyCols <- spreadCols <- gatherCols <- NULL
-    mergeRows <- valOrder <- tableVars <- gatherVals <- NULL
+    mergeOrder <- valOrder <- tableVars <- gatherVals <- NULL
     splitVars <- list()
 
     # go through variables and determine whether it ... ----
@@ -60,7 +61,7 @@ getMetadata <- function(data = NULL, schema = NULL){
         # if the variable occurs in as many columns as there are clusters, it is
         # only in one column per cluster, and thus tidy
         if(is.null(varProp$key)){
-          if(length(data) == length(varProp$col)){
+          if(length(data) == length(varProp$col)){ #this is a useless test, see 'schema_agcensus2'
             tidyVars <- c(tidyVars, varName)
             tidyCols <- c(tidyCols, varProp$col[j])
           }
@@ -128,16 +129,13 @@ getMetadata <- function(data = NULL, schema = NULL){
       # ... occupies a row in the cluster ----
       if(!is.null(varProp$row)){
         # only add merge row when it hasn't been added yet
-        if(!any(mergeRows %in% varProp$row[j])){
+        if(!any(mergeOrder %in% varProp$row[j])){
           if(!varProp$rel){
-            # tabRows[varProp$row[j]] <- FALSE
-            # } else {
             dataRows[which(tableRows %in% varProp$row[j])] <- FALSE
           }
-          # clustRows[varProp$row[j]] <- FALSE
-          # if it is cluster ID, don't merge
-          if(!varName %in% clusters$id){
-            mergeRows <- c(mergeRows, varProp$row[j])
+          # if it is cluster ID or only in a single cell, don't merge
+          if(!varName %in% clusters$id & length(varProp$col) != 1){
+            mergeOrder <- c(mergeOrder, varProp$row[j])
           }
         }
       }
@@ -157,16 +155,21 @@ getMetadata <- function(data = NULL, schema = NULL){
         tempSplit <- list(splitCol = split_col,
                           splitExpr = paste0("(", varProp$split, ")"),
                           splitRemove = split_remove)
-        splitVars <- c(splitVars, stats::setNames(object = list(tempSplit), nm = varName))
+        splitVars <- c(splitVars, setNames(object = list(tempSplit), nm = varName))
       }
 
       # end
     }
 
+    # set mergeOrder so that it starts at 1
+    if(!is.null(mergeOrder)){
+      mergeOrder <- mergeOrder - min(mergeOrder, na.rm = TRUE)+1
+    }
+
     temp <- list(cluster = list(cluster_rows = clustRows,
                                 outside_cluster = outVar,
                                 cluster_id = clusters$id,
-                                merge_rows = mergeRows),
+                                header = mergeOrder),
                  var_type = list(ids = idVars,
                                  orig = tableVars,
                                  vals = valVars,
