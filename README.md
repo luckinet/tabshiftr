@@ -19,7 +19,7 @@ and installing it via R-Studio.
 Spreadsheets as places where data tables are recorded can be
 ridiculously messy. All thinkable arrangements of the data may be
 encountered, culminating in several non-uniformly formatted tables that
-are placed non-systematically within one spreadsheet. In `arealDB` each
+are placed non-systematically within one spreadsheet. In `rectifyr` each
 of such individual tables within a spreadsheet is called *cluster*.
 
 A common best practice of building up data tables is that variables are
@@ -33,7 +33,7 @@ they can be distinguished into two kinds of variables:
 2.  Variables that identify the unit for which the values have been
     measured (they are called *identifying (or id) variables* here).
 
-These two variable types are the target variables in `arealDB`. The
+These two variable types are the target variables in `rectifyr`. The
 primary aim of reorganising messy tables lays in determining where those
 two kinds of variables are located in each cluster. In the context of
 areal data the variables *administrative territories* and the *period*,
