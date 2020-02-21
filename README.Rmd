@@ -29,15 +29,15 @@ Get the latest development version from gitlab by downloading the tar.gz and ins
 
 Spreadsheets as places where data tables are recorded can be ridiculously messy.
 All thinkable arrangements of the data may be encountered, culminating in several non-uniformly formatted tables that are placed non-systematically within one spreadsheet.
-In `arealDB` each of such individual tables within a spreadsheet is called *cluster*.
+In `rectifyr` each of such individual tables within a spreadsheet is called *cluster*.
 
-A common best practice of building up data tables is that variables are recorded in columns and observations in rows, so that the data can be considered *tidy*.
+A common best practice of building up data tables is that variables are recorded in columns and observations in rows, so that the data can be considered *tidy*, see https://tidyr.tidyverse.org/.
 When it comes to the organisation of data in tables, they can be distinguished into two kinds of variables:
 
 1. Variables that have been measured in some way and that consequently represent the values of that measurement, be they continuous or categorical (they are called *values variables* here).
 2. Variables that identify the unit for which the values have been measured (they are called *identifying (or id) variables* here).
 
-These two variable types are the target variables in `arealDB`.
+These two variable types are the target variables in `rectifyr`.
 The primary aim of reorganising messy tables lays in determining where those two kinds of variables are located in each cluster.
 In the context of areal data the variables *administrative territories* and the *period*, which identify observational units, make up the backbone of any database.
 
