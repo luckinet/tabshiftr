@@ -14,7 +14,7 @@
 Get the latest development version from gitlab by downloading the tar.gz
 and installing it via R-Studio.
 
-## Making schema descriptions
+# Introduction
 
 Spreadsheets as places where data tables are recorded can be
 ridiculously messy. All thinkable arrangements of the data may be
@@ -24,9 +24,10 @@ of such individual tables within a spreadsheet is called *cluster*.
 
 A common best practice of building up data tables is that variables are
 recorded in columns and observations in rows, so that the data can be
-considered *tidy*, see <https://tidyr.tidyverse.org/>. When it comes to
-the organisation of data in tables, they can be distinguished into two
-kinds of variables:
+considered *tidy* (Wickham 2014) (see <https://tidyr.tidyverse.org/>)
+and normalised at least to the third normal form (Codd 1990). When it
+comes to the organisation of data in tables, they can be distinguished
+into two kinds of variables:
 
 1.  Variables that have been measured in some way and that consequently
     represent the values of that measurement, be they continuous or
@@ -36,29 +37,7 @@ kinds of variables:
 
 These two variable types are the target variables in `rectifyr`. The
 primary aim of reorganising messy tables lays in determining where those
-two kinds of variables are located in each cluster. In the context of
-areal data the variables *administrative territories* and the *period*,
-which identify observational units, make up the backbone of any
-database.
-
-Some tables contain the names of values variables as another supposed
-identifying variable. Those are, however, not tidy tables because the
-name-bearing column is neither an identifying variable, nor a values
-variable. Such a table constitutes a "long" table that comprises a
-*key-values pair* (the column containing the supposed "identifier" and
-that containing the values this identifier refers to), which needs to be
-spread to a "wide" table (described in detail below).
-
-The following sections each start with a description of the table that
-needs reshaping, followed by a brief description of how this table needs
-to be reshaped and the schema description that is used for the
-reorganisation. In the first section only the arrangement of clusters is
-discussed, while the following sections describe how the contents of
-each cluster can be re-arranged. This is definitely not an exhaustive
-list of possible table arrangements, but it should cover the most common
-cases and be extensible enough to capture many mutations of the
-presented tables. The final section contains a list of steps that should
-be taken one after the other to come up with a schema description.
+two kinds of variables are located in each cluster.
 
 # Definitions
 
@@ -94,86 +73,67 @@ they were values.
 data, specifically emphasizing that those may also be tables that
 contain (messy) clusters or other forms of loosely organised data.
 
+# Setting up schema descriptions
+
+To set up a schema description, the recommended strategy is the
+following:
+
+1.  Clarify which are the identifying variables and which are the values
+    variables and create a new entry for each of them in the schema. A
+    variable is always a combination of **name** and **values**. Names
+    are typically the column names, but in many disorganised messy
+    tables also variable names appear to be values. Values are typically
+    in the column below that name, but in tables with nested headers the
+    values are mostly not in a column with their name. Think, *do the
+    values of the variable identify some unit, or do they contain the
+    measured values?*
+
+2.  Determine whether there are clusters and find the origin (top left
+    cell) of each cluster (Tabs. 1, Tab. 2 & Tab. 8). Follow the next
+    steps for each cluster…
+
+3.  Determine which variable identifies clusters and provide that as
+    cluster ID. It may be that either an identifying variable, or a
+    values variable identifies clusters. In case it is an identifying
+    variable, provide this variables’ name (and also register its
+    metadata) and if it’s a values variable, provide simply `"values"`
+    as cluster ID. Think *which variable is split up into clusters?*
+
+4.  Determine for each identifying variable the following:
+
+<!-- end list -->
+
+  - are all values of this variable in one column (think: *is it
+    “long”?*) or are they in several columns?
+  - in case the variable is not long, determine the row and columns in
+    which its names sit (Tab. 5).
+  - in case the variable is long, determine whether it must be split off
+    of another column (Tab. 9).
+
+<!-- end list -->
+
+5.  Determine for each values variables the following:
+
+<!-- end list -->
+
+  - all columns in which the values of the variable sit (Tab. 6).
+  - the unit and conversion factor.
+  - in case the variable is not tidy, one of the three following cases
+    should apply:
+      - in case the variable is nested in a wide identifying variable,
+        determine additionally to the columns in which the values sit
+        also the rows in which the **variable name** sits (Tab. 4 & Tab.
+        5).
+      - in case the names of the variable are given as an identifying
+        variable (Tab. 6), give that column name as `key` of the values
+        variable, together with the respective term (`values`) of the
+        values variables (this indicates that this *key-values pair*
+        must be spread).
+      - in case the names of the variable are the names of clusters,
+        specify `key = "cluster"`, in `values` the cluster number the
+        variable refers to (Tab. 8).
+
 # Table types
-
-## Spreadsheet contains (several) clusters
-
-Clusters are often of the same arrangement within one spreadsheet, they
-can be repeated along rows (horizontally) or along columns (vertically).
-A table should be treated like a cluster also when the spreadsheet
-contains not only the table, but perhaps also text that may be scattered
-across the document and that does not allow the table to start at the
-spreadsheet origin in the topmost left cell.
-
-To reorganise the data into tidy form, each cluster is "cut out",
-rearranged individually and appended to the end of an output table.
-
-### Horizontal clusters
-
-In case horizontal clusters are sitting right next to each other in the
-same origin row (Tab. 1), it is sufficient to provide the topmost row
-and all leftmost columns at which a new cluster starts. In case there is
-some arbitrary horizontal space between clusters, also the width (of
-each cluster) needs to be provided.
-
-| territories | commodities | harvested | production | commodities | harvested | production |
-| :---------- | :---------- | :-------- | :--------- | :---------- | :-------- | :--------- |
-|             | year 1      |           |            | year 2      |           |            |
-| unit 1      | soybean     | 1111      | 1112       | soybean     | 1211      | 1212       |
-| unit 1      | maize       | 1121      | 1122       | maize       | 1221      | 1222       |
-| …           |             |           |            |             |           |            |
-
-Table 1: Horizontal clusters of the identifying variable `period`.
-
-``` r
-list(clusters = 
-       list(top = 1, left = c(2, 5), width = NULL, height = NULL,
-            id = "period", header = FALSE),
-     variables = 
-       list(territories = 
-              list(type = "id", name = NULL, split = NULL,
-                   row = NULL, col = 1, rel = FALSE),
-            period = 
-              list(type = "id", name = "year", split = NULL,
-                   row = 1, col = NULL, rel = FALSE),
-            ...))
-```
-
-\<\<\<\<\<\<\< HEAD
-
-\======= \#\# Making schema descriptions
-
-Spreadsheets as places where data tables are recorded can be
-ridiculously messy. All thinkable arrangements of the data may be
-encountered, culminating in several non-uniformly formatted tables that
-are placed non-systematically within one spreadsheet. In `arealDB` each
-of such individual tables within a spreadsheet is called *cluster*.
-
-A common best practice of building up data tables is that variables are
-recorded in columns and observations in rows, so that the data can be
-considered *tidy*. When it comes to the organisation of data in tables,
-they can be distinguished into two kinds of variables:
-
-1.  Variables that have been measured in some way and that consequently
-    represent the values of that measurement, be they continuous or
-    categorical (they are called *values variables* here).
-2.  Variables that identify the unit for which the values have been
-    measured (they are called *identifying (or id) variables* here).
-
-These two variable types are the target variables in `arealDB`. The
-primary aim of reorganising messy tables lays in determining where those
-two kinds of variables are located in each cluster. In the context of
-areal data the variables *administrative territories* and the *period*,
-which identify observational units, make up the backbone of any
-database.
-
-Some tables contain the names of values variables as another supposed
-identifying variable. Those are, however, not tidy tables because the
-name-bearing column is neither an identifying variable, nor a values
-variable. Such a table constitutes a "long" table that comprises a
-*key-values pair* (the column containing the supposed "identifier" and
-that containing the values this identifier refers to), which needs to be
-spread to a "wide" table (described in detail below).
 
 The following sections each start with a description of the table that
 needs reshaping, followed by a brief description of how this table needs
@@ -186,42 +146,6 @@ cases and be extensible enough to capture many mutations of the
 presented tables. The final section contains a list of steps that should
 be taken one after the other to come up with a schema description.
 
-# Definitions
-
-*table*: Typically a set of values, but since we also consider data
-arrangements here that can’t be regarded as topologically coherent
-“chunks” of data, we include in the definition of table also
-“spreadsheets” that may contain a very loose organisation of data.
-
-*long variables*: A variable that is arranged so that the name is at the
-top (the column name) and the values are aligned vertically below it.
-
-*wide variables*: A variable that is arranged so that its unique values
-(levels) are in seperate columns.
-
-*tidy variable*: see ‘long variable’.
-
-*tidy table*: A table that contains only tidy variables.
-
-*simple header*: A table header that is made up of only one row. This is
-in contrast to a header where several variables are somehow nested to
-imply some order of the variables.
-
-*cluster*: A coherent set of values in some sort “rectangular form” that
-does not have to be tidy and may still be disorganised.
-
-*key*: A variable that treats the name of several other variables as if
-they were values.
-
-*messy table*: A general term for tables that contain “non-tidy” data
-(has not been defined further).
-
-*disorganised (messy) table*: A table that contains any sort of non-tidy
-data, specifically emphasizing that those may also be tables that
-contain (messy) clusters or other forms of loosely organised data.
-
-# Table types
-
 ## Spreadsheet contains (several) clusters
 
 Clusters are often of the same arrangement within one spreadsheet, they
@@ -254,7 +178,9 @@ Table 1: Horizontal clusters of the identifying variable `period`.
 ``` r
 list(clusters = 
        list(top = 1, left = c(2, 5), width = NULL, height = NULL,
-            id = "period", header = FALSE),
+            id = "period"),
+     header = list(row = 1, rel = FALSE),
+     meta = list(dec = NULL, na = NULL, types = NULL),
      variables = 
        list(territories = 
               list(type = "id", name = NULL, split = NULL,
@@ -265,8 +191,7 @@ list(clusters =
             ...))
 ```
 
-> > > > > > > 1b18bfa1172fb6ded9bb80056fce4810e1eae3fe \#\#\# Vertical
-> > > > > > > clusters
+### Vertical clusters
 
 For vertically arranged clusters (Tab. 2), just like for the horizontal
 case, the respective rows, columns (and heights) need to be provided.
@@ -287,7 +212,9 @@ Table 2: Vertical clusters of the identifying variable `period`.
 ``` r
 list(clusters = 
        list(top = c(1, ...), left = 1, width = NULL, height = NULL,
-            id = "period", header = FALSE),
+            id = "period"),
+     header = list(row = 1, rel = FALSE),
+     meta = list(dec = NULL, na = NULL, types = NULL),
      variables =
        list(territories = 
               list(type = "id", name = NULL, split = NULL,
@@ -296,7 +223,6 @@ list(clusters =
               list(type = "id", name = "year", split = NULL,
                    row = NULL, col = 1, rel = TRUE),
             ...))
-<<<<<<< HEAD
 ```
 
 ### Messy clusters
@@ -312,7 +238,9 @@ cells in size, and so on, needs to be specified as below.
 list(clusters = 
        list(top = c(1, 5, 1), left = c(1, 2, 5), 
             width = c(3, 5, 2), height = c(4, 5, 3),
-            id = "period", header = FALSE),
+            id = "period"),
+     header = list(row = ..., rel = FALSE),
+     meta = list(dec = NULL, na = NULL, types = NULL),
      variables =
        list(territories = 
               list(type = "id", name = NULL, split = NULL,
@@ -359,7 +287,7 @@ ommited).
 ### Separate values variables
 
 In case the target variables are arranged into individual columns (Tab.
-3), we have tidy data \[@Wickham2014\], which are already in the correct
+3), we have tidy data (Wickham 2014), which are already in the correct
 arrangement of `arealDB`. The variables in a tidy table may however,
 still need different names, units and transformation factors.
 
@@ -376,7 +304,9 @@ Table 3: A tidy table.
 ``` r
 list(clusters =
        list(top = NULL, left = NULL, width = NULL, height = NULL,
-            id = NULL, header = TRUE),
+            id = NULL),
+     header = list(row = 1, rel = FALSE),
+     meta = list(dec = NULL, na = NULL, types = NULL),
      variables =
        list(territories =
               list(type = "id", name = NULL, split = NULL,
@@ -419,7 +349,9 @@ Table 4: The values variables are nested within the identifying variable
 ``` r
 list(clusters =
        list(top = NULL, left = NULL, width = NULL, height = NULL,
-            id = NULL, header = FALSE),
+            id = NULL),
+     header = list(row = c(1, 2), rel = FALSE),
+     meta = list(dec = NULL, na = NULL, types = NULL),
      variables =
        list(territories =
               list(type = "id", name = NULL, split = NULL,
@@ -458,7 +390,9 @@ those nested columns.
 ``` r
 list(clusters =
        list(top = NULL, left = NULL, width = NULL, height = NULL,
-            id = NULL, header = FALSE),
+            id = NULL),
+     header = list(row = c(1:3), rel = FALSE),
+     meta = list(dec = NULL, na = NULL, types = NULL),
      variables =
        list(territories =
               list(type = "id", name = NULL, split = NULL,
@@ -479,190 +413,7 @@ list(clusters =
                    key = NULL, value = NULL)))
 ```
 
-\=======
-
-```` 
-
-
-### Messy clusters
-
-In case several clusters are neither aligned along a row nor a column, and are all of differing size, the respective information need to be provided at the same index of the respective property.
-For example, three clusters, where the first cluster starts at (1,1) and is 3 by 4 cells in size, where the second clusters starts at (5,2) and is 5 by 5 cells in size, and so on, needs to be specified as below.
-
-
-```r
-list(clusters = 
-       list(top = c(1, 5, 1), left = c(1, 2, 5), 
-            width = c(3, 5, 2), height = c(4, 5, 3),
-            id = "period", header = FALSE),
-     variables =
-       list(territories = 
-              list(type = "id", name = NULL, split = NULL,
-                   row = NULL, col = 2, rel = TRUE),
-            period = 
-              list(type = "id", name = "year", split = NULL,
-                   row = NULL, col = 1, rel = TRUE),
-            ...))
-````
-
-Additionally, given that at least the tables within each cluster are all
-arranged in the same way, the contained variables can be specified so
-that their row and column indices are given relative to the cluster
-position (`rel = TRUE`). If also that is not the case, the row and
-column values for each cluster need to be provided for the respective
-variables in the same way as for cluster positions.
-
-## Spreadsheet contains one table
-
-When a spreadsheet contains only one table we can still have
-disorganised messy data, for example when the variable names are not in
-a single row, or in other words, if the table header has more than one
-row. The names are in those cases arranged so that their order implies
-some sort of nesting of the variables.
-
-In those tables we have to distinguish tables where the values variable
-are in seperate, tidy columns (*i.e, where the name is at the top of the
-column and the values are below that*) from such tables where the values
-variables are “long” (*i.e., the variable names are in a key and the
-values are in another column*).
-
-In both cases we have a “tidy” basic form, where all identifying
-variables are in one column and several forms, where the identifying
-variables’ *values* are used to establish the above mentioned nested
-order (and where the names of those identifying variable are thus
-ommited).
-
-  - In case the values variables are in seperate columns we only have to
-    gather potentially wide identifying variables into one column.
-  - In case the values variables are listed, we first have to gather
-    potentially wide identifying variables into one column and then have
-    to spread out the listed value variable.
-
-### Separate values variables
-
-In case the target variables are arranged into individual columns (Tab.
-3), we have tidy data \[@Wickham2014\], which are already in the correct
-arrangement of `arealDB`. The variables in a tidy table may however,
-still need different names, units and transformation factors.
-
-| territories | period | commodities | harvested | production |
-| :---------- | :----- | :---------- | :-------- | :--------- |
-| unit 1      | year 1 | soybean     | 1111      | 1112       |
-| unit 1      | year 1 | maize       | 1121      | 1122       |
-| unit 1      | year 2 | soybean     | 1211      | 1212       |
-| unit 1      | year 2 | maize       | 1221      | 1222       |
-| …           |        |             |           |            |
-
-Table 3: A tidy table.
-
-``` r
-list(clusters =
-       list(top = NULL, left = NULL, width = NULL, height = NULL,
-            id = NULL, header = TRUE),
-     variables =
-       list(territories =
-              list(type = "id", name = NULL, split = NULL,
-                   row = NULL, col = 1, rel = FALSE),
-            year =
-              list(type = "id", name = "period", split = NULL,
-                   row = NULL, col = 2, rel = FALSE),
-            commodities =
-              list(type = "id", name = NULL, split = NULL,
-                   row = NULL, col = 3, rel = FALSE),
-            harvested =
-              list(type = "values", unit = "ha", factor = 1,
-                   row = NULL, col = 4, rel = FALSE,
-                   key = NULL, value = NULL),
-            production =
-              list(type = "values", unit = "t", factor = 1,
-                   row = NULL, col = 5, rel = FALSE,
-                   key = NULL, value = NULL)))
-```
-
-It may be the case that identifying variables are wide, one could say
-they are "nested". For both, nested identifying variables and nested
-values variables we have to record the row and the specific columns in
-which the variable names are found. Beware that in those case, the
-header is not simple (i.e., *not only in the first row*) and can thus
-not be considered (`header = FALSE`).
-
-| territories | period | soybean   |            | maize     |            |
-| :---------- | :----- | :-------- | :--------- | :-------- | :--------- |
-|             |        | harvested | production | harvested | production |
-| unit 1      | year 1 | 1111      | 1112       | 1121      | 1122       |
-| unit 1      | year 2 | 1211      | 1212       | 1221      | 1222       |
-| unit 2      | year 1 | 2111      | 2112       | 2112      | 2122       |
-| unit 2      | year 2 | 2211      | 2212       | 2121      | 2222       |
-| …           |        |           |            |           |            |
-
-Table 4: The values variables are nested within the identifying variable
-`commodities`.
-
-``` r
-list(clusters =
-       list(top = NULL, left = NULL, width = NULL, height = NULL,
-            id = NULL, header = FALSE),
-     variables =
-       list(territories =
-              list(type = "id", name = NULL, split = NULL,
-                   row = NULL, col = 1, rel = FALSE),
-            year =
-              list(type = "id", name = "period", split = NULL,
-                   row = NULL, col = 2, rel = FALSE),
-            commodities =
-              list(type = "id", name = NULL, split = NULL,
-                   row = 1, col = c(3, 5), rel = FALSE),
-            harvested =
-              list(type = "values", unit = "ha", factor = 1,
-                   row = 2, col = c(3, 5), rel = FALSE,
-                   key = NULL, value = NULL),
-            production =
-              list(type = "values", unit = "t", factor = 1,
-                   row = 2, col = c(4, 6), rel = FALSE,
-                   key = NULL, value = NULL)))
-```
-
-In case several variables are nested within other variables, we have to
-specify all wide variables and in which rows they sit.
-
-| territories | year 1    |            |           |            | year 2    |            |           |            |
-| :---------- | :-------- | :--------- | :-------- | :--------- | :-------- | :--------- | :-------- | :--------- |
-|             | soybean   |            | maize     |            | soybean   |            | maize     |            |
-|             | harvested | production | harvested | production | harvested | production | harvested | production |
-| unit 1      | 1111      | 1112       | 1121      | 1122       | 1211      | 1212       | 1221      | 1222       |
-| unit 2      | 2111      | 2211       | 2121      | 2221       | 2112      | 2212       | 2122      | 2222       |
-| …           |           |            |           |            |           |            |           |            |
-
-Table 5: The identifying variable `commodities` is nested in the
-identifying variable `period`. The target variable is spread across
-those nested columns.
-
-``` r
-list(clusters =
-       list(top = NULL, left = NULL, width = NULL, height = NULL,
-            id = NULL, header = FALSE),
-     variables =
-       list(territories =
-              list(type = "id", name = NULL, split = NULL,
-                   row = NULL, col = 1, rel = FALSE),
-            year =
-              list(type = "id", name = "period", split = NULL,
-                   row = 1, col = c(2, 6), rel = FALSE),
-            commodities =
-              list(type = "id", name = NULL, split = NULL,
-                   row = 2, col = c(2, 4, 6, 8), rel = FALSE),
-            harvested =
-              list(type = "values", unit = "ha", factor = 1,
-                   row = 3, col = c(2, 4, 6, 8), rel = FALSE,
-                   key = NULL, value = NULL),
-            production =
-              list(type = "values", unit = "t", factor = 1,
-                   row = 3, col = c(3, 5, 7, 9), rel = FALSE,
-                   key = NULL, value = NULL)))
-```
-
-> > > > > > > 1b18bfa1172fb6ded9bb80056fce4810e1eae3fe \#\#\# Listed
-> > > > > > > values variables
+### Listed values variables
 
 Some tables contain a column where the names of values variables are
 treated as if they were an identifying variable (`harvested` and
@@ -691,7 +442,9 @@ they were an identifying variable.
 ``` r
 list(clusters =
        list(top = NULL, left = NULL, width = NULL, height = NULL,
-            id = NULL, header = TRUE),
+            id = NULL),
+     header = list(row = 1, rel = FALSE),
+     meta = list(dec = NULL, na = NULL, types = NULL),
      variables =
        list(territories =
               list(type = "id", name = NULL, split = NULL,
@@ -730,7 +483,9 @@ the observed variable.
 ``` r
 list(clusters =
        list(top = NULL, left = NULL, width = NULL, height = NULL,
-            id = NULL, header = TRUE),
+            id = NULL),
+     header = list(row = 1, rel = FALSE),
+     meta = list(dec = NULL, na = NULL, types = NULL),
      variables =
        list(territories =
               list(type = "id", name = NULL, split = NULL,
@@ -781,7 +536,9 @@ Table 8: Vertical clusters of the values variables.
 ``` r
     list(clusters =
            list(top = c(3, 12), left = 2, width = NULL, height = 8,
-                id = "values", header = FALSE),
+                id = "values"),
+     header = list(row = 1, rel = FALSE),
+     meta = list(dec = NULL, na = NULL, types = NULL),
          variables =
            list(territories =
                   list(type = "id", name = NULL, split = NULL,
@@ -825,7 +582,9 @@ Table 9: Several variables are stored in the same column.
 ``` r
 list(clusters =
        list(top = NULL, left = NULL, width = NULL, height = NULL,
-            id = NULL, header = TRUE),
+            id = NULL),
+     header = list(row = 1, rel = FALSE),
+     meta = list(dec = NULL, na = NULL, types = NULL),
      variables =
        list(territories =
               list(type = "id", name = NULL, split = NULL,
@@ -846,61 +605,22 @@ list(clusters =
                    key = NULL, value = NULL)))
 ```
 
-# Setting up schema descriptions
+# References
 
-To set up a schema description, the recommended strategy is the
-following:
+<div id="refs" class="references hanging-indent">
 
-1.  Clarify which are the identifying variables and which are the values
-    variables and create a new entry in the schema. A variable is always
-    a combination of **name** and **values**. Names are typically the
-    column names, but in many disorganised messy tables that would not
-    be where a variable name is found. Values are typically in the
-    column below that name, but in tables with nested headers the values
-    are mostly not in a column with their name. Think, *do the values of
-    the variable identify some unit, or do they contain the measured
-    values?*
+<div id="ref-Codd1990">
 
-2.  Determine whether there are clusters and find the origin (top left
-    cell) of each cluster (Tabs. 1 & Tab. 2). Follow the next steps for
-    each cluster…
+Codd, EF. 1990. *The Relational Model for Database Management: Version
+2*. Boston, MA, USA: Addison-Wesley Longman Publishing Co., Inc.
 
-3.  Determine which variable is the “key” of clusters and provide that
-    as cluster ID. In case the key is an identifying variable, provide
-    this variables’ name and if it’s a values variable, provide simply
-    `"values"` as cluster ID. Think *which variable is split up into
-    clusters?*
+</div>
 
-4.  Determine for each identifying variable the following:
+<div id="ref-Wickham2014">
 
-<!-- end list -->
+Wickham, Hadley. 2014. “Tidy Data.” *Journal of Statistical Software* 59
+(10): 1–23. <https://doi.org/10.18637/jss.v059.i10>.
 
-  - are all values of this variable in one column (think: *is it
-    “long”?*) or are they in several columns?
-  - in case the variable is not long, determine the row and columns in
-    which its names sit (Tab. 5).
-  - in case the variable is long, determine whether it must be split off
-    of another column (Tab. 9).
+</div>
 
-<!-- end list -->
-
-5.  Determine for each values variables the following:
-
-<!-- end list -->
-
-  - all columns in which the values of the variable sit (Tab. 6).
-  - the unit and conversion factor.
-  - in case the variable is not tidy, one of the three following cases
-    should apply:
-      - in case the variable is nested in a wide identifying variable,
-        determine additionally to the columns in which the values sit
-        also the rows in which the **variable name** sits (Tab. 4 & Tab.
-        5).
-      - in case the names of the variable are given as an identifying
-        variable (Tab. 6), give that column name as `key` of the values
-        variable, together with the respective term (`values`) of the
-        values variables (this indicates that this *key-values pair*
-        must be spread).
-      - in case the names of the variable are the names of clusters,
-        specify `key = "cluster"`, in `values` the cluster number the
-        variable refers to (Tab. 8).
+</div>

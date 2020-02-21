@@ -86,15 +86,13 @@
 <div id="introduction" class="section level1">
 <h1 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h1>
-<p>Spreadsheets as places where data tables are recorded can be ridiculously messy. All thinkable arrangements of the data may be encountered, culminating in several non-uniformly formatted tables that are placed non-systematically within one spreadsheet. In <code>arealDB</code> each of such individual tables within a spreadsheet is called <em>cluster</em>.</p>
-<p>A common best practice of building up data tables is that variables are recorded in columns and observations in rows, so that the data can be considered <em>tidy</em> <span class="citation">(Wickham <a href="#ref-Wickham2014" role="doc-biblioref">2014</a>)</span> and normalised at least to the third normal form <span class="citation">(Codd <a href="#ref-Codd1990" role="doc-biblioref">1990</a>)</span>. When it comes to the organisation of data in tables, they can be distinguished into two kinds of variables:</p>
+<p>Spreadsheets as places where data tables are recorded can be ridiculously messy. All thinkable arrangements of the data may be encountered, culminating in several non-uniformly formatted tables that are placed non-systematically within one spreadsheet. In <code>rectifyr</code> each of such individual tables within a spreadsheet is called <em>cluster</em>.</p>
+<p>A common best practice of building up data tables is that variables are recorded in columns and observations in rows, so that the data can be considered <em>tidy</em> <span class="citation">(Wickham <a href="#ref-Wickham2014" role="doc-biblioref">2014</a>)</span> (see <a href="https://tidyr.tidyverse.org/" class="uri">https://tidyr.tidyverse.org/</a>) and normalised at least to the third normal form <span class="citation">(Codd <a href="#ref-Codd1990" role="doc-biblioref">1990</a>)</span>. When it comes to the organisation of data in tables, they can be distinguished into two kinds of variables:</p>
 <ol style="list-style-type: decimal">
 <li>Variables that have been measured in some way and that consequently represent the values of that measurement, be they continuous or categorical (they are called <em>values variables</em> here).</li>
 <li>Variables that identify the unit for which the values have been measured (they are called <em>identifying (or id) variables</em> here).</li>
 </ol>
-<p>These two variable types are the target variables in <code>arealDB</code>. The primary aim of reorganising messy tables lays in determining where those two kinds of variables are located in each cluster. In the context of areal data the variables <em>administrative territories</em> and the <em>period</em>, which identify observational units, make up the backbone of any database.</p>
-<p>Some tables contain the names of values variables as another supposed identifying variable. Those are, however, not tidy tables because the name-bearing column is neither an identifying variable, nor a values variable. Such a table constitutes a "long" table that comprises a <em>key-values pair</em> (the column containing the supposed "identifier" and that containing the values this identifier refers to), which needs to be spread to a "wide" table (described in detail below).</p>
-<p>The following sections each start with a description of the table that needs reshaping, followed by a brief description of how this table needs to be reshaped and the schema description that is used for the reorganisation. In the first section only the arrangement of clusters is discussed, while the following sections describe how the contents of each cluster can be re-arranged. This is definitely not an exhaustive list of possible table arrangements, but it should cover the most common cases and be extensible enough to capture many mutations of the presented tables. The final section contains a list of steps that should be taken one after the other to come up with a schema description.</p>
+<p>These two variable types are the target variables in <code>rectifyr</code>. The primary aim of reorganising messy tables lays in determining where those two kinds of variables are located in each cluster.</p>
 </div>
 <div id="definitions" class="section level1">
 <h1 class="hasAnchor">
@@ -110,9 +108,40 @@
 <p><em>messy table</em>: A general term for tables that contain “non-tidy” data (has not been defined further).</p>
 <p><em>disorganised (messy) table</em>: A table that contains any sort of non-tidy data, specifically emphasizing that those may also be tables that contain (messy) clusters or other forms of loosely organised data.</p>
 </div>
+<div id="setting-up-schema-descriptions" class="section level1">
+<h1 class="hasAnchor">
+<a href="#setting-up-schema-descriptions" class="anchor"></a>Setting up schema descriptions</h1>
+<p>To set up a schema description, the recommended strategy is the following:</p>
+<ol style="list-style-type: decimal">
+<li><p>Clarify which are the identifying variables and which are the values variables and create a new entry for each of them in the schema. A variable is always a combination of <strong>name</strong> and <strong>values</strong>. Names are typically the column names, but in many disorganised messy tables also variable names appear to be values. Values are typically in the column below that name, but in tables with nested headers the values are mostly not in a column with their name. Think, <em>do the values of the variable identify some unit, or do they contain the measured values?</em></p></li>
+<li><p>Determine whether there are clusters and find the origin (top left cell) of each cluster (Tabs. 1, Tab. 2 &amp; Tab. 8). Follow the next steps for each cluster…</p></li>
+<li><p>Determine which variable identifies clusters and provide that as cluster ID. It may be that either an identifying variable, or a values variable identifies clusters. In case it is an identifying variable, provide this variables’ name (and also register its metadata) and if it’s a values variable, provide simply <code>"values"</code> as cluster ID. Think <em>which variable is split up into clusters?</em></p></li>
+<li><p>Determine for each identifying variable the following:</p></li>
+</ol>
+<ul>
+<li>are all values of this variable in one column (think: <em>is it “long”?</em>) or are they in several columns?</li>
+<li>in case the variable is not long, determine the row and columns in which its names sit (Tab. 5).</li>
+<li>in case the variable is long, determine whether it must be split off of another column (Tab. 9).</li>
+</ul>
+<ol start="5" style="list-style-type: decimal">
+<li>Determine for each values variables the following:</li>
+</ol>
+<ul>
+<li>all columns in which the values of the variable sit (Tab. 6).</li>
+<li>the unit and conversion factor.</li>
+<li>in case the variable is not tidy, one of the three following cases should apply:
+<ul>
+<li>in case the variable is nested in a wide identifying variable, determine additionally to the columns in which the values sit also the rows in which the <strong>variable name</strong> sits (Tab. 4 &amp; Tab. 5).</li>
+<li>in case the names of the variable are given as an identifying variable (Tab. 6), give that column name as <code>key</code> of the values variable, together with the respective term (<code>values</code>) of the values variables (this indicates that this <em>key-values pair</em> must be spread).</li>
+<li>in case the names of the variable are the names of clusters, specify <code>key = "cluster"</code>, in <code>values</code> the cluster number the variable refers to (Tab. 8).</li>
+</ul>
+</li>
+</ul>
+</div>
 <div id="table-types" class="section level1">
 <h1 class="hasAnchor">
 <a href="#table-types" class="anchor"></a>Table types</h1>
+<p>The following sections each start with a description of the table that needs reshaping, followed by a brief description of how this table needs to be reshaped and the schema description that is used for the reorganisation. In the first section only the arrangement of clusters is discussed, while the following sections describe how the contents of each cluster can be re-arranged. This is definitely not an exhaustive list of possible table arrangements, but it should cover the most common cases and be extensible enough to capture many mutations of the presented tables. The final section contains a list of steps that should be taken one after the other to come up with a schema description.</p>
 <div id="spreadsheet-contains-several-clusters" class="section level2">
 <h2 class="hasAnchor">
 <a href="#spreadsheet-contains-several-clusters" class="anchor"></a>Spreadsheet contains (several) clusters</h2>
@@ -174,15 +203,17 @@
 </table>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">clusters =</span> </span>
 <span id="cb1-2"><a href="#cb1-2"></a>       <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">top =</span> <span class="dv">1</span>, <span class="dt">left =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">2</span>, <span class="dv">5</span>), <span class="dt">width =</span> <span class="ot">NULL</span>, <span class="dt">height =</span> <span class="ot">NULL</span>,</span>
-<span id="cb1-3"><a href="#cb1-3"></a>            <span class="dt">id =</span> <span class="st">"period"</span>, <span class="dt">header =</span> <span class="ot">FALSE</span>),</span>
-<span id="cb1-4"><a href="#cb1-4"></a>     <span class="dt">variables =</span> </span>
-<span id="cb1-5"><a href="#cb1-5"></a>       <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">territories =</span> </span>
-<span id="cb1-6"><a href="#cb1-6"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">name =</span> <span class="ot">NULL</span>, <span class="dt">split =</span> <span class="ot">NULL</span>,</span>
-<span id="cb1-7"><a href="#cb1-7"></a>                   <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">1</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>),</span>
-<span id="cb1-8"><a href="#cb1-8"></a>            <span class="dt">period =</span> </span>
-<span id="cb1-9"><a href="#cb1-9"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">name =</span> <span class="st">"year"</span>, <span class="dt">split =</span> <span class="ot">NULL</span>,</span>
-<span id="cb1-10"><a href="#cb1-10"></a>                   <span class="dt">row =</span> <span class="dv">1</span>, <span class="dt">col =</span> <span class="ot">NULL</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>),</span>
-<span id="cb1-11"><a href="#cb1-11"></a>            ...))</span></code></pre></div>
+<span id="cb1-3"><a href="#cb1-3"></a>            <span class="dt">id =</span> <span class="st">"period"</span>),</span>
+<span id="cb1-4"><a href="#cb1-4"></a>     <span class="dt">header =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">row =</span> <span class="dv">1</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>),</span>
+<span id="cb1-5"><a href="#cb1-5"></a>     <span class="dt">meta =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">dec =</span> <span class="ot">NULL</span>, <span class="dt">na =</span> <span class="ot">NULL</span>, <span class="dt">types =</span> <span class="ot">NULL</span>),</span>
+<span id="cb1-6"><a href="#cb1-6"></a>     <span class="dt">variables =</span> </span>
+<span id="cb1-7"><a href="#cb1-7"></a>       <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">territories =</span> </span>
+<span id="cb1-8"><a href="#cb1-8"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">name =</span> <span class="ot">NULL</span>, <span class="dt">split =</span> <span class="ot">NULL</span>,</span>
+<span id="cb1-9"><a href="#cb1-9"></a>                   <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">1</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>),</span>
+<span id="cb1-10"><a href="#cb1-10"></a>            <span class="dt">period =</span> </span>
+<span id="cb1-11"><a href="#cb1-11"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">name =</span> <span class="st">"year"</span>, <span class="dt">split =</span> <span class="ot">NULL</span>,</span>
+<span id="cb1-12"><a href="#cb1-12"></a>                   <span class="dt">row =</span> <span class="dv">1</span>, <span class="dt">col =</span> <span class="ot">NULL</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>),</span>
+<span id="cb1-13"><a href="#cb1-13"></a>            ...))</span></code></pre></div>
 </div>
 <div id="vertical-clusters" class="section level3">
 <h3 class="hasAnchor">
@@ -258,15 +289,17 @@
 </table>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">clusters =</span> </span>
 <span id="cb2-2"><a href="#cb2-2"></a>       <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">top =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span>, ...), <span class="dt">left =</span> <span class="dv">1</span>, <span class="dt">width =</span> <span class="ot">NULL</span>, <span class="dt">height =</span> <span class="ot">NULL</span>,</span>
-<span id="cb2-3"><a href="#cb2-3"></a>            <span class="dt">id =</span> <span class="st">"period"</span>, <span class="dt">header =</span> <span class="ot">FALSE</span>),</span>
-<span id="cb2-4"><a href="#cb2-4"></a>     <span class="dt">variables =</span></span>
-<span id="cb2-5"><a href="#cb2-5"></a>       <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">territories =</span> </span>
-<span id="cb2-6"><a href="#cb2-6"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">name =</span> <span class="ot">NULL</span>, <span class="dt">split =</span> <span class="ot">NULL</span>,</span>
-<span id="cb2-7"><a href="#cb2-7"></a>                   <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">2</span>, <span class="dt">rel =</span> <span class="ot">TRUE</span>),</span>
-<span id="cb2-8"><a href="#cb2-8"></a>            <span class="dt">period =</span> </span>
-<span id="cb2-9"><a href="#cb2-9"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">name =</span> <span class="st">"year"</span>, <span class="dt">split =</span> <span class="ot">NULL</span>,</span>
-<span id="cb2-10"><a href="#cb2-10"></a>                   <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">1</span>, <span class="dt">rel =</span> <span class="ot">TRUE</span>),</span>
-<span id="cb2-11"><a href="#cb2-11"></a>            ...))</span></code></pre></div>
+<span id="cb2-3"><a href="#cb2-3"></a>            <span class="dt">id =</span> <span class="st">"period"</span>),</span>
+<span id="cb2-4"><a href="#cb2-4"></a>     <span class="dt">header =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">row =</span> <span class="dv">1</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>),</span>
+<span id="cb2-5"><a href="#cb2-5"></a>     <span class="dt">meta =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">dec =</span> <span class="ot">NULL</span>, <span class="dt">na =</span> <span class="ot">NULL</span>, <span class="dt">types =</span> <span class="ot">NULL</span>),</span>
+<span id="cb2-6"><a href="#cb2-6"></a>     <span class="dt">variables =</span></span>
+<span id="cb2-7"><a href="#cb2-7"></a>       <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">territories =</span> </span>
+<span id="cb2-8"><a href="#cb2-8"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">name =</span> <span class="ot">NULL</span>, <span class="dt">split =</span> <span class="ot">NULL</span>,</span>
+<span id="cb2-9"><a href="#cb2-9"></a>                   <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">2</span>, <span class="dt">rel =</span> <span class="ot">TRUE</span>),</span>
+<span id="cb2-10"><a href="#cb2-10"></a>            <span class="dt">period =</span> </span>
+<span id="cb2-11"><a href="#cb2-11"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">name =</span> <span class="st">"year"</span>, <span class="dt">split =</span> <span class="ot">NULL</span>,</span>
+<span id="cb2-12"><a href="#cb2-12"></a>                   <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">1</span>, <span class="dt">rel =</span> <span class="ot">TRUE</span>),</span>
+<span id="cb2-13"><a href="#cb2-13"></a>            ...))</span></code></pre></div>
 </div>
 <div id="messy-clusters" class="section level3">
 <h3 class="hasAnchor">
@@ -275,15 +308,17 @@
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">clusters =</span> </span>
 <span id="cb3-2"><a href="#cb3-2"></a>       <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">top =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">1</span>), <span class="dt">left =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">5</span>), </span>
 <span id="cb3-3"><a href="#cb3-3"></a>            <span class="dt">width =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">2</span>), <span class="dt">height =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">3</span>),</span>
-<span id="cb3-4"><a href="#cb3-4"></a>            <span class="dt">id =</span> <span class="st">"period"</span>, <span class="dt">header =</span> <span class="ot">FALSE</span>),</span>
-<span id="cb3-5"><a href="#cb3-5"></a>     <span class="dt">variables =</span></span>
-<span id="cb3-6"><a href="#cb3-6"></a>       <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">territories =</span> </span>
-<span id="cb3-7"><a href="#cb3-7"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">name =</span> <span class="ot">NULL</span>, <span class="dt">split =</span> <span class="ot">NULL</span>,</span>
-<span id="cb3-8"><a href="#cb3-8"></a>                   <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">2</span>, <span class="dt">rel =</span> <span class="ot">TRUE</span>),</span>
-<span id="cb3-9"><a href="#cb3-9"></a>            <span class="dt">period =</span> </span>
-<span id="cb3-10"><a href="#cb3-10"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">name =</span> <span class="st">"year"</span>, <span class="dt">split =</span> <span class="ot">NULL</span>,</span>
-<span id="cb3-11"><a href="#cb3-11"></a>                   <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">1</span>, <span class="dt">rel =</span> <span class="ot">TRUE</span>),</span>
-<span id="cb3-12"><a href="#cb3-12"></a>            ...))</span></code></pre></div>
+<span id="cb3-4"><a href="#cb3-4"></a>            <span class="dt">id =</span> <span class="st">"period"</span>),</span>
+<span id="cb3-5"><a href="#cb3-5"></a>     <span class="dt">header =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">row =</span> ..., <span class="dt">rel =</span> <span class="ot">FALSE</span>),</span>
+<span id="cb3-6"><a href="#cb3-6"></a>     <span class="dt">meta =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">dec =</span> <span class="ot">NULL</span>, <span class="dt">na =</span> <span class="ot">NULL</span>, <span class="dt">types =</span> <span class="ot">NULL</span>),</span>
+<span id="cb3-7"><a href="#cb3-7"></a>     <span class="dt">variables =</span></span>
+<span id="cb3-8"><a href="#cb3-8"></a>       <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">territories =</span> </span>
+<span id="cb3-9"><a href="#cb3-9"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">name =</span> <span class="ot">NULL</span>, <span class="dt">split =</span> <span class="ot">NULL</span>,</span>
+<span id="cb3-10"><a href="#cb3-10"></a>                   <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">2</span>, <span class="dt">rel =</span> <span class="ot">TRUE</span>),</span>
+<span id="cb3-11"><a href="#cb3-11"></a>            <span class="dt">period =</span> </span>
+<span id="cb3-12"><a href="#cb3-12"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">name =</span> <span class="st">"year"</span>, <span class="dt">split =</span> <span class="ot">NULL</span>,</span>
+<span id="cb3-13"><a href="#cb3-13"></a>                   <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">1</span>, <span class="dt">rel =</span> <span class="ot">TRUE</span>),</span>
+<span id="cb3-14"><a href="#cb3-14"></a>            ...))</span></code></pre></div>
 <p>Additionally, given that at least the tables within each cluster are all arranged in the same way, the contained variables can be specified so that their row and column indices are given relative to the cluster position (<code>rel = TRUE</code>). If also that is not the case, the row and column values for each cluster need to be provided for the respective variables in the same way as for cluster positions.</p>
 </div>
 </div>
@@ -350,25 +385,27 @@
 </table>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">clusters =</span></span>
 <span id="cb4-2"><a href="#cb4-2"></a>       <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">top =</span> <span class="ot">NULL</span>, <span class="dt">left =</span> <span class="ot">NULL</span>, <span class="dt">width =</span> <span class="ot">NULL</span>, <span class="dt">height =</span> <span class="ot">NULL</span>,</span>
-<span id="cb4-3"><a href="#cb4-3"></a>            <span class="dt">id =</span> <span class="ot">NULL</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>),</span>
-<span id="cb4-4"><a href="#cb4-4"></a>     <span class="dt">variables =</span></span>
-<span id="cb4-5"><a href="#cb4-5"></a>       <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">territories =</span></span>
-<span id="cb4-6"><a href="#cb4-6"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">name =</span> <span class="ot">NULL</span>, <span class="dt">split =</span> <span class="ot">NULL</span>,</span>
-<span id="cb4-7"><a href="#cb4-7"></a>                   <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">1</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>),</span>
-<span id="cb4-8"><a href="#cb4-8"></a>            <span class="dt">year =</span></span>
-<span id="cb4-9"><a href="#cb4-9"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">name =</span> <span class="st">"period"</span>, <span class="dt">split =</span> <span class="ot">NULL</span>,</span>
-<span id="cb4-10"><a href="#cb4-10"></a>                   <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">2</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>),</span>
-<span id="cb4-11"><a href="#cb4-11"></a>            <span class="dt">commodities =</span></span>
-<span id="cb4-12"><a href="#cb4-12"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">name =</span> <span class="ot">NULL</span>, <span class="dt">split =</span> <span class="ot">NULL</span>,</span>
-<span id="cb4-13"><a href="#cb4-13"></a>                   <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">3</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>),</span>
-<span id="cb4-14"><a href="#cb4-14"></a>            <span class="dt">harvested =</span></span>
-<span id="cb4-15"><a href="#cb4-15"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"values"</span>, <span class="dt">unit =</span> <span class="st">"ha"</span>, <span class="dt">factor =</span> <span class="dv">1</span>,</span>
-<span id="cb4-16"><a href="#cb4-16"></a>                   <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">4</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>,</span>
-<span id="cb4-17"><a href="#cb4-17"></a>                   <span class="dt">key =</span> <span class="ot">NULL</span>, <span class="dt">value =</span> <span class="ot">NULL</span>),</span>
-<span id="cb4-18"><a href="#cb4-18"></a>            <span class="dt">production =</span></span>
-<span id="cb4-19"><a href="#cb4-19"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"values"</span>, <span class="dt">unit =</span> <span class="st">"t"</span>, <span class="dt">factor =</span> <span class="dv">1</span>,</span>
-<span id="cb4-20"><a href="#cb4-20"></a>                   <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">5</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>,</span>
-<span id="cb4-21"><a href="#cb4-21"></a>                   <span class="dt">key =</span> <span class="ot">NULL</span>, <span class="dt">value =</span> <span class="ot">NULL</span>)))</span></code></pre></div>
+<span id="cb4-3"><a href="#cb4-3"></a>            <span class="dt">id =</span> <span class="ot">NULL</span>),</span>
+<span id="cb4-4"><a href="#cb4-4"></a>     <span class="dt">header =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">row =</span> <span class="dv">1</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>),</span>
+<span id="cb4-5"><a href="#cb4-5"></a>     <span class="dt">meta =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">dec =</span> <span class="ot">NULL</span>, <span class="dt">na =</span> <span class="ot">NULL</span>, <span class="dt">types =</span> <span class="ot">NULL</span>),</span>
+<span id="cb4-6"><a href="#cb4-6"></a>     <span class="dt">variables =</span></span>
+<span id="cb4-7"><a href="#cb4-7"></a>       <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">territories =</span></span>
+<span id="cb4-8"><a href="#cb4-8"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">name =</span> <span class="ot">NULL</span>, <span class="dt">split =</span> <span class="ot">NULL</span>,</span>
+<span id="cb4-9"><a href="#cb4-9"></a>                   <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">1</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>),</span>
+<span id="cb4-10"><a href="#cb4-10"></a>            <span class="dt">year =</span></span>
+<span id="cb4-11"><a href="#cb4-11"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">name =</span> <span class="st">"period"</span>, <span class="dt">split =</span> <span class="ot">NULL</span>,</span>
+<span id="cb4-12"><a href="#cb4-12"></a>                   <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">2</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>),</span>
+<span id="cb4-13"><a href="#cb4-13"></a>            <span class="dt">commodities =</span></span>
+<span id="cb4-14"><a href="#cb4-14"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">name =</span> <span class="ot">NULL</span>, <span class="dt">split =</span> <span class="ot">NULL</span>,</span>
+<span id="cb4-15"><a href="#cb4-15"></a>                   <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">3</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>),</span>
+<span id="cb4-16"><a href="#cb4-16"></a>            <span class="dt">harvested =</span></span>
+<span id="cb4-17"><a href="#cb4-17"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"values"</span>, <span class="dt">unit =</span> <span class="st">"ha"</span>, <span class="dt">factor =</span> <span class="dv">1</span>,</span>
+<span id="cb4-18"><a href="#cb4-18"></a>                   <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">4</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>,</span>
+<span id="cb4-19"><a href="#cb4-19"></a>                   <span class="dt">key =</span> <span class="ot">NULL</span>, <span class="dt">value =</span> <span class="ot">NULL</span>),</span>
+<span id="cb4-20"><a href="#cb4-20"></a>            <span class="dt">production =</span></span>
+<span id="cb4-21"><a href="#cb4-21"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"values"</span>, <span class="dt">unit =</span> <span class="st">"t"</span>, <span class="dt">factor =</span> <span class="dv">1</span>,</span>
+<span id="cb4-22"><a href="#cb4-22"></a>                   <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">5</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>,</span>
+<span id="cb4-23"><a href="#cb4-23"></a>                   <span class="dt">key =</span> <span class="ot">NULL</span>, <span class="dt">value =</span> <span class="ot">NULL</span>)))</span></code></pre></div>
 <p>It may be the case that identifying variables are wide, one could say they are "nested". For both, nested identifying variables and nested values variables we have to record the row and the specific columns in which the variable names are found. Beware that in those case, the header is not simple (i.e., <em>not only in the first row</em>) and can thus not be considered (<code>header = FALSE</code>).</p>
 <table class="table">
 <caption>Table 4: The values variables are nested within the identifying variable <code>commodities</code>.</caption>
@@ -433,25 +470,27 @@
 </table>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">clusters =</span></span>
 <span id="cb5-2"><a href="#cb5-2"></a>       <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">top =</span> <span class="ot">NULL</span>, <span class="dt">left =</span> <span class="ot">NULL</span>, <span class="dt">width =</span> <span class="ot">NULL</span>, <span class="dt">height =</span> <span class="ot">NULL</span>,</span>
-<span id="cb5-3"><a href="#cb5-3"></a>            <span class="dt">id =</span> <span class="ot">NULL</span>, <span class="dt">header =</span> <span class="ot">FALSE</span>),</span>
-<span id="cb5-4"><a href="#cb5-4"></a>     <span class="dt">variables =</span></span>
-<span id="cb5-5"><a href="#cb5-5"></a>       <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">territories =</span></span>
-<span id="cb5-6"><a href="#cb5-6"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">name =</span> <span class="ot">NULL</span>, <span class="dt">split =</span> <span class="ot">NULL</span>,</span>
-<span id="cb5-7"><a href="#cb5-7"></a>                   <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">1</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>),</span>
-<span id="cb5-8"><a href="#cb5-8"></a>            <span class="dt">year =</span></span>
-<span id="cb5-9"><a href="#cb5-9"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">name =</span> <span class="st">"period"</span>, <span class="dt">split =</span> <span class="ot">NULL</span>,</span>
-<span id="cb5-10"><a href="#cb5-10"></a>                   <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">2</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>),</span>
-<span id="cb5-11"><a href="#cb5-11"></a>            <span class="dt">commodities =</span></span>
-<span id="cb5-12"><a href="#cb5-12"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">name =</span> <span class="ot">NULL</span>, <span class="dt">split =</span> <span class="ot">NULL</span>,</span>
-<span id="cb5-13"><a href="#cb5-13"></a>                   <span class="dt">row =</span> <span class="dv">1</span>, <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">3</span>, <span class="dv">5</span>), <span class="dt">rel =</span> <span class="ot">FALSE</span>),</span>
-<span id="cb5-14"><a href="#cb5-14"></a>            <span class="dt">harvested =</span></span>
-<span id="cb5-15"><a href="#cb5-15"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"values"</span>, <span class="dt">unit =</span> <span class="st">"ha"</span>, <span class="dt">factor =</span> <span class="dv">1</span>,</span>
-<span id="cb5-16"><a href="#cb5-16"></a>                   <span class="dt">row =</span> <span class="dv">2</span>, <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">3</span>, <span class="dv">5</span>), <span class="dt">rel =</span> <span class="ot">FALSE</span>,</span>
-<span id="cb5-17"><a href="#cb5-17"></a>                   <span class="dt">key =</span> <span class="ot">NULL</span>, <span class="dt">value =</span> <span class="ot">NULL</span>),</span>
-<span id="cb5-18"><a href="#cb5-18"></a>            <span class="dt">production =</span></span>
-<span id="cb5-19"><a href="#cb5-19"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"values"</span>, <span class="dt">unit =</span> <span class="st">"t"</span>, <span class="dt">factor =</span> <span class="dv">1</span>,</span>
-<span id="cb5-20"><a href="#cb5-20"></a>                   <span class="dt">row =</span> <span class="dv">2</span>, <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">4</span>, <span class="dv">6</span>), <span class="dt">rel =</span> <span class="ot">FALSE</span>,</span>
-<span id="cb5-21"><a href="#cb5-21"></a>                   <span class="dt">key =</span> <span class="ot">NULL</span>, <span class="dt">value =</span> <span class="ot">NULL</span>)))</span></code></pre></div>
+<span id="cb5-3"><a href="#cb5-3"></a>            <span class="dt">id =</span> <span class="ot">NULL</span>),</span>
+<span id="cb5-4"><a href="#cb5-4"></a>     <span class="dt">header =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">row =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="dt">rel =</span> <span class="ot">FALSE</span>),</span>
+<span id="cb5-5"><a href="#cb5-5"></a>     <span class="dt">meta =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">dec =</span> <span class="ot">NULL</span>, <span class="dt">na =</span> <span class="ot">NULL</span>, <span class="dt">types =</span> <span class="ot">NULL</span>),</span>
+<span id="cb5-6"><a href="#cb5-6"></a>     <span class="dt">variables =</span></span>
+<span id="cb5-7"><a href="#cb5-7"></a>       <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">territories =</span></span>
+<span id="cb5-8"><a href="#cb5-8"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">name =</span> <span class="ot">NULL</span>, <span class="dt">split =</span> <span class="ot">NULL</span>,</span>
+<span id="cb5-9"><a href="#cb5-9"></a>                   <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">1</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>),</span>
+<span id="cb5-10"><a href="#cb5-10"></a>            <span class="dt">year =</span></span>
+<span id="cb5-11"><a href="#cb5-11"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">name =</span> <span class="st">"period"</span>, <span class="dt">split =</span> <span class="ot">NULL</span>,</span>
+<span id="cb5-12"><a href="#cb5-12"></a>                   <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">2</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>),</span>
+<span id="cb5-13"><a href="#cb5-13"></a>            <span class="dt">commodities =</span></span>
+<span id="cb5-14"><a href="#cb5-14"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">name =</span> <span class="ot">NULL</span>, <span class="dt">split =</span> <span class="ot">NULL</span>,</span>
+<span id="cb5-15"><a href="#cb5-15"></a>                   <span class="dt">row =</span> <span class="dv">1</span>, <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">3</span>, <span class="dv">5</span>), <span class="dt">rel =</span> <span class="ot">FALSE</span>),</span>
+<span id="cb5-16"><a href="#cb5-16"></a>            <span class="dt">harvested =</span></span>
+<span id="cb5-17"><a href="#cb5-17"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"values"</span>, <span class="dt">unit =</span> <span class="st">"ha"</span>, <span class="dt">factor =</span> <span class="dv">1</span>,</span>
+<span id="cb5-18"><a href="#cb5-18"></a>                   <span class="dt">row =</span> <span class="dv">2</span>, <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">3</span>, <span class="dv">5</span>), <span class="dt">rel =</span> <span class="ot">FALSE</span>,</span>
+<span id="cb5-19"><a href="#cb5-19"></a>                   <span class="dt">key =</span> <span class="ot">NULL</span>, <span class="dt">value =</span> <span class="ot">NULL</span>),</span>
+<span id="cb5-20"><a href="#cb5-20"></a>            <span class="dt">production =</span></span>
+<span id="cb5-21"><a href="#cb5-21"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"values"</span>, <span class="dt">unit =</span> <span class="st">"t"</span>, <span class="dt">factor =</span> <span class="dv">1</span>,</span>
+<span id="cb5-22"><a href="#cb5-22"></a>                   <span class="dt">row =</span> <span class="dv">2</span>, <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">4</span>, <span class="dv">6</span>), <span class="dt">rel =</span> <span class="ot">FALSE</span>,</span>
+<span id="cb5-23"><a href="#cb5-23"></a>                   <span class="dt">key =</span> <span class="ot">NULL</span>, <span class="dt">value =</span> <span class="ot">NULL</span>)))</span></code></pre></div>
 <p>In case several variables are nested within other variables, we have to specify all wide variables and in which rows they sit.</p>
 <table class="table">
 <caption>Table 5: The identifying variable <code>commodities</code> is nested in the identifying variable <code>period</code>. The target variable is spread across those nested columns.</caption>
@@ -537,25 +576,27 @@
 </table>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">clusters =</span></span>
 <span id="cb6-2"><a href="#cb6-2"></a>       <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">top =</span> <span class="ot">NULL</span>, <span class="dt">left =</span> <span class="ot">NULL</span>, <span class="dt">width =</span> <span class="ot">NULL</span>, <span class="dt">height =</span> <span class="ot">NULL</span>,</span>
-<span id="cb6-3"><a href="#cb6-3"></a>            <span class="dt">id =</span> <span class="ot">NULL</span>, <span class="dt">header =</span> <span class="ot">FALSE</span>),</span>
-<span id="cb6-4"><a href="#cb6-4"></a>     <span class="dt">variables =</span></span>
-<span id="cb6-5"><a href="#cb6-5"></a>       <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">territories =</span></span>
-<span id="cb6-6"><a href="#cb6-6"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">name =</span> <span class="ot">NULL</span>, <span class="dt">split =</span> <span class="ot">NULL</span>,</span>
-<span id="cb6-7"><a href="#cb6-7"></a>                   <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">1</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>),</span>
-<span id="cb6-8"><a href="#cb6-8"></a>            <span class="dt">year =</span></span>
-<span id="cb6-9"><a href="#cb6-9"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">name =</span> <span class="st">"period"</span>, <span class="dt">split =</span> <span class="ot">NULL</span>,</span>
-<span id="cb6-10"><a href="#cb6-10"></a>                   <span class="dt">row =</span> <span class="dv">1</span>, <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">2</span>, <span class="dv">6</span>), <span class="dt">rel =</span> <span class="ot">FALSE</span>),</span>
-<span id="cb6-11"><a href="#cb6-11"></a>            <span class="dt">commodities =</span></span>
-<span id="cb6-12"><a href="#cb6-12"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">name =</span> <span class="ot">NULL</span>, <span class="dt">split =</span> <span class="ot">NULL</span>,</span>
-<span id="cb6-13"><a href="#cb6-13"></a>                   <span class="dt">row =</span> <span class="dv">2</span>, <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">6</span>, <span class="dv">8</span>), <span class="dt">rel =</span> <span class="ot">FALSE</span>),</span>
-<span id="cb6-14"><a href="#cb6-14"></a>            <span class="dt">harvested =</span></span>
-<span id="cb6-15"><a href="#cb6-15"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"values"</span>, <span class="dt">unit =</span> <span class="st">"ha"</span>, <span class="dt">factor =</span> <span class="dv">1</span>,</span>
-<span id="cb6-16"><a href="#cb6-16"></a>                   <span class="dt">row =</span> <span class="dv">3</span>, <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">6</span>, <span class="dv">8</span>), <span class="dt">rel =</span> <span class="ot">FALSE</span>,</span>
-<span id="cb6-17"><a href="#cb6-17"></a>                   <span class="dt">key =</span> <span class="ot">NULL</span>, <span class="dt">value =</span> <span class="ot">NULL</span>),</span>
-<span id="cb6-18"><a href="#cb6-18"></a>            <span class="dt">production =</span></span>
-<span id="cb6-19"><a href="#cb6-19"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"values"</span>, <span class="dt">unit =</span> <span class="st">"t"</span>, <span class="dt">factor =</span> <span class="dv">1</span>,</span>
-<span id="cb6-20"><a href="#cb6-20"></a>                   <span class="dt">row =</span> <span class="dv">3</span>, <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">7</span>, <span class="dv">9</span>), <span class="dt">rel =</span> <span class="ot">FALSE</span>,</span>
-<span id="cb6-21"><a href="#cb6-21"></a>                   <span class="dt">key =</span> <span class="ot">NULL</span>, <span class="dt">value =</span> <span class="ot">NULL</span>)))</span></code></pre></div>
+<span id="cb6-3"><a href="#cb6-3"></a>            <span class="dt">id =</span> <span class="ot">NULL</span>),</span>
+<span id="cb6-4"><a href="#cb6-4"></a>     <span class="dt">header =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">row =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>), <span class="dt">rel =</span> <span class="ot">FALSE</span>),</span>
+<span id="cb6-5"><a href="#cb6-5"></a>     <span class="dt">meta =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">dec =</span> <span class="ot">NULL</span>, <span class="dt">na =</span> <span class="ot">NULL</span>, <span class="dt">types =</span> <span class="ot">NULL</span>),</span>
+<span id="cb6-6"><a href="#cb6-6"></a>     <span class="dt">variables =</span></span>
+<span id="cb6-7"><a href="#cb6-7"></a>       <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">territories =</span></span>
+<span id="cb6-8"><a href="#cb6-8"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">name =</span> <span class="ot">NULL</span>, <span class="dt">split =</span> <span class="ot">NULL</span>,</span>
+<span id="cb6-9"><a href="#cb6-9"></a>                   <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">1</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>),</span>
+<span id="cb6-10"><a href="#cb6-10"></a>            <span class="dt">year =</span></span>
+<span id="cb6-11"><a href="#cb6-11"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">name =</span> <span class="st">"period"</span>, <span class="dt">split =</span> <span class="ot">NULL</span>,</span>
+<span id="cb6-12"><a href="#cb6-12"></a>                   <span class="dt">row =</span> <span class="dv">1</span>, <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">2</span>, <span class="dv">6</span>), <span class="dt">rel =</span> <span class="ot">FALSE</span>),</span>
+<span id="cb6-13"><a href="#cb6-13"></a>            <span class="dt">commodities =</span></span>
+<span id="cb6-14"><a href="#cb6-14"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">name =</span> <span class="ot">NULL</span>, <span class="dt">split =</span> <span class="ot">NULL</span>,</span>
+<span id="cb6-15"><a href="#cb6-15"></a>                   <span class="dt">row =</span> <span class="dv">2</span>, <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">6</span>, <span class="dv">8</span>), <span class="dt">rel =</span> <span class="ot">FALSE</span>),</span>
+<span id="cb6-16"><a href="#cb6-16"></a>            <span class="dt">harvested =</span></span>
+<span id="cb6-17"><a href="#cb6-17"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"values"</span>, <span class="dt">unit =</span> <span class="st">"ha"</span>, <span class="dt">factor =</span> <span class="dv">1</span>,</span>
+<span id="cb6-18"><a href="#cb6-18"></a>                   <span class="dt">row =</span> <span class="dv">3</span>, <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">6</span>, <span class="dv">8</span>), <span class="dt">rel =</span> <span class="ot">FALSE</span>,</span>
+<span id="cb6-19"><a href="#cb6-19"></a>                   <span class="dt">key =</span> <span class="ot">NULL</span>, <span class="dt">value =</span> <span class="ot">NULL</span>),</span>
+<span id="cb6-20"><a href="#cb6-20"></a>            <span class="dt">production =</span></span>
+<span id="cb6-21"><a href="#cb6-21"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"values"</span>, <span class="dt">unit =</span> <span class="st">"t"</span>, <span class="dt">factor =</span> <span class="dv">1</span>,</span>
+<span id="cb6-22"><a href="#cb6-22"></a>                   <span class="dt">row =</span> <span class="dv">3</span>, <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">7</span>, <span class="dv">9</span>), <span class="dt">rel =</span> <span class="ot">FALSE</span>,</span>
+<span id="cb6-23"><a href="#cb6-23"></a>                   <span class="dt">key =</span> <span class="ot">NULL</span>, <span class="dt">value =</span> <span class="ot">NULL</span>)))</span></code></pre></div>
 </div>
 <div id="listed-values-variables" class="section level3">
 <h3 class="hasAnchor">
@@ -638,25 +679,27 @@
 </table>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">clusters =</span></span>
 <span id="cb7-2"><a href="#cb7-2"></a>       <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">top =</span> <span class="ot">NULL</span>, <span class="dt">left =</span> <span class="ot">NULL</span>, <span class="dt">width =</span> <span class="ot">NULL</span>, <span class="dt">height =</span> <span class="ot">NULL</span>,</span>
-<span id="cb7-3"><a href="#cb7-3"></a>            <span class="dt">id =</span> <span class="ot">NULL</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>),</span>
-<span id="cb7-4"><a href="#cb7-4"></a>     <span class="dt">variables =</span></span>
-<span id="cb7-5"><a href="#cb7-5"></a>       <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">territories =</span></span>
-<span id="cb7-6"><a href="#cb7-6"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">name =</span> <span class="ot">NULL</span>, <span class="dt">split =</span> <span class="ot">NULL</span>,</span>
-<span id="cb7-7"><a href="#cb7-7"></a>                   <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">1</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>),</span>
-<span id="cb7-8"><a href="#cb7-8"></a>            <span class="dt">year =</span></span>
-<span id="cb7-9"><a href="#cb7-9"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">name =</span> <span class="st">"period"</span>, <span class="dt">split =</span> <span class="ot">NULL</span>,</span>
-<span id="cb7-10"><a href="#cb7-10"></a>                   <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">2</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>),</span>
-<span id="cb7-11"><a href="#cb7-11"></a>            <span class="dt">commodities =</span></span>
-<span id="cb7-12"><a href="#cb7-12"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">name =</span> <span class="ot">NULL</span>, <span class="dt">split =</span> <span class="ot">NULL</span>,</span>
-<span id="cb7-13"><a href="#cb7-13"></a>                   <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">3</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>),</span>
-<span id="cb7-14"><a href="#cb7-14"></a>            <span class="dt">harvested =</span></span>
-<span id="cb7-15"><a href="#cb7-15"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"values"</span>, <span class="dt">unit =</span> <span class="st">"ha"</span>, <span class="dt">factor =</span> <span class="dv">1</span>,</span>
-<span id="cb7-16"><a href="#cb7-16"></a>                   <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">5</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>,</span>
-<span id="cb7-17"><a href="#cb7-17"></a>                   <span class="dt">key =</span> <span class="st">"dimension"</span>, <span class="dt">value =</span> <span class="st">"harvested"</span>),</span>
-<span id="cb7-18"><a href="#cb7-18"></a>            <span class="dt">production =</span></span>
-<span id="cb7-19"><a href="#cb7-19"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"values"</span>, <span class="dt">unit =</span> <span class="st">"t"</span>, <span class="dt">factor =</span> <span class="dv">1</span>,</span>
-<span id="cb7-20"><a href="#cb7-20"></a>                   <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">5</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>,</span>
-<span id="cb7-21"><a href="#cb7-21"></a>                   <span class="dt">key =</span> <span class="st">"dimension"</span>, <span class="dt">value =</span> <span class="st">"production"</span>)))</span></code></pre></div>
+<span id="cb7-3"><a href="#cb7-3"></a>            <span class="dt">id =</span> <span class="ot">NULL</span>),</span>
+<span id="cb7-4"><a href="#cb7-4"></a>     <span class="dt">header =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">row =</span> <span class="dv">1</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>),</span>
+<span id="cb7-5"><a href="#cb7-5"></a>     <span class="dt">meta =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">dec =</span> <span class="ot">NULL</span>, <span class="dt">na =</span> <span class="ot">NULL</span>, <span class="dt">types =</span> <span class="ot">NULL</span>),</span>
+<span id="cb7-6"><a href="#cb7-6"></a>     <span class="dt">variables =</span></span>
+<span id="cb7-7"><a href="#cb7-7"></a>       <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">territories =</span></span>
+<span id="cb7-8"><a href="#cb7-8"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">name =</span> <span class="ot">NULL</span>, <span class="dt">split =</span> <span class="ot">NULL</span>,</span>
+<span id="cb7-9"><a href="#cb7-9"></a>                   <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">1</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>),</span>
+<span id="cb7-10"><a href="#cb7-10"></a>            <span class="dt">year =</span></span>
+<span id="cb7-11"><a href="#cb7-11"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">name =</span> <span class="st">"period"</span>, <span class="dt">split =</span> <span class="ot">NULL</span>,</span>
+<span id="cb7-12"><a href="#cb7-12"></a>                   <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">2</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>),</span>
+<span id="cb7-13"><a href="#cb7-13"></a>            <span class="dt">commodities =</span></span>
+<span id="cb7-14"><a href="#cb7-14"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">name =</span> <span class="ot">NULL</span>, <span class="dt">split =</span> <span class="ot">NULL</span>,</span>
+<span id="cb7-15"><a href="#cb7-15"></a>                   <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">3</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>),</span>
+<span id="cb7-16"><a href="#cb7-16"></a>            <span class="dt">harvested =</span></span>
+<span id="cb7-17"><a href="#cb7-17"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"values"</span>, <span class="dt">unit =</span> <span class="st">"ha"</span>, <span class="dt">factor =</span> <span class="dv">1</span>,</span>
+<span id="cb7-18"><a href="#cb7-18"></a>                   <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">5</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>,</span>
+<span id="cb7-19"><a href="#cb7-19"></a>                   <span class="dt">key =</span> <span class="st">"dimension"</span>, <span class="dt">value =</span> <span class="st">"harvested"</span>),</span>
+<span id="cb7-20"><a href="#cb7-20"></a>            <span class="dt">production =</span></span>
+<span id="cb7-21"><a href="#cb7-21"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"values"</span>, <span class="dt">unit =</span> <span class="st">"t"</span>, <span class="dt">factor =</span> <span class="dv">1</span>,</span>
+<span id="cb7-22"><a href="#cb7-22"></a>                   <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">5</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>,</span>
+<span id="cb7-23"><a href="#cb7-23"></a>                   <span class="dt">key =</span> <span class="st">"dimension"</span>, <span class="dt">value =</span> <span class="st">"production"</span>)))</span></code></pre></div>
 <p>Moreover, (several) identifying variables may be wide and we have to proceed as mentioned above, by providing the row and columns of the wide identifying variables.</p>
 <table class="table">
 <caption>Table 7: The identifying variable <code>commodities</code> is treated as if it were the observed variable.</caption>
@@ -707,25 +750,27 @@
 </table>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">clusters =</span></span>
 <span id="cb8-2"><a href="#cb8-2"></a>       <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">top =</span> <span class="ot">NULL</span>, <span class="dt">left =</span> <span class="ot">NULL</span>, <span class="dt">width =</span> <span class="ot">NULL</span>, <span class="dt">height =</span> <span class="ot">NULL</span>,</span>
-<span id="cb8-3"><a href="#cb8-3"></a>            <span class="dt">id =</span> <span class="ot">NULL</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>),</span>
-<span id="cb8-4"><a href="#cb8-4"></a>     <span class="dt">variables =</span></span>
-<span id="cb8-5"><a href="#cb8-5"></a>       <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">territories =</span></span>
-<span id="cb8-6"><a href="#cb8-6"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">name =</span> <span class="ot">NULL</span>, <span class="dt">split =</span> <span class="ot">NULL</span>,</span>
-<span id="cb8-7"><a href="#cb8-7"></a>                   <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">1</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>),</span>
-<span id="cb8-8"><a href="#cb8-8"></a>            <span class="dt">year =</span></span>
-<span id="cb8-9"><a href="#cb8-9"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">name =</span> <span class="st">"period"</span>, <span class="dt">split =</span> <span class="ot">NULL</span>,</span>
-<span id="cb8-10"><a href="#cb8-10"></a>                   <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">2</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>),</span>
-<span id="cb8-11"><a href="#cb8-11"></a>            <span class="dt">commodities =</span></span>
-<span id="cb8-12"><a href="#cb8-12"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">name =</span> <span class="ot">NULL</span>, <span class="dt">split =</span> <span class="ot">NULL</span>,</span>
-<span id="cb8-13"><a href="#cb8-13"></a>                   <span class="dt">row =</span> <span class="dv">1</span>, <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">4</span>, <span class="dv">5</span>), <span class="dt">rel =</span> <span class="ot">FALSE</span>),</span>
-<span id="cb8-14"><a href="#cb8-14"></a>            <span class="dt">harvested =</span></span>
-<span id="cb8-15"><a href="#cb8-15"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"values"</span>, <span class="dt">unit =</span> <span class="st">"ha"</span>, <span class="dt">factor =</span> <span class="dv">1</span>,</span>
-<span id="cb8-16"><a href="#cb8-16"></a>                   <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">4</span>, <span class="dv">5</span>), <span class="dt">rel =</span> <span class="ot">FALSE</span>,</span>
-<span id="cb8-17"><a href="#cb8-17"></a>                   <span class="dt">key =</span> <span class="st">"dimension"</span>, <span class="dt">value =</span> <span class="st">"harvested"</span>),</span>
-<span id="cb8-18"><a href="#cb8-18"></a>            <span class="dt">production =</span></span>
-<span id="cb8-19"><a href="#cb8-19"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"values"</span>, <span class="dt">unit =</span> <span class="st">"t"</span>, <span class="dt">factor =</span> <span class="dv">1</span>,</span>
-<span id="cb8-20"><a href="#cb8-20"></a>                   <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">4</span>, <span class="dv">5</span>), <span class="dt">rel =</span> <span class="ot">FALSE</span>,</span>
-<span id="cb8-21"><a href="#cb8-21"></a>                   <span class="dt">key =</span> <span class="st">"dimension"</span>, <span class="dt">value =</span> <span class="st">"production"</span>)))</span></code></pre></div>
+<span id="cb8-3"><a href="#cb8-3"></a>            <span class="dt">id =</span> <span class="ot">NULL</span>),</span>
+<span id="cb8-4"><a href="#cb8-4"></a>     <span class="dt">header =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">row =</span> <span class="dv">1</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>),</span>
+<span id="cb8-5"><a href="#cb8-5"></a>     <span class="dt">meta =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">dec =</span> <span class="ot">NULL</span>, <span class="dt">na =</span> <span class="ot">NULL</span>, <span class="dt">types =</span> <span class="ot">NULL</span>),</span>
+<span id="cb8-6"><a href="#cb8-6"></a>     <span class="dt">variables =</span></span>
+<span id="cb8-7"><a href="#cb8-7"></a>       <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">territories =</span></span>
+<span id="cb8-8"><a href="#cb8-8"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">name =</span> <span class="ot">NULL</span>, <span class="dt">split =</span> <span class="ot">NULL</span>,</span>
+<span id="cb8-9"><a href="#cb8-9"></a>                   <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">1</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>),</span>
+<span id="cb8-10"><a href="#cb8-10"></a>            <span class="dt">year =</span></span>
+<span id="cb8-11"><a href="#cb8-11"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">name =</span> <span class="st">"period"</span>, <span class="dt">split =</span> <span class="ot">NULL</span>,</span>
+<span id="cb8-12"><a href="#cb8-12"></a>                   <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">2</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>),</span>
+<span id="cb8-13"><a href="#cb8-13"></a>            <span class="dt">commodities =</span></span>
+<span id="cb8-14"><a href="#cb8-14"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">name =</span> <span class="ot">NULL</span>, <span class="dt">split =</span> <span class="ot">NULL</span>,</span>
+<span id="cb8-15"><a href="#cb8-15"></a>                   <span class="dt">row =</span> <span class="dv">1</span>, <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">4</span>, <span class="dv">5</span>), <span class="dt">rel =</span> <span class="ot">FALSE</span>),</span>
+<span id="cb8-16"><a href="#cb8-16"></a>            <span class="dt">harvested =</span></span>
+<span id="cb8-17"><a href="#cb8-17"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"values"</span>, <span class="dt">unit =</span> <span class="st">"ha"</span>, <span class="dt">factor =</span> <span class="dv">1</span>,</span>
+<span id="cb8-18"><a href="#cb8-18"></a>                   <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">4</span>, <span class="dv">5</span>), <span class="dt">rel =</span> <span class="ot">FALSE</span>,</span>
+<span id="cb8-19"><a href="#cb8-19"></a>                   <span class="dt">key =</span> <span class="st">"dimension"</span>, <span class="dt">value =</span> <span class="st">"harvested"</span>),</span>
+<span id="cb8-20"><a href="#cb8-20"></a>            <span class="dt">production =</span></span>
+<span id="cb8-21"><a href="#cb8-21"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"values"</span>, <span class="dt">unit =</span> <span class="st">"t"</span>, <span class="dt">factor =</span> <span class="dv">1</span>,</span>
+<span id="cb8-22"><a href="#cb8-22"></a>                   <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">4</span>, <span class="dv">5</span>), <span class="dt">rel =</span> <span class="ot">FALSE</span>,</span>
+<span id="cb8-23"><a href="#cb8-23"></a>                   <span class="dt">key =</span> <span class="st">"dimension"</span>, <span class="dt">value =</span> <span class="st">"production"</span>)))</span></code></pre></div>
 <p>An even more complicated case of listed values variables is present in a clustered table that is arranged according to the values variables. Here, we need to specify first of all in <code>clusters</code> <code>"id = "values"</code> to indicate that the values variable is the cluster ID. Next, we need to set up the values variables so that they contain <code>"key = "cluster"</code> and in <code>value</code> the number of the cluster this variable can be found in. Moreover, we provide the column(s) and all rows that contain the values of each values variable. This is in contrast to nested values variables, where the rows of the variable names need to be provided.</p>
 <table class="table">
 <caption>Table 8: Vertical clusters of the values variables.</caption>
@@ -825,25 +870,27 @@
 </table>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>    <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">clusters =</span></span>
 <span id="cb9-2"><a href="#cb9-2"></a>           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">top =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">3</span>, <span class="dv">12</span>), <span class="dt">left =</span> <span class="dv">2</span>, <span class="dt">width =</span> <span class="ot">NULL</span>, <span class="dt">height =</span> <span class="dv">8</span>,</span>
-<span id="cb9-3"><a href="#cb9-3"></a>                <span class="dt">id =</span> <span class="st">"values"</span>, <span class="dt">header =</span> <span class="ot">FALSE</span>),</span>
-<span id="cb9-4"><a href="#cb9-4"></a>         <span class="dt">variables =</span></span>
-<span id="cb9-5"><a href="#cb9-5"></a>           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">territories =</span></span>
-<span id="cb9-6"><a href="#cb9-6"></a>                  <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">name =</span> <span class="ot">NULL</span>, <span class="dt">split =</span> <span class="ot">NULL</span>,</span>
-<span id="cb9-7"><a href="#cb9-7"></a>                       <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">2</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>),</span>
-<span id="cb9-8"><a href="#cb9-8"></a>                <span class="dt">year =</span></span>
-<span id="cb9-9"><a href="#cb9-9"></a>                  <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">name =</span> <span class="ot">NULL</span>, <span class="dt">split =</span> <span class="ot">NULL</span>,</span>
-<span id="cb9-10"><a href="#cb9-10"></a>                       <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">3</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>),</span>
-<span id="cb9-11"><a href="#cb9-11"></a>                <span class="dt">commodities =</span></span>
-<span id="cb9-12"><a href="#cb9-12"></a>                  <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">name =</span> <span class="ot">NULL</span>, <span class="dt">split =</span> <span class="ot">NULL</span>,</span>
-<span id="cb9-13"><a href="#cb9-13"></a>                       <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">4</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>),</span>
-<span id="cb9-14"><a href="#cb9-14"></a>                <span class="dt">harvested =</span></span>
-<span id="cb9-15"><a href="#cb9-15"></a>                  <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"values"</span>, <span class="dt">unit =</span> <span class="st">"ha"</span>, <span class="dt">factor =</span> <span class="dv">1</span>,</span>
-<span id="cb9-16"><a href="#cb9-16"></a>                       <span class="dt">row =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">3</span><span class="op">:</span><span class="dv">10</span>), <span class="dt">col =</span> <span class="dv">5</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>,</span>
-<span id="cb9-17"><a href="#cb9-17"></a>                       <span class="dt">key =</span> <span class="st">"cluster"</span>, <span class="dt">value =</span> <span class="dv">1</span>),</span>
-<span id="cb9-18"><a href="#cb9-18"></a>                <span class="dt">production =</span></span>
-<span id="cb9-19"><a href="#cb9-19"></a>                  <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"values"</span>, <span class="dt">unit =</span> <span class="st">"t"</span>, <span class="dt">factor =</span> <span class="dv">1</span>,</span>
-<span id="cb9-20"><a href="#cb9-20"></a>                       <span class="dt">row =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">13</span><span class="op">:</span><span class="dv">20</span>), <span class="dt">col =</span> <span class="dv">5</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>,</span>
-<span id="cb9-21"><a href="#cb9-21"></a>                       <span class="dt">key =</span> <span class="st">"cluster"</span>, <span class="dt">value =</span> <span class="dv">2</span>)))</span></code></pre></div>
+<span id="cb9-3"><a href="#cb9-3"></a>                <span class="dt">id =</span> <span class="st">"values"</span>),</span>
+<span id="cb9-4"><a href="#cb9-4"></a>     <span class="dt">header =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">row =</span> <span class="dv">1</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>),</span>
+<span id="cb9-5"><a href="#cb9-5"></a>     <span class="dt">meta =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">dec =</span> <span class="ot">NULL</span>, <span class="dt">na =</span> <span class="ot">NULL</span>, <span class="dt">types =</span> <span class="ot">NULL</span>),</span>
+<span id="cb9-6"><a href="#cb9-6"></a>         <span class="dt">variables =</span></span>
+<span id="cb9-7"><a href="#cb9-7"></a>           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">territories =</span></span>
+<span id="cb9-8"><a href="#cb9-8"></a>                  <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">name =</span> <span class="ot">NULL</span>, <span class="dt">split =</span> <span class="ot">NULL</span>,</span>
+<span id="cb9-9"><a href="#cb9-9"></a>                       <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">2</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>),</span>
+<span id="cb9-10"><a href="#cb9-10"></a>                <span class="dt">year =</span></span>
+<span id="cb9-11"><a href="#cb9-11"></a>                  <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">name =</span> <span class="ot">NULL</span>, <span class="dt">split =</span> <span class="ot">NULL</span>,</span>
+<span id="cb9-12"><a href="#cb9-12"></a>                       <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">3</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>),</span>
+<span id="cb9-13"><a href="#cb9-13"></a>                <span class="dt">commodities =</span></span>
+<span id="cb9-14"><a href="#cb9-14"></a>                  <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">name =</span> <span class="ot">NULL</span>, <span class="dt">split =</span> <span class="ot">NULL</span>,</span>
+<span id="cb9-15"><a href="#cb9-15"></a>                       <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">4</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>),</span>
+<span id="cb9-16"><a href="#cb9-16"></a>                <span class="dt">harvested =</span></span>
+<span id="cb9-17"><a href="#cb9-17"></a>                  <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"values"</span>, <span class="dt">unit =</span> <span class="st">"ha"</span>, <span class="dt">factor =</span> <span class="dv">1</span>,</span>
+<span id="cb9-18"><a href="#cb9-18"></a>                       <span class="dt">row =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">3</span><span class="op">:</span><span class="dv">10</span>), <span class="dt">col =</span> <span class="dv">5</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>,</span>
+<span id="cb9-19"><a href="#cb9-19"></a>                       <span class="dt">key =</span> <span class="st">"cluster"</span>, <span class="dt">value =</span> <span class="dv">1</span>),</span>
+<span id="cb9-20"><a href="#cb9-20"></a>                <span class="dt">production =</span></span>
+<span id="cb9-21"><a href="#cb9-21"></a>                  <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"values"</span>, <span class="dt">unit =</span> <span class="st">"t"</span>, <span class="dt">factor =</span> <span class="dv">1</span>,</span>
+<span id="cb9-22"><a href="#cb9-22"></a>                       <span class="dt">row =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">13</span><span class="op">:</span><span class="dv">20</span>), <span class="dt">col =</span> <span class="dv">5</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>,</span>
+<span id="cb9-23"><a href="#cb9-23"></a>                       <span class="dt">key =</span> <span class="st">"cluster"</span>, <span class="dt">value =</span> <span class="dv">2</span>)))</span></code></pre></div>
 </div>
 <div id="several-variables-in-one-column" class="section level3">
 <h3 class="hasAnchor">
@@ -892,57 +939,29 @@
 </table>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">clusters =</span></span>
 <span id="cb10-2"><a href="#cb10-2"></a>       <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">top =</span> <span class="ot">NULL</span>, <span class="dt">left =</span> <span class="ot">NULL</span>, <span class="dt">width =</span> <span class="ot">NULL</span>, <span class="dt">height =</span> <span class="ot">NULL</span>,</span>
-<span id="cb10-3"><a href="#cb10-3"></a>            <span class="dt">id =</span> <span class="ot">NULL</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>),</span>
-<span id="cb10-4"><a href="#cb10-4"></a>     <span class="dt">variables =</span></span>
-<span id="cb10-5"><a href="#cb10-5"></a>       <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">territories =</span></span>
-<span id="cb10-6"><a href="#cb10-6"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">name =</span> <span class="ot">NULL</span>, <span class="dt">split =</span> <span class="ot">NULL</span>,</span>
-<span id="cb10-7"><a href="#cb10-7"></a>                   <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">1</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>),</span>
-<span id="cb10-8"><a href="#cb10-8"></a>            <span class="dt">year =</span></span>
-<span id="cb10-9"><a href="#cb10-9"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">name =</span> <span class="st">"period"</span>, <span class="dt">split =</span> <span class="st">".+?(?=_)"</span>,</span>
-<span id="cb10-10"><a href="#cb10-10"></a>                   <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">2</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>),</span>
-<span id="cb10-11"><a href="#cb10-11"></a>            <span class="dt">commodities =</span></span>
-<span id="cb10-12"><a href="#cb10-12"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">name =</span> <span class="ot">NULL</span>, <span class="dt">split =</span> <span class="st">"(?&lt;=</span><span class="ch">\\</span><span class="st">_).*"</span>,</span>
-<span id="cb10-13"><a href="#cb10-13"></a>                   <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">2</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>),</span>
-<span id="cb10-14"><a href="#cb10-14"></a>            <span class="dt">harvested =</span></span>
-<span id="cb10-15"><a href="#cb10-15"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"values"</span>, <span class="dt">unit =</span> <span class="st">"ha"</span>, <span class="dt">factor =</span> <span class="dv">1</span>,</span>
-<span id="cb10-16"><a href="#cb10-16"></a>                   <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">3</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>,</span>
-<span id="cb10-17"><a href="#cb10-17"></a>                   <span class="dt">key =</span> <span class="ot">NULL</span>, <span class="dt">value =</span> <span class="ot">NULL</span>),</span>
-<span id="cb10-18"><a href="#cb10-18"></a>            <span class="dt">production =</span></span>
-<span id="cb10-19"><a href="#cb10-19"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"values"</span>, <span class="dt">unit =</span> <span class="st">"t"</span>, <span class="dt">factor =</span> <span class="dv">1</span>,</span>
-<span id="cb10-20"><a href="#cb10-20"></a>                   <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">4</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>,</span>
-<span id="cb10-21"><a href="#cb10-21"></a>                   <span class="dt">key =</span> <span class="ot">NULL</span>, <span class="dt">value =</span> <span class="ot">NULL</span>)))</span></code></pre></div>
+<span id="cb10-3"><a href="#cb10-3"></a>            <span class="dt">id =</span> <span class="ot">NULL</span>),</span>
+<span id="cb10-4"><a href="#cb10-4"></a>     <span class="dt">header =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">row =</span> <span class="dv">1</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>),</span>
+<span id="cb10-5"><a href="#cb10-5"></a>     <span class="dt">meta =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">dec =</span> <span class="ot">NULL</span>, <span class="dt">na =</span> <span class="ot">NULL</span>, <span class="dt">types =</span> <span class="ot">NULL</span>),</span>
+<span id="cb10-6"><a href="#cb10-6"></a>     <span class="dt">variables =</span></span>
+<span id="cb10-7"><a href="#cb10-7"></a>       <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">territories =</span></span>
+<span id="cb10-8"><a href="#cb10-8"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">name =</span> <span class="ot">NULL</span>, <span class="dt">split =</span> <span class="ot">NULL</span>,</span>
+<span id="cb10-9"><a href="#cb10-9"></a>                   <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">1</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>),</span>
+<span id="cb10-10"><a href="#cb10-10"></a>            <span class="dt">year =</span></span>
+<span id="cb10-11"><a href="#cb10-11"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">name =</span> <span class="st">"period"</span>, <span class="dt">split =</span> <span class="st">".+?(?=_)"</span>,</span>
+<span id="cb10-12"><a href="#cb10-12"></a>                   <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">2</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>),</span>
+<span id="cb10-13"><a href="#cb10-13"></a>            <span class="dt">commodities =</span></span>
+<span id="cb10-14"><a href="#cb10-14"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">name =</span> <span class="ot">NULL</span>, <span class="dt">split =</span> <span class="st">"(?&lt;=</span><span class="ch">\\</span><span class="st">_).*"</span>,</span>
+<span id="cb10-15"><a href="#cb10-15"></a>                   <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">2</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>),</span>
+<span id="cb10-16"><a href="#cb10-16"></a>            <span class="dt">harvested =</span></span>
+<span id="cb10-17"><a href="#cb10-17"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"values"</span>, <span class="dt">unit =</span> <span class="st">"ha"</span>, <span class="dt">factor =</span> <span class="dv">1</span>,</span>
+<span id="cb10-18"><a href="#cb10-18"></a>                   <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">3</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>,</span>
+<span id="cb10-19"><a href="#cb10-19"></a>                   <span class="dt">key =</span> <span class="ot">NULL</span>, <span class="dt">value =</span> <span class="ot">NULL</span>),</span>
+<span id="cb10-20"><a href="#cb10-20"></a>            <span class="dt">production =</span></span>
+<span id="cb10-21"><a href="#cb10-21"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"values"</span>, <span class="dt">unit =</span> <span class="st">"t"</span>, <span class="dt">factor =</span> <span class="dv">1</span>,</span>
+<span id="cb10-22"><a href="#cb10-22"></a>                   <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">4</span>, <span class="dt">rel =</span> <span class="ot">FALSE</span>,</span>
+<span id="cb10-23"><a href="#cb10-23"></a>                   <span class="dt">key =</span> <span class="ot">NULL</span>, <span class="dt">value =</span> <span class="ot">NULL</span>)))</span></code></pre></div>
 </div>
 </div>
-</div>
-<div id="setting-up-schema-descriptions" class="section level1">
-<h1 class="hasAnchor">
-<a href="#setting-up-schema-descriptions" class="anchor"></a>Setting up schema descriptions</h1>
-<p>To set up a schema description, the recommended strategy is the following:</p>
-<ol style="list-style-type: decimal">
-<li><p>Clarify which are the identifying variables and which are the values variables and create a new entry in the schema. A variable is always a combination of <strong>name</strong> and <strong>values</strong>. Names are typically the column names, but in many disorganised messy tables that would not be where a variable name is found. Values are typically in the column below that name, but in tables with nested headers the values are mostly not in a column with their name. Think, <em>do the values of the variable identify some unit, or do they contain the measured values?</em></p></li>
-<li><p>Determine whether there are clusters and find the origin (top left cell) of each cluster (Tabs. 1 &amp; Tab. 2). Follow the next steps for each cluster…</p></li>
-<li><p>Determine which variable is the “key” of clusters and provide that as cluster ID. In case the key is an identifying variable, provide this variables’ name and if it’s a values variable, provide simply <code>"values"</code> as cluster ID. Think <em>which variable is split up into clusters?</em></p></li>
-<li><p>Determine for each identifying variable the following:</p></li>
-</ol>
-<ul>
-<li>are all values of this variable in one column (think: <em>is it “long”?</em>) or are they in several columns?</li>
-<li>in case the variable is not long, determine the row and columns in which its names sit (Tab. 5).</li>
-<li>in case the variable is long, determine whether it must be split off of another column (Tab. 9).</li>
-</ul>
-<ol start="5" style="list-style-type: decimal">
-<li>Determine for each values variables the following:</li>
-</ol>
-<ul>
-<li>all columns in which the values of the variable sit (Tab. 6).</li>
-<li>the unit and conversion factor.</li>
-<li>in case the variable is not tidy, one of the three following cases should apply:
-<ul>
-<li>in case the variable is nested in a wide identifying variable, determine additionally to the columns in which the values sit also the rows in which the <strong>variable name</strong> sits (Tab. 4 &amp; Tab. 5).</li>
-<li>in case the names of the variable are given as an identifying variable (Tab. 6), give that column name as <code>key</code> of the values variable, together with the respective term (<code>values</code>) of the values variables (this indicates that this <em>key-values pair</em> must be spread).</li>
-<li>in case the names of the variable are the names of clusters, specify <code>key = "cluster"</code>, in <code>values</code> the cluster number the variable refers to (Tab. 8).</li>
-</ul>
-</li>
-</ul>
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="hasAnchor">
@@ -965,6 +984,7 @@
       <ul class="nav nav-pills nav-stacked">
 <li><a href="#introduction">Introduction</a></li>
       <li><a href="#definitions">Definitions</a></li>
+      <li><a href="#setting-up-schema-descriptions">Setting up schema descriptions</a></li>
       <li>
 <a href="#table-types">Table types</a>
       <ul class="nav nav-pills nav-stacked">
@@ -972,7 +992,6 @@
       <li><a href="#spreadsheet-contains-one-table">Spreadsheet contains one table</a></li>
       </ul>
 </li>
-      <li><a href="#setting-up-schema-descriptions">Setting up schema descriptions</a></li>
       <li><a href="#references">References</a></li>
       </ul>
 </div>
