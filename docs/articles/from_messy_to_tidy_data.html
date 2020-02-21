@@ -113,19 +113,27 @@
 <a href="#setting-up-schema-descriptions" class="anchor"></a>Setting up schema descriptions</h1>
 <p>To set up a schema description, the recommended strategy is the following:</p>
 <ol style="list-style-type: decimal">
-<li><p>Clarify which are the identifying variables and which are the values variables and create a new entry for each of them in the schema. A variable is always a combination of <strong>name</strong> and <strong>values</strong>. Names are typically the column names, but in many disorganised messy tables also variable names appear to be values. Values are typically in the column below that name, but in tables with nested headers the values are mostly not in a column with their name. Think, <em>do the values of the variable identify some unit, or do they contain the measured values?</em></p></li>
+<li><p>Clarify which are the identifying variables and which are the values variables and create a new entry for each of them in the schema. A variable is always a combination of <strong>name</strong> and <strong>values</strong>. Names are typically the column names, but in many disorganised messy tables also variable names appear to be values. Values are typically in the column below that name, but in tables with nested headers the values are mostly not in a column with their name.</p></li>
 <li><p>Determine whether there are clusters and find the origin (top left cell) of each cluster (Tabs. 1, Tab. 2 &amp; Tab. 8). Follow the next steps for each cluster…</p></li>
-<li><p>Determine which variable identifies clusters and provide that as cluster ID. It may be that either an identifying variable, or a values variable identifies clusters. In case it is an identifying variable, provide this variables’ name (and also register its metadata) and if it’s a values variable, provide simply <code>"values"</code> as cluster ID. Think <em>which variable is split up into clusters?</em></p></li>
-<li><p>Determine for each identifying variable the following:</p></li>
-</ol>
+<li>
+<p>Determine which variable identifies clusters and provide that as cluster ID. It can also be the case that the data are organised into seperate spreadsheets or files according to one of the variables and also those cases should be treated as if they were clusters, even if each spreadsheet/file contains a topologically coherent table. It may be that either an identifying variable, or a values variable identifies clusters:</p>
+<ul>
+<li>in case it is an identifying variable, provide this variables’ name (and also register its metadata).</li>
+<li>in case it is a values variable, provide simply <code>"values"</code> as cluster ID. <br><br>
+</li>
+</ul>
+</li>
+<li>
+<p>Determine for each identifying variable the following:</p>
 <ul>
 <li>are all values of this variable in one column (think: <em>is it “long”?</em>) or are they in several columns?</li>
 <li>in case the variable is not long, determine the row and columns in which its names sit (Tab. 5).</li>
-<li>in case the variable is long, determine whether it must be split off of another column (Tab. 9).</li>
+<li>in case the variable is long, determine whether it must be split off of another column (Tab. 9). <br><br>
+</li>
 </ul>
-<ol start="5" style="list-style-type: decimal">
-<li>Determine for each values variables the following:</li>
-</ol>
+</li>
+<li>
+<p>Determine for each values variables the following:</p>
 <ul>
 <li>all columns in which the values of the variable sit (Tab. 6).</li>
 <li>the unit and conversion factor.</li>
@@ -137,6 +145,8 @@
 </ul>
 </li>
 </ul>
+</li>
+</ol>
 </div>
 <div id="table-types" class="section level1">
 <h1 class="hasAnchor">

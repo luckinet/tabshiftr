@@ -56,6 +56,9 @@ top (the column name) and the values are aligned vertically below it.
 
 *tidy table*: A table that contains only tidy variables.
 
+*(topologically) coherent table*: A (rectangular) table contains no gaps
+(see tidy table).
+
 *simple header*: A table header that is made up of only one row. This is
 in contrast to a header where several variables are somehow nested to
 imply some order of the variables.
@@ -71,7 +74,8 @@ they were values.
 
 *disorganised (messy) table*: A table that contains any sort of non-tidy
 data, specifically emphasizing that those may also be tables that
-contain (messy) clusters or other forms of loosely organised data.
+contain (messy) clusters or other forms of loosely/non-coherently
+organised data.
 
 # Setting up schema descriptions
 
@@ -84,54 +88,52 @@ following:
     are typically the column names, but in many disorganised messy
     tables also variable names appear to be values. Values are typically
     in the column below that name, but in tables with nested headers the
-    values are mostly not in a column with their name. Think, *do the
-    values of the variable identify some unit, or do they contain the
-    measured values?*
+    values are mostly not in a column with their name.
 
 2.  Determine whether there are clusters and find the origin (top left
     cell) of each cluster (Tabs. 1, Tab. 2 & Tab. 8). Follow the next
     steps for each cluster…
 
 3.  Determine which variable identifies clusters and provide that as
-    cluster ID. It may be that either an identifying variable, or a
-    values variable identifies clusters. In case it is an identifying
-    variable, provide this variables’ name (and also register its
-    metadata) and if it’s a values variable, provide simply `"values"`
-    as cluster ID. Think *which variable is split up into clusters?*
+    cluster ID. It can also be the case that the data are organised into
+    seperate spreadsheets or files according to one of the variables and
+    also those cases should be treated as if they were clusters, even if
+    each spreadsheet/file contains a topologically coherent table. It
+    may be that either an identifying variable, or a values variable
+    identifies clusters:
+    
+      - in case it is an identifying variable, provide this variables’
+        name (and also register its metadata).
+      - in case it is a values variable, provide simply `"values"` as
+        cluster ID. <br><br>
 
 4.  Determine for each identifying variable the following:
-
-<!-- end list -->
-
-  - are all values of this variable in one column (think: *is it
-    “long”?*) or are they in several columns?
-  - in case the variable is not long, determine the row and columns in
-    which its names sit (Tab. 5).
-  - in case the variable is long, determine whether it must be split off
-    of another column (Tab. 9).
-
-<!-- end list -->
+    
+      - are all values of this variable in one column (think: *is it
+        “long”?*) or are they in several columns?
+      - in case the variable is not long, determine the row and columns
+        in which its names sit (Tab. 5).
+      - in case the variable is long, determine whether it must be split
+        off of another column (Tab. 9). <br><br>
 
 5.  Determine for each values variables the following:
-
-<!-- end list -->
-
-  - all columns in which the values of the variable sit (Tab. 6).
-  - the unit and conversion factor.
-  - in case the variable is not tidy, one of the three following cases
-    should apply:
-      - in case the variable is nested in a wide identifying variable,
-        determine additionally to the columns in which the values sit
-        also the rows in which the **variable name** sits (Tab. 4 & Tab.
-        5).
-      - in case the names of the variable are given as an identifying
-        variable (Tab. 6), give that column name as `key` of the values
-        variable, together with the respective term (`values`) of the
-        values variables (this indicates that this *key-values pair*
-        must be spread).
-      - in case the names of the variable are the names of clusters,
-        specify `key = "cluster"`, in `values` the cluster number the
-        variable refers to (Tab. 8).
+    
+      - all columns in which the values of the variable sit (Tab. 6).
+      - the unit and conversion factor.
+      - in case the variable is not tidy, one of the three following
+        cases should apply:
+          - in case the variable is nested in a wide identifying
+            variable, determine additionally to the columns in which the
+            values sit also the rows in which the **variable name** sits
+            (Tab. 4 & Tab. 5).
+          - in case the names of the variable are given as an
+            identifying variable (Tab. 6), give that column name as
+            `key` of the values variable, together with the respective
+            term (`values`) of the values variables (this indicates that
+            this *key-values pair* must be spread).
+          - in case the names of the variable are the names of clusters,
+            specify `key = "cluster"`, in `values` the cluster number
+            the variable refers to (Tab. 8).
 
 # Table types
 
