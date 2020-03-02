@@ -35,6 +35,7 @@
 #' @importFrom tidyselect everything
 #' @importFrom magrittr %>%
 #' @importFrom rlang :=
+#' @importFrom stringr str_replace
 #' @importFrom purrr reduce
 #' @export
 

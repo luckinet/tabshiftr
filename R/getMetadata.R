@@ -17,6 +17,7 @@ getMetadata <- function(data = NULL, schema = NULL){
   for(j in seq_along(data)){
 
     theData <- data[[j]]$data
+    theHeader <- data[[j]]$header
     clustRows <- data[[j]]$cluster_rows
     tableRows <- seq_along(clustRows)
     tableRows <- tableRows[clustRows]
@@ -159,6 +160,17 @@ getMetadata <- function(data = NULL, schema = NULL){
       }
 
       # end
+    }
+
+    # get the correct order of valVars
+    if(!is.null(spreadVars)){
+      if(!spreadVars %in% "key"){
+        theLevels <- unlist(unique(theData[,which(theHeader %in% spreadVars)]), use.names = FALSE)
+        levelOrder <- sapply(seq_along(valVars), function(x){
+          which(theLevels %in% variables[[valVars[x]]]$value)
+        })
+        valVars <- valVars[levelOrder]
+      }
     }
 
     # set mergeOrder so that it starts at 1
