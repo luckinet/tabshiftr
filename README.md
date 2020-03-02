@@ -46,6 +46,12 @@ arrangements here that can’t be regarded as topologically coherent
 “chunks” of data, we include in the definition of table also
 “spreadsheets” that may contain a very loose organisation of data.
 
+*variable*: A variable is the primary level of aggregation of data. A
+variable is always a combination of **name** and **values**. For
+variables where the values are character strings, name and values must
+be distinguished with care and this is especially important in vastly
+disorganised tables.
+
 *long variables*: A variable that is arranged so that the name is at the
 top (the column name) and the values are aligned vertically below it.
 
@@ -56,15 +62,13 @@ top (the column name) and the values are aligned vertically below it.
 
 *tidy table*: A table that contains only tidy variables.
 
-*(topologically) coherent table*: A (rectangular) table contains no gaps
-(see tidy table).
-
-*simple header*: A table header that is made up of only one row. This is
-in contrast to a header where several variables are somehow nested to
-imply some order of the variables.
+*table header*: A table header is the place where the names of variables
+are stored. In a tidy table the header is made up of only one row. This
+is in contrast to a header of a disorganised table where several
+variables are somehow nested so that the header is in several rows.
 
 *cluster*: A coherent set of values in some sort “rectangular form” that
-does not have to be tidy and may still be disorganised.
+does not have to be tidy and may even be disorganised.
 
 *key*: A variable that treats the name of several other variables as if
 they were values.
@@ -74,8 +78,7 @@ they were values.
 
 *disorganised (messy) table*: A table that contains any sort of non-tidy
 data, specifically emphasizing that those may also be tables that
-contain (messy) clusters or other forms of loosely/non-coherently
-organised data.
+contain (messy) clusters or other forms of loosely organised data.
 
 # Setting up schema descriptions
 
