@@ -1,6 +1,7 @@
 #' Select data chunks from a spreadsheet
 #' @param input the raw table from which to select clusters
 #' @param clusters the "clusters" slot of a schema description.
+#' @param header the "header" slot of a schema description.
 #' @importFrom checkmate assertDataFrame assertNames
 #' @importFrom dplyr group_by ungroup select mutate arrange
 #' @importFrom tidyr fill spread gather

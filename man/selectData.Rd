@@ -10,6 +10,8 @@ selectData(input = NULL, clusters = NULL, header = NULL)
 \item{input}{the raw table from which to select clusters}
 
 \item{clusters}{the "clusters" slot of a schema description.}
+
+\item{header}{the "header" slot of a schema description.}
 }
 \description{
 Select data chunks from a spreadsheet
