@@ -11,7 +11,7 @@ test_that("several vertical clusters of otherwise tidy data", {
            list(top = c(3, 10), left = 2, width = NULL, height = NULL,
                 id = "territories"),
          header = list(row = 1, rel = FALSE),
-         meta = list(dec = NULL, na = NULL, types = NULL),
+         meta = list(del = NULL, na = NULL, types = NULL),
          variables =
            list(territories =
                   list(type = "id", name = NULL, split = NULL,
@@ -47,7 +47,7 @@ test_that("several horizontal clusters of otherwise tidy data", {
            list(top = 2, left = c(2, 5), width = NULL, height = NULL,
                 id = "territories"),
          header = list(row = 1, rel = FALSE),
-         meta = list(dec = NULL, na = NULL, types = NULL),
+         meta = list(del = NULL, na = NULL, types = NULL),
          variables =
            list(territories =
                   list(type = "id", name = NULL, split = NULL,
@@ -83,7 +83,7 @@ test_that("already tidy table", {
            list(top = NULL, left = NULL, width = NULL, height = NULL,
                 id = NULL),
          header = list(row = 1, rel = FALSE),
-         meta = list(dec = NULL, na = NULL, types = NULL),
+         meta = list(del = NULL, na = NULL, types = NULL),
          variables =
            list(territories =
                   list(type = "id", name = NULL, split = NULL,
@@ -120,7 +120,7 @@ test_that("bring one wide identifying variable into long form", {
            list(top = NULL, left = NULL, width = NULL, height = NULL,
                 id = NULL),
          header = list(row = c(1, 2), rel = FALSE),
-         meta = list(dec = NULL, na = NULL, types = NULL),
+         meta = list(del = NULL, na = NULL, types = NULL),
          variables =
            list(territories =
                   list(type = "id", name = NULL, split = NULL,
@@ -154,7 +154,7 @@ test_that("bring one wide identifying variable into long form", {
            list(top = NULL, left = NULL, width = NULL, height = NULL,
                 id = NULL),
          header = list(row = c(1, 2), rel = FALSE),
-         meta = list(dec = NULL, na = NULL, types = NULL),
+         meta = list(del = NULL, na = NULL, types = NULL),
          variables =
            list(territories =
                   list(type = "id", name = NULL, split = NULL,
@@ -188,7 +188,7 @@ test_that("bring one wide identifying variable into long form", {
            list(top = NULL, left = NULL, width = NULL, height = NULL,
                 id = NULL),
          header = list(row = c(1, 2), rel = FALSE),
-         meta = list(dec = NULL, na = NULL, types = NULL),
+         meta = list(del = NULL, na = NULL, types = NULL),
          variables =
            list(territories =
                   list(type = "id", name = NULL, split = NULL,
@@ -222,7 +222,7 @@ test_that("bring one wide identifying variable into long form", {
            list(top = NULL, left = NULL, width = NULL, height = NULL,
                 id = NULL),
          header = list(row = c(1, 2), rel = FALSE),
-         meta = list(dec = NULL, na = NULL, types = NULL),
+         meta = list(del = NULL, na = NULL, types = NULL),
          variables =
            list(territories =
                   list(type = "id", name = NULL, split = NULL,
@@ -258,7 +258,7 @@ test_that("bring several wide identifying variables into long form", {
            list(top = NULL, left = NULL, width = NULL, height = NULL,
                 id = NULL),
          header = list(row = c(1:3), rel = FALSE),
-         meta = list(dec = NULL, na = NULL, types = NULL),
+         meta = list(del = NULL, na = NULL, types = NULL),
          variables =
            list(territories =
                   list(type = "id", name = NULL, split = NULL,
@@ -295,7 +295,7 @@ test_that("spread long table", {
            list(top = NULL, left = NULL, width = NULL, height = NULL,
                 id = NULL),
          header = list(row = 1, rel = FALSE),
-         meta = list(dec = NULL, na = NULL, types = NULL),
+         meta = list(del = NULL, na = NULL, types = NULL),
          variables =
            list(territories =
                   list(type = "id", name = NULL, split = NULL,
@@ -329,7 +329,7 @@ test_that("spread long table", {
            list(top = NULL, left = NULL, width = NULL, height = NULL,
                 id = NULL),
          header = list(row = 1, rel = FALSE),
-         meta = list(dec = NULL, na = NULL, types = NULL),
+         meta = list(del = NULL, na = NULL, types = NULL),
          variables =
            list(territories =
                   list(type = "id", name = NULL, split = NULL,
@@ -365,7 +365,7 @@ test_that("bring one wide identifying variable into long form and spread long ta
            list(top = NULL, left = NULL, width = NULL, height = NULL,
                 id = NULL),
          header = list(row = 1, rel = FALSE),
-         meta = list(dec = NULL, na = NULL, types = NULL),
+         meta = list(del = NULL, na = NULL, types = NULL),
          variables =
            list(territories =
                   list(type = "id", name = NULL, split = NULL,
@@ -401,7 +401,7 @@ test_that("bring several wide identifying variable into long form and spread lon
            list(top = NULL, left = NULL, width = NULL, height = NULL,
                 id = NULL),
          header = list(row = c(1, 2), rel = FALSE),
-         meta = list(dec = NULL, na = NULL, types = NULL),
+         meta = list(del = NULL, na = NULL, types = NULL),
          variables =
            list(territories =
                   list(type = "id", name = NULL, split = NULL,
@@ -437,7 +437,7 @@ test_that("split a column that contains several variables in an already tidy tab
            list(top = NULL, left = NULL, width = NULL, height = NULL,
                 id = NULL),
          header = list(row = 1, rel = FALSE),
-         meta = list(dec = NULL, na = NULL, types = NULL),
+         meta = list(del = NULL, na = NULL, types = NULL),
          variables =
            list(territories =
                   list(type = "id", name = NULL, split = NULL,
@@ -473,7 +473,7 @@ test_that("vertical clusters that are aggregated per values variable", {
            list(top = c(3, 13), left = 2, width = NULL, height = 8,
                 id = "values"),
          header = list(row = 1, rel = FALSE),
-         meta = list(dec = NULL, na = NULL, types = NULL),
+         meta = list(del = NULL, na = NULL, types = NULL),
          variables =
            list(territories =
                   list(type = "id", name = NULL, split = NULL,
@@ -509,7 +509,7 @@ test_that("vertical clusters that are aggregated per values variable", {
            list(top = c(3, 9), left = 2, width = NULL, height = 4,
                 id = "values"),
          header = list(row = 1, rel = FALSE),
-         meta = list(dec = NULL, na = NULL, types = NULL),
+         meta = list(del = NULL, na = NULL, types = NULL),
          variables =
            list(territories =
                   list(type = "id", name = NULL, split = NULL,
@@ -545,7 +545,7 @@ test_that("vertical clusters per values variable with a two nested wide identify
            list(top = c(4, 8), left = 2, width = NULL, height = 2,
                 id = "values"),
          header = list(row = c(1, 2), rel = FALSE),
-         meta = list(dec = NULL, na = NULL, types = NULL),
+         meta = list(del = NULL, na = NULL, types = NULL),
          variables =
            list(territories =
                   list(type = "id", name = NULL, split = NULL,
@@ -580,7 +580,7 @@ test_that("relative values work in all cases", {
            list(top = c(3, 10), left = 2, width = NULL, height = 4,
                 id = "territories"),
          header = list(row = 1, rel = FALSE),
-         meta = list(dec = NULL, na = NULL, types = NULL),
+         meta = list(del = NULL, na = NULL, types = NULL),
          variables =
            list(territories =
                   list(type = "id", name = NULL, split = NULL,

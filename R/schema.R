@@ -97,12 +97,12 @@ setValidity(Class = "schema", function(object){
     if(length(object@meta) == 0){
       errors <- c(errors, "the slot 'meta' does not contain any entries.")
     }
-    if(!all(c("dec", "na", "types") %in% names(object@meta))){
-      errors <- c(errors, "'names(schema$meta)' must be a permutation of set {dec,na,types}")
+    if(!all(c("del", "na", "types") %in% names(object@meta))){
+      errors <- c(errors, "'names(schema$meta)' must be a permutation of set {del,na,types}")
     }
-    if(!is.null(object@meta$dec)){
-      if(!is.character(object@meta$dec)){
-        errors <- c(errors, "'schema$meta$dec' must have a character value.")
+    if(!is.null(object@meta$del)){
+      if(!is.character(object@meta$del)){
+        errors <- c(errors, "'schema$meta$del' must have a character value.")
       }
     }
     if(!is.null(object@meta$na)){
