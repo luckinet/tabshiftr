@@ -197,7 +197,11 @@ reorganise <- function(input = NULL, schema = NULL){
       varName <- valuesInCluster[j]
       varFactor <- theMeta$var_type$factor[j]
       theVar <- temp[varName] %>% unlist(use.names = FALSE)
-      theVar <- suppressWarnings(as.numeric(gsub(" ", "", theVar)))
+      theVar <- gsub(" ", "", theVar)
+      if(!is.null(schema@meta$del)){
+        theVar <- gsub(schema@meta$del, "", theVar)
+      }
+      theVar <- suppressWarnings(as.numeric(theVar))
 
       if(varFactor != 1){
         theVar <- theVar * varFactor
@@ -208,7 +212,7 @@ reorganise <- function(input = NULL, schema = NULL){
         mutate(!!varName := as.numeric(theVar))
 
       if(all(is.na(theVar))){ # this could be improved further by letting the user know that XY% values other than NA/NULL/Inf were discarded and that probably the data-specs in the schema dont fit
-        message(paste0("the variable '", varName, "' in cluster ", i," does not contain any numeric values.\n   -> did you set the correct the correct dec(imal) seperator?"))
+        message(paste0("the variable '", varName, "' in cluster ", i," does not contain any numeric values.\n   -> did you set the correct the correct del(imiter)?"))
       }
     }
 
