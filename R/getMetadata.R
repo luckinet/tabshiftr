@@ -164,7 +164,7 @@ getMetadata <- function(data = NULL, schema = NULL){
 
     # get the correct order of valVars
     if(!is.null(spreadVars)){
-      if(!spreadVars %in% "key"){
+      if(!spreadVars %in% "key" & spreadVars %in% valVars){
         theLevels <- unlist(unique(theData[,which(theHeader %in% spreadVars)]), use.names = FALSE)
         levelOrder <- sapply(seq_along(valVars), function(x){
           which(theLevels %in% variables[[valVars[x]]]$value)
