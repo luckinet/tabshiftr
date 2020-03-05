@@ -136,77 +136,77 @@ setValidity(Class = "schema", function(object){
       }
 
       if(theVariable$type == "id"){
-        if(!all(c("type", "name", "split", "row", "col", "rel") %in% names(theVariable))){
-          errors <- c(errors, paste0("'names(schema$variables$", theName, ")' must be a permutation of set {type,name,split,row,col,rel}"))
+        if(!all(names(theVariable) %in% c("type", "name", "split", "row", "col", "rel"))){
+          errors <- c(errors, paste0("'names(", theName, ")' must be a permutation of set {type,name,split,row,col,rel}"))
         }
         if(!is.null(theVariable$name)){
           if(!is.character(theVariable$name)){
-            errors <- c(errors, paste0("'schema$variables$", theName, "$name' must have a character value."))
+            errors <- c(errors, paste0("'", theName, "$name' must have a character value."))
           }
         }
         if(!is.null(theVariable$split)){
           if(!is.character(theVariable$split)){
-            errors <- c(errors, paste0("'schema$variables$", theName, "$split' must have a character value."))
+            errors <- c(errors, paste0("'", theName, "$split' must have a character value."))
           }
         }
         if(!is.null(theVariable$row)){
           if(!is.numeric(theVariable$row)){
-            errors <- c(errors, paste0("'schema$variables$", theName, "$row' must have a numeric value."))
+            errors <- c(errors, paste0("'", theName, "$row' must have a numeric value."))
           }
         }
         if(!is.null(theVariable$col)){
           if(!is.numeric(theVariable$col)){
-            errors <- c(errors, paste0("'schema$variables$", theName, "$col' must have a numeric value."))
+            errors <- c(errors, paste0("'", theName, "$col' must have a numeric value."))
           }
         }
         if(!is.null(theVariable$rel)){
           if(!is.logical(theVariable$rel)){
-            errors <- c(errors, paste0("'schema$variables$", theName, "$rel' must either be 'TRUE' or 'FALSE'."))
+            errors <- c(errors, paste0("'", theName, "$rel' must either be 'TRUE' or 'FALSE'."))
           }
         }
 
       } else {
-        if(!all(c("type", "unit", "factor", "row", "col", "rel", "key", "value") %in% names(theVariable))){
-          errors <- c(errors, paste0("'names(schema$variables$", theName, ")' must be a permutation of set {type,unit,factor,row,col,rel,key,value}"))
+        if(!all(names(theVariable) %in% c("type", "unit", "factor", "row", "col", "rel", "key", "value"))){
+          errors <- c(errors, paste0("'names(", theName, ")' must be a permutation of set {type,unit,factor,row,col,rel,key,value}"))
         }
         if(!is.null(theVariable$unit)){
           if(!is.character(theVariable$unit)){
-            errors <- c(errors, paste0("'schema$variables$", theName, "$unit' must have a character value."))
+            errors <- c(errors, paste0("'", theName, "$unit' must have a character value."))
           }
         }
         if(!is.null(theVariable$factor)){
           if(!is.numeric(theVariable$factor)){
-            errors <- c(errors, paste0("'schema$variables$", theName, "$factor' must have a numeric value."))
+            errors <- c(errors, paste0("'", theName, "$factor' must have a numeric value."))
           }
         }
         if(!is.null(theVariable$row)){
           if(!is.numeric(theVariable$row)){
-            errors <- c(errors, paste0("'schema$variables$", theName, "$row' must have a numeric value."))
+            errors <- c(errors, paste0("'", theName, "$row' must have a numeric value."))
           }
         }
         if(!is.null(theVariable$col)){
           if(!is.numeric(theVariable$col)){
-            errors <- c(errors, paste0("'schema$variables$", theName, "$col' must have a numeric value."))
+            errors <- c(errors, paste0("'", theName, "$col' must have a numeric value."))
           }
         }
         if(!is.null(theVariable$rel)){
           if(!is.logical(theVariable$rel)){
-            errors <- c(errors, paste0("'schema$variables$", theName, "$rel' must either be 'TRUE' or 'FALSE'."))
+            errors <- c(errors, paste0("'", theName, "$rel' must either be 'TRUE' or 'FALSE'."))
           }
         }
         if(!is.null(theVariable$key)){
           if(!is.character(theVariable$key)){
-            errors <- c(errors, paste0("'schema$variables$", theName, "$key' must have a character value."))
+            errors <- c(errors, paste0("'", theName, "$key' must have a character value."))
           }
         }
         if(!is.null(theVariable$value)){
           if(theVariable$key == "cluster"){
             if(!rlang::is_integerish(theVariable$value)){
-              errors <- c(errors, paste0("'schema$variables$", theName, "$value' must have an integer value."))
+              errors <- c(errors, paste0("'", theName, "$value' must have an integer value."))
             }
           } else {
             if(!is.character(theVariable$value)){
-              errors <- c(errors, paste0("'schema$variables$", theName, "$value' must have a character value."))
+              errors <- c(errors, paste0("'", theName, "$value' must have a character value."))
             }
           }
         }
