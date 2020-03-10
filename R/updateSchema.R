@@ -61,7 +61,6 @@ updateSchema <- function(input = NULL, schema = NULL){
   for(i in seq_along(variables)){
     varProp <- variables[[i]]
     varName <- names(variables)[i]
-    assertNames(x = names(varProp), must.include = "type")
 
     if(!varName %in% clusterID){
 
@@ -77,12 +76,15 @@ updateSchema <- function(input = NULL, schema = NULL){
 
         } else if(clusType == "vertical"){
 
-          if(!all(varProp$row < clusters$top)){
-            setRel <- FALSE
+          if(!is.null(varProp$row)){
+            if(all(varProp$row < clusters$top)){
+              setRel <- FALSE
+            }
           } else {
             leftEdge <- unique(clusters$left)
             setRel <- TRUE
           }
+
 
         } else if(clusType == "messy"){
           stop("messy clusters have not yet been fully implemented.")
@@ -93,13 +95,13 @@ updateSchema <- function(input = NULL, schema = NULL){
           varProp$rel <- TRUE
         }
       }
-
-    } else {
-      # make sure that the clusterID is not a relative value
-      if(varProp$rel){
-        stop(paste0("the cluster ID '", varName, "' must not have relative values."))
-      }
     }
+    # else {
+    #   # make sure that the clusterID is not a relative value
+    #   if(varProp$rel){
+    #     stop(paste0("the cluster ID '", varName, "' must not have relative values."))
+    #   }
+    # }
 
     # make sure that all elements occur the same number of times
     if(!is.null(varProp$row)){
@@ -122,32 +124,6 @@ updateSchema <- function(input = NULL, schema = NULL){
              header = schema@header,
              meta = schema@meta,
              variables = variables)
-
-      # rowIn <- colIn <- TRUE
-      # set indices to relative values, but only if the variable is "in" a
-      # cluster and if its not the clusterID, which is the case when its'
-      # row/col is larger than the smallest values for a cluster
-      # if(!varProp$rel){
-        # setRel <- FALSE
-        # for(j in 1:nClusters){
-          # if(!is.null(varProp$row)){
-          #   if(!all(varProp$row < clusters$top)){
-          #   #   varProp$row <- varProp$row - clusters$top + 1
-          #   #   varProp$rel <- TRUE
-          #   } else {
-          #     # rowIn <- FALSE
-          #   }
-          # }
-          # if(!is.null(varProp$col)){
-          #   if(!all(varProp$col < clusters$left) & rowIn){
-          #     setRel <- TRUE
-          #   } else {
-          #     # colIn <- FALSE
-          #   }
-          # }
-        # }
-
-      # }
 
   return(out)
 
