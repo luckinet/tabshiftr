@@ -2,8 +2,9 @@
 #' @param header the header from which to derive names.
 #' @param meta the output of \code{getMetadata} as basis to derive names.
 #' @importFrom checkmate assertCharacter assertList assertNames
-#' @importFrom tibble as_tibble
+#' @importFrom tibble tibble as_tibble
 #' @importFrom dplyr select
+#' @importFrom stringr str_c
 #' @importFrom tidyr unite
 #' @export
 
@@ -14,15 +15,26 @@ getNames <- function(header = NULL, meta = NULL){
   assertNames(x = names(meta), permutation.of = c("cluster", "var_type", "table"))
 
   if(!is.null(meta$table$gather_into)){
-      theNames <- header %>%
+      theNames <- suppressMessages(header %>%
         t() %>%
         as_tibble(.name_repair = "unique") %>%
         select(meta$cluster$header) %>%
         unite(col = "name", sep = "-_-_", na.rm = TRUE) %>%
-        unlist()
+        unlist())
   } else {
-    theNames <- header
+    theNames <- header %>%
+      unlist()
   }
+
+  # check that no name is duplicated
+  theNames <- tibble(name = theNames) %>%
+    group_by(name) %>%
+    mutate(count = seq_along(name),
+           count = ifelse(count == 1, "", str_c(".", count))) %>%
+    ungroup() %>%
+    mutate(name = str_c(name, count)) %>%
+    select(-count) %>%
+    unlist()
 
   # make sure that tidy variables actually have correct names
   for(j in seq_along(meta$table$tidy)){
@@ -43,7 +55,7 @@ getNames <- function(header = NULL, meta = NULL){
     }
   }
 
-
+  names(theNames) <- NULL
   return(theNames)
 
 }
