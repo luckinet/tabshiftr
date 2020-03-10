@@ -8,28 +8,19 @@ context("reorganise")
 test_that("several vertical clusters of otherwise tidy data", {
   schema <- makeSchema(
     list(clusters =
-           list(top = c(3, 10), left = 2, width = NULL, height = NULL,
-                id = "territories"),
-         header = list(row = 1, rel = FALSE),
-         meta = list(del = NULL, na = NULL, types = NULL),
+           list(top = c(3, 10), left = 2, id = "territories"),
+         header = list(row = 1),
          variables =
            list(territories =
-                  list(type = "id", name = NULL, split = NULL,
-                       row = c(2, 9), col = 1, rel = FALSE),
+                  list(type = "id", row = c(2, 9), col = 1),
                 year =
-                  list(type = "id", name = "period", split = NULL,
-                       row = NULL, col = 2, rel = FALSE),
+                  list(type = "id", col = 2),
                 commodities =
-                  list(type = "id", name = NULL, split = NULL,
-                       row = NULL, col = 3, rel = FALSE),
+                  list(type = "id", col = 3),
                 harvested =
-                  list(type = "values", unit = "ha", factor = 1,
-                       row = NULL, col = 4, rel = FALSE,
-                       key = NULL, value = NULL),
+                  list(type = "values", unit = "ha", factor = 1, col = 4),
                 production =
-                  list(type = "values", unit = "t", factor = 1,
-                       row = NULL, col = 5, rel = FALSE,
-                       key = NULL, value = NULL))))
+                  list(type = "values", unit = "t", factor = 1, col = 5))))
 
   input <- read_csv(paste0(system.file("test_datasets",
                                        package="rectifyr",
@@ -47,16 +38,16 @@ test_that("several horizontal clusters of otherwise tidy data", {
            list(top = 2, left = c(2, 5), width = NULL, height = NULL,
                 id = "territories"),
          header = list(row = 1, rel = FALSE),
-         meta = list(del = NULL, na = NULL, types = NULL),
+         meta = list(del = NULL, dec = NULL, na = NULL, types = NULL),
          variables =
            list(territories =
-                  list(type = "id", name = NULL, split = NULL,
+                  list(type = "id", value = NULL, split = NULL,
                        row = 2, col = c(2, 5), rel = FALSE),
                 year =
-                  list(type = "id", name = "period", split = NULL,
+                  list(type = "id", value = NULL, split = NULL,
                        row = NULL, col = 1, rel = FALSE),
                 commodities =
-                  list(type = "id", name = NULL, split = NULL,
+                  list(type = "id", value = NULL, split = NULL,
                        row = NULL, col = c(2, 5), rel = FALSE),
                 harvested =
                   list(type = "values", unit = "ha", factor = 1,
@@ -83,16 +74,16 @@ test_that("already tidy table", {
            list(top = NULL, left = NULL, width = NULL, height = NULL,
                 id = NULL),
          header = list(row = 1, rel = FALSE),
-         meta = list(del = NULL, na = NULL, types = NULL),
+         meta = list(del = NULL, dec = NULL, na = NULL, types = NULL),
          variables =
            list(territories =
-                  list(type = "id", name = NULL, split = NULL,
+                  list(type = "id", value = NULL, split = NULL,
                        row = NULL, col = 1, rel = FALSE),
                 year =
-                  list(type = "id", name = "period", split = NULL,
+                  list(type = "id", value = NULL, split = NULL,
                        row = NULL, col = 2, rel = FALSE),
                 commodities =
-                  list(type = "id", name = NULL, split = NULL,
+                  list(type = "id", value = NULL, split = NULL,
                        row = NULL, col = 3, rel = FALSE),
                 harvested =
                   list(type = "values", unit = "ha", factor = 1,
@@ -120,16 +111,16 @@ test_that("bring one wide identifying variable into long form", {
            list(top = NULL, left = NULL, width = NULL, height = NULL,
                 id = NULL),
          header = list(row = c(1, 2), rel = FALSE),
-         meta = list(del = NULL, na = NULL, types = NULL),
+         meta = list(del = NULL, dec = NULL, na = NULL, types = NULL),
          variables =
            list(territories =
-                  list(type = "id", name = NULL, split = NULL,
+                  list(type = "id", value = NULL, split = NULL,
                        row = NULL, col = 1, rel = FALSE),
                 year =
-                  list(type = "id", name = "period", split = NULL,
+                  list(type = "id", value = NULL, split = NULL,
                        row = NULL, col = 2, rel = FALSE),
                 commodities =
-                  list(type = "id", name = NULL, split = NULL,
+                  list(type = "id", value = NULL, split = NULL,
                        row = 1, col = c(3, 4, 5, 6), rel = FALSE),
                 harvested =
                   list(type = "values", unit = "ha", factor = 1,
@@ -154,16 +145,16 @@ test_that("bring one wide identifying variable into long form", {
            list(top = NULL, left = NULL, width = NULL, height = NULL,
                 id = NULL),
          header = list(row = c(1, 2), rel = FALSE),
-         meta = list(del = NULL, na = NULL, types = NULL),
+         meta = list(del = NULL, dec = NULL, na = NULL, types = NULL),
          variables =
            list(territories =
-                  list(type = "id", name = NULL, split = NULL,
+                  list(type = "id", value = NULL, split = NULL,
                        row = NULL, col = 1, rel = FALSE),
                 year =
-                  list(type = "id", name = "period", split = NULL,
+                  list(type = "id", value = NULL, split = NULL,
                        row = NULL, col = 2, rel = FALSE),
                 commodities =
-                  list(type = "id", name = NULL, split = NULL,
+                  list(type = "id", value = NULL, split = NULL,
                        row = 1, col = c(3, 5), rel = FALSE),
                 harvested =
                   list(type = "values", unit = "ha", factor = 1,
@@ -188,16 +179,16 @@ test_that("bring one wide identifying variable into long form", {
            list(top = NULL, left = NULL, width = NULL, height = NULL,
                 id = NULL),
          header = list(row = c(1, 2), rel = FALSE),
-         meta = list(del = NULL, na = NULL, types = NULL),
+         meta = list(del = NULL, dec = NULL, na = NULL, types = NULL),
          variables =
            list(territories =
-                  list(type = "id", name = NULL, split = NULL,
+                  list(type = "id", value = NULL, split = NULL,
                        row = NULL, col = 1, rel = FALSE),
                 year =
-                  list(type = "id", name = "period", split = NULL,
+                  list(type = "id", value = NULL, split = NULL,
                        row = NULL, col = 2, rel = FALSE),
                 commodities =
-                  list(type = "id", name = NULL, split = NULL,
+                  list(type = "id", value = NULL, split = NULL,
                        row = 2, col = NULL, rel = FALSE),
                 harvested =
                   list(type = "values", unit = "ha", factor = 1,
@@ -222,16 +213,16 @@ test_that("bring one wide identifying variable into long form", {
            list(top = NULL, left = NULL, width = NULL, height = NULL,
                 id = NULL),
          header = list(row = c(1, 2), rel = FALSE),
-         meta = list(del = NULL, na = NULL, types = NULL),
+         meta = list(del = NULL, dec = NULL, na = NULL, types = NULL),
          variables =
            list(territories =
-                  list(type = "id", name = NULL, split = NULL,
+                  list(type = "id", value = NULL, split = NULL,
                        row = NULL, col = 1, rel = FALSE),
                 year =
-                  list(type = "id", name = "period", split = NULL,
+                  list(type = "id", value = NULL, split = NULL,
                        row = NULL, col = 2, rel = FALSE),
                 commodities =
-                  list(type = "id", name = NULL, split = NULL,
+                  list(type = "id", value = NULL, split = NULL,
                        row = 2, col = NULL, rel = FALSE),
                 harvested =
                   list(type = "values", unit = "ha", factor = 1,
@@ -258,16 +249,16 @@ test_that("bring several wide identifying variables into long form", {
            list(top = NULL, left = NULL, width = NULL, height = NULL,
                 id = NULL),
          header = list(row = c(1:3), rel = FALSE),
-         meta = list(del = NULL, na = NULL, types = NULL),
+         meta = list(del = NULL, dec = NULL, na = NULL, types = NULL),
          variables =
            list(territories =
-                  list(type = "id", name = NULL, split = NULL,
+                  list(type = "id", value = NULL, split = NULL,
                        row = NULL, col = 1, rel = FALSE),
                 year =
-                  list(type = "id", name = "period", split = NULL,
+                  list(type = "id", value = NULL, split = NULL,
                        row = 1, col = c(2, 6), rel = FALSE),
                 commodities =
-                  list(type = "id", name = NULL, split = NULL,
+                  list(type = "id", value = NULL, split = NULL,
                        row = 2, col = c(2, 4, 6, 8), rel = FALSE),
                 harvested =
                   list(type = "values", unit = "ha", factor = 1,
@@ -295,16 +286,16 @@ test_that("spread long table", {
            list(top = NULL, left = NULL, width = NULL, height = NULL,
                 id = NULL),
          header = list(row = 1, rel = FALSE),
-         meta = list(del = NULL, na = NULL, types = NULL),
+         meta = list(del = NULL, dec = NULL, na = NULL, types = NULL),
          variables =
            list(territories =
-                  list(type = "id", name = NULL, split = NULL,
+                  list(type = "id", value = NULL, split = NULL,
                        row = NULL, col = 1, rel = FALSE),
                 year =
-                  list(type = "id", name = "period", split = NULL,
+                  list(type = "id", value = NULL, split = NULL,
                        row = NULL, col = 2, rel = FALSE),
                 commodities =
-                  list(type = "id", name = NULL, split = NULL,
+                  list(type = "id", value = NULL, split = NULL,
                        row = NULL, col = 3, rel = FALSE),
                 harvested =
                   list(type = "values", unit = "ha", factor = 1,
@@ -329,16 +320,16 @@ test_that("spread long table", {
            list(top = NULL, left = NULL, width = NULL, height = NULL,
                 id = NULL),
          header = list(row = 1, rel = FALSE),
-         meta = list(del = NULL, na = NULL, types = NULL),
+         meta = list(del = NULL, dec = NULL, na = NULL, types = NULL),
          variables =
            list(territories =
-                  list(type = "id", name = NULL, split = NULL,
+                  list(type = "id", value = NULL, split = NULL,
                        row = NULL, col = 1, rel = FALSE),
                 year =
-                  list(type = "id", name = "period", split = NULL,
+                  list(type = "id", value = NULL, split = NULL,
                        row = NULL, col = 2, rel = FALSE),
                 commodities =
-                  list(type = "id", name = NULL, split = NULL,
+                  list(type = "id", value = NULL, split = NULL,
                        row = NULL, col = 3, rel = FALSE),
                 harvested =
                   list(type = "values", unit = "ha", factor = 1,
@@ -365,16 +356,16 @@ test_that("bring one wide identifying variable into long form and spread long ta
            list(top = NULL, left = NULL, width = NULL, height = NULL,
                 id = NULL),
          header = list(row = 1, rel = FALSE),
-         meta = list(del = NULL, na = NULL, types = NULL),
+         meta = list(del = NULL, dec = NULL, na = NULL, types = NULL),
          variables =
            list(territories =
-                  list(type = "id", name = NULL, split = NULL,
+                  list(type = "id", value = NULL, split = NULL,
                        row = NULL, col = 1, rel = FALSE),
                 year =
-                  list(type = "id", name = "period", split = NULL,
+                  list(type = "id", value = NULL, split = NULL,
                        row = NULL, col = 2, rel = FALSE),
                 commodities =
-                  list(type = "id", name = NULL, split = NULL,
+                  list(type = "id", value = NULL, split = NULL,
                        row = 1, col = c(4, 5), rel = FALSE),
                 harvested =
                   list(type = "values", unit = "ha", factor = 1,
@@ -401,16 +392,16 @@ test_that("bring several wide identifying variable into long form and spread lon
            list(top = NULL, left = NULL, width = NULL, height = NULL,
                 id = NULL),
          header = list(row = c(1, 2), rel = FALSE),
-         meta = list(del = NULL, na = NULL, types = NULL),
+         meta = list(del = NULL, dec = NULL, na = NULL, types = NULL),
          variables =
            list(territories =
-                  list(type = "id", name = NULL, split = NULL,
+                  list(type = "id", value = NULL, split = NULL,
                        row = NULL, col = 1, rel = FALSE),
                 year =
-                  list(type = "id", name = "period", split = NULL,
+                  list(type = "id", value = NULL, split = NULL,
                        row = 1, col = c(3, 5), rel = FALSE),
                 commodities =
-                  list(type = "id", name = NULL, split = NULL,
+                  list(type = "id", value = NULL, split = NULL,
                        row = 2, col = c(3, 4, 5, 6), rel = FALSE),
                 harvested =
                   list(type = "values", unit = "ha", factor = 1,
@@ -437,16 +428,16 @@ test_that("split a column that contains several variables in an already tidy tab
            list(top = NULL, left = NULL, width = NULL, height = NULL,
                 id = NULL),
          header = list(row = 1, rel = FALSE),
-         meta = list(del = NULL, na = NULL, types = NULL),
+         meta = list(del = NULL, dec = NULL, na = NULL, types = NULL),
          variables =
            list(territories =
-                  list(type = "id", name = NULL, split = NULL,
+                  list(type = "id", value = NULL, split = NULL,
                        row = NULL, col = 1, rel = FALSE),
                 year =
-                  list(type = "id", name = NULL, split = ".+?(?=_)",
+                  list(type = "id", value = NULL, split = ".+?(?=_)",
                        row = NULL, col = 2, rel = FALSE),
                 commodities =
-                  list(type = "id", name = NULL, split = "(?<=\\_).*",
+                  list(type = "id", value = NULL, split = "(?<=\\_).*",
                        row = NULL, col = 2, rel = FALSE),
                 harvested =
                   list(type = "values", unit = "ha", factor = 1,
@@ -473,16 +464,16 @@ test_that("vertical clusters that are aggregated per values variable", {
            list(top = c(3, 13), left = 2, width = NULL, height = 8,
                 id = "values"),
          header = list(row = 1, rel = FALSE),
-         meta = list(del = NULL, na = NULL, types = NULL),
+         meta = list(del = NULL, dec = NULL, na = NULL, types = NULL),
          variables =
            list(territories =
-                  list(type = "id", name = NULL, split = NULL,
+                  list(type = "id", value = NULL, split = NULL,
                        row = NULL, col = 2, rel = FALSE),
                 year =
-                  list(type = "id", name = NULL, split = NULL,
+                  list(type = "id", value = NULL, split = NULL,
                        row = NULL, col = 3, rel = FALSE),
                 commodities =
-                  list(type = "id", name = NULL, split = NULL,
+                  list(type = "id", value = NULL, split = NULL,
                        row = NULL, col = 4, rel = FALSE),
                 harvested =
                   list(type = "values", unit = "ha", factor = 1,
@@ -503,31 +494,25 @@ test_that("vertical clusters that are aggregated per values variable", {
 })
 
 # vertical clusters per values variable with a wide identifying variable ----
-  test_that("vertical clusters per values variable with a wide identifying variable", {
+test_that("vertical clusters per values variable with a wide identifying variable", {
   schema <- makeSchema(
     list(clusters =
-           list(top = c(3, 9), left = 2, width = NULL, height = 4,
-                id = "values"),
-         header = list(row = 1, rel = FALSE),
-         meta = list(del = NULL, na = NULL, types = NULL),
+           list(top = c(3, 9), left = 2, height = 4, id = "values"),
+         header = list(row = 1),
+         meta = list(del = NULL, dec = NULL, na = NULL, types = NULL),
          variables =
            list(territories =
-                  list(type = "id", name = NULL, split = NULL,
-                       row = NULL, col = 2, rel = FALSE),
+                  list(type = "id", col = 2),
                 year =
-                  list(type = "id", name = NULL, split = NULL,
-                       row = NULL, col = 3, rel = FALSE),
+                  list(type = "id", col = 3),
                 commodities =
-                  list(type = "id", name = NULL, split = NULL,
-                       row = 1, col = c(4, 5), rel = FALSE),
+                  list(type = "id", row = 1, col = c(4, 5)),
                 harvested =
                   list(type = "values", unit = "ha", factor = 1,
-                       row = NULL, col = c(4, 5), rel = FALSE,
-                       key = "cluster", value = 1),
+                       col = c(4, 5), key = "cluster", value = 1),
                 production =
                   list(type = "values", unit = "t", factor = 1,
-                       row = NULL, col = c(4, 5), rel = FALSE,
-                       key = "cluster", value = 2))))
+                       col = c(4, 5), key = "cluster", value = 2))))
 
   input <- read_csv(paste0(system.file("test_datasets",
                                        package="rectifyr",
@@ -545,16 +530,16 @@ test_that("vertical clusters per values variable with a two nested wide identify
            list(top = c(4, 8), left = 2, width = NULL, height = 2,
                 id = "values"),
          header = list(row = c(1, 2), rel = FALSE),
-         meta = list(del = NULL, na = NULL, types = NULL),
+         meta = list(del = NULL, dec = NULL, na = NULL, types = NULL),
          variables =
            list(territories =
-                  list(type = "id", name = NULL, split = NULL,
+                  list(type = "id", value = NULL, split = NULL,
                        row = NULL, col = 2, rel = FALSE),
                 year =
-                  list(type = "id", name = NULL, split = NULL,
+                  list(type = "id", value = NULL, split = NULL,
                        row = 1, col = c(3, 5), rel = FALSE),
                 commodities =
-                  list(type = "id", name = NULL, split = NULL,
+                  list(type = "id", value = NULL, split = NULL,
                        row = 2, col = c(3:6), rel = FALSE),
                 harvested =
                   list(type = "values", unit = "ha", factor = 1,
@@ -580,16 +565,16 @@ test_that("relative values work in all cases", {
            list(top = c(3, 10), left = 2, width = NULL, height = 4,
                 id = "territories"),
          header = list(row = 1, rel = FALSE),
-         meta = list(del = NULL, na = NULL, types = NULL),
+         meta = list(del = NULL, dec = NULL, na = NULL, types = NULL),
          variables =
            list(territories =
-                  list(type = "id", name = NULL, split = NULL,
+                  list(type = "id", value = NULL, split = NULL,
                        row = c(2, 9), col = 1, rel = FALSE),
                 year =
-                  list(type = "id", name = "period", split = NULL,
+                  list(type = "id", value = NULL, split = NULL,
                        row = NULL, col = 1, rel = TRUE),
                 commodities =
-                  list(type = "id", name = NULL, split = NULL,
+                  list(type = "id", value = NULL, split = NULL,
                        row = NULL, col = 2, rel = TRUE),
                 harvested =
                   list(type = "values", unit = "ha", factor = 1,
