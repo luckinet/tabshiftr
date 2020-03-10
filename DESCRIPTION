@@ -8,7 +8,8 @@ Authors@R: c(
            comment = c(ORCID = "0000-0002-2958-0796")),
     person("Arne", "Rümmler", 
            email = "arne.ruemmler@tu-dresden.de", 
-           role = c("aut"))
+           role = c("ctb"),
+           comment=c(ORCID = "0000-0001-8637-9071"))
     )
 Description: Registers schema descriptions of (disorganised) messy tables and 
     reorganises them into a standardised (tidy) format.

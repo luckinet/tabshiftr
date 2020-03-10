@@ -22,11 +22,13 @@ getMetadata <- function(data = NULL, schema = NULL){
     tableRows <- seq_along(clustRows)
     tableRows <- tableRows[clustRows]
     dataRows <- rep(TRUE, length(tableRows))
+    clustDim <- c(clusters$top[j], clusters$top[j]+clusters$height[j]-1,
+                  clusters$left[j], clusters$left[j]+clusters$width[j]-1)
 
     # define some variables
     idVars <- valVars <- valFctrs <- tidyVars <- outVar <- spreadVars <- gatherVars <- NULL
     splitCols <- tidyCols <- spreadCols <- gatherCols <- NULL
-    mergeOrder <- valOrder <- tableVars <- gatherVals <- NULL
+    mergeOrder <- valOrder <- gatherVals <- NULL
     splitVars <- list()
 
     # go through variables and determine whether it ... ----
@@ -34,20 +36,22 @@ getMetadata <- function(data = NULL, schema = NULL){
 
       varProp <- variables[[i]]
       varName <- names(variables)[i]
-      assertNames(x = names(varProp), must.include = "type")
+
+      # ... occurs per each cluster ----
+      if(varProp$dist){
+        distinct <- TRUE
+      } else if(varProp$type == "id" & !is.null(varProp$value)) {
+        distinct <- TRUE
+      } else {
+        distinct <- FALSE
+      }
 
       # ... is an id variable ----
       if(varProp$type == "id"){
-        assertNames(x = names(varProp), permutation.of = c("type", "name", "split", "row", "col", "rel"), .var.name = varName)
         idVars <- c(idVars, varName)
-        if(!is.null(varProp$name)){
-          tableVars <- c(tableVars, varProp$name)
-        } else {
-          tableVars <- c(tableVars, varName)
-        }
 
         # determine tidy id variables
-        if(is.null(varProp$row) | varName %in% clusters$id){
+        if((is.null(varProp$row) | varName %in% clusters$id) & !distinct){
           tidyVars <- c(tidyVars, varName)
           tidyCols <- c(tidyCols, varProp$col[j])
         }
@@ -55,7 +59,6 @@ getMetadata <- function(data = NULL, schema = NULL){
 
       # ... is a values variable ----
       if(varProp$type == "values"){
-        assertNames(x = names(varProp), permutation.of = c("type", "unit", "factor", "row", "col", "rel", "key", "value"), .var.name = varName)
         valVars <- c(valVars, varName)
         valFctrs <- c(valFctrs, varProp$factor)
 
@@ -71,26 +74,32 @@ getMetadata <- function(data = NULL, schema = NULL){
 
       # ... is outside of a cluster ----
       outsideRows <- outsideCols <- FALSE
-      if(!varProp$rel){
-        if(!is.null(varProp$row)){
-          if(all(varProp$row[j] < clusters$top[j])){
-            outsideRows <- TRUE
-          }
+      if(distinct){
+        if(varProp$rel){
+          stop("provide absolute values for distinct variables!")
         }
-        if(!is.null(varProp$col)){
-          if(all(varProp$col[j] < clusters$left[j])){
-            outsideCols <- TRUE
+      } else {
+        if(!varProp$rel){
+          if(!is.null(varProp$row)){
+            if(varProp$row[j] < clustDim[1] | varProp$row[j] > clustDim[2]){
+              outsideRows <- TRUE
+            }
+          }
+          if(!is.null(varProp$col)){
+            if(all(varProp$col[j] < clustDim[3] | varProp$col[j] > clustDim[4])){
+              outsideCols <- TRUE
+            }
           }
         }
       }
 
-      if((outsideRows | outsideCols) & !varName %in% clusters$id){
+      if((outsideRows | outsideCols | distinct) & !varName %in% clusters$id){
         outVar <- c(outVar, varName)
       }
 
       # ... needs to be gathered/spread ----
       if(varProp$type == "id"){
-        if(!is.null(varProp$row)){
+        if(!is.null(varProp$row) & !distinct){
           # if it is cluster ID, don't gather/spread ...
           if(!varName %in% clusters$id){
             gatherVars <- c(gatherVars, varName)
@@ -103,7 +112,7 @@ getMetadata <- function(data = NULL, schema = NULL){
         }
       } else {
         # if a row has been registered, use this to derive spread/gather information
-        if(!is.null(varProp$row)){
+        if(!is.null(varProp$row) & !distinct){
           spreadVars <- c(spreadVars, "key")
           gatherCols <- c(gatherCols, varProp$col)
           spreadCols <- length(idVars) + 2
@@ -128,15 +137,19 @@ getMetadata <- function(data = NULL, schema = NULL){
       gatherCols <- unique(gatherCols)
 
       # ... occupies a row in the cluster ----
-      if(!is.null(varProp$row)){
-        # only add merge row when it hasn't been added yet
-        if(!any(mergeOrder %in% varProp$row[j])){
-          if(!varProp$rel){
-            dataRows[which(tableRows %in% varProp$row[j])] <- FALSE
-          }
-          # if it is cluster ID or only in a single cell, don't merge
-          if(!varName %in% clusters$id & length(varProp$col) != 1){
-            mergeOrder <- c(mergeOrder, varProp$row[j])
+      if(!distinct){
+        if(!is.null(varProp$row)){
+          # only add merge row when it hasn't been added yet
+          if(!any(mergeOrder %in% varProp$row[j])){
+            if(!varProp$rel){
+              dataRows[which(tableRows %in% varProp$row[j])] <- FALSE
+            } else {
+              dataRows[varProp$row[j]] <- FALSE
+            }
+            # if it is cluster ID or only in a single cell, don't merge
+            if(!varName %in% clusters$id & length(varProp$col) != 1){
+              mergeOrder <- c(mergeOrder, varProp$row[j])
+            }
           }
         }
       }
@@ -183,7 +196,6 @@ getMetadata <- function(data = NULL, schema = NULL){
                                 cluster_id = clusters$id,
                                 header = mergeOrder),
                  var_type = list(ids = idVars,
-                                 orig = tableVars,
                                  vals = valVars,
                                  factor = valFctrs),
                  table = list(data_rows = dataRows,
