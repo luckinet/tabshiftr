@@ -100,18 +100,30 @@ reorganise <- function(input = NULL, schema = NULL){
     if(!is.null(theMeta$cluster$outside_cluster)){
       outVar <- theMeta$cluster$outside_cluster
       for(j in seq_along(outVar)){
+        theVar <- theVariables[[which(names(theVariables) == outVar[j])]]
         if(any(outVar[j] %in% theMeta$table$tidy)){
           # tidy columns
-          theColumn <- theVariables[[which(names(theVariables) == outVar)]]$col[i]
-          missingCol <- unlist(input[theMeta$cluster$cluster_rows, theColumn], use.names = FALSE)[theMeta$table$data_rows]
+          missingCol <- unlist(input[theMeta$cluster$cluster_rows, theVar$col[i]], use.names = FALSE)[theMeta$table$data_rows]
           temp <- temp %>%
-            add_column(missingCol)
-          theNames <- c(theNames, outVar)
+            add_column(!!outVar[j] := missingCol)
         } else {
           # non-tidy columns
-          # ... !?
+          if(!is.null(theVar$value)){
+            missingVals <- theVar$value
+          } else {
+            if(theVar$dist){
+              missingVals <- unlist(input[unique(theVar$row), unique(theVar$col)], use.names = FALSE)
+            } else {
+              missingVals <- unlist(input[theVar$row[i], theVar$col[i]], use.names = FALSE)
+            }
+          }
+
+          temp <- temp %>%
+            add_column(!!outVar[j] := missingVals)
+          theMeta$table$tidy <- c(theMeta$table$tidy, outVar[j])
         }
       }
+      theNames <- c(theNames, outVar)
     }
 
     # if a cluster id has been specified, reconstruct the column
@@ -123,8 +135,13 @@ reorganise <- function(input = NULL, schema = NULL){
         # in case there is more than one clusterVar, it should have been
         # 'cluster_id == "values"'
       } else {
-        clusterVal <- unlist(input[clusterVar[[1]]$row[i], clusterVar[[1]]$col[i]], use.names = FALSE)
-        clustName <- theClusters$id
+        if(clusterVar[[1]]$rel){
+          clusterVal <- unlist(theData[clusterVar[[1]]$row[i], clusterVar[[1]]$col[i]], use.names = FALSE)
+          clustName <- theClusters$id
+        } else {
+          clusterVal <- unlist(input[clusterVar[[1]]$row[i], clusterVar[[1]]$col[i]], use.names = FALSE)
+          clustName <- theClusters$id
+        }
       }
       temp <- temp %>%
         add_column(rep(unique(clusterVal), dim(temp)[1]))
@@ -198,8 +215,14 @@ reorganise <- function(input = NULL, schema = NULL){
       varFactor <- theMeta$var_type$factor[j]
       theVar <- temp[varName] %>% unlist(use.names = FALSE)
       theVar <- gsub(" ", "", theVar)
+      if(!is.null(schema@meta$na)){
+        theVar[theVar %in% schema@meta$na] <- NA
+      }
       if(!is.null(schema@meta$del)){
         theVar <- gsub(schema@meta$del, "", theVar)
+      }
+      if(!is.null(schema@meta$dec)){
+        theVar <- gsub(schema@meta$dec, ".", theVar)
       }
       theVar <- suppressWarnings(as.numeric(theVar))
 
