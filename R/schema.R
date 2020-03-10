@@ -27,7 +27,7 @@ setValidity(Class = "schema", function(object){
     if(!is.list(object@clusters)){
       errors <- c(errors, "the slot 'clusters' is not a list.")
     }
-    if(!all(c("top", "left", "width", "height", "id") %in% names(object@clusters))){
+    if(!all(names(object@clusters) %in% c("top", "left", "width", "height", "id"))){
       errors <- c(errors, "'names(schema$clusters)' must be a permutation of set {top,left,width,height,id}")
     }
     if(!is.null(object@clusters$top)){
@@ -97,12 +97,17 @@ setValidity(Class = "schema", function(object){
     if(length(object@meta) == 0){
       errors <- c(errors, "the slot 'meta' does not contain any entries.")
     }
-    if(!all(c("del", "na", "types") %in% names(object@meta))){
-      errors <- c(errors, "'names(schema$meta)' must be a permutation of set {del,na,types}")
+    if(!all(names(object@meta) %in% c("del", "dec", "na", "types"))){
+      errors <- c(errors, "'names(schema$meta)' must be a permutation of set {del,dec,na,types}")
     }
     if(!is.null(object@meta$del)){
       if(!is.character(object@meta$del)){
         errors <- c(errors, "'schema$meta$del' must have a character value.")
+      }
+    }
+    if(!is.null(object@meta$dec)){
+      if(!is.character(object@meta$dec)){
+        errors <- c(errors, "'schema$meta$dec' must have a character value.")
       }
     }
     if(!is.null(object@meta$na)){
@@ -136,12 +141,12 @@ setValidity(Class = "schema", function(object){
       }
 
       if(theVariable$type == "id"){
-        if(!all(names(theVariable) %in% c("type", "name", "split", "row", "col", "rel"))){
-          errors <- c(errors, paste0("'names(", theName, ")' must be a permutation of set {type,name,split,row,col,rel}"))
+        if(!all(names(theVariable) %in% c("type", "value", "split", "row", "col", "rel", "dist"))){
+          errors <- c(errors, paste0("'names(", theName, ")' must be a permutation of set {type,value,split,row,col,rel,dist}"))
         }
-        if(!is.null(theVariable$name)){
-          if(!is.character(theVariable$name)){
-            errors <- c(errors, paste0("'", theName, "$name' must have a character value."))
+        if(!is.null(theVariable$value)){
+          if(!is.character(theVariable$value)){
+            errors <- c(errors, paste0("'", theName, "$value' must have a character value."))
           }
         }
         if(!is.null(theVariable$split)){
@@ -164,10 +169,15 @@ setValidity(Class = "schema", function(object){
             errors <- c(errors, paste0("'", theName, "$rel' must either be 'TRUE' or 'FALSE'."))
           }
         }
+        if(!is.null(theVariable$dist)){
+          if(!is.logical(theVariable$dist)){
+            errors <- c(errors, paste0("'", theName, "$dist' must either be 'TRUE' or 'FALSE'."))
+          }
+        }
 
       } else {
-        if(!all(names(theVariable) %in% c("type", "unit", "factor", "row", "col", "rel", "key", "value"))){
-          errors <- c(errors, paste0("'names(", theName, ")' must be a permutation of set {type,unit,factor,row,col,rel,key,value}"))
+        if(!all(names(theVariable) %in% c("type", "unit", "factor", "row", "col", "rel", "dist", "key", "value"))){
+          errors <- c(errors, paste0("'names(", theName, ")' must be a permutation of set {type,unit,factor,row,col,rel,dist,key,value}"))
         }
         if(!is.null(theVariable$unit)){
           if(!is.character(theVariable$unit)){
@@ -192,6 +202,11 @@ setValidity(Class = "schema", function(object){
         if(!is.null(theVariable$rel)){
           if(!is.logical(theVariable$rel)){
             errors <- c(errors, paste0("'", theName, "$rel' must either be 'TRUE' or 'FALSE'."))
+          }
+        }
+        if(!is.null(theVariable$dist)){
+          if(!is.logical(theVariable$dist)){
+            errors <- c(errors, paste0("'", theName, "$dist' must either be 'TRUE' or 'FALSE'."))
           }
         }
         if(!is.null(theVariable$key)){
