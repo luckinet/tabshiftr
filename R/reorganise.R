@@ -55,7 +55,7 @@ reorganise <- function(input = NULL, schema = NULL){
 
   # get specs of the cluster variable
   if(!is.null(theClusters$id)){
-    if(theClusters$id == "values"){
+    if(theClusters$id == "measured"){
       # in case values variables are cluster variables, get those that contain 'key = "cluster"'
       clusterVar <- sapply(seq_along(theVariables), function(x){
         if(!is.null(theVariables[[x]]$key)){
@@ -135,17 +135,21 @@ reorganise <- function(input = NULL, schema = NULL){
         # in case there is more than one clusterVar, it should have been
         # 'cluster_id == "values"'
       } else {
-        if(clusterVar[[1]]$rel){
-          clusterVal <- unlist(theData[clusterVar[[1]]$row[i], clusterVar[[1]]$col[i]], use.names = FALSE)
-          clustName <- theClusters$id
+        clustName <- theClusters$id
+        if(is.null(clusterVar[[1]]$value)){
+          if(clusterVar[[1]]$rel){
+            clusterVal <- unlist(theData[clusterVar[[1]]$row[i], clusterVar[[1]]$col[i]], use.names = FALSE)
+          } else {
+            clusterVal <- unlist(input[clusterVar[[1]]$row[i], clusterVar[[1]]$col[i]], use.names = FALSE)
+          }
         } else {
-          clusterVal <- unlist(input[clusterVar[[1]]$row[i], clusterVar[[1]]$col[i]], use.names = FALSE)
-          clustName <- theClusters$id
+          clusterVal <- clusterVar[[1]]$value
         }
       }
       temp <- temp %>%
         add_column(rep(unique(clusterVal), dim(temp)[1]))
       theNames <- c(theNames, clustName)
+      theMeta$table$tidy <- c(theMeta$table$tidy, clustName)
     }
     if(length(clusterVar) > 1){
       valuesInCluster <- theMeta$var_type$vals[i]
