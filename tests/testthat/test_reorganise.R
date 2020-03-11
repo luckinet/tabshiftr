@@ -18,9 +18,9 @@ test_that("several vertical clusters of otherwise tidy data", {
                 commodities =
                   list(type = "id", col = 3),
                 harvested =
-                  list(type = "values", unit = "ha", factor = 1, col = 4),
+                  list(type = "measured", unit = "ha", factor = 1, col = 4),
                 production =
-                  list(type = "values", unit = "t", factor = 1, col = 5))))
+                  list(type = "measured", unit = "t", factor = 1, col = 5))))
 
   input <- read_csv(paste0(system.file("test_datasets",
                                        package="rectifyr",
@@ -50,11 +50,11 @@ test_that("several horizontal clusters of otherwise tidy data", {
                   list(type = "id", value = NULL, split = NULL,
                        row = NULL, col = c(2, 5), rel = FALSE),
                 harvested =
-                  list(type = "values", unit = "ha", factor = 1,
+                  list(type = "measured", unit = "ha", factor = 1,
                        row = NULL, col = c(3, 6), rel = FALSE,
                        key = NULL, value = NULL),
                 production =
-                  list(type = "values", unit = "t", factor = 1,
+                  list(type = "measured", unit = "t", factor = 1,
                        row = NULL, col = c(4, 7), rel = FALSE,
                        key = NULL, value = NULL))))
 
@@ -86,11 +86,11 @@ test_that("already tidy table", {
                   list(type = "id", value = NULL, split = NULL,
                        row = NULL, col = 3, rel = FALSE),
                 harvested =
-                  list(type = "values", unit = "ha", factor = 1,
+                  list(type = "measured", unit = "ha", factor = 1,
                        row = NULL, col = 4, rel = FALSE,
                        key = NULL, value = NULL),
                 production =
-                  list(type = "values", unit = "t", factor = 1,
+                  list(type = "measured", unit = "t", factor = 1,
                        row = NULL, col = 5, rel = FALSE,
                        key = NULL, value = NULL))))
 
@@ -123,11 +123,11 @@ test_that("bring one wide identifying variable into long form", {
                   list(type = "id", value = NULL, split = NULL,
                        row = 1, col = c(3, 4, 5, 6), rel = FALSE),
                 harvested =
-                  list(type = "values", unit = "ha", factor = 1,
+                  list(type = "measured", unit = "ha", factor = 1,
                        row = 2, col = c(3, 4), rel = FALSE,
                        key = NULL, value = NULL),
                 production =
-                  list(type = "values", unit = "t", factor = 1,
+                  list(type = "measured", unit = "t", factor = 1,
                        row = 2, col = c(5, 6), rel = FALSE,
                        key = NULL, value = NULL))))
 
@@ -157,11 +157,11 @@ test_that("bring one wide identifying variable into long form", {
                   list(type = "id", value = NULL, split = NULL,
                        row = 1, col = c(3, 5), rel = FALSE),
                 harvested =
-                  list(type = "values", unit = "ha", factor = 1,
+                  list(type = "measured", unit = "ha", factor = 1,
                        row = 2, col = c(3, 5), rel = FALSE,
                        key = NULL, value = NULL),
                 production =
-                  list(type = "values", unit = "t", factor = 1,
+                  list(type = "measured", unit = "t", factor = 1,
                        row = 2, col = c(4, 6), rel = FALSE,
                        key = NULL, value = NULL))))
 
@@ -191,11 +191,11 @@ test_that("bring one wide identifying variable into long form", {
                   list(type = "id", value = NULL, split = NULL,
                        row = 2, col = NULL, rel = FALSE),
                 harvested =
-                  list(type = "values", unit = "ha", factor = 1,
+                  list(type = "measured", unit = "ha", factor = 1,
                        row = 1, col = c(3, 4), rel = FALSE,
                        key = NULL, value = NULL),
                 production =
-                  list(type = "values", unit = "t", factor = 1,
+                  list(type = "measured", unit = "t", factor = 1,
                        row = 1, col = c(5, 6), rel = FALSE,
                        key = NULL, value = NULL))))
 
@@ -225,11 +225,11 @@ test_that("bring one wide identifying variable into long form", {
                   list(type = "id", value = NULL, split = NULL,
                        row = 2, col = NULL, rel = FALSE),
                 harvested =
-                  list(type = "values", unit = "ha", factor = 1,
+                  list(type = "measured", unit = "ha", factor = 1,
                        row = 1, col = c(3, 5), rel = FALSE,
                        key = NULL, value = NULL),
                 production =
-                  list(type = "values", unit = "t", factor = 1,
+                  list(type = "measured", unit = "t", factor = 1,
                        row = 1, col = c(4, 6), rel = FALSE,
                        key = NULL, value = NULL))))
 
@@ -261,11 +261,11 @@ test_that("bring several wide identifying variables into long form", {
                   list(type = "id", value = NULL, split = NULL,
                        row = 2, col = c(2, 4, 6, 8), rel = FALSE),
                 harvested =
-                  list(type = "values", unit = "ha", factor = 1,
+                  list(type = "measured", unit = "ha", factor = 1,
                        row = 3, col = c(2, 4, 6, 8), rel = FALSE,
                        key = NULL, value = NULL),
                 production =
-                  list(type = "values", unit = "t", factor = 1,
+                  list(type = "measured", unit = "t", factor = 1,
                        row = 3, col = c(3, 5, 7, 9), rel = FALSE,
                        key = NULL, value = NULL))))
 
@@ -298,11 +298,11 @@ test_that("spread long table", {
                   list(type = "id", value = NULL, split = NULL,
                        row = NULL, col = 3, rel = FALSE),
                 harvested =
-                  list(type = "values", unit = "ha", factor = 1,
+                  list(type = "measured", unit = "ha", factor = 1,
                        row = NULL, col = 5, rel = FALSE,
                        key = "dimension", value = "harvested"),
                 production =
-                  list(type = "values", unit = "t", factor = 1,
+                  list(type = "measured", unit = "t", factor = 1,
                        row = NULL, col = 5, rel = FALSE,
                        key = "dimension", value = "production"))))
 
@@ -332,11 +332,11 @@ test_that("spread long table", {
                   list(type = "id", value = NULL, split = NULL,
                        row = NULL, col = 3, rel = FALSE),
                 harvested =
-                  list(type = "values", unit = "ha", factor = 1,
+                  list(type = "measured", unit = "ha", factor = 1,
                        row = NULL, col = 6, rel = FALSE,
                        key = "dimension", value = "harvested"),
                 production =
-                  list(type = "values", unit = "t", factor = 1,
+                  list(type = "measured", unit = "t", factor = 1,
                        row = NULL, col = 6, rel = FALSE,
                        key = "dimension", value = "production"))))
 
@@ -368,11 +368,11 @@ test_that("bring one wide identifying variable into long form and spread long ta
                   list(type = "id", value = NULL, split = NULL,
                        row = 1, col = c(4, 5), rel = FALSE),
                 harvested =
-                  list(type = "values", unit = "ha", factor = 1,
+                  list(type = "measured", unit = "ha", factor = 1,
                        row = NULL, col = c(4, 5), rel = FALSE,
                        key = "dimension", value = "harvested"),
                 production =
-                  list(type = "values", unit = "t", factor = 1,
+                  list(type = "measured", unit = "t", factor = 1,
                        row = NULL, col = c(4, 5), rel = FALSE,
                        key = "dimension", value = "production"))))
 
@@ -404,11 +404,11 @@ test_that("bring several wide identifying variable into long form and spread lon
                   list(type = "id", value = NULL, split = NULL,
                        row = 2, col = c(3, 4, 5, 6), rel = FALSE),
                 harvested =
-                  list(type = "values", unit = "ha", factor = 1,
+                  list(type = "measured", unit = "ha", factor = 1,
                        row = NULL, col = c(3, 4, 5, 6), rel = FALSE,
                        key = "dimension", value = "harvested"),
                 production =
-                  list(type = "values", unit = "t", factor = 1,
+                  list(type = "measured", unit = "t", factor = 1,
                        row = NULL, col = c(3, 4, 5, 6), rel = FALSE,
                        key = "dimension", value = "production"))))
 
@@ -440,11 +440,11 @@ test_that("split a column that contains several variables in an already tidy tab
                   list(type = "id", value = NULL, split = "(?<=\\_).*",
                        row = NULL, col = 2, rel = FALSE),
                 harvested =
-                  list(type = "values", unit = "ha", factor = 1,
+                  list(type = "measured", unit = "ha", factor = 1,
                        row = NULL, col = 3, rel = FALSE,
                        key = NULL, value = NULL),
                 production =
-                  list(type = "values", unit = "t", factor = 1,
+                  list(type = "measured", unit = "t", factor = 1,
                        row = NULL, col = 4, rel = FALSE,
                        key = NULL, value = NULL))))
 
@@ -461,27 +461,20 @@ test_that("split a column that contains several variables in an already tidy tab
 test_that("vertical clusters that are aggregated per values variable", {
   schema <- makeSchema(
     list(clusters =
-           list(top = c(3, 13), left = 2, width = NULL, height = 8,
-                id = "values"),
-         header = list(row = 1, rel = FALSE),
-         meta = list(del = NULL, dec = NULL, na = NULL, types = NULL),
+           list(top = c(3, 13), left = 2, height = 8, id = "measured"),
+         header = list(row = 1),
          variables =
            list(territories =
-                  list(type = "id", value = NULL, split = NULL,
-                       row = NULL, col = 2, rel = FALSE),
+                  list(type = "id", col = 2),
                 year =
-                  list(type = "id", value = NULL, split = NULL,
-                       row = NULL, col = 3, rel = FALSE),
+                  list(type = "id", col = 3),
                 commodities =
-                  list(type = "id", value = NULL, split = NULL,
-                       row = NULL, col = 4, rel = FALSE),
+                  list(type = "id", col = 4),
                 harvested =
-                  list(type = "values", unit = "ha", factor = 1,
-                       row = NULL, col = 5, rel = FALSE,
+                  list(type = "measured", unit = "ha", factor = 1, col = 5,
                        key = "cluster", value = 1),
                 production =
-                  list(type = "values", unit = "t", factor = 1,
-                       row = NULL, col = 5, rel = FALSE,
+                  list(type = "measured", unit = "t", factor = 1, col = 5,
                        key = "cluster", value = 2))))
 
   input <- read_csv(paste0(system.file("test_datasets",
@@ -497,7 +490,7 @@ test_that("vertical clusters that are aggregated per values variable", {
 test_that("vertical clusters per values variable with a wide identifying variable", {
   schema <- makeSchema(
     list(clusters =
-           list(top = c(3, 9), left = 2, height = 4, id = "values"),
+           list(top = c(3, 9), left = 2, height = 4, id = "measured"),
          header = list(row = 1),
          meta = list(del = NULL, dec = NULL, na = NULL, types = NULL),
          variables =
@@ -508,10 +501,10 @@ test_that("vertical clusters per values variable with a wide identifying variabl
                 commodities =
                   list(type = "id", row = 1, col = c(4, 5)),
                 harvested =
-                  list(type = "values", unit = "ha", factor = 1,
+                  list(type = "measured", unit = "ha", factor = 1,
                        col = c(4, 5), key = "cluster", value = 1),
                 production =
-                  list(type = "values", unit = "t", factor = 1,
+                  list(type = "measured", unit = "t", factor = 1,
                        col = c(4, 5), key = "cluster", value = 2))))
 
   input <- read_csv(paste0(system.file("test_datasets",
@@ -528,7 +521,7 @@ test_that("vertical clusters per values variable with a two nested wide identify
   schema <- makeSchema(
     list(clusters =
            list(top = c(4, 8), left = 2, width = NULL, height = 2,
-                id = "values"),
+                id = "measured"),
          header = list(row = c(1, 2), rel = FALSE),
          meta = list(del = NULL, dec = NULL, na = NULL, types = NULL),
          variables =
@@ -542,11 +535,11 @@ test_that("vertical clusters per values variable with a two nested wide identify
                   list(type = "id", value = NULL, split = NULL,
                        row = 2, col = c(3:6), rel = FALSE),
                 harvested =
-                  list(type = "values", unit = "ha", factor = 1,
+                  list(type = "measured", unit = "ha", factor = 1,
                        row = NULL, col = c(3:6), rel = FALSE,
                        key = "cluster", value = 1),
                 production =
-                  list(type = "values", unit = "t", factor = 1,
+                  list(type = "measured", unit = "t", factor = 1,
                        row = NULL, col = c(3:6), rel = FALSE,
                        key = "cluster", value = 2))))
 
@@ -577,11 +570,11 @@ test_that("relative values work in all cases", {
                   list(type = "id", value = NULL, split = NULL,
                        row = NULL, col = 2, rel = TRUE),
                 harvested =
-                  list(type = "values", unit = "ha", factor = 1,
+                  list(type = "measured", unit = "ha", factor = 1,
                        row = NULL, col = 3, rel = TRUE,
                        key = NULL, value = NULL),
                 production =
-                  list(type = "values", unit = "t", factor = 1,
+                  list(type = "measured", unit = "t", factor = 1,
                        row = NULL, col = 4, rel = TRUE,
                        key = NULL, value = NULL))))
 

@@ -73,7 +73,7 @@ makeSchema <- function(schema = NULL){
         varProp <- c(varProp, list(dist = FALSE))
       }
 
-    } else if(varProp$type == "values"){
+    } else if(varProp$type == "measured"){
       if(!any(names(varProp) %in% "unit")){
         varProp <- c(varProp, list(unit = NULL))
       }

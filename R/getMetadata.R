@@ -58,7 +58,7 @@ getMetadata <- function(data = NULL, schema = NULL){
       }
 
       # ... is a values variable ----
-      if(varProp$type == "values"){
+      if(varProp$type == "measured"){
         valVars <- c(valVars, varName)
         valFctrs <- c(valFctrs, varProp$factor)
 

@@ -55,13 +55,6 @@ setValidity(Class = "schema", function(object){
         errors <- c(errors, "'schema$clusters$id' must have a character value.")
       }
     }
-    # if(!is.null(object@clusters$header)){
-    #   # if(!is.logical(object@clusters$header)){
-    #     # errors <- c(errors, "'schema$clusters$header' must either be 'TRUE' or 'FALSE'.")
-    #     if(!is_integerish(object@clusters$header)){
-    #       errors <- c(errors, "'schema$clusters$header' must an integersih value.")
-    #   }
-    # }
   }
 
   if(!.hasSlot(object = object, name = "header")){
@@ -135,8 +128,8 @@ setValidity(Class = "schema", function(object){
       theVariable <- object@variables[[i]]
       theName <- names(object@variables)[i]
 
-      if(!theVariable$type %in% c("id", "values")){
-        errors <- c(errors, paste0("the variables '", theName, "' does must be of type 'id' or 'values'."))
+      if(!theVariable$type %in% c("id", "measured")){
+        errors <- c(errors, paste0("the variables '", theName, "' does must be of type 'id' or 'measured'."))
         return(paste0("\n", errors))
       }
 
