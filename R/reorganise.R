@@ -209,6 +209,11 @@ reorganise <- function(input = NULL, schema = NULL){
       theNames <- NULL
     }
 
+    # if there are columns in the table that don't have a name, remove them
+    if(anyNA(names(temp))){
+      temp <- temp[,which(!is.na(names(temp)))]
+    }
+
     # make sure that all values variables are numeric and have the correct value
     for(j in seq_along(valuesInCluster)){
       varName <- valuesInCluster[j]
