@@ -1,0 +1,8 @@
+"here would be some metadata, which does however not tell us that this is in fact unit 1",,,
+"we get that information from the context, for example the filename",,,
+,,,
+commodities,harvested,production,period
+soybean,1111,1112,year 1
+maize,1121,1122,year 1
+soybean,1211,1212,year 2
+maize,1221,1222,year 2

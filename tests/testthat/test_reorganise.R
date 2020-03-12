@@ -28,7 +28,41 @@ test_that("several vertical clusters of otherwise tidy data", {
                     col_names = FALSE)
   output <- reorganise(input = input, schema = schema)
 
-  expect_valid_table(x = output)
+  expect_valid_table(x = output, units = 2)
+})
+
+test_that("relative values work in all cases", {
+  schema <- makeSchema(
+    list(clusters =
+           list(top = c(3, 10), left = 2, width = NULL, height = 4,
+                id = "territories"),
+         header = list(row = 1, rel = FALSE),
+         meta = list(del = NULL, dec = NULL, na = NULL, types = NULL),
+         variables =
+           list(territories =
+                  list(type = "id", value = NULL, split = NULL,
+                       row = c(2, 9), col = 1, rel = FALSE),
+                year =
+                  list(type = "id", value = NULL, split = NULL,
+                       row = NULL, col = 1, rel = TRUE),
+                commodities =
+                  list(type = "id", value = NULL, split = NULL,
+                       row = NULL, col = 2, rel = TRUE),
+                harvested =
+                  list(type = "measured", unit = "ha", factor = 1,
+                       row = NULL, col = 3, rel = TRUE,
+                       key = NULL, value = NULL),
+                production =
+                  list(type = "measured", unit = "t", factor = 1,
+                       row = NULL, col = 4, rel = TRUE,
+                       key = NULL, value = NULL))))
+
+  input <- read_csv(paste0(system.file("test_datasets",
+                                       package="rectifyr",
+                                       mustWork = TRUE), "/table1.csv"),
+                    col_names = FALSE)
+  output <- reorganise(input = input, schema = schema)
+  expect_valid_table(x = output, units = 2)
 })
 
 # several horizontal clusters of otherwise tidy data ----
@@ -64,7 +98,7 @@ test_that("several horizontal clusters of otherwise tidy data", {
                     col_names = FALSE)
   output <- reorganise(input = input, schema = schema)
 
-  expect_valid_table(x = output)
+  expect_valid_table(x = output, units = 2)
 })
 
 # already tidy table ----
@@ -100,7 +134,7 @@ test_that("already tidy table", {
                     col_names = FALSE)
   output <- reorganise(input = input, schema = schema)
 
-  expect_valid_table(x = output)
+  expect_valid_table(x = output, units = 2)
 })
 
 # bring one wide identifying variable into long form ----
@@ -137,7 +171,7 @@ test_that("bring one wide identifying variable into long form", {
                     col_names = FALSE)
   output <- reorganise(input = input, schema = schema)
 
-  expect_valid_table(x = output)
+  expect_valid_table(x = output, units = 2)
 
   # wide variable in first row of header, values separated
   schema <- makeSchema(
@@ -171,7 +205,7 @@ test_that("bring one wide identifying variable into long form", {
                     col_names = FALSE)
   output <- reorganise(input = input, schema = schema)
 
-  expect_valid_table(x = output)
+  expect_valid_table(x = output, units = 2)
 
   # wide variable in second row of header, values next to each other
   schema <- makeSchema(
@@ -205,7 +239,7 @@ test_that("bring one wide identifying variable into long form", {
                     col_names = FALSE)
   output <- reorganise(input = input, schema = schema)
 
-  expect_valid_table(x = output)
+  expect_valid_table(x = output, units = 2)
 
   # wide variable in secon row of header, values spearated
   schema <- makeSchema(
@@ -239,7 +273,7 @@ test_that("bring one wide identifying variable into long form", {
                     col_names = FALSE)
   output <- reorganise(input = input, schema = schema)
 
-  expect_valid_table(x = output)
+  expect_valid_table(x = output, units = 2)
 })
 
 # bring several wide identifying variables into long form ----
@@ -275,7 +309,7 @@ test_that("bring several wide identifying variables into long form", {
                     col_names = FALSE)
   output <- reorganise(input = input, schema = schema)
 
-  expect_valid_table(x = output)
+  expect_valid_table(x = output, units = 2)
 })
 
 # spread long table ----
@@ -312,7 +346,7 @@ test_that("spread long table", {
                     col_names = FALSE)
   output <- reorganise(input = input, schema = schema)
 
-  expect_valid_table(x = output)
+  expect_valid_table(x = output, units = 2)
 
   # with a couple of other columns
   schema <- makeSchema(
@@ -346,7 +380,7 @@ test_that("spread long table", {
                     col_names = FALSE)
   output <- reorganise(input = input, schema = schema)
 
-  expect_valid_table(x = output)
+  expect_valid_table(x = output, units = 2)
 })
 
 # bring one wide identifying variable into long form and spread long table ----
@@ -382,7 +416,7 @@ test_that("bring one wide identifying variable into long form and spread long ta
                     col_names = FALSE)
   output <- reorganise(input = input, schema = schema)
 
-  expect_valid_table(x = output)
+  expect_valid_table(x = output, units = 2)
 })
 
 # bring several wide identifying variable into long form and spread long table ----
@@ -418,7 +452,7 @@ test_that("bring several wide identifying variable into long form and spread lon
                     col_names = FALSE)
   output <- reorganise(input = input, schema = schema)
 
-  expect_valid_table(x = output)
+  expect_valid_table(x = output, units = 2)
 })
 
 # split a column that contains several id variables in an already tidy table ----
@@ -454,7 +488,7 @@ test_that("split a column that contains several variables in an already tidy tab
                     col_names = FALSE)
   output <- reorganise(input = input, schema = schema)
 
-  expect_valid_table(x = output)
+  expect_valid_table(x = output, units = 2)
 })
 
 # vertical clusters that are aggregated per values variable ----
@@ -483,7 +517,7 @@ test_that("vertical clusters that are aggregated per values variable", {
                     col_names = FALSE)
   output <- reorganise(input = input, schema = schema)
 
-  expect_valid_table(x = output)
+  expect_valid_table(x = output, units = 2)
 })
 
 # vertical clusters per values variable with a wide identifying variable ----
@@ -513,10 +547,10 @@ test_that("vertical clusters per values variable with a wide identifying variabl
                     col_names = FALSE)
   output <- reorganise(input = input, schema = schema)
 
-  expect_valid_table(x = output)
+  expect_valid_table(x = output, units = 2)
 })
 
-# vertical clusters per values variable with a two nested wide identifying variables ----
+# vertical clusters per values variable with two nested wide identifying variables ----
 test_that("vertical clusters per values variable with a two nested wide identifying variables", {
   schema <- makeSchema(
     list(clusters =
@@ -549,39 +583,95 @@ test_that("vertical clusters per values variable with a two nested wide identify
                     col_names = FALSE)
   output <- reorganise(input = input, schema = schema)
 
-  expect_valid_table(x = output)
+  expect_valid_table(x = output, units = 2)
 })
 
-test_that("relative values work in all cases", {
+# recognise a distinct variable that is not valid for every cluster ----
+test_that("recognise a distinct variable that is not valid for every cluster", {
   schema <- makeSchema(
     list(clusters =
-           list(top = c(3, 10), left = 2, width = NULL, height = 4,
+           list(top = c(2, 9, 9), left = c(1, 1, 4), width = 3, height = 5,
                 id = "territories"),
          header = list(row = 1, rel = FALSE),
          meta = list(del = NULL, dec = NULL, na = NULL, types = NULL),
          variables =
            list(territories =
-                  list(type = "id", value = NULL, split = NULL,
-                       row = c(2, 9), col = 1, rel = FALSE),
+                  list(type = "id", row = 1, col = 1, rel = TRUE),
                 year =
-                  list(type = "id", value = NULL, split = NULL,
-                       row = NULL, col = 1, rel = TRUE),
+                  list(type = "id", row = c(3:6), col = 4, dist = TRUE),
                 commodities =
-                  list(type = "id", value = NULL, split = NULL,
-                       row = NULL, col = 2, rel = TRUE),
+                  list(type = "id", col = 1, rel = TRUE),
                 harvested =
                   list(type = "measured", unit = "ha", factor = 1,
-                       row = NULL, col = 3, rel = TRUE,
-                       key = NULL, value = NULL),
+                       col = 2, rel = TRUE),
                 production =
                   list(type = "measured", unit = "t", factor = 1,
-                       row = NULL, col = 4, rel = TRUE,
-                       key = NULL, value = NULL))))
+                       col = 3, rel = TRUE))))
 
   input <- read_csv(paste0(system.file("test_datasets",
                                        package="rectifyr",
-                                       mustWork = TRUE), "/table1.csv"),
+                                       mustWork = TRUE), "/table13.csv"),
                     col_names = FALSE)
   output <- reorganise(input = input, schema = schema)
-  expect_valid_table(x = output)
+
+  expect_valid_table(x = output, units = 3)
+})
+
+# set an id variable, which is not in the table, manually ----
+test_that("set a id variable that is not in the table manually", {
+  schema <- makeSchema(
+    list(clusters =
+           list(top = c(2, 6), left = 1, id = "year"),
+         header = list(row = 1, rel = FALSE),
+         meta = list(del = NULL, dec = NULL, na = NULL, types = NULL),
+         variables =
+           list(territories =
+                  list(type = "id", value = "unit 1"),
+                year =
+                  list(type = "id", row = c(2, 6), col = 1),
+                commodities =
+                  list(type = "id", col = 2, rel = TRUE),
+                harvested =
+                  list(type = "measured", unit = "ha", factor = 1,
+                       col = 3),
+                production =
+                  list(type = "measured", unit = "t", factor = 1,
+                       col = 4))))
+
+  input <- read_csv(paste0(system.file("test_datasets",
+                                       package="rectifyr",
+                                       mustWork = TRUE), "/table14.csv"),
+                    col_names = FALSE)
+  output <- reorganise(input = input, schema = schema)
+
+  expect_valid_table(x = output, units = 1)
+})
+
+# set an id variable, which is clusterID and that is also not in the table, manually ----
+test_that("set a id variable that is not in the table manually", {
+  schema <- makeSchema(
+    list(clusters =
+           list(top = 4, left = 1, id = "territories"),
+         header = list(row = 1, rel = TRUE),
+         variables =
+           list(territories =
+                  list(type = "id", value = "unit 1"),
+                year =
+                  list(type = "id", col = 4, rel = TRUE),
+                commodities =
+                  list(type = "id", col = 1, rel = TRUE),
+                harvested =
+                  list(type = "measured", unit = "ha", factor = 1,
+                       col = 2, rel = TRUE),
+                production =
+                  list(type = "measured", unit = "t", factor = 1,
+                       col = 3, rel = TRUE))))
+
+  input <- read_csv(paste0(system.file("test_datasets",
+                                       package="rectifyr",
+                                       mustWork = TRUE), "/table15.csv"),
+                    col_names = FALSE)
+  output <- reorganise(input = input, schema = schema)
+
+  expect_valid_table(x = output, units = 1)
 })

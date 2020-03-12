@@ -1,0 +1,13 @@
+commodities,harvested,production,,,,
+unit 1,,,,,,
+soybean,1111,1112,year 1,,,
+maize,1121,1122,year 1,,,
+soybean,1211,1212,year 2,,,
+maize,1221,1222,year 2,,,
+,,,,,,
+commodities,harvested,production,commodities,harvested,production,
+unit 2,,,unit 3,,,
+soybean,2111,2112,soybean,3111,3112,year 1
+maize,2121,2122,maize,3121,3122,year 1
+soybean,2211,2212,soybean,3211,3212,year 2
+maize,2221,2222,maize,3221,3222,year 2

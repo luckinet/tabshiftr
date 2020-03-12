@@ -4,10 +4,12 @@
 \alias{expect_valid_table}
 \title{Test for a valid table}
 \usage{
-expect_valid_table(x = NULL)
+expect_valid_table(x = NULL, units = 1)
 }
 \arguments{
 \item{x}{a table to test.}
+
+\item{units}{the number of units in the output table (from 1 to 3)}
 }
 \description{
 Test for a valid table
