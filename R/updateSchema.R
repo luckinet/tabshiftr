@@ -25,12 +25,16 @@ updateSchema <- function(input = NULL, schema = NULL){
   }
 
   if(is.null(clusters$width)){
-    clusters$width <- diff(c(clusters$left, tabDim[2]+1))
+    nPos <- table(clusters$left)
+    dist <- diff(c(unique(clusters$left), tabDim[2]+1))
+    clusters$width <- rep(dist, times = nPos)
   }
 
   if(is.null(clusters$height)){
     if(length(clusters$top) > 1){
-      clusters$height <- diff(c(clusters$top, tabDim[1]+1))
+      nPos <- table(clusters$top)
+      dist <- diff(c(unique(clusters$top), tabDim[1]+1))
+      clusters$height <- rep(dist, times = nPos)
     } else {
       clusters$height <- tabDim[1]+1 - min(clusters$top)
     }
@@ -87,7 +91,11 @@ updateSchema <- function(input = NULL, schema = NULL){
 
 
         } else if(clusType == "messy"){
-          stop("messy clusters have not yet been fully implemented.")
+          # stop("messy clusters have not yet been fully implemented.")
+        }
+
+        if(varProp$type == "id" & !is.null(varProp$val)){
+          setRel <- FALSE
         }
 
         if(setRel){
