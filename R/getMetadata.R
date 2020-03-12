@@ -77,7 +77,7 @@ getMetadata <- function(data = NULL, schema = NULL){
       outsideRows <- outsideCols <- FALSE
       if(distinct){
         if(varProp$rel){
-          stop("provide absolute values for distinct variables!")
+          stop("provide absolute values for the distinct variable '", varName, "'!")
         }
       } else {
         if(!varProp$rel){
