@@ -340,11 +340,16 @@ setMethod(f = "show",
               if(variables[[x]]$type == "id"){
                 NULL
               } else {
-                if(grepl(pattern = "\n", variables[[x]]$key)){
-                  paste0(str_split(string = variables[[x]]$key, pattern = "\n", simplify = TRUE)[1], " ...")
+                if(!is.null(variables[[x]]$key)){
+                  if(grepl(pattern = "\n", variables[[x]]$key)){
+                    paste0(str_split(string = variables[[x]]$key, pattern = "\n", simplify = TRUE)[1], " ...")
+                  } else {
+                    variables[[x]]$key
+                  }
                 } else {
-                  variables[[x]]$key
+                  NULL
                 }
+
               }
             })
             nKeys <- sapply(seq_along(theKeys), function(x){
@@ -362,10 +367,14 @@ setMethod(f = "show",
               if(variables[[x]]$type == "id"){
                 NULL
               } else {
-                if(grepl(pattern = "\n", variables[[x]]$value)){
-                  paste0(str_split(string = variables[[x]]$value, pattern = "\n", simplify = TRUE)[1], " ...")
+                if(!is.null(variables[[x]]$value)){
+                  if(grepl(pattern = "\n", variables[[x]]$value)){
+                    paste0(str_split(string = variables[[x]]$value, pattern = "\n", simplify = TRUE)[1], " ...")
+                  } else {
+                    variables[[x]]$value
+                  }
                 } else {
-                  variables[[x]]$value
+                  NULL
                 }
               }
             })
