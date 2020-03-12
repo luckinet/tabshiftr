@@ -31,6 +31,9 @@ makeSchema <- function(schema = NULL){
   if(!any(names(header) %in% "rel")){
     header <- c(header, list(rel = FALSE))
   }
+  if(!any(names(header) %in% "merge")){
+    header <- c(header, list(merge = FALSE))
+  }
 
   meta <- schema$meta
   if(!any(names(meta) %in% "del")){

@@ -12,6 +12,7 @@ getMetadata <- function(data = NULL, schema = NULL){
 
   variables <- schema@variables
   clusters <- schema@clusters
+  header <- schema@header
 
   out <- list()
   for(j in seq_along(data)){
@@ -193,8 +194,9 @@ getMetadata <- function(data = NULL, schema = NULL){
 
     temp <- list(cluster = list(cluster_rows = clustRows,
                                 outside_cluster = outVar,
-                                cluster_id = clusters$id,
-                                header = mergeOrder),
+                                cluster_id = clusters$id),
+                 header = list(cols = mergeOrder,
+                               merge = header$merge),
                  var_type = list(ids = idVars,
                                  vals = valVars,
                                  factor = valFctrs),

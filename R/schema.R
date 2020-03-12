@@ -66,17 +66,22 @@ setValidity(Class = "schema", function(object){
     if(length(object@header) == 0){
       errors <- c(errors, "the slot 'header' does not contain any entries.")
     }
-    if(!all(c("row", "rel") %in% names(object@header))){
-      errors <- c(errors, "'names(schema$header)' must be a permutation of set {row,rel}")
+    if(!all(names(object@header) %in% c("row", "rel", "merge"))){
+      errors <- c(errors, "'names(header)' must be a permutation of set {row,rel,merge}")
     }
     if(!is.null(object@header$row)){
       if(!is.numeric(object@header$row)){
-        errors <- c(errors, "'schema$header$row' must have a numeric value.")
+        errors <- c(errors, "'header$row' must have a numeric value.")
       }
     }
     if(!is.null(object@header$rel)){
       if(!is.logical(object@header$rel)){
-        errors <- c(errors, "'schema$header$rel' must have a logical value.")
+        errors <- c(errors, "'header$rel' must have a logical value.")
+      }
+    }
+    if(!is.null(object@header$merge)){
+      if(!is.logical(object@header$merge)){
+        errors <- c(errors, "'header$merge' must have a logical value.")
       }
     }
   }

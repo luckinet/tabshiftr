@@ -2,6 +2,7 @@
 #' @param header the header from which to derive names.
 #' @param meta the output of \code{getMetadata} as basis to derive names.
 #' @importFrom checkmate assertCharacter assertList assertNames
+#' @importFrom stats na.omit
 #' @importFrom tibble tibble as_tibble
 #' @importFrom dplyr select
 #' @importFrom stringr str_c
@@ -11,14 +12,20 @@
 getNames <- function(header = NULL, meta = NULL){
 
   assertDataFrame(x = header)
-  assertList(x = meta, len = 3)
-  assertNames(x = names(meta), permutation.of = c("cluster", "var_type", "table"))
+  assertList(x = meta, len = 4)
+
+  if(meta$header$merge){
+    newHead <- lapply(seq_along(header), function(x){
+      paste0(na.omit(header[[x]]), collapse = " ")
+    })
+    header <- as_tibble(newHead, .name_repair = "minimal")
+  }
 
   if(!is.null(meta$table$gather_into)){
       theNames <- suppressMessages(header %>%
         t() %>%
         as_tibble(.name_repair = "unique") %>%
-        select(meta$cluster$header) %>%
+        select(meta$header$cols) %>%
         unite(col = "name", sep = "-_-_", na.rm = TRUE) %>%
         unlist())
   } else {
