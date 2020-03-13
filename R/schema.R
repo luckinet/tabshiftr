@@ -74,15 +74,11 @@ setValidity(Class = "schema", function(object){
         errors <- c(errors, "'header$row' must have a numeric value.")
       }
     }
-    if(!is.null(object@header$rel)){
-      if(!is.logical(object@header$rel)){
-        errors <- c(errors, "'header$rel' must have a logical value.")
-      }
+    if(!is.logical(object@header$rel)){
+      errors <- c(errors, "'header$rel' must have a logical value.")
     }
-    if(!is.null(object@header$merge)){
-      if(!is.logical(object@header$merge)){
-        errors <- c(errors, "'header$merge' must have a logical value.")
-      }
+    if(!is.logical(object@header$merge)){
+      errors <- c(errors, "'header$merge' must have a logical value.")
     }
   }
 
@@ -162,15 +158,11 @@ setValidity(Class = "schema", function(object){
             errors <- c(errors, paste0("'", theName, "$col' must have a numeric value."))
           }
         }
-        if(!is.null(theVariable$rel)){
-          if(!is.logical(theVariable$rel)){
-            errors <- c(errors, paste0("'", theName, "$rel' must either be 'TRUE' or 'FALSE'."))
-          }
+        if(!is.logical(theVariable$rel)){
+          errors <- c(errors, paste0("'", theName, "$rel' must either be 'TRUE' or 'FALSE'."))
         }
-        if(!is.null(theVariable$dist)){
-          if(!is.logical(theVariable$dist)){
-            errors <- c(errors, paste0("'", theName, "$dist' must either be 'TRUE' or 'FALSE'."))
-          }
+        if(!is.logical(theVariable$dist)){
+          errors <- c(errors, paste0("'", theName, "$dist' must either be 'TRUE' or 'FALSE'."))
         }
 
       } else {
@@ -197,15 +189,11 @@ setValidity(Class = "schema", function(object){
             errors <- c(errors, paste0("'", theName, "$col' must have a numeric value."))
           }
         }
-        if(!is.null(theVariable$rel)){
-          if(!is.logical(theVariable$rel)){
-            errors <- c(errors, paste0("'", theName, "$rel' must either be 'TRUE' or 'FALSE'."))
-          }
+        if(!is.logical(theVariable$rel)){
+          errors <- c(errors, paste0("'", theName, "$rel' must either be 'TRUE' or 'FALSE'."))
         }
-        if(!is.null(theVariable$dist)){
-          if(!is.logical(theVariable$dist)){
-            errors <- c(errors, paste0("'", theName, "$dist' must either be 'TRUE' or 'FALSE'."))
-          }
+        if(!is.logical(theVariable$dist)){
+          errors <- c(errors, paste0("'", theName, "$dist' must either be 'TRUE' or 'FALSE'."))
         }
         if(!is.null(theVariable$key)){
           if(!is.character(theVariable$key)){
