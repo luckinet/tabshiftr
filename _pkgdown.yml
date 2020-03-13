@@ -4,7 +4,7 @@ authors:
   Arne Rümmler:
     href:
 title: rectifyr
-url: http://EhrmannS.github.io/rectifyr
+url: http://EhrmannS.github.io/tabshiftr
 development:
   mode: unreleased
 
@@ -19,7 +19,7 @@ reference:
 navbar:
   left:
     - text: "Get Started"
-      href: articles/rectifyr.html
+      href: articles/tabshiftr.html
     - text: "Reference"
       href: reference/index.html
     - text: "Changelog"
@@ -28,4 +28,4 @@ navbar:
     - icon: fa-twitter fa-lg
       href: http://www.twitter.com/DerEhrmann
     - icon: fa-github
-      href: https://github.com/EhrmannS/rectifyr
+      href: https://github.com/EhrmannS/tabshiftr

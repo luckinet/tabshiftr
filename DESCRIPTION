@@ -1,4 +1,4 @@
-Package: rectifyr
+Package: tabshiftr
 Title: Reshape disorganised messy tables
 Version: 0.1.2
 Authors@R: c(
@@ -13,8 +13,8 @@ Authors@R: c(
     )
 Description: Registers schema descriptions of (disorganised) messy tables and 
     reorganises them into a standardised (tidy) format.
-URL: https://gitlab.com/luckinet/software/rectifyr
-BugReports: https://gitlab.com/luckinet/software/rectifyr/issues
+URL: https://gitlab.com/luckinet/software/tabshiftr
+BugReports: https://gitlab.com/luckinet/software/tabshiftr/issues
 Depends:
     R (>= 2.10)
 License: GPL-3
