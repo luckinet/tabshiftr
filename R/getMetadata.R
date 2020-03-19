@@ -23,8 +23,8 @@ getMetadata <- function(data = NULL, schema = NULL){
     tableRows <- seq_along(clustRows)
     tableRows <- tableRows[clustRows]
     dataRows <- rep(TRUE, length(tableRows))
-    clustDim <- c(clusters$top[j], clusters$top[j]+clusters$height[j]-1,
-                  clusters$left[j], clusters$left[j]+clusters$width[j]-1)
+    clustDim <- c(clusters$row[j], clusters$row[j]+clusters$height[j]-1,
+                  clusters$col[j], clusters$col[j]+clusters$width[j]-1)
 
     # define some variables
     idVars <- valVars <- valFctrs <- tidyVars <- outVar <- spreadVars <- gatherVars <- NULL
@@ -105,7 +105,7 @@ getMetadata <- function(data = NULL, schema = NULL){
           if(!varName %in% clusters$id){
             gatherVars <- c(gatherVars, varName)
             if(!varProp$rel){
-              gatherCols <- c(gatherCols, varProp$col - clusters$left[j] + 1)
+              gatherCols <- c(gatherCols, varProp$col - clusters$col[j] + 1)
             } else {
               gatherCols <- c(gatherCols, varProp$col)
             }

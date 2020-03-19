@@ -21,8 +21,8 @@ selectData <- function(input = NULL, clusters = NULL, header = NULL){
   out <- list()
   nrClusters <- max(lengths(clusters))
   for(i in 1:nrClusters){
-    clusterRows <- clusters$top[i]:(clusters$top[i]+clusters$height[i] - 1)
-    clusterCols <- clusters$left[i]:(clusters$left[i]+clusters$width[i] - 1)
+    clusterRows <- clusters$row[i]:(clusters$row[i]+clusters$height[i] - 1)
+    clusterCols <- clusters$col[i]:(clusters$col[i]+clusters$width[i] - 1)
     tempCols <- input[, clusterCols]
 
     # determine which rows/cols contain valid data
@@ -33,14 +33,14 @@ selectData <- function(input = NULL, clusters = NULL, header = NULL){
 
     # adapt values if header is relative
     if(header$rel){
-      tempHeader <- clusters$top[i]+header$row-1
+      tempHeader <- clusters$row[i]+header$row-1
     } else {
       tempHeader <- header$row
     }
 
     # remove rows from 'temp' that are header rows within a cluster
-    if(any(tempHeader >= clusters$top[i])){
-      toRemove <- tempHeader[tempHeader >= clusters$top[i]]
+    if(any(tempHeader >= clusters$row[i])){
+      toRemove <- tempHeader[tempHeader >= clusters$row[i]]
       clustRows[toRemove] <- FALSE
     }
     # and remove rows that contain only NAs

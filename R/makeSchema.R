@@ -8,11 +8,11 @@
 makeSchema <- function(schema = NULL){
 
   clusters <- schema$clusters
-  if(!any(names(clusters) %in% "top")){
-    clusters <- c(clusters, list(dist = NULL))
+  if(!any(names(clusters) %in% "row")){
+    clusters <- c(clusters, list(row = NULL))
   }
-  if(!any(names(clusters) %in% "left")){
-    clusters <- c(clusters, list(left = NULL))
+  if(!any(names(clusters) %in% "col")){
+    clusters <- c(clusters, list(col = NULL))
   }
   if(!any(names(clusters) %in% "width")){
     clusters <- c(clusters, list(width = NULL))

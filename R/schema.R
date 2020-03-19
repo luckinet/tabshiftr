@@ -27,17 +27,17 @@ setValidity(Class = "schema", function(object){
     if(!is.list(object@clusters)){
       errors <- c(errors, "the slot 'clusters' is not a list.")
     }
-    if(!all(names(object@clusters) %in% c("top", "left", "width", "height", "id"))){
-      errors <- c(errors, "'names(schema$clusters)' must be a permutation of set {top,left,width,height,id}")
+    if(!all(names(object@clusters) %in% c("row", "col", "width", "height", "id"))){
+      errors <- c(errors, "'names(schema$clusters)' must be a permutation of set {row,col,width,height,id}")
     }
-    if(!is.null(object@clusters$top)){
-      if(!is.numeric(object@clusters$top)){
-        errors <- c(errors, "'schema$clusters$top' must have a numeric value.")
+    if(!is.null(object@clusters$row)){
+      if(!is.numeric(object@clusters$row)){
+        errors <- c(errors, "'schema$clusters$row' must have a numeric value.")
       }
     }
-    if(!is.null(object@clusters$left)){
-      if(!is.numeric(object@clusters$left)){
-        errors <- c(errors, "'schema$clusters$left' must have a numeric value.")
+    if(!is.null(object@clusters$col)){
+      if(!is.numeric(object@clusters$col)){
+        errors <- c(errors, "'schema$clusters$col' must have a numeric value.")
       }
     }
     if(!is.null(object@clusters$width)){
@@ -236,26 +236,26 @@ setMethod(f = "show",
             clusters <- object@clusters
             variables <- object@variables
 
-            nClusters <- ifelse(length(clusters$top) == 0, 1, length(clusters$top))
+            nClusters <- ifelse(length(clusters$row) == 0, 1, length(clusters$row))
             nvars <- length(variables)
             theNames <- names(variables)
             nClustName <- ifelse(nClusters > 1, "clusters", "cluster")
 
             # make and print cluster info ----
-            if(is.null(clusters$top) & is.null(clusters$left) & is.null(clusters$width) & is.null(clusters$height)){
+            if(is.null(clusters$row) & is.null(clusters$col) & is.null(clusters$width) & is.null(clusters$height)){
               clusterSpecs <- paste0(" (whole spreadsheet)")
             } else {
-              if(is.null(clusters$left)){
+              if(is.null(clusters$col)){
                 left <- 1
               } else {
-                left <- clusters$left
+                left <- clusters$col
               }
-              if(is.null(clusters$top)){
+              if(is.null(clusters$row)){
                 top <- 1
               } else {
-                top <- clusters$top
+                top <- clusters$row
               }
-              clusterSpecs <- paste0("\n    origin: ", paste(top, left, collapse = ", ", sep = "|"), "  (top|left)",
+              clusterSpecs <- paste0("\n    origin: ", paste(top, left, collapse = ", ", sep = "|"), "  (row|col)",
                                      ifelse(!is.null(clusters$id), paste0("\n    id    : ", clusters$id), ""))
             }
             cat(paste0("  ", nClusters, " ", nClustName, clusterSpecs, "\n\n"))
