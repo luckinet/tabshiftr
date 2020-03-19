@@ -1,4 +1,4 @@
 library(testthat)
-library(rectifyr)
+library(tabshiftr)
 
-test_check("rectifyr")
+test_check("tabshiftr")

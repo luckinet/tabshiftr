@@ -72,4 +72,3 @@
 #'   when more variables are contained in a table.
 #'
 "schema_default"
-

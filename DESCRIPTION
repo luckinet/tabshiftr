@@ -1,5 +1,5 @@
 Package: tabshiftr
-Title: Reshape disorganised messy tables
+Title: Reshape disorganised messy data
 Version: 0.1.2
 Authors@R: c(
     person("Steffen", "Ehrmann", 
@@ -13,8 +13,8 @@ Authors@R: c(
     )
 Description: Registers schema descriptions of (disorganised) messy tables and 
     reorganises them into a standardised (tidy) format.
-URL: https://gitlab.com/luckinet/software/tabshiftr
-BugReports: https://gitlab.com/luckinet/software/tabshiftr/issues
+URL: https://github.com/EhrmannS/tabshiftr
+BugReports: https://github.com/EhrmannS/tabshiftr/issues
 Depends:
     R (>= 2.10)
 License: GPL-3
@@ -33,7 +33,7 @@ Imports:
     methods,
     purrr,
     stringr
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.0
 Suggests: 
     knitr,
     rmarkdown,

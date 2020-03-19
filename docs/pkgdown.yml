@@ -1,10 +1,9 @@
-pandoc: 2.9.1.1
+pandoc: 2.3.1
 pkgdown: 1.4.1
 pkgdown_sha: ~
 articles:
-  from_messy_to_tidy_data: from_messy_to_tidy_data.html
-  rectifyr: rectifyr.html
+  tabshiftr: tabshiftr.html
 urls:
-  reference: http://EhrmannS.github.io/rectifyr/reference
-  article: http://EhrmannS.github.io/rectifyr/articles
+  reference: http://EhrmannS.github.io/tabshiftr/reference
+  article: http://EhrmannS.github.io/tabshiftr/articles
 

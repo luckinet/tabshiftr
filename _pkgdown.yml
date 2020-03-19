@@ -2,7 +2,6 @@ authors:
   Steffen Ehrmann:
     href:  https://orcid.org/0000-0002-2958-0796
   Arne Rümmler:
-    href:
 title: rectifyr
 url: http://EhrmannS.github.io/tabshiftr
 development:
@@ -12,6 +11,7 @@ reference:
   - title: make a schema description
     contents:
       - makeSchema
+      - schema_default
   - title: reorganise tables
     contents:
       - reorganise
