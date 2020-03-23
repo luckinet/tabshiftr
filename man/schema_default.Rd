@@ -4,8 +4,7 @@
 \name{schema_default}
 \alias{schema_default}
 \title{Default template of a schema description}
-\format{
-The object of class \code{schema} describes at which position in a
+\format{The object of class \code{schema} describes at which position in a
   table which information can be found. It contains the two obligatory slots
   \code{clusters} and \code{variables}.
 
@@ -74,8 +73,7 @@ The object of class \code{schema} describes at which position in a
 
   The default schema description contains an example of an identifying and a
   values variables. Further identifying and values variables would be added
-  when more variables are contained in a table.
-}
+  when more variables are contained in a table.}
 \usage{
 schema_default
 }
