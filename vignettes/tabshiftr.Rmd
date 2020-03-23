@@ -10,7 +10,6 @@ output:
     toc_float: yes
 bibliography: references.bib
 urlcolor: blue
-documentclass: article
 fontsize: 12pt
 linestretch: 1.15
 link-citations: yes
@@ -44,7 +43,7 @@ To set up a schema description, the recommended strategy is the following:
 1. Clarify which are the identifying variables and which are the measured variables and create a new entry for each of them in the schema. A variable is always a combination of **name** and **values**. Names are typically the column names and values are typically in the column below that name.
 However, in many disorganised tables variable names of measured variables are used as values of an identifying variable or measured variables are nested in idetifying variables and values are thus not exclusively in the same column as their name.
 
-2. Determine whether there are clusters and find the origin (top left cell) of each cluster (Tab. \@ref(tab:clusHor), Tab. \@ref(tab:clusId) & Tab. \@ref(tab:clusMeas)). Follow the next steps for each cluster...
+2. Determine whether there are clusters and find the origin (top left cell) of each cluster ([Tab. 8](#clusHor), [Tab. 9](#clusId) & [Tab. 10](#clusMeas)). Follow the next steps for each cluster...
 
 3. Determine which variable identifies clusters and provide that as cluster ID. It can also be the case that the data are organised into seperate spreadsheets or files according to one of the variables and also those cases should be treated as if they were clusters, even if each spreadsheet/file contains a topologically coherent table. It may be that either an identifying variable, or a measured variable identifies clusters:
 
@@ -54,21 +53,21 @@ However, in many disorganised tables variable names of measured variables are us
 
 4. Determine for each identifying variable the following:
 
-    - is the variable avaiable at all? This is particularly important when the data are split up into subtables that are in different spreadsheets or files. Often the variable that splits up the data (and thus identifies the clusters) is not explicitly available in the spreadsheet anymore. In such a case, provide the variables value for this cluster in `value` (Tab. \@ref(tab:implicitVar)).
+    - is the variable avaiable at all? This is particularly important when the data are split up into subtables that are in different spreadsheets or files. Often the variable that splits up the data (and thus identifies the clusters) is not explicitly available in the spreadsheet anymore. In such a case, provide the variables value for this cluster in `value` ([Tab. 5](#implicitVar)).
     - all columns in which the variable **names** sit.
-    - in case the variable is in several columns, determine additionally the row in which its names sit (Tab. \@ref(tab:nest2)).
-    - whether the variable must be split off of another column (Tab. \@ref(tab:splitCol)).
-    - whether the variable is distinct from the main table (Tab. \@ref(tab:distVar)).
+    - in case the variable is in several columns, determine additionally the row in which its names sit ([Tab. 3](#nest2)).
+    - whether the variable must be split off of another column ([Tab. 4](#splitCol)).
+    - whether the variable is distinct from the main table ([Tab. 11](#distVar)).
     <br><br>
     
 5. Determine for each measured variable the following:
 
-    - all columns in which the values of the variable sit (Tab. \@ref(tab:long)).
+    - all columns in which the values of the variable sit ([Tab. 6](#long)).
     - the unit and conversion factor.
     - in case the variable is not tidy, one of the three following cases should apply:
-        * in case the variable is nested in a wide identifying variable, determine in addition to the columns in which the values sit also the rows in which the **variable name** sits (Tab. \@ref(tab:nest1) & Tab. \@ref(tab:nest2)).
-        * in case the names of the variable are given as a value of an identifying variable (Tab. \@ref(tab:wideLong)), give the column name as `key`, together with the respective name of the measured variable in `values`.
-        * in case the name of the variable is the ID of clusters, specify `key = "cluster"` and in `values` the cluster number the variable refers to (Tab. \@ref(tab:clusMeas)).
+        * in case the variable is nested in a wide identifying variable, determine in addition to the columns in which the values sit also the rows in which the **variable name** sits ([Tab. 2](#nest1) & [Tab. 3](#nest2)).
+        * in case the names of the variable are given as a value of an identifying variable ([Tab. 7](#wideLong)), give the column name as `key`, together with the respective name of the measured variable in `values`.
+        * in case the name of the variable is the ID of clusters, specify `key = "cluster"` and in `values` the cluster number the variable refers to ([Tab. 10](#clusMeas)).
 
 
 # Table types
@@ -89,7 +88,7 @@ This is certainly not an exhaustive list of possible table arrangements, but it 
 
 ### Separated *measured variables*
 
-In case the measured variables are arranged into individual columns (Tab. \@ref(tab:tidy)), we have tidy data [@Wickham2014], which are already in the target arrangement.
+In case the measured variables are arranged into individual columns ([Tab. 1](#tab1)), we have tidy data [@Wickham2014], which are already in the target arrangement.
 The variables in a tidy table may however, still need different names, units and transformation factors.
 
 | X1 | X2 | X3 | X4 | X5 |
@@ -104,7 +103,7 @@ The variables in a tidy table may however, still need different names, units and
 | unit 2 | year 2 | soybean | 2211 | 2212 |
 | unit 2 | year 2 | maize | 2221 | 2222 |
 
-Table: (\#tab:tidy) A tidy table.
+Table: <a name="tab1"></a>Table 1: A tidy table.
 
 ```{r, eval=FALSE}
 makeSchema(list(
@@ -136,7 +135,7 @@ Beware that in those case you need to change the default header specification.
 | unit 2 | year 1 | 2111 | 2112 | 2112 | 2122 |
 | unit 2 | year 2 | 2211 | 2212 | 2121 | 2222 |
 
-Table: (\#tab:nest1) The values variables are nested within the identifying variable `commodities`.
+Table: <a name="nest1"></a>Table 2: The values variables are nested within the identifying variable `commodities`.
 
 ```{r, eval=FALSE}
 makeSchema(list(
@@ -166,7 +165,7 @@ In case several variables are nested within other variables, we have to specify 
 | unit 1 | 1111 | 1112 | 1121 | 1122 | 1211 | 1212 | 1221 | 1222 |
 | unit 2 | 2111 | 2211 | 2121 | 2221 | 2112 | 2212 | 2122 | 2222 |
 
-Table: (\#tab:nest2) The identifying variable `commodities` is nested in the identifying variable `period`. The target variable is spread across those nested columns.
+Table: <a name="nest2"></a>Table 3: The identifying variable `commodities` is nested in the identifying variable `period`. The target variable is spread across those nested columns.
 
 ```{r, eval=FALSE}
 makeSchema(list(
@@ -205,7 +204,7 @@ For example, `.+?(?=_)` gives everything up until the first `_` and `(?<=\\_).*`
 | unit 2 | year 2_soybean | 2211 | 2212 |
 | unit 2 | year 2_maize | 2221 | 2222 |
 
-Table: (\#tab:splitCol) Several variables are stored in the same column.
+Table: <a name="splitCol"></a>Table 4: Several variables are stored in the same column.
 
 ```{r, eval=FALSE}
 makeSchema(list(
@@ -237,7 +236,7 @@ In those cases, we have to register the variable nevertheless, and provide the v
 | soybean | 1211 | 1212 | year 2 |
 | maize | 1221 | 1222 | year 2 |
 
-Table: (\#tab:implicitVar) Several variables are stored in the same column.
+Table: <a name="implicitVar"></a>Table 5: Several variables are stored in the same column.
 
 ```{r, eval=FALSE}
 makeSchema(list(
@@ -261,7 +260,7 @@ makeSchema(list(
 
 ### Listed *measured variables*
 
-Some tables contain a column where the names of measured variables (`harvested` and `production`) are treated as if they were the values of an identifying variable (`dimension`), while the values are presented in only one column (`values`) (Tab. \@ref(tab:long)).
+Some tables contain a column where the names of measured variables (`harvested` and `production`) are treated as if they were the values of an identifying variable (`dimension`), while the values are presented in only one column (`values`) ([Tab. 6](#long)).
 To end up with tidy data in those cases, we need to extract the values associated with the measured variables.
 Thus, we define the measured variables and specify the `key = ` in which the variable names sit, and the `value = ` the variable name has, to extract that variable.
 
@@ -285,7 +284,7 @@ Thus, we define the measured variables and specify the `key = ` in which the var
 | unit 2 | year 2 | soybean | production | 2212 |
 | unit 2 | year 2 | maize | production | 2222 |
 
-Table: (\#tab:long) The variable names of the measured variable are treated as if they were the values of an identifying variable.
+Table: <a name="long"></a>Table 6: The variable names of the measured variable are treated as if they were the values of an identifying variable.
 
 ```{r, eval=FALSE}
 makeSchema(list(
@@ -319,7 +318,7 @@ Moreover, (several) identifying variables may be wide additionally and we have t
 | unit 2 | year 2 | harvested | 2211 | 2221 |
 | unit 2 | year 2 | production | 2212 | 2222 |
 
-Table: (\#tab:wideLong) The identifying variable `commodities` is treated as if it were the observed variable.
+Table: <a name="wideLong"></a>Table 7: The identifying variable `commodities` is treated as if it were the observed variable.
 
 ```{r, eval=FALSE}
  makeSchema(list(
@@ -350,7 +349,7 @@ To reorganise the data into tidy form, each cluster is \"cut out\", rearranged i
 
 ### Horizontal clusters
 
-In case horizontal clusters are sitting right next to each other in the same origin row (Tab. \@ref(tab:clusHor)), it is sufficient to provide the topmost row and all leftmost columns at which a new cluster starts.
+In case horizontal clusters are sitting right next to each other in the same origin row ([Tab. 8](#clusHor)), it is sufficient to provide the topmost row and all leftmost columns at which a new cluster starts.
 In case there is some arbitrary horizontal space between clusters, also the width (of each cluster) needs to be provided.
 
 
@@ -363,7 +362,7 @@ In case there is some arbitrary horizontal space between clusters, also the widt
 | year 2 | soybean | 1211 | 1212 | soybean | 2211 | 2212 |
 | year 2 | maize | 1221 | 1222 | maize | 2221 | 2222 |
 
-Table: (\#tab:clusHor) Horizontal clusters of the identifying variable `period`.
+Table: <a name="clusHor"></a>Table 8: Horizontal clusters of the identifying variable `period`.
 
 ```{r, eval=FALSE}
 makeSchema(list(
@@ -386,7 +385,7 @@ makeSchema(list(
 
 ### Vertical clusters
 
-For vertically arranged clusters (Tab. \@ref(tab:clusId)), just like for the horizontal case, the respective rows, columns (and heights) need to be provided.
+For vertically arranged clusters ([Tab. 9](#clusId)), just like for the horizontal case, the respective rows, columns (and heights) need to be provided.
 
 | X1 | X2 | X3 | X4 | X5 |
 | :- | :- | :- | :- | :- |
@@ -402,7 +401,7 @@ For vertically arranged clusters (Tab. \@ref(tab:clusId)), just like for the hor
 |  | year 2 | soybean | 2211 | 2212 |
 |  | year 2 | maize | 2221 | 2222 |
 
-Table: (\#tab:clusId) Vertical clusters of the identifying variable `period`.
+Table: <a name="clusId"></a>Table 9: Vertical clusters of the identifying variable `period`.
 
 ```{r, eval=FALSE}
 makeSchema(list(
@@ -474,7 +473,7 @@ This is in contrast to nested measured variables, where the rows of the variable
 |  | unit 2 | year 2 | soybean | 2212 |
 |  | unit 2 | year 2 | maize | 2222 |
 
-Table: (\#tab:clusMeas) Vertical clusters of the measured variables.
+Table: <a name="clusMeas"></a>Table 10: Vertical clusters of the measured variables.
 
 ```{r, eval=FALSE}
 makeSchema(list(
@@ -517,7 +516,7 @@ This is done by providing `row` and `col` as absolute values and setting `dist =
 | soybean | 2211 | 2212 | soybean | 3211 | 3212 | year 2 |
 | maize | 2221 | 2222 | maize | 3221 | 3222 | year 2 |
 
-Table: (\#tab:distVar) Several clusters where one variable is not available for each cluster, but distinct of them.
+Table: <a name="distVar"></a>Table 11: Several clusters where one variable is not available for each cluster, but distinct of them.
 
 
 ```{r, eval=FALSE}
