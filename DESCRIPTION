@@ -9,9 +9,15 @@ Authors@R: c(
     person("Arne", "Rümmler", 
            email = "arne.ruemmler@tu-dresden.de", 
            role = c("ctb"),
-           comment=c(ORCID = "0000-0001-8637-9071"))
+           comment=c(ORCID = "0000-0001-8637-9071")),
+    person("Abdualmaged", "Alhemiary", 
+           role = c("ctb")),
+    person("Annika", "Ertel", 
+           role = c("ctb")),
+    person("Amelie", "Haas", 
+           role = c("ctb"))
     )
-Description: Registers schema descriptions of (disorganised) messy tables and 
+Description: Registers schema descriptions of disorganised (messy) tables and 
     reorganises them into a standardised (tidy) format.
 URL: https://github.com/EhrmannS/tabshiftr
 BugReports: https://github.com/EhrmannS/tabshiftr/issues
