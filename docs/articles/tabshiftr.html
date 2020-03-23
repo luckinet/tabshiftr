@@ -93,7 +93,7 @@
 <div id="introduction" class="section level1">
 <h1 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h1>
-<p>Spreadsheets as places where data tables are recorded can be pretty messy. Typically, data are organised into topologically coherent (rectangular) chunks, but this does not yet guarantee that the data are <em>tidy</em>. Data tables are considered tidy when variables are recorded in columns and observations in rows <span class="citation">(Wickham <a href="#ref-Wickham2014">2014</a>)</span>, a common best practice of building up data tables (see <a href="https://tidyr.tidyverse.org/" class="uri">https://tidyr.tidyverse.org/</a>). However, all thinkable arrangements of the data may be encountered, culminating in several non-uniformly arranged tables that are placed non-systematically within one spreadsheet. Each of such individual tables within a spreadsheet is called <em>cluster</em> and data that are not organised into topologically coherent chunks are called <em>disorganised (messy) data</em> in <code>tabshiftr</code>.</p>
+<p>Spreadsheets as places where data tables are recorded can be pretty messy. Typically, data are organised into topologically coherent (rectangular) chunks, but this does not yet guarantee that the data are <em>tidy</em>. Data tables are considered tidy when variables are recorded in columns and observations in rows <span class="citation">(Wickham <a href="#ref-Wickham2014" role="doc-biblioref">2014</a>)</span>, a common best practice of building up data tables (see <a href="https://tidyr.tidyverse.org/" class="uri">https://tidyr.tidyverse.org/</a>). However, all thinkable arrangements of the data may be encountered, culminating in several non-uniformly arranged tables that are placed non-systematically within one spreadsheet. Each of such individual tables within a spreadsheet is called <em>cluster</em> and data that are not organised into topologically coherent chunks are called <em>disorganised (messy) data</em> in <code>tabshiftr</code>.</p>
 <p>When it comes to the organisation of data in tables, variables can be distinguished into two kinds of variables:</p>
 <ol style="list-style-type: decimal">
 <li>Variables that identify the unit for which values have been measured (they are called <em>identifying (or id) variables</em> here).</li>
@@ -107,7 +107,7 @@
 <p>To set up a schema description, the recommended strategy is the following:</p>
 <ol style="list-style-type: decimal">
 <li><p>Clarify which are the identifying variables and which are the measured variables and create a new entry for each of them in the schema. A variable is always a combination of <strong>name</strong> and <strong>values</strong>. Names are typically the column names and values are typically in the column below that name. However, in many disorganised tables variable names of measured variables are used as values of an identifying variable or measured variables are nested in idetifying variables and values are thus not exclusively in the same column as their name.</p></li>
-<li><p>Determine whether there are clusters and find the origin (top left cell) of each cluster (Tab. @ref(tab:clusHor), Tab. @ref(tab:clusId) &amp; Tab. @ref(tab:clusMeas)). Follow the next steps for each cluster…</p></li>
+<li><p>Determine whether there are clusters and find the origin (top left cell) of each cluster (<a href="#clusHor">Tab. 8</a>, <a href="#clusId">Tab. 9</a> &amp; <a href="#clusMeas">Tab. 10</a>). Follow the next steps for each cluster…</p></li>
 <li>
 <p>Determine which variable identifies clusters and provide that as cluster ID. It can also be the case that the data are organised into seperate spreadsheets or files according to one of the variables and also those cases should be treated as if they were clusters, even if each spreadsheet/file contains a topologically coherent table. It may be that either an identifying variable, or a measured variable identifies clusters:</p>
 <ul>
@@ -119,24 +119,24 @@
 <li>
 <p>Determine for each identifying variable the following:</p>
 <ul>
-<li>is the variable avaiable at all? This is particularly important when the data are split up into subtables that are in different spreadsheets or files. Often the variable that splits up the data (and thus identifies the clusters) is not explicitly available in the spreadsheet anymore. In such a case, provide the variables value for this cluster in <code>value</code> (Tab. @ref(tab:implicitVar)).</li>
+<li>is the variable avaiable at all? This is particularly important when the data are split up into subtables that are in different spreadsheets or files. Often the variable that splits up the data (and thus identifies the clusters) is not explicitly available in the spreadsheet anymore. In such a case, provide the variables value for this cluster in <code>value</code> (<a href="#implicitVar">Tab. 5</a>).</li>
 <li>all columns in which the variable <strong>names</strong> sit.</li>
-<li>in case the variable is in several columns, determine additionally the row in which its names sit (Tab. @ref(tab:nest2)).</li>
-<li>whether the variable must be split off of another column (Tab. @ref(tab:splitCol)).</li>
-<li>whether the variable is distinct from the main table (Tab. @ref(tab:distVar)). <br><br>
+<li>in case the variable is in several columns, determine additionally the row in which its names sit (<a href="#nest2">Tab. 3</a>).</li>
+<li>whether the variable must be split off of another column (<a href="#splitCol">Tab. 4</a>).</li>
+<li>whether the variable is distinct from the main table (<a href="#distVar">Tab. 11</a>). <br><br>
 </li>
 </ul>
 </li>
 <li>
 <p>Determine for each measured variable the following:</p>
 <ul>
-<li>all columns in which the values of the variable sit (Tab. @ref(tab:long)).</li>
+<li>all columns in which the values of the variable sit (<a href="#long">Tab. 6</a>).</li>
 <li>the unit and conversion factor.</li>
 <li>in case the variable is not tidy, one of the three following cases should apply:
 <ul>
-<li>in case the variable is nested in a wide identifying variable, determine in addition to the columns in which the values sit also the rows in which the <strong>variable name</strong> sits (Tab. @ref(tab:nest1) &amp; Tab. @ref(tab:nest2)).</li>
-<li>in case the names of the variable are given as a value of an identifying variable (Tab. @ref(tab:wideLong)), give the column name as <code>key</code>, together with the respective name of the measured variable in <code>values</code>.</li>
-<li>in case the name of the variable is the ID of clusters, specify <code>key = "cluster"</code> and in <code>values</code> the cluster number the variable refers to (Tab. @ref(tab:clusMeas)).</li>
+<li>in case the variable is nested in a wide identifying variable, determine in addition to the columns in which the values sit also the rows in which the <strong>variable name</strong> sits (<a href="#nest1">Tab. 2</a> &amp; <a href="#nest2">Tab. 3</a>).</li>
+<li>in case the names of the variable are given as a value of an identifying variable (<a href="#wideLong">Tab. 7</a>), give the column name as <code>key</code>, together with the respective name of the measured variable in <code>values</code>.</li>
+<li>in case the name of the variable is the ID of clusters, specify <code>key = "cluster"</code> and in <code>values</code> the cluster number the variable refers to (<a href="#clusMeas">Tab. 10</a>).</li>
 </ul>
 </li>
 </ul>
@@ -161,9 +161,10 @@
 <h3 class="hasAnchor">
 <a href="#separated-measured-variables" class="anchor"></a>Separated <em>measured variables</em>
 </h3>
-<p>In case the measured variables are arranged into individual columns (Tab. @ref(tab:tidy)), we have tidy data <span class="citation">(Wickham <a href="#ref-Wickham2014">2014</a>)</span>, which are already in the target arrangement. The variables in a tidy table may however, still need different names, units and transformation factors.</p>
+<p>In case the measured variables are arranged into individual columns (<a href="#tab1">Tab. 1</a>), we have tidy data <span class="citation">(Wickham <a href="#ref-Wickham2014" role="doc-biblioref">2014</a>)</span>, which are already in the target arrangement. The variables in a tidy table may however, still need different names, units and transformation factors.</p>
 <table class="table">
-<caption>(#tab:tidy) A tidy table.</caption>
+<caption>
+<a name="tab1"></a>Table 1: A tidy table.</caption>
 <thead><tr class="header">
 <th align="left">X1</th>
 <th align="left">X2</th>
@@ -237,22 +238,23 @@
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="../reference/makeSchema.html">makeSchema</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(</a>
-<a class="sourceLine" id="cb1-2" data-line-number="2">  <span class="dt">header =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">row =</span> <span class="dv">1</span>),</a>
-<a class="sourceLine" id="cb1-3" data-line-number="3">  <span class="dt">variables =</span></a>
-<a class="sourceLine" id="cb1-4" data-line-number="4">    <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">territories =</span></a>
-<a class="sourceLine" id="cb1-5" data-line-number="5">           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">col =</span> <span class="dv">1</span>),</a>
-<a class="sourceLine" id="cb1-6" data-line-number="6">         <span class="dt">year =</span></a>
-<a class="sourceLine" id="cb1-7" data-line-number="7">           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">col =</span> <span class="dv">2</span>),</a>
-<a class="sourceLine" id="cb1-8" data-line-number="8">         <span class="dt">commodities =</span></a>
-<a class="sourceLine" id="cb1-9" data-line-number="9">           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">col =</span> <span class="dv">3</span>),</a>
-<a class="sourceLine" id="cb1-10" data-line-number="10">         <span class="dt">harvested =</span></a>
-<a class="sourceLine" id="cb1-11" data-line-number="11">           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"measured"</span>, <span class="dt">unit =</span> <span class="st">"ha"</span>, <span class="dt">factor =</span> <span class="dv">1</span>, <span class="dt">col =</span> <span class="dv">4</span>),</a>
-<a class="sourceLine" id="cb1-12" data-line-number="12">         <span class="dt">production =</span></a>
-<a class="sourceLine" id="cb1-13" data-line-number="13">           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"measured"</span>, <span class="dt">unit =</span> <span class="st">"t"</span>, <span class="dt">factor =</span> <span class="dv">1</span>, <span class="dt">col =</span> <span class="dv">5</span>))))</a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw"><a href="../reference/makeSchema.html">makeSchema</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(</span>
+<span id="cb1-2"><a href="#cb1-2"></a>  <span class="dt">header =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">row =</span> <span class="dv">1</span>),</span>
+<span id="cb1-3"><a href="#cb1-3"></a>  <span class="dt">variables =</span></span>
+<span id="cb1-4"><a href="#cb1-4"></a>    <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">territories =</span></span>
+<span id="cb1-5"><a href="#cb1-5"></a>           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">col =</span> <span class="dv">1</span>),</span>
+<span id="cb1-6"><a href="#cb1-6"></a>         <span class="dt">year =</span></span>
+<span id="cb1-7"><a href="#cb1-7"></a>           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">col =</span> <span class="dv">2</span>),</span>
+<span id="cb1-8"><a href="#cb1-8"></a>         <span class="dt">commodities =</span></span>
+<span id="cb1-9"><a href="#cb1-9"></a>           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">col =</span> <span class="dv">3</span>),</span>
+<span id="cb1-10"><a href="#cb1-10"></a>         <span class="dt">harvested =</span></span>
+<span id="cb1-11"><a href="#cb1-11"></a>           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"measured"</span>, <span class="dt">unit =</span> <span class="st">"ha"</span>, <span class="dt">factor =</span> <span class="dv">1</span>, <span class="dt">col =</span> <span class="dv">4</span>),</span>
+<span id="cb1-12"><a href="#cb1-12"></a>         <span class="dt">production =</span></span>
+<span id="cb1-13"><a href="#cb1-13"></a>           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"measured"</span>, <span class="dt">unit =</span> <span class="st">"t"</span>, <span class="dt">factor =</span> <span class="dv">1</span>, <span class="dt">col =</span> <span class="dv">5</span>))))</span></code></pre></div>
 <p>In case identifying variables are factors with a limited number of levels, those levels may be used as names of other variables, where they would be next to each other and thus "wide". The other variables (both identifying and measured variables) would then be "nested" in those wide identifying variables. In those cases we have to record the row and the specific columns in which the identifying variables names are found, because those values will be used to reconstruct the variable as "long" variable. Beware that in those case you need to change the default header specification.</p>
 <table class="table">
-<caption>(#tab:nest1) The values variables are nested within the identifying variable <code>commodities</code>.</caption>
+<caption>
+<a name="nest1"></a>Table 2: The values variables are nested within the identifying variable <code>commodities</code>.</caption>
 <thead><tr class="header">
 <th align="left">X1</th>
 <th align="left">X2</th>
@@ -312,24 +314,25 @@
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw"><a href="../reference/makeSchema.html">makeSchema</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(</a>
-<a class="sourceLine" id="cb2-2" data-line-number="2">  <span class="dt">header =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">row =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span>, <span class="dv">2</span>)),</a>
-<a class="sourceLine" id="cb2-3" data-line-number="3">  <span class="dt">variables =</span></a>
-<a class="sourceLine" id="cb2-4" data-line-number="4">    <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">territories =</span></a>
-<a class="sourceLine" id="cb2-5" data-line-number="5">           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">col =</span> <span class="dv">1</span>),</a>
-<a class="sourceLine" id="cb2-6" data-line-number="6">         <span class="dt">year =</span></a>
-<a class="sourceLine" id="cb2-7" data-line-number="7">           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">col =</span> <span class="dv">2</span>),</a>
-<a class="sourceLine" id="cb2-8" data-line-number="8">         <span class="dt">commodities =</span></a>
-<a class="sourceLine" id="cb2-9" data-line-number="9">           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">row =</span> <span class="dv">1</span>, <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">3</span>, <span class="dv">5</span>)),</a>
-<a class="sourceLine" id="cb2-10" data-line-number="10">         <span class="dt">harvested =</span></a>
-<a class="sourceLine" id="cb2-11" data-line-number="11">           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"measured"</span>, <span class="dt">unit =</span> <span class="st">"ha"</span>, <span class="dt">factor =</span> <span class="dv">1</span>,</a>
-<a class="sourceLine" id="cb2-12" data-line-number="12">                <span class="dt">row =</span> <span class="dv">2</span>, <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">3</span>, <span class="dv">5</span>)),</a>
-<a class="sourceLine" id="cb2-13" data-line-number="13">         <span class="dt">production =</span></a>
-<a class="sourceLine" id="cb2-14" data-line-number="14">           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"measured"</span>, <span class="dt">unit =</span> <span class="st">"t"</span>, <span class="dt">factor =</span> <span class="dv">1</span>,</a>
-<a class="sourceLine" id="cb2-15" data-line-number="15">                <span class="dt">row =</span> <span class="dv">2</span>, <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">4</span>, <span class="dv">6</span>)))))</a></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw"><a href="../reference/makeSchema.html">makeSchema</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(</span>
+<span id="cb2-2"><a href="#cb2-2"></a>  <span class="dt">header =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">row =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span>, <span class="dv">2</span>)),</span>
+<span id="cb2-3"><a href="#cb2-3"></a>  <span class="dt">variables =</span></span>
+<span id="cb2-4"><a href="#cb2-4"></a>    <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">territories =</span></span>
+<span id="cb2-5"><a href="#cb2-5"></a>           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">col =</span> <span class="dv">1</span>),</span>
+<span id="cb2-6"><a href="#cb2-6"></a>         <span class="dt">year =</span></span>
+<span id="cb2-7"><a href="#cb2-7"></a>           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">col =</span> <span class="dv">2</span>),</span>
+<span id="cb2-8"><a href="#cb2-8"></a>         <span class="dt">commodities =</span></span>
+<span id="cb2-9"><a href="#cb2-9"></a>           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">row =</span> <span class="dv">1</span>, <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">3</span>, <span class="dv">5</span>)),</span>
+<span id="cb2-10"><a href="#cb2-10"></a>         <span class="dt">harvested =</span></span>
+<span id="cb2-11"><a href="#cb2-11"></a>           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"measured"</span>, <span class="dt">unit =</span> <span class="st">"ha"</span>, <span class="dt">factor =</span> <span class="dv">1</span>,</span>
+<span id="cb2-12"><a href="#cb2-12"></a>                <span class="dt">row =</span> <span class="dv">2</span>, <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">3</span>, <span class="dv">5</span>)),</span>
+<span id="cb2-13"><a href="#cb2-13"></a>         <span class="dt">production =</span></span>
+<span id="cb2-14"><a href="#cb2-14"></a>           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"measured"</span>, <span class="dt">unit =</span> <span class="st">"t"</span>, <span class="dt">factor =</span> <span class="dv">1</span>,</span>
+<span id="cb2-15"><a href="#cb2-15"></a>                <span class="dt">row =</span> <span class="dv">2</span>, <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">4</span>, <span class="dv">6</span>)))))</span></code></pre></div>
 <p>In case several variables are nested within other variables, we have to specify for all nested or nesting variables in which rows they sit.</p>
 <table class="table">
-<caption>(#tab:nest2) The identifying variable <code>commodities</code> is nested in the identifying variable <code>period</code>. The target variable is spread across those nested columns.</caption>
+<caption>
+<a name="nest2"></a>Table 3: The identifying variable <code>commodities</code> is nested in the identifying variable <code>period</code>. The target variable is spread across those nested columns.</caption>
 <colgroup>
 <col width="11%">
 <col width="11%">
@@ -410,28 +413,29 @@
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw"><a href="../reference/makeSchema.html">makeSchema</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(</a>
-<a class="sourceLine" id="cb3-2" data-line-number="2">  <span class="dt">header =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">row =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>)),</a>
-<a class="sourceLine" id="cb3-3" data-line-number="3">  <span class="dt">variables =</span></a>
-<a class="sourceLine" id="cb3-4" data-line-number="4">    <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">territories =</span></a>
-<a class="sourceLine" id="cb3-5" data-line-number="5">           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">col =</span> <span class="dv">1</span>),</a>
-<a class="sourceLine" id="cb3-6" data-line-number="6">         <span class="dt">year =</span></a>
-<a class="sourceLine" id="cb3-7" data-line-number="7">           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">row =</span> <span class="dv">1</span>, <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">2</span>, <span class="dv">6</span>)),</a>
-<a class="sourceLine" id="cb3-8" data-line-number="8">         <span class="dt">commodities =</span></a>
-<a class="sourceLine" id="cb3-9" data-line-number="9">           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">row =</span> <span class="dv">2</span>, <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">6</span>, <span class="dv">8</span>)),</a>
-<a class="sourceLine" id="cb3-10" data-line-number="10">         <span class="dt">harvested =</span></a>
-<a class="sourceLine" id="cb3-11" data-line-number="11">           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"measured"</span>, <span class="dt">unit =</span> <span class="st">"ha"</span>, <span class="dt">factor =</span> <span class="dv">1</span>,</a>
-<a class="sourceLine" id="cb3-12" data-line-number="12">                <span class="dt">row =</span> <span class="dv">3</span>, <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">6</span>, <span class="dv">8</span>)),</a>
-<a class="sourceLine" id="cb3-13" data-line-number="13">         <span class="dt">production =</span></a>
-<a class="sourceLine" id="cb3-14" data-line-number="14">           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"measured"</span>, <span class="dt">unit =</span> <span class="st">"t"</span>, <span class="dt">factor =</span> <span class="dv">1</span>,</a>
-<a class="sourceLine" id="cb3-15" data-line-number="15">                <span class="dt">row =</span> <span class="dv">3</span>, <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">7</span>, <span class="dv">9</span>)))))</a></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw"><a href="../reference/makeSchema.html">makeSchema</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(</span>
+<span id="cb3-2"><a href="#cb3-2"></a>  <span class="dt">header =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">row =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>)),</span>
+<span id="cb3-3"><a href="#cb3-3"></a>  <span class="dt">variables =</span></span>
+<span id="cb3-4"><a href="#cb3-4"></a>    <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">territories =</span></span>
+<span id="cb3-5"><a href="#cb3-5"></a>           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">col =</span> <span class="dv">1</span>),</span>
+<span id="cb3-6"><a href="#cb3-6"></a>         <span class="dt">year =</span></span>
+<span id="cb3-7"><a href="#cb3-7"></a>           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">row =</span> <span class="dv">1</span>, <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">2</span>, <span class="dv">6</span>)),</span>
+<span id="cb3-8"><a href="#cb3-8"></a>         <span class="dt">commodities =</span></span>
+<span id="cb3-9"><a href="#cb3-9"></a>           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">row =</span> <span class="dv">2</span>, <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">6</span>, <span class="dv">8</span>)),</span>
+<span id="cb3-10"><a href="#cb3-10"></a>         <span class="dt">harvested =</span></span>
+<span id="cb3-11"><a href="#cb3-11"></a>           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"measured"</span>, <span class="dt">unit =</span> <span class="st">"ha"</span>, <span class="dt">factor =</span> <span class="dv">1</span>,</span>
+<span id="cb3-12"><a href="#cb3-12"></a>                <span class="dt">row =</span> <span class="dv">3</span>, <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">6</span>, <span class="dv">8</span>)),</span>
+<span id="cb3-13"><a href="#cb3-13"></a>         <span class="dt">production =</span></span>
+<span id="cb3-14"><a href="#cb3-14"></a>           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"measured"</span>, <span class="dt">unit =</span> <span class="st">"t"</span>, <span class="dt">factor =</span> <span class="dv">1</span>,</span>
+<span id="cb3-15"><a href="#cb3-15"></a>                <span class="dt">row =</span> <span class="dv">3</span>, <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">7</span>, <span class="dv">9</span>)))))</span></code></pre></div>
 </div>
 <div id="several-variables-in-one-column" class="section level3">
 <h3 class="hasAnchor">
 <a href="#several-variables-in-one-column" class="anchor"></a>Several variables in one column</h3>
-<p>Sometimes it may be the case that several variables are stored in the same column, for example when a territorial unit is given together with the year of observation (e.g. <code>unit1, year1</code>). In those cases, the resulting variables in the output schema need to be specified so that they point to that same column but extract information via a regular expression (find more information <a href="https://edrub.in/CheatSheets/cheatSheetStringr.pdf">here</a>). For example, <code>.+?(?=_)</code> gives everything up until the first <code>_</code> and <code>(?&lt;=\\_).*</code> everything after the <code>_</code>.</p>
+<p>Sometimes it may be the case that several variables are stored in the same column, for example when a territorial unit is given together with the year of observation (e.g. <code>unit1, year1</code>). In those cases, the resulting variables in the output schema need to be specified so that they point to that same column but extract information via a regular expression (find more information <a href="https://edrub.in/CheatSheets/cheatSheetStringr.pdf">here</a>). For example, <code>.+?(?=_)</code> gives everything up until the first <code>_</code> and <code>(?&lt;=\\_).*</code> everything after the <code>_</code>.</p>
 <table class="table">
-<caption>(#tab:splitCol) Several variables are stored in the same column.</caption>
+<caption>
+<a name="splitCol"></a>Table 4: Several variables are stored in the same column.</caption>
 <thead><tr class="header">
 <th align="left">X1</th>
 <th align="left">X2</th>
@@ -495,26 +499,27 @@
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="kw"><a href="../reference/makeSchema.html">makeSchema</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(</a>
-<a class="sourceLine" id="cb4-2" data-line-number="2">  <span class="dt">header =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">row =</span> <span class="dv">1</span>),</a>
-<a class="sourceLine" id="cb4-3" data-line-number="3">  <span class="dt">variables =</span></a>
-<a class="sourceLine" id="cb4-4" data-line-number="4">    <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">territories =</span></a>
-<a class="sourceLine" id="cb4-5" data-line-number="5">           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">col =</span> <span class="dv">1</span>),</a>
-<a class="sourceLine" id="cb4-6" data-line-number="6">         <span class="dt">year =</span></a>
-<a class="sourceLine" id="cb4-7" data-line-number="7">           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">split =</span> <span class="st">".+?(?=_)"</span>, <span class="dt">col =</span> <span class="dv">2</span>),</a>
-<a class="sourceLine" id="cb4-8" data-line-number="8">         <span class="dt">commodities =</span></a>
-<a class="sourceLine" id="cb4-9" data-line-number="9">           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">split =</span> <span class="st">"(?&lt;=</span><span class="ch">\\</span><span class="st">_).*"</span>, <span class="dt">col =</span> <span class="dv">2</span>),</a>
-<a class="sourceLine" id="cb4-10" data-line-number="10">         <span class="dt">harvested =</span></a>
-<a class="sourceLine" id="cb4-11" data-line-number="11">           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"measured"</span>, <span class="dt">unit =</span> <span class="st">"ha"</span>, <span class="dt">factor =</span> <span class="dv">1</span>, <span class="dt">col =</span> <span class="dv">3</span>),</a>
-<a class="sourceLine" id="cb4-12" data-line-number="12">         <span class="dt">production =</span></a>
-<a class="sourceLine" id="cb4-13" data-line-number="13">           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"measured"</span>, <span class="dt">unit =</span> <span class="st">"t"</span>, <span class="dt">factor =</span> <span class="dv">1</span>, <span class="dt">col =</span> <span class="dv">4</span>))))</a></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw"><a href="../reference/makeSchema.html">makeSchema</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(</span>
+<span id="cb4-2"><a href="#cb4-2"></a>  <span class="dt">header =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">row =</span> <span class="dv">1</span>),</span>
+<span id="cb4-3"><a href="#cb4-3"></a>  <span class="dt">variables =</span></span>
+<span id="cb4-4"><a href="#cb4-4"></a>    <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">territories =</span></span>
+<span id="cb4-5"><a href="#cb4-5"></a>           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">col =</span> <span class="dv">1</span>),</span>
+<span id="cb4-6"><a href="#cb4-6"></a>         <span class="dt">year =</span></span>
+<span id="cb4-7"><a href="#cb4-7"></a>           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">split =</span> <span class="st">".+?(?=_)"</span>, <span class="dt">col =</span> <span class="dv">2</span>),</span>
+<span id="cb4-8"><a href="#cb4-8"></a>         <span class="dt">commodities =</span></span>
+<span id="cb4-9"><a href="#cb4-9"></a>           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">split =</span> <span class="st">"(?&lt;=</span><span class="ch">\\</span><span class="st">_).*"</span>, <span class="dt">col =</span> <span class="dv">2</span>),</span>
+<span id="cb4-10"><a href="#cb4-10"></a>         <span class="dt">harvested =</span></span>
+<span id="cb4-11"><a href="#cb4-11"></a>           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"measured"</span>, <span class="dt">unit =</span> <span class="st">"ha"</span>, <span class="dt">factor =</span> <span class="dv">1</span>, <span class="dt">col =</span> <span class="dv">3</span>),</span>
+<span id="cb4-12"><a href="#cb4-12"></a>         <span class="dt">production =</span></span>
+<span id="cb4-13"><a href="#cb4-13"></a>           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"measured"</span>, <span class="dt">unit =</span> <span class="st">"t"</span>, <span class="dt">factor =</span> <span class="dv">1</span>, <span class="dt">col =</span> <span class="dv">4</span>))))</span></code></pre></div>
 </div>
 <div id="implicit-variables" class="section level3">
 <h3 class="hasAnchor">
 <a href="#implicit-variables" class="anchor"></a>Implicit variables</h3>
 <p>When data are split up into clusters, the identifying variable is often recorded not in the table as an explicit variable, but is only provided in the file or spreadsheet name. In those cases, we have to register the variable nevertheless, and provide the value of that variable in <code>value =</code> of the identifying variable.</p>
 <table class="table">
-<caption>(#tab:implicitVar) Several variables are stored in the same column.</caption>
+<caption>
+<a name="implicitVar"></a>Table 5: Several variables are stored in the same column.</caption>
 <thead><tr class="header">
 <th align="left">X1</th>
 <th align="left">X2</th>
@@ -560,31 +565,32 @@
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw"><a href="../reference/makeSchema.html">makeSchema</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(</a>
-<a class="sourceLine" id="cb5-2" data-line-number="2">  <span class="dt">clusters =</span></a>
-<a class="sourceLine" id="cb5-3" data-line-number="3">    <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">row =</span> <span class="dv">2</span>, <span class="dt">col =</span> <span class="dv">1</span>, <span class="dt">id =</span> <span class="st">"territories"</span>),</a>
-<a class="sourceLine" id="cb5-4" data-line-number="4">  <span class="dt">header =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">row =</span> <span class="dv">1</span>, <span class="dt">rel =</span> <span class="ot">TRUE</span>),</a>
-<a class="sourceLine" id="cb5-5" data-line-number="5">  <span class="dt">variables =</span></a>
-<a class="sourceLine" id="cb5-6" data-line-number="6">    <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">territories =</span></a>
-<a class="sourceLine" id="cb5-7" data-line-number="7">           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">value =</span> <span class="st">"unit 1"</span>),</a>
-<a class="sourceLine" id="cb5-8" data-line-number="8">         <span class="dt">year =</span></a>
-<a class="sourceLine" id="cb5-9" data-line-number="9">           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">col =</span> <span class="dv">4</span>, <span class="dt">rel =</span> <span class="ot">TRUE</span>),</a>
-<a class="sourceLine" id="cb5-10" data-line-number="10">         <span class="dt">commodities =</span></a>
-<a class="sourceLine" id="cb5-11" data-line-number="11">           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">col =</span> <span class="dv">1</span>, <span class="dt">rel =</span> <span class="ot">TRUE</span>),</a>
-<a class="sourceLine" id="cb5-12" data-line-number="12">         <span class="dt">harvested =</span></a>
-<a class="sourceLine" id="cb5-13" data-line-number="13">           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"measured"</span>, <span class="dt">unit =</span> <span class="st">"ha"</span>, <span class="dt">factor =</span> <span class="dv">1</span>,</a>
-<a class="sourceLine" id="cb5-14" data-line-number="14">                <span class="dt">col =</span> <span class="dv">2</span>, <span class="dt">rel =</span> <span class="ot">TRUE</span>),</a>
-<a class="sourceLine" id="cb5-15" data-line-number="15">         <span class="dt">production =</span></a>
-<a class="sourceLine" id="cb5-16" data-line-number="16">           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"measured"</span>, <span class="dt">unit =</span> <span class="st">"t"</span>, <span class="dt">factor =</span> <span class="dv">1</span>,</a>
-<a class="sourceLine" id="cb5-17" data-line-number="17">                <span class="dt">col =</span> <span class="dv">3</span>, <span class="dt">rel =</span> <span class="ot">TRUE</span>))))</a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="kw"><a href="../reference/makeSchema.html">makeSchema</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(</span>
+<span id="cb5-2"><a href="#cb5-2"></a>  <span class="dt">clusters =</span></span>
+<span id="cb5-3"><a href="#cb5-3"></a>    <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">row =</span> <span class="dv">2</span>, <span class="dt">col =</span> <span class="dv">1</span>, <span class="dt">id =</span> <span class="st">"territories"</span>),</span>
+<span id="cb5-4"><a href="#cb5-4"></a>  <span class="dt">header =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">row =</span> <span class="dv">1</span>, <span class="dt">rel =</span> <span class="ot">TRUE</span>),</span>
+<span id="cb5-5"><a href="#cb5-5"></a>  <span class="dt">variables =</span></span>
+<span id="cb5-6"><a href="#cb5-6"></a>    <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">territories =</span></span>
+<span id="cb5-7"><a href="#cb5-7"></a>           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">value =</span> <span class="st">"unit 1"</span>),</span>
+<span id="cb5-8"><a href="#cb5-8"></a>         <span class="dt">year =</span></span>
+<span id="cb5-9"><a href="#cb5-9"></a>           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">col =</span> <span class="dv">4</span>, <span class="dt">rel =</span> <span class="ot">TRUE</span>),</span>
+<span id="cb5-10"><a href="#cb5-10"></a>         <span class="dt">commodities =</span></span>
+<span id="cb5-11"><a href="#cb5-11"></a>           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">col =</span> <span class="dv">1</span>, <span class="dt">rel =</span> <span class="ot">TRUE</span>),</span>
+<span id="cb5-12"><a href="#cb5-12"></a>         <span class="dt">harvested =</span></span>
+<span id="cb5-13"><a href="#cb5-13"></a>           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"measured"</span>, <span class="dt">unit =</span> <span class="st">"ha"</span>, <span class="dt">factor =</span> <span class="dv">1</span>,</span>
+<span id="cb5-14"><a href="#cb5-14"></a>                <span class="dt">col =</span> <span class="dv">2</span>, <span class="dt">rel =</span> <span class="ot">TRUE</span>),</span>
+<span id="cb5-15"><a href="#cb5-15"></a>         <span class="dt">production =</span></span>
+<span id="cb5-16"><a href="#cb5-16"></a>           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"measured"</span>, <span class="dt">unit =</span> <span class="st">"t"</span>, <span class="dt">factor =</span> <span class="dv">1</span>,</span>
+<span id="cb5-17"><a href="#cb5-17"></a>                <span class="dt">col =</span> <span class="dv">3</span>, <span class="dt">rel =</span> <span class="ot">TRUE</span>))))</span></code></pre></div>
 </div>
 <div id="listed-measured-variables" class="section level3">
 <h3 class="hasAnchor">
 <a href="#listed-measured-variables" class="anchor"></a>Listed <em>measured variables</em>
 </h3>
-<p>Some tables contain a column where the names of measured variables (<code>harvested</code> and <code>production</code>) are treated as if they were the values of an identifying variable (<code>dimension</code>), while the values are presented in only one column (<code>values</code>) (Tab. @ref(tab:long)). To end up with tidy data in those cases, we need to extract the values associated with the measured variables. Thus, we define the measured variables and specify the <code>key =</code> in which the variable names sit, and the <code>value =</code> the variable name has, to extract that variable.</p>
+<p>Some tables contain a column where the names of measured variables (<code>harvested</code> and <code>production</code>) are treated as if they were the values of an identifying variable (<code>dimension</code>), while the values are presented in only one column (<code>values</code>) (<a href="#long">Tab. 6</a>). To end up with tidy data in those cases, we need to extract the values associated with the measured variables. Thus, we define the measured variables and specify the <code>key =</code> in which the variable names sit, and the <code>value =</code> the variable name has, to extract that variable.</p>
 <table class="table">
-<caption>(#tab:long) The variable names of the measured variable are treated as if they were the values of an identifying variable.</caption>
+<caption>
+<a name="long"></a>Table 6: The variable names of the measured variable are treated as if they were the values of an identifying variable.</caption>
 <thead><tr class="header">
 <th align="left">X1</th>
 <th align="left">X2</th>
@@ -714,24 +720,25 @@
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="kw"><a href="../reference/makeSchema.html">makeSchema</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(</a>
-<a class="sourceLine" id="cb6-2" data-line-number="2">  <span class="dt">header =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">row =</span> <span class="dv">1</span>),</a>
-<a class="sourceLine" id="cb6-3" data-line-number="3">  <span class="dt">variables =</span></a>
-<a class="sourceLine" id="cb6-4" data-line-number="4">    <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">territories =</span></a>
-<a class="sourceLine" id="cb6-5" data-line-number="5">           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">col =</span> <span class="dv">1</span>),</a>
-<a class="sourceLine" id="cb6-6" data-line-number="6">         <span class="dt">year =</span></a>
-<a class="sourceLine" id="cb6-7" data-line-number="7">           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">col =</span> <span class="dv">2</span>),</a>
-<a class="sourceLine" id="cb6-8" data-line-number="8">         <span class="dt">commodities =</span></a>
-<a class="sourceLine" id="cb6-9" data-line-number="9">           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">col =</span> <span class="dv">3</span>),</a>
-<a class="sourceLine" id="cb6-10" data-line-number="10">         <span class="dt">harvested =</span></a>
-<a class="sourceLine" id="cb6-11" data-line-number="11">           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"measured"</span>, <span class="dt">unit =</span> <span class="st">"ha"</span>, <span class="dt">factor =</span> <span class="dv">1</span>,</a>
-<a class="sourceLine" id="cb6-12" data-line-number="12">                <span class="dt">col =</span> <span class="dv">5</span>, <span class="dt">key =</span> <span class="st">"dimension"</span>, <span class="dt">value =</span> <span class="st">"harvested"</span>),</a>
-<a class="sourceLine" id="cb6-13" data-line-number="13">         <span class="dt">production =</span></a>
-<a class="sourceLine" id="cb6-14" data-line-number="14">           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"measured"</span>, <span class="dt">unit =</span> <span class="st">"t"</span>, <span class="dt">factor =</span> <span class="dv">1</span>,</a>
-<a class="sourceLine" id="cb6-15" data-line-number="15">                <span class="dt">col =</span> <span class="dv">5</span>, <span class="dt">key =</span> <span class="st">"dimension"</span>, <span class="dt">value =</span> <span class="st">"production"</span>))))</a></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="kw"><a href="../reference/makeSchema.html">makeSchema</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(</span>
+<span id="cb6-2"><a href="#cb6-2"></a>  <span class="dt">header =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">row =</span> <span class="dv">1</span>),</span>
+<span id="cb6-3"><a href="#cb6-3"></a>  <span class="dt">variables =</span></span>
+<span id="cb6-4"><a href="#cb6-4"></a>    <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">territories =</span></span>
+<span id="cb6-5"><a href="#cb6-5"></a>           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">col =</span> <span class="dv">1</span>),</span>
+<span id="cb6-6"><a href="#cb6-6"></a>         <span class="dt">year =</span></span>
+<span id="cb6-7"><a href="#cb6-7"></a>           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">col =</span> <span class="dv">2</span>),</span>
+<span id="cb6-8"><a href="#cb6-8"></a>         <span class="dt">commodities =</span></span>
+<span id="cb6-9"><a href="#cb6-9"></a>           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">col =</span> <span class="dv">3</span>),</span>
+<span id="cb6-10"><a href="#cb6-10"></a>         <span class="dt">harvested =</span></span>
+<span id="cb6-11"><a href="#cb6-11"></a>           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"measured"</span>, <span class="dt">unit =</span> <span class="st">"ha"</span>, <span class="dt">factor =</span> <span class="dv">1</span>,</span>
+<span id="cb6-12"><a href="#cb6-12"></a>                <span class="dt">col =</span> <span class="dv">5</span>, <span class="dt">key =</span> <span class="st">"dimension"</span>, <span class="dt">value =</span> <span class="st">"harvested"</span>),</span>
+<span id="cb6-13"><a href="#cb6-13"></a>         <span class="dt">production =</span></span>
+<span id="cb6-14"><a href="#cb6-14"></a>           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"measured"</span>, <span class="dt">unit =</span> <span class="st">"t"</span>, <span class="dt">factor =</span> <span class="dv">1</span>,</span>
+<span id="cb6-15"><a href="#cb6-15"></a>                <span class="dt">col =</span> <span class="dv">5</span>, <span class="dt">key =</span> <span class="st">"dimension"</span>, <span class="dt">value =</span> <span class="st">"production"</span>))))</span></code></pre></div>
 <p>Moreover, (several) identifying variables may be wide additionally and we have to proceed as mentioned above, by providing the row and columns of the wide identifying variables.</p>
 <table class="table">
-<caption>(#tab:wideLong) The identifying variable <code>commodities</code> is treated as if it were the observed variable.</caption>
+<caption>
+<a name="wideLong"></a>Table 7: The identifying variable <code>commodities</code> is treated as if it were the observed variable.</caption>
 <thead><tr class="header">
 <th align="left">X1</th>
 <th align="left">X2</th>
@@ -805,21 +812,21 @@
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"> <span class="kw"><a href="../reference/makeSchema.html">makeSchema</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(</a>
-<a class="sourceLine" id="cb7-2" data-line-number="2">   <span class="dt">header =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">row =</span> <span class="dv">1</span>),</a>
-<a class="sourceLine" id="cb7-3" data-line-number="3">   <span class="dt">variables =</span></a>
-<a class="sourceLine" id="cb7-4" data-line-number="4">     <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">territories =</span></a>
-<a class="sourceLine" id="cb7-5" data-line-number="5">            <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">col =</span> <span class="dv">1</span>),</a>
-<a class="sourceLine" id="cb7-6" data-line-number="6">          <span class="dt">year =</span></a>
-<a class="sourceLine" id="cb7-7" data-line-number="7">            <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">2</span>),</a>
-<a class="sourceLine" id="cb7-8" data-line-number="8">          <span class="dt">commodities =</span></a>
-<a class="sourceLine" id="cb7-9" data-line-number="9">            <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">row =</span> <span class="dv">1</span>, <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">4</span>, <span class="dv">5</span>)),</a>
-<a class="sourceLine" id="cb7-10" data-line-number="10">          <span class="dt">harvested =</span></a>
-<a class="sourceLine" id="cb7-11" data-line-number="11">            <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"measured"</span>, <span class="dt">unit =</span> <span class="st">"ha"</span>, <span class="dt">factor =</span> <span class="dv">1</span>,</a>
-<a class="sourceLine" id="cb7-12" data-line-number="12">                 <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">4</span>, <span class="dv">5</span>), <span class="dt">key =</span> <span class="st">"dimension"</span>, <span class="dt">value =</span> <span class="st">"harvested"</span>),</a>
-<a class="sourceLine" id="cb7-13" data-line-number="13">          <span class="dt">production =</span></a>
-<a class="sourceLine" id="cb7-14" data-line-number="14">            <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"measured"</span>, <span class="dt">unit =</span> <span class="st">"t"</span>, <span class="dt">factor =</span> <span class="dv">1</span>,</a>
-<a class="sourceLine" id="cb7-15" data-line-number="15">                 <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">4</span>, <span class="dv">5</span>), <span class="dt">key =</span> <span class="st">"dimension"</span>, <span class="dt">value =</span> <span class="st">"production"</span>))))</a></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a> <span class="kw"><a href="../reference/makeSchema.html">makeSchema</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(</span>
+<span id="cb7-2"><a href="#cb7-2"></a>   <span class="dt">header =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">row =</span> <span class="dv">1</span>),</span>
+<span id="cb7-3"><a href="#cb7-3"></a>   <span class="dt">variables =</span></span>
+<span id="cb7-4"><a href="#cb7-4"></a>     <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">territories =</span></span>
+<span id="cb7-5"><a href="#cb7-5"></a>            <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">col =</span> <span class="dv">1</span>),</span>
+<span id="cb7-6"><a href="#cb7-6"></a>          <span class="dt">year =</span></span>
+<span id="cb7-7"><a href="#cb7-7"></a>            <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">row =</span> <span class="ot">NULL</span>, <span class="dt">col =</span> <span class="dv">2</span>),</span>
+<span id="cb7-8"><a href="#cb7-8"></a>          <span class="dt">commodities =</span></span>
+<span id="cb7-9"><a href="#cb7-9"></a>            <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">row =</span> <span class="dv">1</span>, <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">4</span>, <span class="dv">5</span>)),</span>
+<span id="cb7-10"><a href="#cb7-10"></a>          <span class="dt">harvested =</span></span>
+<span id="cb7-11"><a href="#cb7-11"></a>            <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"measured"</span>, <span class="dt">unit =</span> <span class="st">"ha"</span>, <span class="dt">factor =</span> <span class="dv">1</span>,</span>
+<span id="cb7-12"><a href="#cb7-12"></a>                 <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">4</span>, <span class="dv">5</span>), <span class="dt">key =</span> <span class="st">"dimension"</span>, <span class="dt">value =</span> <span class="st">"harvested"</span>),</span>
+<span id="cb7-13"><a href="#cb7-13"></a>          <span class="dt">production =</span></span>
+<span id="cb7-14"><a href="#cb7-14"></a>            <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"measured"</span>, <span class="dt">unit =</span> <span class="st">"t"</span>, <span class="dt">factor =</span> <span class="dv">1</span>,</span>
+<span id="cb7-15"><a href="#cb7-15"></a>                 <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">4</span>, <span class="dv">5</span>), <span class="dt">key =</span> <span class="st">"dimension"</span>, <span class="dt">value =</span> <span class="st">"production"</span>))))</span></code></pre></div>
 </div>
 </div>
 <div id="spreadsheet-contains-several-clusters" class="section level2">
@@ -830,9 +837,10 @@
 <div id="horizontal-clusters" class="section level3">
 <h3 class="hasAnchor">
 <a href="#horizontal-clusters" class="anchor"></a>Horizontal clusters</h3>
-<p>In case horizontal clusters are sitting right next to each other in the same origin row (Tab. @ref(tab:clusHor)), it is sufficient to provide the topmost row and all leftmost columns at which a new cluster starts. In case there is some arbitrary horizontal space between clusters, also the width (of each cluster) needs to be provided.</p>
+<p>In case horizontal clusters are sitting right next to each other in the same origin row (<a href="#clusHor">Tab. 8</a>), it is sufficient to provide the topmost row and all leftmost columns at which a new cluster starts. In case there is some arbitrary horizontal space between clusters, also the width (of each cluster) needs to be provided.</p>
 <table class="table">
-<caption>(#tab:clusHor) Horizontal clusters of the identifying variable <code>period</code>.</caption>
+<caption>
+<a name="clusHor"></a>Table 8: Horizontal clusters of the identifying variable <code>period</code>.</caption>
 <thead><tr class="header">
 <th align="left">X1</th>
 <th align="left">X2</th>
@@ -899,28 +907,29 @@
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="kw"><a href="../reference/makeSchema.html">makeSchema</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(</a>
-<a class="sourceLine" id="cb8-2" data-line-number="2">  <span class="dt">clusters =</span></a>
-<a class="sourceLine" id="cb8-3" data-line-number="3">    <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">row =</span> <span class="dv">2</span>, <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">2</span>, <span class="dv">5</span>), <span class="dt">id =</span> <span class="st">"territories"</span>),</a>
-<a class="sourceLine" id="cb8-4" data-line-number="4">  <span class="dt">header =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">row =</span> <span class="dv">1</span>),</a>
-<a class="sourceLine" id="cb8-5" data-line-number="5">  <span class="dt">variables =</span></a>
-<a class="sourceLine" id="cb8-6" data-line-number="6">    <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">territories =</span></a>
-<a class="sourceLine" id="cb8-7" data-line-number="7">           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">row =</span> <span class="dv">2</span>, <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">2</span>, <span class="dv">5</span>)),</a>
-<a class="sourceLine" id="cb8-8" data-line-number="8">         <span class="dt">year =</span></a>
-<a class="sourceLine" id="cb8-9" data-line-number="9">           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">col =</span> <span class="dv">1</span>),</a>
-<a class="sourceLine" id="cb8-10" data-line-number="10">         <span class="dt">commodities =</span></a>
-<a class="sourceLine" id="cb8-11" data-line-number="11">           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">2</span>, <span class="dv">5</span>)),</a>
-<a class="sourceLine" id="cb8-12" data-line-number="12">         <span class="dt">harvested =</span></a>
-<a class="sourceLine" id="cb8-13" data-line-number="13">           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"measured"</span>, <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">3</span>, <span class="dv">6</span>), <span class="dt">unit =</span> <span class="st">"ha"</span>, <span class="dt">factor =</span> <span class="dv">1</span>),</a>
-<a class="sourceLine" id="cb8-14" data-line-number="14">         <span class="dt">production =</span></a>
-<a class="sourceLine" id="cb8-15" data-line-number="15">           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"measured"</span>, <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">4</span>, <span class="dv">7</span>), <span class="dt">unit =</span> <span class="st">"t"</span>, <span class="dt">factor =</span> <span class="dv">1</span>))))</a></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="kw"><a href="../reference/makeSchema.html">makeSchema</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(</span>
+<span id="cb8-2"><a href="#cb8-2"></a>  <span class="dt">clusters =</span></span>
+<span id="cb8-3"><a href="#cb8-3"></a>    <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">row =</span> <span class="dv">2</span>, <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">2</span>, <span class="dv">5</span>), <span class="dt">id =</span> <span class="st">"territories"</span>),</span>
+<span id="cb8-4"><a href="#cb8-4"></a>  <span class="dt">header =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">row =</span> <span class="dv">1</span>),</span>
+<span id="cb8-5"><a href="#cb8-5"></a>  <span class="dt">variables =</span></span>
+<span id="cb8-6"><a href="#cb8-6"></a>    <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">territories =</span></span>
+<span id="cb8-7"><a href="#cb8-7"></a>           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">row =</span> <span class="dv">2</span>, <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">2</span>, <span class="dv">5</span>)),</span>
+<span id="cb8-8"><a href="#cb8-8"></a>         <span class="dt">year =</span></span>
+<span id="cb8-9"><a href="#cb8-9"></a>           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">col =</span> <span class="dv">1</span>),</span>
+<span id="cb8-10"><a href="#cb8-10"></a>         <span class="dt">commodities =</span></span>
+<span id="cb8-11"><a href="#cb8-11"></a>           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">2</span>, <span class="dv">5</span>)),</span>
+<span id="cb8-12"><a href="#cb8-12"></a>         <span class="dt">harvested =</span></span>
+<span id="cb8-13"><a href="#cb8-13"></a>           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"measured"</span>, <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">3</span>, <span class="dv">6</span>), <span class="dt">unit =</span> <span class="st">"ha"</span>, <span class="dt">factor =</span> <span class="dv">1</span>),</span>
+<span id="cb8-14"><a href="#cb8-14"></a>         <span class="dt">production =</span></span>
+<span id="cb8-15"><a href="#cb8-15"></a>           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"measured"</span>, <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">4</span>, <span class="dv">7</span>), <span class="dt">unit =</span> <span class="st">"t"</span>, <span class="dt">factor =</span> <span class="dv">1</span>))))</span></code></pre></div>
 </div>
 <div id="vertical-clusters" class="section level3">
 <h3 class="hasAnchor">
 <a href="#vertical-clusters" class="anchor"></a>Vertical clusters</h3>
-<p>For vertically arranged clusters (Tab. @ref(tab:clusId)), just like for the horizontal case, the respective rows, columns (and heights) need to be provided.</p>
+<p>For vertically arranged clusters (<a href="#clusId">Tab. 9</a>), just like for the horizontal case, the respective rows, columns (and heights) need to be provided.</p>
 <table class="table">
-<caption>(#tab:clusId) Vertical clusters of the identifying variable <code>period</code>.</caption>
+<caption>
+<a name="clusId"></a>Table 9: Vertical clusters of the identifying variable <code>period</code>.</caption>
 <thead><tr class="header">
 <th align="left">X1</th>
 <th align="left">X2</th>
@@ -1008,36 +1017,36 @@
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="kw"><a href="../reference/makeSchema.html">makeSchema</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(</a>
-<a class="sourceLine" id="cb9-2" data-line-number="2">  <span class="dt">clusters =</span></a>
-<a class="sourceLine" id="cb9-3" data-line-number="3">    <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">row =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">2</span>, <span class="dv">7</span>), <span class="dt">col =</span> <span class="dv">2</span>, <span class="dt">height =</span> <span class="dv">4</span>, <span class="dt">id =</span> <span class="st">"territories"</span>),</a>
-<a class="sourceLine" id="cb9-4" data-line-number="4">  <span class="dt">header =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">row =</span> <span class="dv">1</span>),</a>
-<a class="sourceLine" id="cb9-5" data-line-number="5">  <span class="dt">variables =</span></a>
-<a class="sourceLine" id="cb9-6" data-line-number="6">    <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">territories =</span></a>
-<a class="sourceLine" id="cb9-7" data-line-number="7">           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">row =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">2</span>, <span class="dv">9</span>), <span class="dt">col =</span> <span class="dv">1</span>),</a>
-<a class="sourceLine" id="cb9-8" data-line-number="8">         <span class="dt">year =</span></a>
-<a class="sourceLine" id="cb9-9" data-line-number="9">           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">col =</span> <span class="dv">1</span>, <span class="dt">rel =</span> <span class="ot">TRUE</span>),</a>
-<a class="sourceLine" id="cb9-10" data-line-number="10">         <span class="dt">commodities =</span></a>
-<a class="sourceLine" id="cb9-11" data-line-number="11">           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">col =</span> <span class="dv">2</span>, <span class="dt">rel =</span> <span class="ot">TRUE</span>),</a>
-<a class="sourceLine" id="cb9-12" data-line-number="12">         <span class="dt">harvested =</span></a>
-<a class="sourceLine" id="cb9-13" data-line-number="13">           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"measured"</span>, <span class="dt">col =</span> <span class="dv">3</span>, <span class="dt">unit =</span> <span class="st">"ha"</span>, <span class="dt">factor =</span> <span class="dv">1</span>, <span class="dt">rel =</span> <span class="ot">TRUE</span>),</a>
-<a class="sourceLine" id="cb9-14" data-line-number="14">         <span class="dt">production =</span></a>
-<a class="sourceLine" id="cb9-15" data-line-number="15">           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"measured"</span>, <span class="dt">col =</span> <span class="dv">4</span>, <span class="dt">unit =</span> <span class="st">"t"</span>, <span class="dt">factor =</span> <span class="dv">1</span>, <span class="dt">rel =</span> <span class="ot">TRUE</span>))))</a></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="kw"><a href="../reference/makeSchema.html">makeSchema</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(</span>
+<span id="cb9-2"><a href="#cb9-2"></a>  <span class="dt">clusters =</span></span>
+<span id="cb9-3"><a href="#cb9-3"></a>    <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">row =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">2</span>, <span class="dv">7</span>), <span class="dt">col =</span> <span class="dv">2</span>, <span class="dt">height =</span> <span class="dv">4</span>, <span class="dt">id =</span> <span class="st">"territories"</span>),</span>
+<span id="cb9-4"><a href="#cb9-4"></a>  <span class="dt">header =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">row =</span> <span class="dv">1</span>),</span>
+<span id="cb9-5"><a href="#cb9-5"></a>  <span class="dt">variables =</span></span>
+<span id="cb9-6"><a href="#cb9-6"></a>    <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">territories =</span></span>
+<span id="cb9-7"><a href="#cb9-7"></a>           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">row =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">2</span>, <span class="dv">9</span>), <span class="dt">col =</span> <span class="dv">1</span>),</span>
+<span id="cb9-8"><a href="#cb9-8"></a>         <span class="dt">year =</span></span>
+<span id="cb9-9"><a href="#cb9-9"></a>           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">col =</span> <span class="dv">1</span>, <span class="dt">rel =</span> <span class="ot">TRUE</span>),</span>
+<span id="cb9-10"><a href="#cb9-10"></a>         <span class="dt">commodities =</span></span>
+<span id="cb9-11"><a href="#cb9-11"></a>           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">col =</span> <span class="dv">2</span>, <span class="dt">rel =</span> <span class="ot">TRUE</span>),</span>
+<span id="cb9-12"><a href="#cb9-12"></a>         <span class="dt">harvested =</span></span>
+<span id="cb9-13"><a href="#cb9-13"></a>           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"measured"</span>, <span class="dt">col =</span> <span class="dv">3</span>, <span class="dt">unit =</span> <span class="st">"ha"</span>, <span class="dt">factor =</span> <span class="dv">1</span>, <span class="dt">rel =</span> <span class="ot">TRUE</span>),</span>
+<span id="cb9-14"><a href="#cb9-14"></a>         <span class="dt">production =</span></span>
+<span id="cb9-15"><a href="#cb9-15"></a>           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"measured"</span>, <span class="dt">col =</span> <span class="dv">4</span>, <span class="dt">unit =</span> <span class="st">"t"</span>, <span class="dt">factor =</span> <span class="dv">1</span>, <span class="dt">rel =</span> <span class="ot">TRUE</span>))))</span></code></pre></div>
 </div>
 <div id="messy-clusters" class="section level3">
 <h3 class="hasAnchor">
 <a href="#messy-clusters" class="anchor"></a>Messy clusters</h3>
 <p>In case several clusters are neither aligned along a row nor a column, and are all of differing size, the respective information need to be provided at the same index of the respective property. For example, three clusters, where the first cluster starts at (1,1) and is 3 by 4 cells in size, where the second clusters starts at (5,2) and is 5 by 5 cells in size, and so on, needs to be specified as below.</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">clusters =</span> </a>
-<a class="sourceLine" id="cb10-2" data-line-number="2">       <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">top =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">1</span>), <span class="dt">left =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">5</span>), </a>
-<a class="sourceLine" id="cb10-3" data-line-number="3">            <span class="dt">width =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">2</span>), <span class="dt">height =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">3</span>), <span class="dt">id =</span> ...),</a>
-<a class="sourceLine" id="cb10-4" data-line-number="4">     <span class="dt">header =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">row =</span> <span class="dv">1</span>),</a>
-<a class="sourceLine" id="cb10-5" data-line-number="5">     <span class="dt">variables =</span></a>
-<a class="sourceLine" id="cb10-6" data-line-number="6">       <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">territories =</span> </a>
-<a class="sourceLine" id="cb10-7" data-line-number="7">              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">col =</span> <span class="dv">2</span>, <span class="dt">rel =</span> <span class="ot">TRUE</span>),</a>
-<a class="sourceLine" id="cb10-8" data-line-number="8">            <span class="dt">period =</span> </a>
-<a class="sourceLine" id="cb10-9" data-line-number="9">              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">col =</span> <span class="dv">1</span>, <span class="dt">rel =</span> <span class="ot">TRUE</span>),</a>
-<a class="sourceLine" id="cb10-10" data-line-number="10">            ...))</a></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">clusters =</span> </span>
+<span id="cb10-2"><a href="#cb10-2"></a>       <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">top =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">1</span>), <span class="dt">left =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">5</span>), </span>
+<span id="cb10-3"><a href="#cb10-3"></a>            <span class="dt">width =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">2</span>), <span class="dt">height =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">3</span>), <span class="dt">id =</span> ...),</span>
+<span id="cb10-4"><a href="#cb10-4"></a>     <span class="dt">header =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">row =</span> <span class="dv">1</span>),</span>
+<span id="cb10-5"><a href="#cb10-5"></a>     <span class="dt">variables =</span></span>
+<span id="cb10-6"><a href="#cb10-6"></a>       <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">territories =</span> </span>
+<span id="cb10-7"><a href="#cb10-7"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">col =</span> <span class="dv">2</span>, <span class="dt">rel =</span> <span class="ot">TRUE</span>),</span>
+<span id="cb10-8"><a href="#cb10-8"></a>            <span class="dt">period =</span> </span>
+<span id="cb10-9"><a href="#cb10-9"></a>              <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">col =</span> <span class="dv">1</span>, <span class="dt">rel =</span> <span class="ot">TRUE</span>),</span>
+<span id="cb10-10"><a href="#cb10-10"></a>            ...))</span></code></pre></div>
 <p>Additionally, given that at least the tables within each cluster are all arranged in the same way, the contained variables can be specified so that their row and column indices are given relative to the cluster position (<code>rel = TRUE</code>). If also that is not the case, the row and column values for each cluster need to be provided for the respective variables in the same way as for cluster positions.</p>
 </div>
 <div id="clusters-of-measured-variables" class="section level3">
@@ -1045,7 +1054,8 @@
 <a href="#clusters-of-measured-variables" class="anchor"></a>Clusters of measured variables</h3>
 <p>The previous two types of clusters are clusters of identifying variables, but it may also be the case that the measured variables are split up into distinct clusters. Here, we need to specify first of all in <code>clusters</code> <code>"id = "measured"</code> to indicate that the measured variable is the cluster ID. Next, we need to set up the measured variables so that they contain <code>"key = "cluster"</code> and in <code>value</code> the number of the cluster this variable can be found in. Moreover, we provide the column(s) and all rows that contain the values of each measured variable. This is in contrast to nested measured variables, where the rows of the variable names need to be provided.</p>
 <table class="table">
-<caption>(#tab:clusMeas) Vertical clusters of the measured variables.</caption>
+<caption>
+<a name="clusMeas"></a>Table 10: Vertical clusters of the measured variables.</caption>
 <thead><tr class="header">
 <th align="left">X1</th>
 <th align="left">X2</th>
@@ -1189,30 +1199,31 @@
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="kw"><a href="../reference/makeSchema.html">makeSchema</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(</a>
-<a class="sourceLine" id="cb11-2" data-line-number="2">  <span class="dt">clusters =</span></a>
-<a class="sourceLine" id="cb11-3" data-line-number="3">    <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">row =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">3</span>, <span class="dv">12</span>), <span class="dt">col =</span> <span class="dv">2</span>, <span class="dt">height =</span> <span class="dv">8</span>, <span class="dt">id =</span> <span class="st">"measured"</span>),</a>
-<a class="sourceLine" id="cb11-4" data-line-number="4">  <span class="dt">header =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">row =</span> <span class="dv">1</span>),</a>
-<a class="sourceLine" id="cb11-5" data-line-number="5">  <span class="dt">variables =</span></a>
-<a class="sourceLine" id="cb11-6" data-line-number="6">    <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">territories =</span></a>
-<a class="sourceLine" id="cb11-7" data-line-number="7">           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">col =</span> <span class="dv">2</span>),</a>
-<a class="sourceLine" id="cb11-8" data-line-number="8">         <span class="dt">year =</span></a>
-<a class="sourceLine" id="cb11-9" data-line-number="9">           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">col =</span> <span class="dv">3</span>),</a>
-<a class="sourceLine" id="cb11-10" data-line-number="10">         <span class="dt">commodities =</span></a>
-<a class="sourceLine" id="cb11-11" data-line-number="11">           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">col =</span> <span class="dv">4</span>),</a>
-<a class="sourceLine" id="cb11-12" data-line-number="12">         <span class="dt">harvested =</span></a>
-<a class="sourceLine" id="cb11-13" data-line-number="13">           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"measured"</span>, <span class="dt">unit =</span> <span class="st">"ha"</span>, <span class="dt">factor =</span> <span class="dv">1</span>, <span class="dt">col =</span> <span class="dv">5</span>,</a>
-<a class="sourceLine" id="cb11-14" data-line-number="14">                <span class="dt">key =</span> <span class="st">"cluster"</span>, <span class="dt">value =</span> <span class="dv">1</span>),</a>
-<a class="sourceLine" id="cb11-15" data-line-number="15">         <span class="dt">production =</span></a>
-<a class="sourceLine" id="cb11-16" data-line-number="16">           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"measured"</span>, <span class="dt">unit =</span> <span class="st">"t"</span>, <span class="dt">factor =</span> <span class="dv">1</span>, <span class="dt">col =</span> <span class="dv">5</span>,</a>
-<a class="sourceLine" id="cb11-17" data-line-number="17">                <span class="dt">key =</span> <span class="st">"cluster"</span>, <span class="dt">value =</span> <span class="dv">2</span>))))</a></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="kw"><a href="../reference/makeSchema.html">makeSchema</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(</span>
+<span id="cb11-2"><a href="#cb11-2"></a>  <span class="dt">clusters =</span></span>
+<span id="cb11-3"><a href="#cb11-3"></a>    <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">row =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">3</span>, <span class="dv">12</span>), <span class="dt">col =</span> <span class="dv">2</span>, <span class="dt">height =</span> <span class="dv">8</span>, <span class="dt">id =</span> <span class="st">"measured"</span>),</span>
+<span id="cb11-4"><a href="#cb11-4"></a>  <span class="dt">header =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">row =</span> <span class="dv">1</span>),</span>
+<span id="cb11-5"><a href="#cb11-5"></a>  <span class="dt">variables =</span></span>
+<span id="cb11-6"><a href="#cb11-6"></a>    <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">territories =</span></span>
+<span id="cb11-7"><a href="#cb11-7"></a>           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">col =</span> <span class="dv">2</span>),</span>
+<span id="cb11-8"><a href="#cb11-8"></a>         <span class="dt">year =</span></span>
+<span id="cb11-9"><a href="#cb11-9"></a>           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">col =</span> <span class="dv">3</span>),</span>
+<span id="cb11-10"><a href="#cb11-10"></a>         <span class="dt">commodities =</span></span>
+<span id="cb11-11"><a href="#cb11-11"></a>           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">col =</span> <span class="dv">4</span>),</span>
+<span id="cb11-12"><a href="#cb11-12"></a>         <span class="dt">harvested =</span></span>
+<span id="cb11-13"><a href="#cb11-13"></a>           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"measured"</span>, <span class="dt">unit =</span> <span class="st">"ha"</span>, <span class="dt">factor =</span> <span class="dv">1</span>, <span class="dt">col =</span> <span class="dv">5</span>,</span>
+<span id="cb11-14"><a href="#cb11-14"></a>                <span class="dt">key =</span> <span class="st">"cluster"</span>, <span class="dt">value =</span> <span class="dv">1</span>),</span>
+<span id="cb11-15"><a href="#cb11-15"></a>         <span class="dt">production =</span></span>
+<span id="cb11-16"><a href="#cb11-16"></a>           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"measured"</span>, <span class="dt">unit =</span> <span class="st">"t"</span>, <span class="dt">factor =</span> <span class="dv">1</span>, <span class="dt">col =</span> <span class="dv">5</span>,</span>
+<span id="cb11-17"><a href="#cb11-17"></a>                <span class="dt">key =</span> <span class="st">"cluster"</span>, <span class="dt">value =</span> <span class="dv">2</span>))))</span></code></pre></div>
 </div>
 <div id="variables-that-are-distinct-from-a-cluster" class="section level3">
 <h3 class="hasAnchor">
 <a href="#variables-that-are-distinct-from-a-cluster" class="anchor"></a>Variables that are distinct from a cluster</h3>
 <p>When not all identifying variables can be provided relative to the cluster origin, for example because they are missing for some clusters, it makes more sense to define such a variable as a distinct variable. This is done by providing <code>row</code> and <code>col</code> as absolute values and setting <code>dist = TRUE</code>.</p>
 <table class="table">
-<caption>(#tab:distVar) Several clusters where one variable is not available for each cluster, but distinct of them.</caption>
+<caption>
+<a name="distVar"></a>Table 11: Several clusters where one variable is not available for each cluster, but distinct of them.</caption>
 <thead><tr class="header">
 <th align="left">X1</th>
 <th align="left">X2</th>
@@ -1342,41 +1353,40 @@
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1"><span class="kw"><a href="../reference/makeSchema.html">makeSchema</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(</a>
-<a class="sourceLine" id="cb12-2" data-line-number="2">  <span class="dt">clusters =</span></a>
-<a class="sourceLine" id="cb12-3" data-line-number="3">    <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">row =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span>, <span class="dv">8</span>, <span class="dv">8</span>), <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">4</span>), <span class="dt">width =</span> <span class="dv">3</span>, <span class="dt">height =</span> <span class="dv">6</span>,</a>
-<a class="sourceLine" id="cb12-4" data-line-number="4">         <span class="dt">id =</span> <span class="st">"territories"</span>),</a>
-<a class="sourceLine" id="cb12-5" data-line-number="5">  <span class="dt">meta =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">del =</span> <span class="ot">NULL</span>, <span class="dt">dec =</span> <span class="ot">NULL</span>, <span class="dt">na =</span> <span class="ot">NULL</span>, <span class="dt">types =</span> <span class="ot">NULL</span>),</a>
-<a class="sourceLine" id="cb12-6" data-line-number="6">  <span class="dt">header =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">row =</span> <span class="dv">1</span>, <span class="dt">rel =</span> <span class="ot">TRUE</span>),</a>
-<a class="sourceLine" id="cb12-7" data-line-number="7">  <span class="dt">variables =</span></a>
-<a class="sourceLine" id="cb12-8" data-line-number="8">    <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">territories =</span></a>
-<a class="sourceLine" id="cb12-9" data-line-number="9">           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">row =</span> <span class="dv">1</span>, <span class="dt">col =</span> <span class="dv">1</span>, <span class="dt">rel =</span> <span class="ot">TRUE</span>),</a>
-<a class="sourceLine" id="cb12-10" data-line-number="10">         <span class="dt">year =</span></a>
-<a class="sourceLine" id="cb12-11" data-line-number="11">           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">row =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">3</span><span class="op">:</span><span class="dv">6</span>), <span class="dt">col =</span> <span class="dv">4</span>, <span class="dt">dist =</span> <span class="ot">TRUE</span>),</a>
-<a class="sourceLine" id="cb12-12" data-line-number="12">         <span class="dt">commodities =</span></a>
-<a class="sourceLine" id="cb12-13" data-line-number="13">           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">col =</span> <span class="dv">1</span>, <span class="dt">rel =</span> <span class="ot">TRUE</span>),</a>
-<a class="sourceLine" id="cb12-14" data-line-number="14">         <span class="dt">harvested =</span></a>
-<a class="sourceLine" id="cb12-15" data-line-number="15">           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"measured"</span>, <span class="dt">unit =</span> <span class="st">"ha"</span>, <span class="dt">factor =</span> <span class="dv">1</span>,</a>
-<a class="sourceLine" id="cb12-16" data-line-number="16">                <span class="dt">col =</span> <span class="dv">2</span>, <span class="dt">rel =</span> <span class="ot">TRUE</span>),</a>
-<a class="sourceLine" id="cb12-17" data-line-number="17">         <span class="dt">production =</span></a>
-<a class="sourceLine" id="cb12-18" data-line-number="18">           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"measured"</span>, <span class="dt">unit =</span> <span class="st">"t"</span>, <span class="dt">factor =</span> <span class="dv">1</span>,</a>
-<a class="sourceLine" id="cb12-19" data-line-number="19">                <span class="dt">col =</span> <span class="dv">3</span>, <span class="dt">rel =</span> <span class="ot">TRUE</span>))))</a></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="kw"><a href="../reference/makeSchema.html">makeSchema</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(</span>
+<span id="cb12-2"><a href="#cb12-2"></a>  <span class="dt">clusters =</span></span>
+<span id="cb12-3"><a href="#cb12-3"></a>    <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">row =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span>, <span class="dv">8</span>, <span class="dv">8</span>), <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">4</span>), <span class="dt">width =</span> <span class="dv">3</span>, <span class="dt">height =</span> <span class="dv">6</span>,</span>
+<span id="cb12-4"><a href="#cb12-4"></a>         <span class="dt">id =</span> <span class="st">"territories"</span>),</span>
+<span id="cb12-5"><a href="#cb12-5"></a>  <span class="dt">meta =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">del =</span> <span class="ot">NULL</span>, <span class="dt">dec =</span> <span class="ot">NULL</span>, <span class="dt">na =</span> <span class="ot">NULL</span>, <span class="dt">types =</span> <span class="ot">NULL</span>),</span>
+<span id="cb12-6"><a href="#cb12-6"></a>  <span class="dt">header =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">row =</span> <span class="dv">1</span>, <span class="dt">rel =</span> <span class="ot">TRUE</span>),</span>
+<span id="cb12-7"><a href="#cb12-7"></a>  <span class="dt">variables =</span></span>
+<span id="cb12-8"><a href="#cb12-8"></a>    <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">territories =</span></span>
+<span id="cb12-9"><a href="#cb12-9"></a>           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">row =</span> <span class="dv">1</span>, <span class="dt">col =</span> <span class="dv">1</span>, <span class="dt">rel =</span> <span class="ot">TRUE</span>),</span>
+<span id="cb12-10"><a href="#cb12-10"></a>         <span class="dt">year =</span></span>
+<span id="cb12-11"><a href="#cb12-11"></a>           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">row =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">3</span><span class="op">:</span><span class="dv">6</span>), <span class="dt">col =</span> <span class="dv">4</span>, <span class="dt">dist =</span> <span class="ot">TRUE</span>),</span>
+<span id="cb12-12"><a href="#cb12-12"></a>         <span class="dt">commodities =</span></span>
+<span id="cb12-13"><a href="#cb12-13"></a>           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"id"</span>, <span class="dt">col =</span> <span class="dv">1</span>, <span class="dt">rel =</span> <span class="ot">TRUE</span>),</span>
+<span id="cb12-14"><a href="#cb12-14"></a>         <span class="dt">harvested =</span></span>
+<span id="cb12-15"><a href="#cb12-15"></a>           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"measured"</span>, <span class="dt">unit =</span> <span class="st">"ha"</span>, <span class="dt">factor =</span> <span class="dv">1</span>,</span>
+<span id="cb12-16"><a href="#cb12-16"></a>                <span class="dt">col =</span> <span class="dv">2</span>, <span class="dt">rel =</span> <span class="ot">TRUE</span>),</span>
+<span id="cb12-17"><a href="#cb12-17"></a>         <span class="dt">production =</span></span>
+<span id="cb12-18"><a href="#cb12-18"></a>           <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">type =</span> <span class="st">"measured"</span>, <span class="dt">unit =</span> <span class="st">"t"</span>, <span class="dt">factor =</span> <span class="dv">1</span>,</span>
+<span id="cb12-19"><a href="#cb12-19"></a>                <span class="dt">col =</span> <span class="dv">3</span>, <span class="dt">rel =</span> <span class="ot">TRUE</span>))))</span></code></pre></div>
 </div>
 </div>
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="hasAnchor">
 <a href="#references" class="anchor"></a>References</h1>
-<div id="refs" class="references">
+<div id="refs" class="references hanging-indent">
 <div id="ref-Wickham2014">
-<p>Wickham, Hadley. 2014. “Tidy Data.” <em>Journal of Statistical Software</em> 59 (10). Foundation for Open Access Statistics: 1–23. <a href="https://doi.org/10.18637/jss.v059.i10">https://doi.org/10.18637/jss.v059.i10</a>.</p>
+<p>Wickham, Hadley. 2014. “Tidy Data.” <em>Journal of Statistical Software</em> 59 (10): 1–23. <a href="https://doi.org/10.18637/jss.v059.i10">https://doi.org/10.18637/jss.v059.i10</a>.</p>
 </div>
 </div>
 </div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-
         <div id="tocnav">
       <h2 class="hasAnchor">
 <a href="#tocnav" class="anchor"></a>Contents</h2>
@@ -1384,7 +1394,8 @@
 <li><a href="#introduction">Introduction</a></li>
       <li><a href="#setting-up-schema-descriptions">Setting up schema descriptions</a></li>
       <li>
-<a href="#table-types">Table types</a><ul class="nav nav-pills nav-stacked">
+<a href="#table-types">Table types</a>
+      <ul class="nav nav-pills nav-stacked">
 <li><a href="#spreadsheet-contains-one-cluster">Spreadsheet contains one cluster</a></li>
       <li><a href="#spreadsheet-contains-several-clusters">Spreadsheet contains several clusters</a></li>
       </ul>

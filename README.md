@@ -9,21 +9,25 @@
 
 ## Overview
 
-Data can be stored in tables or spreadsheets in many different ways
-because no strict semantic or topographic standards for the organisation
-of tables are commonly accepted. In the R environment the *tidy*
-paradigm is a first step towards interoperability of data, in that it
-requires a certain arrangement of tables, where variables are recorded
-in columns and observations in rows (see
-<https://tidyr.tidyverse.org/>). Tables can be tidied via packages such
-as `tidyr`, however, all reshape functions to date require already more
-or less rectangular data. This is in practice often violated, when
-socalled disorganised (messy) tables are scraped from the internet.
-Disorganised tables are not stored in one topologically consistent
-(i.e., rectangular) chunk and may even miss implicit variables.
+Data are stored in many different ways in tables or spreadsheets because
+no strict semantic or topographic standards for the organisation of
+tables are commonly accepted. In the R environment the *tidy* paradigm
+is a first step towards interoperability of data, in that it requires a
+certain arrangement of tables, where variables are recorded in columns
+and observations in rows (see <https://tidyr.tidyverse.org/>). Tables
+can be tidied (i.e., brought into a tidy arrangement) via packages such
+as `tidyr`, however, all functions that deal with reshaping tables to
+date require data that are already organised into topologically
+coherent, rectangular tables. This is often violated in practice, for
+example when data are scraped off of the internet.
+
 `tabshiftr` fills this gap in the toolchain for reproducible data
 management via `schema` descriptions and a `reorganise()` function that
-is largely based on `tidyr`.
+is largely based on `tidyr`. We call data that are not topologically
+coherent *disorganised (messy) data* and they are characterised not only
+by "being messy" (as in opposed to tidy), but also by being arranged so
+that not all variables are part of the same "chunk" of data or even that
+some variables are only available by implication.
 
 ## Installation
 
@@ -47,27 +51,30 @@ A disorganised table may look like the following table:
 
 ``` r
 library(readr)
+library(tabshiftr)
+library(knitr)
+
 input <- read_csv(
   file = paste0(system.file("test_datasets", package = "tabshiftr"), "/table13.csv"),
   col_names = FALSE, col_types = cols(.default = "c"))
-input
-#> # A tibble: 13 x 7
-#>    X1          X2        X3         X4          X5        X6         X7    
-#>    <chr>       <chr>     <chr>      <chr>       <chr>     <chr>      <chr> 
-#>  1 commodities harvested production <NA>        <NA>      <NA>       <NA>  
-#>  2 unit 1      <NA>      <NA>       <NA>        <NA>      <NA>       <NA>  
-#>  3 soybean     1111      1112       year 1      <NA>      <NA>       <NA>  
-#>  4 maize       1121      1122       year 1      <NA>      <NA>       <NA>  
-#>  5 soybean     1211      1212       year 2      <NA>      <NA>       <NA>  
-#>  6 maize       1221      1222       year 2      <NA>      <NA>       <NA>  
-#>  7 <NA>        <NA>      <NA>       <NA>        <NA>      <NA>       <NA>  
-#>  8 commodities harvested production commodities harvested production <NA>  
-#>  9 unit 2      <NA>      <NA>       unit 3      <NA>      <NA>       <NA>  
-#> 10 soybean     2111      2112       soybean     3111      3112       year 1
-#> 11 maize       2121      2122       maize       3121      3122       year 1
-#> 12 soybean     2211      2212       soybean     3211      3212       year 2
-#> 13 maize       2221      2222       maize       3221      3222       year 2
+kable(input)
 ```
+
+| X1          | X2        | X3         | X4          | X5        | X6         | X7     |
+| :---------- | :-------- | :--------- | :---------- | :-------- | :--------- | :----- |
+| commodities | harvested | production | .           | .         | .          | .      |
+| unit 1      | .         | .          | .           | .         | .          | .      |
+| soybean     | 1111      | 1112       | year 1      | .         | .          | .      |
+| maize       | 1121      | 1122       | year 1      | .         | .          | .      |
+| soybean     | 1211      | 1212       | year 2      | .         | .          | .      |
+| maize       | 1221      | 1222       | year 2      | .         | .          | .      |
+| .           | .         | .          | .           | .         | .          | .      |
+| commodities | harvested | production | commodities | harvested | production | .      |
+| unit 2      | .         | .          | unit 3      | .         | .          | .      |
+| soybean     | 2111      | 2112       | soybean     | 3111      | 3112       | year 1 |
+| maize       | 2121      | 2122       | maize       | 3121      | 3122       | year 1 |
+| soybean     | 2211      | 2212       | soybean     | 3211      | 3212       | year 2 |
+| maize       | 2221      | 2222       | maize       | 3221      | 3222       | year 2 |
 
 This table contains two so-called *clusters*, topologically consistent
 chunks of data at the rows 1 to 6 and 8 to 13. Both clusters are
@@ -130,7 +137,7 @@ This results for the `input` table in the following schema description
 library(tabshiftr)
 schema <- makeSchema(schema = list(
   clusters =
-    list(top = c(1, 8, 8), left = c(1, 1, 4), width = 3, height = 6, id = "territories"),
+    list(row = c(1, 8, 8), col = c(1, 1, 4), width = 3, height = 6, id = "territories"),
   header = list(row = 1, rel = TRUE),
   variables =
     list(territories =
@@ -161,7 +168,7 @@ Some further fields that have not been mentioned here are:
 ``` r
 schema
 #>   3 clusters
-#>     origin: 1|1, 8|1, 8|4  (top|left)
+#>     origin: 1|1, 8|1, 8|4  (row|col)
 #>     id    : territories
 #> 
 #>    variable      type       row   col   rel   dist 

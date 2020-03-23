@@ -11,6 +11,7 @@ knitr::opts_chunk$set(
   fig.path = "man/figures/README-",
   out.width = "100%"
 )
+options(knitr.kable.NA = '.')
 ```
 
 # tabshiftr <a href='https://ehrmanns.github.io/tabshiftr/'><img src='man/figures/logo.svg' align="right" height="200" /></a>
@@ -20,12 +21,13 @@ knitr::opts_chunk$set(
 
 ## Overview
 
-Data can be stored in tables or spreadsheets in many different ways because no strict semantic or topographic standards for the organisation of tables are commonly accepted.
+Data are stored in many different ways in tables or spreadsheets because no strict semantic or topographic standards for the organisation of tables are commonly accepted.
 In the R environment the *tidy* paradigm is a first step towards interoperability of data, in that it requires a certain arrangement of tables, where variables are recorded in columns and observations in rows (see https://tidyr.tidyverse.org/).
-Tables can be tidied via packages such as `tidyr`, however, all reshape functions to date require already more or less rectangular data.
-This is in practice often violated, when socalled disorganised (messy) tables are scraped from the internet.
-Disorganised tables are not stored in one topologically consistent (i.e., rectangular) chunk and may even miss implicit variables.
+Tables can be tidied (i.e., brought into a tidy arrangement) via packages such as `tidyr`, however, all functions that deal with reshaping tables to date require data that are already organised into topologically coherent, rectangular tables.
+This is often violated in practice, for example when data are scraped off of the internet.
+
 `tabshiftr` fills this gap in the toolchain for reproducible data management via `schema` descriptions and a `reorganise()` function that is largely based on `tidyr`.
+We call data that are not topologically coherent *disorganised (messy) data* and they are characterised not only by \"being messy\" (as in opposed to tidy), but also by being arranged so that not all variables are part of the same \"chunk\" of data or even that some variables are only available by implication.
 
 ## Installation
 
@@ -44,10 +46,13 @@ A disorganised table may look like the following table:
 
 ```{r}
 library(readr)
+library(tabshiftr)
+library(knitr)
+
 input <- read_csv(
   file = paste0(system.file("test_datasets", package = "tabshiftr"), "/table13.csv"),
   col_names = FALSE, col_types = cols(.default = "c"))
-input
+kable(input)
 ```
 
 This table contains two so-called *clusters*, topologically consistent chunks of data at the rows 1 to 6 and 8 to 13.
@@ -82,7 +87,7 @@ This results for the `input` table in the following schema description
 library(tabshiftr)
 schema <- makeSchema(schema = list(
   clusters =
-    list(top = c(1, 8, 8), left = c(1, 1, 4), width = 3, height = 6, id = "territories"),
+    list(row = c(1, 8, 8), col = c(1, 1, 4), width = 3, height = 6, id = "territories"),
   header = list(row = 1, rel = TRUE),
   variables =
     list(territories =
