@@ -185,20 +185,20 @@ Finally, the input table is reorganised simply by calling
 
 ``` r
 output <- reorganise(input = input, schema = schema)
-output
-#> # A tibble: 12 x 5
-#>    territories year   commodities harvested production
-#>    <chr>       <chr>  <chr>           <dbl>      <dbl>
-#>  1 unit 1      year 1 maize            1121       1122
-#>  2 unit 1      year 1 soybean          1111       1112
-#>  3 unit 1      year 2 maize            1221       1222
-#>  4 unit 1      year 2 soybean          1211       1212
-#>  5 unit 2      year 1 maize            2121       2122
-#>  6 unit 2      year 1 soybean          2111       2112
-#>  7 unit 2      year 2 maize            2221       2222
-#>  8 unit 2      year 2 soybean          2211       2212
-#>  9 unit 3      year 1 maize            3121       3122
-#> 10 unit 3      year 1 soybean          3111       3112
-#> 11 unit 3      year 2 maize            3221       3222
-#> 12 unit 3      year 2 soybean          3211       3212
+kable(output)
 ```
+
+| territories | year   | commodities | harvested | production |
+| :---------: | :----- | :---------- | --------: | ---------: |
+|   unit 1    | year 1 | maize       |      1121 |       1122 |
+|   unit 1    | year 1 | soybean     |      1111 |       1112 |
+|   unit 1    | year 2 | maize       |      1221 |       1222 |
+|   unit 1    | year 2 | soybean     |      1211 |       1212 |
+|   unit 2    | year 1 | maize       |      2121 |       2122 |
+|   unit 2    | year 1 | soybean     |      2111 |       2112 |
+|   unit 2    | year 2 | maize       |      2221 |       2222 |
+|   unit 2    | year 2 | soybean     |      2211 |       2212 |
+|   unit 3    | year 1 | maize       |      3121 |       3122 |
+|   unit 3    | year 1 | soybean     |      3111 |       3112 |
+|   unit 3    | year 2 | maize       |      3221 |       3222 |
+|   unit 3    | year 2 | soybean     |      3211 |       3212 |

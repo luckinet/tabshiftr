@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Reshape disorganised messy data • rectifyr</title>
+<title>Reshape disorganised messy data • tabshiftr</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
 <link rel="apple-touch-icon" type="image/png" sizes="180x180" href="apple-touch-icon.png">
@@ -17,7 +17,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
 <script src="pkgdown.js"></script><meta property="og:title" content="Reshape disorganised messy data">
-<meta property="og:description" content="Registers schema descriptions of (disorganised) messy tables and 
+<meta property="og:description" content="Registers schema descriptions of disorganised (messy) tables and 
     reorganises them into a standardised (tidy) format.">
 <meta property="og:image" content="http://EhrmannS.github.io/tabshiftr/logo.png">
 <meta name="twitter:card" content="summary">
@@ -38,7 +38,7 @@
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="index.html">rectifyr</a>
+        <a class="navbar-link" href="index.html">tabshiftr</a>
         <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="Unreleased version">0.1.2</span>
       </span>
     </div>
@@ -285,22 +285,102 @@
 <span id="cb4-12"><a href="#cb4-12"></a><span class="co">#&gt;    production    measured         3     T     F</span></span></code></pre></div>
 <p>Finally, the input table is reorganised simply by calling <code><a href="reference/reorganise.html">reorganise()</a></code>.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>output &lt;-<span class="st"> </span><span class="kw"><a href="reference/reorganise.html">reorganise</a></span>(<span class="dt">input =</span> input, <span class="dt">schema =</span> schema)</span>
-<span id="cb5-2"><a href="#cb5-2"></a>output</span>
-<span id="cb5-3"><a href="#cb5-3"></a><span class="co">#&gt; # A tibble: 12 x 5</span></span>
-<span id="cb5-4"><a href="#cb5-4"></a><span class="co">#&gt;    territories year   commodities harvested production</span></span>
-<span id="cb5-5"><a href="#cb5-5"></a><span class="co">#&gt;    &lt;chr&gt;       &lt;chr&gt;  &lt;chr&gt;           &lt;dbl&gt;      &lt;dbl&gt;</span></span>
-<span id="cb5-6"><a href="#cb5-6"></a><span class="co">#&gt;  1 unit 1      year 1 maize            1121       1122</span></span>
-<span id="cb5-7"><a href="#cb5-7"></a><span class="co">#&gt;  2 unit 1      year 1 soybean          1111       1112</span></span>
-<span id="cb5-8"><a href="#cb5-8"></a><span class="co">#&gt;  3 unit 1      year 2 maize            1221       1222</span></span>
-<span id="cb5-9"><a href="#cb5-9"></a><span class="co">#&gt;  4 unit 1      year 2 soybean          1211       1212</span></span>
-<span id="cb5-10"><a href="#cb5-10"></a><span class="co">#&gt;  5 unit 2      year 1 maize            2121       2122</span></span>
-<span id="cb5-11"><a href="#cb5-11"></a><span class="co">#&gt;  6 unit 2      year 1 soybean          2111       2112</span></span>
-<span id="cb5-12"><a href="#cb5-12"></a><span class="co">#&gt;  7 unit 2      year 2 maize            2221       2222</span></span>
-<span id="cb5-13"><a href="#cb5-13"></a><span class="co">#&gt;  8 unit 2      year 2 soybean          2211       2212</span></span>
-<span id="cb5-14"><a href="#cb5-14"></a><span class="co">#&gt;  9 unit 3      year 1 maize            3121       3122</span></span>
-<span id="cb5-15"><a href="#cb5-15"></a><span class="co">#&gt; 10 unit 3      year 1 soybean          3111       3112</span></span>
-<span id="cb5-16"><a href="#cb5-16"></a><span class="co">#&gt; 11 unit 3      year 2 maize            3221       3222</span></span>
-<span id="cb5-17"><a href="#cb5-17"></a><span class="co">#&gt; 12 unit 3      year 2 soybean          3211       3212</span></span></code></pre></div>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="kw"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span>(output)</span></code></pre></div>
+<table class="table">
+<thead><tr class="header">
+<th align="center">territories</th>
+<th align="left">year</th>
+<th align="left">commodities</th>
+<th align="right">harvested</th>
+<th align="right">production</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="center">unit 1</td>
+<td align="left">year 1</td>
+<td align="left">maize</td>
+<td align="right">1121</td>
+<td align="right">1122</td>
+</tr>
+<tr class="even">
+<td align="center">unit 1</td>
+<td align="left">year 1</td>
+<td align="left">soybean</td>
+<td align="right">1111</td>
+<td align="right">1112</td>
+</tr>
+<tr class="odd">
+<td align="center">unit 1</td>
+<td align="left">year 2</td>
+<td align="left">maize</td>
+<td align="right">1221</td>
+<td align="right">1222</td>
+</tr>
+<tr class="even">
+<td align="center">unit 1</td>
+<td align="left">year 2</td>
+<td align="left">soybean</td>
+<td align="right">1211</td>
+<td align="right">1212</td>
+</tr>
+<tr class="odd">
+<td align="center">unit 2</td>
+<td align="left">year 1</td>
+<td align="left">maize</td>
+<td align="right">2121</td>
+<td align="right">2122</td>
+</tr>
+<tr class="even">
+<td align="center">unit 2</td>
+<td align="left">year 1</td>
+<td align="left">soybean</td>
+<td align="right">2111</td>
+<td align="right">2112</td>
+</tr>
+<tr class="odd">
+<td align="center">unit 2</td>
+<td align="left">year 2</td>
+<td align="left">maize</td>
+<td align="right">2221</td>
+<td align="right">2222</td>
+</tr>
+<tr class="even">
+<td align="center">unit 2</td>
+<td align="left">year 2</td>
+<td align="left">soybean</td>
+<td align="right">2211</td>
+<td align="right">2212</td>
+</tr>
+<tr class="odd">
+<td align="center">unit 3</td>
+<td align="left">year 1</td>
+<td align="left">maize</td>
+<td align="right">3121</td>
+<td align="right">3122</td>
+</tr>
+<tr class="even">
+<td align="center">unit 3</td>
+<td align="left">year 1</td>
+<td align="left">soybean</td>
+<td align="right">3111</td>
+<td align="right">3112</td>
+</tr>
+<tr class="odd">
+<td align="center">unit 3</td>
+<td align="left">year 2</td>
+<td align="left">maize</td>
+<td align="right">3221</td>
+<td align="right">3222</td>
+</tr>
+<tr class="even">
+<td align="center">unit 3</td>
+<td align="left">year 2</td>
+<td align="left">soybean</td>
+<td align="right">3211</td>
+<td align="right">3212</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
   </div>

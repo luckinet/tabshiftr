@@ -116,6 +116,6 @@ Finally, the input table is reorganised simply by calling `reorganise()`.
 
 ```{r}
 output <- reorganise(input = input, schema = schema)
-output
+kable(output)
 
 ```
