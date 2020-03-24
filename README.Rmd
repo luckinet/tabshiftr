@@ -55,33 +55,33 @@ input <- read_csv(
 kable(input)
 ```
 
-This table contains two so-called *clusters*, topologically consistent chunks of data at the rows 1 to 6 and 8 to 13.
-Both clusters are somewhat systematic in that it there are three variables in common, however, the second cluster contains a subset of variables twice, the variables `commodities`, `harvested` and `production`.
-The variable `year` has values but no explicit name and is not available for each cluster, and the variable `territories` is not even stored as a typical variable, but is implicit and noted in the second row of each cluster.
+This table contains two chunks of data at the rows 1 to 6 and 8 to 13 and they are further organised into three similar groups (so-called *clusters*).
+The clusters are somewhat systematic in that there are three variables in common, `commodities`, `harvested` and `production`.
+The variable `year` has values but no explicit name and is not available for each cluster, and the variable `territories` is not even stored in a column, but is implicit and noted in the second row of each cluster.
 
-In `tabshiftr` there is a distinction between *identifying (id) variables*, variables that describe an observational unit, and *measured variables*, variables that provide some value for that observational unit.
+In `tabshiftr` we distinguish between *identifying (id) variables*, variables that describe an observational unit, and *measured variables*, variables that provide some value for that observational unit.
 In the example, the variables `territories`, `year` and `commodities` are id variables and the variables `harvested` and `production` are measured variables, they give the harvested area and the production of the given commodity at a given year in a given territory.
 
-To reorganise any table with `tabshiftr` we need to set up a [schema](https://en.wikipedia.org/wiki/Database_schema) description.
+To reorganise any table with `tabshiftr` we need to set up a [schema](https://en.wikipedia.org/wiki/Database_schema) description, the advantage of this procedure is that input and output data exist explicitly and the schema maps the transformation of the data.
 For each table there is an input schema and an output schema.
 The input schema describes how the table looks like and the output schema describes how the table shall look like after reorganisation.
-As we want to end up with tidy tables, i.e., where variables are in columns and observations in rows, we have already an output schema, a tidy table.
+As we want to end up with tidy tables, i.e., where variables are in columns and observations in rows, the output schema is characterised by a tidy table of the included variables.
 
 For the input schema we have to describe where which information in a table can be found, i.e., in which rows and columns.
 First, we need to describe whether the table is organised in several clusters, and if so where they are.
-In the example, the first cluster starts at `1|1`, the second at `1|8` and the second at `4|8` (`row|col`).
+In the example, the first cluster starts at `1|1`, the second at `1|8` and the third at `4|8` (`row|col`).
 All clusters are 3 cells wide and 6 cells high.
 Moreover, we already recognised that each cluster represents one teritorial unit, so we record the variable `territories` as cluster ID.
-When theer are several identical clusters, it makes sense to describe them in terms of `rel`ative values, i.e., not starting to count from the topmost leftmost cell, but from the start of the cluster.
+When there are several identical clusters, it makes sense to describe them in terms of `rel`ative values, i.e., not starting to count from the topmost leftmost cell, but from the start of the cluster.
 A table should have some sort of header, i.e., one or more rows that describes which information a column contains and we need to register this header, in the example this is the first row of each cluster.
 
 Input tables may contain many more data/variables than what we are interested in, but the schema description contains only those variables we want to have in the output table.
 For each variable we need to define at least the `type` and either a `col`umn, or a column and a `row`.
 Some variables are `dist`inct from the cluster definition, because they occur perhaps only once in the table, or are organised in a non-systematic way, such as the variable `year` in the example.
-Some variables are either absent from the table, or are available implicitly, for example if several spreadsheets or files contain information for one level of an identifying variable only, for example per commodity.
+Some variables are either absent from the table, or are available only implicitly, for example if several spreadsheets or files contain information for one level of an identifying variable only, such as per commodity.
 This is not the case in the example, but if it were so, this variable could be specified by providing the `value` of the level in the variable.
-For measured variables als the target unit and a transformation factor to that unit can be provided, even though they don't have any functional meaning.
-This results for the `input` table in the following schema description
+For measured variables we also need to provide the target unit and a transformation factor to that unit, the latter of which will be multiplied with the values of the measured variable.
+This results in the following schema description for our example:
 
 ```{r}
 library(tabshiftr)
