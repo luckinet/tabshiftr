@@ -1,3 +1,14 @@
 codecov:
   token: 799df702-f888-4f81-be42-38546e1e0883
 comment: false
+
+coverage:
+  status:
+    project:
+      default:
+        target: auto
+        threshold: 1%
+    patch:
+      default:
+        target: auto
+        threshold: 1%
