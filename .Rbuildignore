@@ -9,3 +9,6 @@ ToDo.md
 ^pkgdown$
 ^README\.Rmd$
 ^presentation$
+^codecov\.yml$
+^\.travis\.yml$
+^appveyor\.yml$
