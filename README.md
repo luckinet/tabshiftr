@@ -37,9 +37,15 @@ some variables are only available by implication.
 
 ## Installation
 
-1)  Install the latest development version from github:
+1)  Install the official version from CRAN:
 
 <!-- end list -->
+
+``` r
+install.packages("tabshiftr")
+```
+
+or the latest development version from github:
 
 ``` r
 devtools::install_github("EhrmannS/tabshiftr")
@@ -48,8 +54,8 @@ devtools::install_github("EhrmannS/tabshiftr")
 2)  The
     [vignette](https://ehrmanns.github.io/tabshiftr/articles/tabshiftr.html)
     provides an instruction on how to set up schema descriptions and
-    shows a wide selection of table arrangements and which schemas apply
-    to them.
+    shows the table arrangements that can be reorganised in this
+    version, and which schemas apply to them.
 
 ## Examples
 
@@ -218,15 +224,20 @@ kable(output)
 
   - tabshiftr is far from being finished. So far it reliably reorganises
     19 different types of tables all of which are either the plain cases
-    showed in the vignette, or combinations of some of the parts. I
+    showed in the vignette, or combinations of some of the parts. We
     suspsect that there are further table arrangements, but they are not
-    clear to me at this stage, issues submitted by users and
-    contributers should be helpful.
+    clear at this stage, issues submitted by users and contributers
+    should be helpful.
   - Moreover, the resulting schema descriptions can be useful for data
     archiving or database building and tabshiftr should at some point
     support that those schemas can be exported into data-formats that
     are used by downstream applications (xml, json, …)
-  - I envision for a next version some functions for assisted
+  - We envision for a next version some functions for assisted
     construction of the schema. Those could for instance be
     `setCluster()`, `setHeader()` and `setVariable()`, which could be
     piped into one another and finally into `makeSchema()`.
+
+Contributions to those points and discussions on where tabshiftr should
+go are highly welcome\!
+
+# Acknowledgement

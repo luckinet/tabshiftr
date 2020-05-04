@@ -17,11 +17,9 @@ options(knitr.kable.NA = '.')
 # tabshiftr <a href='https://ehrmanns.github.io/tabshiftr/'><img src='man/figures/logo.svg' align="right" height="200" /></a>
 
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/tabshiftr)](https://cran.r-project.org/package=tabshiftr)
-[![Travis-CI Build
-Status](https://travis-ci.org/EhrmannS/tabshiftr.svg?branch=master)](https://travis-ci.org/EhrmannS/tabshiftr)
+[![Travis-CI Build Status](https://travis-ci.org/EhrmannS/tabshiftr.svg?branch=master)](https://travis-ci.org/EhrmannS/tabshiftr)
 [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/EhrmannS/tabshiftr?branch=master&svg=true)](https://ci.appveyor.com/project/EhrmannS/tabshiftr)
-[![Coverage
-Status](https://img.shields.io/codecov/c/github/EhrmannS/tabshiftr/master.svg)](https://codecov.io/github/EhrmannS/tabshiftr?branch=master)
+[![Coverage Status](https://img.shields.io/codecov/c/github/EhrmannS/tabshiftr/master.svg)](https://codecov.io/github/EhrmannS/tabshiftr?branch=master)
 [![](http://cranlogs.r-pkg.org/badges/grand-total/tabshiftr)](https://cran.r-project.org/package=tabshiftr)
 [![Lifecycle:maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
 
@@ -37,13 +35,19 @@ We call data that are not topologically coherent *disorganised (messy) data* and
 
 ## Installation
 
-1) Install the latest development version from github:
+1) Install the official version from CRAN:
+
+```{r, eval=FALSE}
+install.packages("tabshiftr")
+```
+
+or the latest development version from github:
 
 ```{r, eval=FALSE}
 devtools::install_github("EhrmannS/tabshiftr")
 ```
 
-2) The [vignette](https://ehrmanns.github.io/tabshiftr/articles/tabshiftr.html) provides an instruction on how to set up schema descriptions and shows a wide selection of table arrangements and which schemas apply to them.
+2) The [vignette](https://ehrmanns.github.io/tabshiftr/articles/tabshiftr.html) provides an instruction on how to set up schema descriptions and shows the table arrangements that can be reorganised in this version, and which schemas apply to them.
 
 
 ## Examples
@@ -128,6 +132,11 @@ kable(output)
 # To implement
 
 * tabshiftr is far from being finished. So far it reliably reorganises 19 different types of tables all of which are either the plain cases showed in the vignette, or combinations of some of the parts.
-I suspsect that there are further table arrangements, but they are not clear to me at this stage, issues submitted by users and contributers should be helpful.
+We suspsect that there are further table arrangements, but they are not clear at this stage, issues submitted by users and contributers should be helpful.
 * Moreover, the resulting schema descriptions can be useful for data archiving or database building and tabshiftr should at some point support that those schemas can be exported into data-formats that are used by downstream applications (xml, json, ...)
-* I envision for a next version some functions for assisted construction of the schema. Those could for instance be `setCluster()`, `setHeader()` and `setVariable()`, which could be piped into one another and finally into `makeSchema()`.
+* We envision for a next version some functions for assisted construction of the schema. Those could for instance be `setCluster()`, `setHeader()` and `setVariable()`, which could be piped into one another and finally into `makeSchema()`.
+
+Contributions to those points and discussions on where tabshiftr should go are highly welcome!
+
+# Acknowledgement
+

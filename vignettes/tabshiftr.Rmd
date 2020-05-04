@@ -28,7 +28,7 @@ Each of such individual chunks within a spreadsheet is called *cluster* and data
 
 When it comes to the organisation of data in tables, variables can be distinguished into two kinds of variables:
 
-1. Variables that identify the unit for which values have been measured (they are called *identifying (or id) variables* here).
+1. Variables that identify the unit for which values have been measured (they are called *identifying variables* here).
 2. Variables that have been measured and that consequently represent the target values of that measurement, be they continuous or categorical (they are called *measured variables* here).
 
 These two variable types are the target variables in `tabshiftr`.
