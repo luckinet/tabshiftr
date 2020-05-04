@@ -131,7 +131,7 @@ kable(output)
 
 # To implement
 
-* tabshiftr is far from being finished. So far it reliably reorganises 19 different types of tables all of which are either the plain cases showed in the vignette, or combinations of some of the parts.
+* tabshiftr is still in development. So far it reliably reorganises 19 different types of tables all of which are combinations of the four dimensions of disorganisation outlined in the vignette.
 We suspsect that there are further table arrangements, but they are not clear at this stage, issues submitted by users and contributers should be helpful.
 * Moreover, the resulting schema descriptions can be useful for data archiving or database building and tabshiftr should at some point support that those schemas can be exported into data-formats that are used by downstream applications (xml, json, ...)
 * We envision for a next version some functions for assisted construction of the schema. Those could for instance be `setCluster()`, `setHeader()` and `setVariable()`, which could be piped into one another and finally into `makeSchema()`.
