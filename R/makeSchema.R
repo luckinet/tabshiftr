@@ -1,7 +1,9 @@
 #' Make a schema description
 #'
-#' @param schema [\code{list(2)}]\cr the list of schema information.
-#' @importFrom checkmate assertList
+#' @param schema [\code{list(.)}]\cr the list of schema information. This can
+#'   contain the lists \code{clusters}, \code{meta}, \code{header} and
+#'   \code{variables}. See \code{\link{schema_default}} for more details.
+#' @importFrom checkmate assertNames
 #' @importFrom methods new
 #' @export
 
@@ -45,9 +47,9 @@ makeSchema <- function(schema = NULL){
   if(!any(names(meta) %in% "na")){
     meta <- c(meta, list(na = NULL))
   }
-  if(!any(names(meta) %in% "types")){
-    meta <- c(meta, list(types = NULL))
-  }
+  # if(!any(names(meta) %in% "types")){
+  #   meta <- c(meta, list(types = NULL))
+  # }
 
   variables <- schema$variables
   for(i in seq_along(variables)){

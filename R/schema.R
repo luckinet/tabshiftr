@@ -2,8 +2,10 @@
 #'
 #' A \code{schema} stores the information of where which information is tored in
 #' a table of data.
-#' @slot cluster [\code{named list(6)}]\cr metadata of clusters of data
-#' @slot variables [\code{named list(.)}]\cr metadata of variables
+#' @slot cluster [\code{list(1)}]\cr description of clusters of data.
+#' @slot header [code{list(1)}]\cr description of the header.
+#' @slot meta [\code{list(1)}]\cr description of the metadata.
+#' @slot variables [\code{named list(.)}]\cr description of variables.
 #' @details The slot \code{variables} typically contains several lists that each
 #' record the metadata of the respective variables.
 #' @importFrom rlang is_integerish
@@ -91,8 +93,8 @@ setValidity(Class = "schema", function(object){
     if(length(object@meta) == 0){
       errors <- c(errors, "the slot 'meta' does not contain any entries.")
     }
-    if(!all(names(object@meta) %in% c("del", "dec", "na", "types"))){
-      errors <- c(errors, "'names(schema$meta)' must be a permutation of set {del,dec,na,types}")
+    if(!all(names(object@meta) %in% c("del", "dec", "na"))){
+      errors <- c(errors, "'names(schema$meta)' must be a permutation of set {del,dec,na}")
     }
     if(!is.null(object@meta$del)){
       if(!is.character(object@meta$del)){
@@ -109,11 +111,11 @@ setValidity(Class = "schema", function(object){
         errors <- c(errors, "'schema$meta$na' must have a character value.")
       }
     }
-    if(!is.null(object@meta$types)){
-      if(!is.character(object@meta$types)){
-        errors <- c(errors, "'schema$meta$types' must have a character value.")
-      }
-    }
+    # if(!is.null(object@meta$types)){
+    #   if(!is.character(object@meta$types)){
+    #     errors <- c(errors, "'schema$meta$types' must have a character value.")
+    #   }
+    # }
   }
 
   if(!.hasSlot(object = object, name = "variables")){
