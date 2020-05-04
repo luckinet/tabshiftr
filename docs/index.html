@@ -80,12 +80,12 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
+
 <div id="tabshiftr-" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#tabshiftr-" class="anchor"></a>tabshiftr <a href="https://ehrmanns.github.io/tabshiftr/"><img src="reference/figures/logo.svg" align="right" height="200"></a>
 </h1></div>
-<!-- badges: start -->
-<!-- badges: end -->
+
 <div id="overview" class="section level2">
 <h2 class="hasAnchor">
 <a href="#overview" class="anchor"></a>Overview</h2>
@@ -243,10 +243,10 @@
 </tbody>
 </table>
 <p>This table contains two chunks of data at the rows 1 to 6 and 8 to 13 and they are further organised into three similar groups (so-called <em>clusters</em>). The clusters are somewhat systematic in that there are three variables in common, <code>commodities</code>, <code>harvested</code> and <code>production</code>. The variable <code>year</code> has values but no explicit name and is not available for each cluster, and the variable <code>territories</code> is not even stored in a column, but is implicit and noted in the second row of each cluster.</p>
-<p>In <code>tabshiftr</code> we distinguish between <em>identifying (id) variables</em>, variables that describe an observational unit, and <em>measured variables</em>, variables that provide some value for that observational unit. In the example, the variables <code>territories</code>, <code>year</code> and <code>commodities</code> are id variables and the variables <code>harvested</code> and <code>production</code> are measured variables, they give the harvested area and the production of the given commodity at a given year in a given territory.</p>
-<p>To reorganise any table with <code>tabshiftr</code> we need to set up a <a href="https://en.wikipedia.org/wiki/Database_schema">schema</a> description, the advantage of this procedure is that input and output data exist explicitly and the schema maps the transformation of the data. For each table there is an input schema and an output schema. The input schema describes how the table looks like and the output schema describes how the table shall look like after reorganisation. As we want to end up with tidy tables, i.e., where variables are in columns and observations in rows, the output schema is characterised by a tidy table of the included variables.</p>
-<p>For the input schema we have to describe where which information in a table can be found, i.e., in which rows and columns. First, we need to describe whether the table is organised in several clusters, and if so where they are. In the example, the first cluster starts at <code>1|1</code>, the second at <code>1|8</code> and the third at <code>4|8</code> (<code>row|col</code>). All clusters are 3 cells wide and 6 cells high. Moreover, we already recognised that each cluster represents one teritorial unit, so we record the variable <code>territories</code> as cluster ID. When there are several identical clusters, it makes sense to describe them in terms of <code>rel</code>ative values, i.e., not starting to count from the topmost leftmost cell, but from the start of the cluster. A table should have some sort of header, i.e., one or more rows that describes which information a column contains and we need to register this header, in the example this is the first row of each cluster.</p>
-<p>Input tables may contain many more data/variables than what we are interested in, but the schema description contains only those variables we want to have in the output table. For each variable we need to define at least the <code>type</code> and either a <code>col</code>umn, or a column and a <code>row</code>. Some variables are <code>dist</code>inct from the cluster definition, because they occur perhaps only once in the table, or are organised in a non-systematic way, such as the variable <code>year</code> in the example. Some variables are either absent from the table, or are available only implicitly, for example if several spreadsheets or files contain information for one level of an identifying variable only, such as per commodity. This is not the case in the example, but if it were so, this variable could be specified by providing the <code>value</code> of the level in the variable. For measured variables we also need to provide the target unit and a transformation factor to that unit, the latter of which will be multiplied with the values of the measured variable. This results in the following schema description for our example:</p>
+<p>In <code>tabshiftr</code> we distinguish between <em>identifying variables</em>, variables that describe an observational unit, and <em>measured variables</em>, variables that provide some value for that observational unit. In the example, <code>territories</code>, <code>year</code> and <code>commodities</code> are identifying variables and <code>harvested</code> and <code>production</code> are measured variables, they give the harvested area and the production of the given commodity at a given year in a given territory.</p>
+<p>The approach of <code>tabshiftr</code> is based on capturing the arrangement of tables in so-called <a href="https://en.wikipedia.org/wiki/Database_schema">schema</a> description. Typically there is an input and an output schema, describing the arrangement of the input and output tables, respectively. The advantage of this procedure is that input and output tables exist explicitly and the schema maps the transformation of the data. As we want to end up with tidy tables the output schema is pre-determined by a tidy table of the included variables, but the input schema description needs to be provided by the user.</p>
+<p>For the input schema we have to describe, according to a <a href="https://ehrmanns.github.io/tabshiftr/articles/tabshiftr.html#setting-up-schema-descriptions">hierarchical set of rules</a>, in which rows and columns of a table which information can be found (see the example below). First, we need to describe whether the table is organised in several clusters, and if so where they are located. In the example, the “origin” of the first cluster is at the first row from the top and the first cell from left (<code>1|1</code>), the second at <code>1|8</code> and the third cluster originates at <code>4|8</code>. All clusters are 3 cells wide and 6 cells high. Moreover, we already recognised that each cluster represents one teritorial unit, so we record the variable <code>territories</code> as cluster ID. A table should have some sort of header, i.e., one or more rows that describes which information a column contains and we need to register this header, in the example this is the first row of each cluster. When there are several clusters that are identical in arrangement (but not in values), it makes sense to describe them in terms of <code>rel</code>ative values, i.e., starting to count from the origin of the cluster instead of the spreadsheet.</p>
+<p>Input tables may contain many more data/variables than what we are interested in, but the schema description contains only those variables we want to have in the output table. For each variable we need to define at least the <code>type</code> and either <code>col</code>umn(s), or column(s) and <code>row</code>(s). Some variables are <code>dist</code>inct from the cluster outline, because they occur perhaps only once in the table, or are organised in a non-systematic way, such as the variable <code>year</code> in the example. Some variables are either absent from the table, or are available only implicitly, for example if several spreadsheets or files contain information for one level of an identifying variable, such as per commodity. This is not the case in the example, but if it were so, this variable could be specified by providing the <code>value</code> of the level in the variable. For measured variables we also need to provide the target unit and a transformation factor to that unit, the latter of which will be multiplied with the values of the measured variable. This results in the following schema description for our example:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(tabshiftr)</span>
 <span id="cb3-2"><a href="#cb3-2"></a>schema &lt;-<span class="st"> </span><span class="kw"><a href="reference/makeSchema.html">makeSchema</a></span>(<span class="dt">schema =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(</span>
 <span id="cb3-3"><a href="#cb3-3"></a>  <span class="dt">clusters =</span></span>
@@ -269,7 +269,7 @@
 <li>
 <code>split</code>, to seperate an identifying variable via a regular expression from some column</li>
 <li>
-<code>key</code> and <code>value</code>, when the names of measured variables are aggregated into a column while the values are in a seperate column. Here, <code>key</code> is the column that contains the names of the measured variables and <code>value</code> is whatever the measured variable is called that should be “pulled” out of <code>key</code>.</li>
+<code>key</code> and <code>value</code>, when the names of measured variables are provided in a column while the respective values are in a seperate column. Here, <code>key</code> is the column that contains the names and <code>value</code> is the level of the measured variable that should be “pulled” out of <code>key</code>.</li>
 </ul>
 <!-- end list --><div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>schema</span>
 <span id="cb4-2"><a href="#cb4-2"></a><span class="co">#&gt;   3 clusters</span></span>
@@ -383,6 +383,11 @@
 </table>
 </div>
 </div>
+<div id="to-implement" class="section level1">
+<h1 class="hasAnchor">
+<a href="#to-implement" class="anchor"></a>To implement</h1>
+</div>
+
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -410,7 +415,18 @@
 </ul>
 </div>
 
-  </div>
+  <div class="dev-status">
+<h2>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://cran.r-project.org/package=tabshiftr"><img src="http://www.r-pkg.org/badges/version/tabshiftr" alt="CRAN_Status_Badge"></a></li>
+<li><a href="https://travis-ci.org/EhrmannS/tabshiftr"><img src="https://travis-ci.org/EhrmannS/tabshiftr.svg?branch=master" alt="Travis-CI Build Status"></a></li>
+<li><a href="https://ci.appveyor.com/project/EhrmannS/tabshiftr"><img src="https://ci.appveyor.com/api/projects/status/github/EhrmannS/tabshiftr?branch=master&amp;svg=true" alt="AppVeyor build status"></a></li>
+<li><a href="https://codecov.io/github/EhrmannS/tabshiftr?branch=master"><img src="https://img.shields.io/codecov/c/github/EhrmannS/tabshiftr/master.svg" alt="Coverage Status"></a></li>
+<li><a href="https://cran.r-project.org/package=tabshiftr"><img src="http://cranlogs.r-pkg.org/badges/grand-total/tabshiftr"></a></li>
+<li><a href="https://www.tidyverse.org/lifecycle/#maturing"><img src="https://img.shields.io/badge/lifecycle-maturing-blue.svg" alt="Lifecycle:maturing"></a></li>
+</ul>
+</div>
+</div>
 </div>
 
 

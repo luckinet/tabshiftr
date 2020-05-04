@@ -93,7 +93,7 @@
 <div id="introduction" class="section level1">
 <h1 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h1>
-<p>Spreadsheets as places where data tables are recorded can be pretty messy. Typically, data are organised into topologically coherent (rectangular) chunks, but this does not yet guarantee that the data are <em>tidy</em>. Data tables are considered tidy when variables are recorded in columns and observations in rows <span class="citation">(Wickham <a href="#ref-Wickham2014" role="doc-biblioref">2014</a>)</span>, a common best practice of building up data tables (see <a href="https://tidyr.tidyverse.org/" class="uri">https://tidyr.tidyverse.org/</a>). However, all thinkable arrangements of the data may be encountered, culminating in several non-uniformly arranged tables that are placed non-systematically within one spreadsheet. Each of such individual tables within a spreadsheet is called <em>cluster</em> and data that are not organised into topologically coherent chunks are called <em>disorganised (messy) data</em> in <code>tabshiftr</code>.</p>
+<p>Spreadsheets as places where data tables are recorded can be pretty messy. Ideally, data are organised into topologically coherent (rectangular) chunks of tidy data, where variables are recorded in columns and observations in rows <span class="citation">(Wickham <a href="#ref-Wickham2014" role="doc-biblioref">2014</a>)</span>. However, in spreadsheets that were scraped off the internet, all thinkable arrangements of the data may be encountered, culminating in several non-uniformly arranged tables that are placed non-systematically within one spreadsheet. Each of such individual chunks within a spreadsheet is called <em>cluster</em> and data that are not organised into topologically coherent chunks are called <em>disorganised (messy) data</em> in <code>tabshiftr</code>.</p>
 <p>When it comes to the organisation of data in tables, variables can be distinguished into two kinds of variables:</p>
 <ol style="list-style-type: decimal">
 <li>Variables that identify the unit for which values have been measured (they are called <em>identifying (or id) variables</em> here).</li>
@@ -106,10 +106,10 @@
 <a href="#setting-up-schema-descriptions" class="anchor"></a>Setting up schema descriptions</h1>
 <p>To set up a schema description, the recommended strategy is the following:</p>
 <ol style="list-style-type: decimal">
-<li><p>Clarify which are the identifying variables and which are the measured variables and create a new entry for each of them in the schema. A variable is always a combination of <strong>name</strong> and <strong>values</strong>. Names are typically the column names and values are typically in the column below that name. However, in many disorganised tables variable names of measured variables are used as values of an identifying variable or measured variables are nested in idetifying variables and values are thus not exclusively in the same column as their name.</p></li>
+<li><p>Clarify which are the identifying variables and which are the measured variables and create a new entry for each of them in the schema. A variable is always a combination of <strong>name</strong> and <strong>values</strong>. Names are typically the column names and values are typically in the column below that name. However, in many disorganised tables variable names of measured variables are used as values of an identifying variable or measured variables are nested in identifying variables and values are thus not exclusively in the same column as their name.</p></li>
 <li><p>Determine whether there are clusters and find the origin (top left cell) of each cluster (<a href="#clusHor">Tab. 8</a>, <a href="#clusId">Tab. 9</a> &amp; <a href="#clusMeas">Tab. 10</a>). Follow the next steps for each cluster…</p></li>
 <li>
-<p>Determine which variable identifies clusters and provide that as cluster ID. It can also be the case that the data are organised into seperate spreadsheets or files according to one of the variables and also those cases should be treated as if they were clusters, even if each spreadsheet/file contains a topologically coherent table. It may be that either an identifying variable, or a measured variable identifies clusters:</p>
+<p>Determine which variable identifies clusters and provide that as cluster ID. It can also be the case that the data are organised into separate spreadsheets or files according to one of the variables and also those cases should be treated as if they were clusters, even if each spreadsheet/file contains a topologically coherent table. It may be that either an identifying variable, or a measured variable identifies clusters:</p>
 <ul>
 <li>in case it is an identifying variable, provide this variables’ name (and also register its metadata).</li>
 <li>in case it is a measured variable, provide simply <code>"measured"</code> as cluster ID. <br><br>
@@ -146,7 +146,7 @@
 <div id="table-types" class="section level1">
 <h1 class="hasAnchor">
 <a href="#table-types" class="anchor"></a>Table types</h1>
-<p>From the point of view of <code>tabshiftr</code> there are four dimensions of how data can be disorganised. Several of these dimensions can co-occurr in one table, which might make it tricky for some tables to find the correct schema ad-hoc.</p>
+<p>From the point of view of <code>tabshiftr</code> there are four dimensions of how data can be disorganised. Several of these dimensions can co-occur in one table, which might make it tricky for some tables to find the correct schema ad-hoc.</p>
 <ol style="list-style-type: decimal">
 <li>Either the levels of an id variable, or the measured variables are organised into separate topologically coherent chunks (clusters) of data, instead of all variables in one clusters.</li>
 <li>The names of measured variables are treated as if they were the levels of an id variable (they are listed), instead of each measured variable in its own column.</li>

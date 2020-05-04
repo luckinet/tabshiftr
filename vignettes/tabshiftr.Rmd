@@ -22,10 +22,9 @@ vignette: >
 # Introduction
 
 Spreadsheets as places where data tables are recorded can be pretty messy.
-Typically, data are organised into topologically coherent (rectangular) chunks, but this does not yet guarantee that the data are *tidy*.
-Data tables are considered tidy when variables are recorded in columns and observations in rows [@Wickham2014], a common best practice of building up data tables (see https://tidyr.tidyverse.org/).
-However, all thinkable arrangements of the data may be encountered, culminating in several non-uniformly arranged tables that are placed non-systematically within one spreadsheet.
-Each of such individual tables within a spreadsheet is called *cluster* and data that are not organised into topologically coherent chunks are called *disorganised (messy) data* in `tabshiftr`.
+Ideally, data are organised into topologically coherent (rectangular) chunks of tidy data, where variables are recorded in columns and observations in rows [@Wickham2014].
+However, in spreadsheets that were scraped off the internet, all thinkable arrangements of the data may be encountered, culminating in several non-uniformly arranged tables that are placed non-systematically within one spreadsheet.
+Each of such individual chunks within a spreadsheet is called *cluster* and data that are not organised into topologically coherent chunks are called *disorganised (messy) data* in `tabshiftr`.
 
 When it comes to the organisation of data in tables, variables can be distinguished into two kinds of variables:
 
@@ -41,11 +40,11 @@ The primary aim of reorganising messy tables lays in determining where those two
 To set up a schema description, the recommended strategy is the following:
 
 1. Clarify which are the identifying variables and which are the measured variables and create a new entry for each of them in the schema. A variable is always a combination of **name** and **values**. Names are typically the column names and values are typically in the column below that name.
-However, in many disorganised tables variable names of measured variables are used as values of an identifying variable or measured variables are nested in idetifying variables and values are thus not exclusively in the same column as their name.
+However, in many disorganised tables variable names of measured variables are used as values of an identifying variable or measured variables are nested in identifying variables and values are thus not exclusively in the same column as their name.
 
 2. Determine whether there are clusters and find the origin (top left cell) of each cluster ([Tab. 8](#clusHor), [Tab. 9](#clusId) & [Tab. 10](#clusMeas)). Follow the next steps for each cluster...
 
-3. Determine which variable identifies clusters and provide that as cluster ID. It can also be the case that the data are organised into seperate spreadsheets or files according to one of the variables and also those cases should be treated as if they were clusters, even if each spreadsheet/file contains a topologically coherent table. It may be that either an identifying variable, or a measured variable identifies clusters:
+3. Determine which variable identifies clusters and provide that as cluster ID. It can also be the case that the data are organised into separate spreadsheets or files according to one of the variables and also those cases should be treated as if they were clusters, even if each spreadsheet/file contains a topologically coherent table. It may be that either an identifying variable, or a measured variable identifies clusters:
 
     - in case it is an identifying variable, provide this variables' name (and also register its metadata).
     - in case it is a measured variable, provide simply `"measured"` as cluster ID.
@@ -73,7 +72,7 @@ However, in many disorganised tables variable names of measured variables are us
 # Table types
 
 From the point of view of `tabshiftr` there are four dimensions of how data can be disorganised.
-Several of these dimensions can co-occurr in one table, which might make it tricky for some tables to find the correct schema ad-hoc.
+Several of these dimensions can co-occur in one table, which might make it tricky for some tables to find the correct schema ad-hoc.
 
 1) Either the levels of an id variable, or the measured variables are organised into separate topologically coherent chunks (clusters) of data, instead of all variables in one clusters.
 2) The names of measured variables are treated as if they were the levels of an id variable (they are listed), instead of each measured variable in its own column.

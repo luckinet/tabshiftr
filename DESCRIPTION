@@ -44,5 +44,6 @@ Suggests:
     knitr,
     rmarkdown,
     bookdown,
-    readr
+    readr,
+    covr
 VignetteBuilder: knitr

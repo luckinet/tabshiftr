@@ -215,3 +215,18 @@ kable(output)
 |   unit 3    | year 2 | soybean     |      3211 |       3212 |
 
 # To implement
+
+  - tabshiftr is far from being finished. So far it reliably reorganises
+    19 different types of tables all of which are either the plain cases
+    showed in the vignette, or combinations of some of the parts. I
+    suspsect that there are further table arrangements, but they are not
+    clear to me at this stage, issues submitted by users and
+    contributers should be helpful.
+  - Moreover, the resulting schema descriptions can be useful for data
+    archiving or database building and tabshiftr should at some point
+    support that those schemas can be exported into data-formats that
+    are used by downstream applications (xml, json, …)
+  - I envision for a next version some functions for assisted
+    construction of the schema. Those could for instance be
+    `setCluster()`, `setHeader()` and `setVariable()`, which could be
+    piped into one another and finally into `makeSchema()`.
