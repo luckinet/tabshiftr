@@ -6,16 +6,16 @@ Authors@R: c(
            email = "steffen.ehrmann@idiv.de", 
            role = c("aut", "cre"), 
            comment = c(ORCID = "0000-0002-2958-0796")),
-    person("Arne", "Rümmler", 
-           email = "arne.ruemmler@tu-dresden.de", 
-           role = c("ctb"),
-           comment=c(ORCID = "0000-0001-8637-9071")),
     person("Abdualmaged", "Alhemiary", 
+           role = c("ctb")),
+    person("Amelie", "Haas", 
            role = c("ctb")),
     person("Annika", "Ertel", 
            role = c("ctb")),
-    person("Amelie", "Haas", 
-           role = c("ctb"))
+    person("Arne", "Rümmler", 
+           email = "arne.ruemmler@tu-dresden.de", 
+           role = c("ctb"),
+           comment = c(ORCID = "0000-0001-8637-9071"))
     )
 Description: Registers schema descriptions of disorganised (messy) tables and 
     reorganises them into a standardised (tidy) format.
