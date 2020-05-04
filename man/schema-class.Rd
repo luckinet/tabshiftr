@@ -16,8 +16,12 @@ record the metadata of the respective variables.
 \section{Slots}{
 
 \describe{
-\item{\code{cluster}}{[\code{named list(6)}]\cr metadata of clusters of data}
+\item{\code{cluster}}{[\code{list(1)}]\cr description of clusters of data.}
 
-\item{\code{variables}}{[\code{named list(.)}]\cr metadata of variables}
+\item{\code{header}}{[code{list(1)}]\cr description of the header.}
+
+\item{\code{meta}}{[\code{list(1)}]\cr description of the metadata.}
+
+\item{\code{variables}}{[\code{named list(.)}]\cr description of variables.}
 }}
 

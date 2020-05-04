@@ -7,7 +7,9 @@
 makeSchema(schema = NULL)
 }
 \arguments{
-\item{schema}{[\code{list(2)}]\cr the list of schema information.}
+\item{schema}{[\code{list(.)}]\cr the list of schema information. This can
+contain the lists \code{clusters}, \code{meta}, \code{header} and
+\code{variables}. See \code{\link{schema_default}} for more details.}
 }
 \description{
 Make a schema description
