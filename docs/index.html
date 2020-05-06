@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Reshape disorganised messy data • tabshiftr</title>
+<title>Reshape Disorganised Messy Data • tabshiftr</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
 <link rel="apple-touch-icon" type="image/png" sizes="180x180" href="apple-touch-icon.png">
@@ -17,7 +17,7 @@
 <script src="bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script><meta property="og:title" content="Reshape disorganised messy data">
+<script src="pkgdown.js"></script><meta property="og:title" content="Reshape Disorganised Messy Data">
 <meta property="og:description" content="Registers schema descriptions of disorganised (messy) tables and 
     reorganises them into a standardised (tidy) format.">
 <meta property="og:image" content="http://EhrmannS.github.io/tabshiftr/logo.svg">
@@ -247,7 +247,7 @@
 <p>This table contains two chunks of data at the rows 1 to 6 and 8 to 13 and they are further organised into three similar groups (so-called <em>clusters</em>). The clusters are somewhat systematic in that there are three variables in common, <code>commodities</code>, <code>harvested</code> and <code>production</code>. The variable <code>year</code> has values but no explicit name and is not available for each cluster, and the variable <code>territories</code> is not even stored in a column, but is implicit and noted in the second row of each cluster.</p>
 <p>In <code>tabshiftr</code> we distinguish between <em>identifying variables</em>, variables that describe an observational unit, and <em>measured variables</em>, variables that provide some value for that observational unit. In the example, <code>territories</code>, <code>year</code> and <code>commodities</code> are identifying variables and <code>harvested</code> and <code>production</code> are measured variables, they give the harvested area and the production of the given commodity at a given year in a given territory.</p>
 <p>The approach of <code>tabshiftr</code> is based on capturing the arrangement of tables in so-called <a href="https://en.wikipedia.org/wiki/Database_schema">schema</a> description. Typically there is an input and an output schema, describing the arrangement of the input and output tables, respectively. The advantage of this procedure is that input and output tables exist explicitly and the schema maps the transformation of the data. As we want to end up with tidy tables the output schema is pre-determined by a tidy table of the included variables, but the input schema description needs to be provided by the user.</p>
-<p>For the input schema we have to describe, according to a <a href="https://ehrmanns.github.io/tabshiftr/articles/tabshiftr.html#setting-up-schema-descriptions">hierarchical set of rules</a>, in which rows and columns of a table which information can be found (see the example below). First, we need to describe whether the table is organised in several clusters, and if so where they are located. In the example, the “origin” of the first cluster is at the first row from the top and the first cell from left (<code>1|1</code>), the second at <code>1|8</code> and the third cluster originates at <code>4|8</code>. All clusters are 3 cells wide and 6 cells high. Moreover, we already recognised that each cluster represents one teritorial unit, so we record the variable <code>territories</code> as cluster ID. A table should have some sort of header, i.e., one or more rows that describes which information a column contains and we need to register this header, in the example this is the first row of each cluster. When there are several clusters that are identical in arrangement (but not in values), it makes sense to describe them in terms of <code>rel</code>ative values, i.e., starting to count from the origin of the cluster instead of the spreadsheet.</p>
+<p>For the input schema we have to describe, according to a <a href="https://ehrmanns.github.io/tabshiftr/articles/tabshiftr.html#setting-up-schema-descriptions">hierarchical set of rules</a>, in which rows and columns of a table which information can be found (see the example below). First, we need to describe whether the table is organised in several clusters, and if so where they are located. In the example, the “origin” of the first cluster is at the first row from the top and the first cell from left (<code>1|1</code>), the second at <code>1|8</code> and the third cluster originates at <code>4|8</code>. All clusters are 3 cells wide and 6 cells high. Moreover, we already recognised that each cluster represents one territorial unit, so we record the variable <code>territories</code> as cluster ID. A table should have some sort of header, i.e., one or more rows that describes which information a column contains and we need to register this header, in the example this is the first row of each cluster. When there are several clusters that are identical in arrangement (but not in values), it makes sense to describe them in terms of <code>rel</code>ative values, i.e., starting to count from the origin of the cluster instead of the spreadsheet.</p>
 <p>Input tables may contain many more data/variables than what we are interested in, but the schema description contains only those variables we want to have in the output table. For each variable we need to define at least the <code>type</code> and either <code>col</code>umn(s), or column(s) and <code>row</code>(s). Some variables are <code>dist</code>inct from the cluster outline, because they occur perhaps only once in the table, or are organised in a non-systematic way, such as the variable <code>year</code> in the example. Some variables are either absent from the table, or are available only implicitly, for example if several spreadsheets or files contain information for one level of an identifying variable, such as per commodity. This is not the case in the example, but if it were so, this variable could be specified by providing the <code>value</code> of the level in the variable. For measured variables we also need to provide the target unit and a transformation factor to that unit, the latter of which will be multiplied with the values of the measured variable. This results in the following schema description for our example:</p>
 <div class="sourceCode" id="cb4"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">tabshiftr</span>)
 <span class="no">schema</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/makeSchema.html">makeSchema</a></span>(<span class="kw">schema</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(
@@ -269,9 +269,9 @@
 <p>Some further fields that have not been mentioned here are:</p>
 <ul>
 <li>
-<code>split</code>, to seperate an identifying variable via a regular expression from some column</li>
+<code>split</code>, to separate an identifying variable via a regular expression from some column</li>
 <li>
-<code>key</code> and <code>value</code>, when the names of measured variables are provided in a column while the respective values are in a seperate column. Here, <code>key</code> is the column that contains the names and <code>value</code> is the level of the measured variable that should be “pulled” out of <code>key</code>.</li>
+<code>key</code> and <code>value</code>, when the names of measured variables are provided in a column while the respective values are in a separate column. Here, <code>key</code> is the column that contains the names and <code>value</code> is the level of the measured variable that should be “pulled” out of <code>key</code>.</li>
 </ul>
 <!-- end list --><div class="sourceCode" id="cb5"><pre class="r"><span class="no">schema</span>
 <span class="co">#&gt;   3 clusters</span>
@@ -389,15 +389,17 @@
 <h1 class="hasAnchor">
 <a href="#to-implement" class="anchor"></a>To implement</h1>
 <ul>
-<li>tabshiftr is still in development. So far it reliably reorganises 19 different types of tables all of which are combinations of the four dimensions of disorganisation outlined in the vignette. We suspsect that there are further table arrangements, but they are not clear at this stage, issues submitted by users and contributers should be helpful.</li>
-<li>Moreover, the resulting schema descriptions can be useful for data archiving or database building and tabshiftr should at some point support that those schemas can be exported into data-formats that are used by downstream applications (xml, json, …)</li>
+<li>tabshiftr is still in development. So far it reliably reorganises 19 different types of tables all of which are combinations of the four dimensions of disorganisation outlined in the vignette. We suspect that there are further table arrangements, but they are not clear at this stage, issues submitted by users and contributors should be helpful.</li>
+<li>Moreover, the resulting schema descriptions can be useful for data archiving or database building and tabshiftr should at some point support that those schemas can be exported into data-formats that are used by downstream applications (xml, json, …), following proper (ISO) standards.</li>
 <li>We envision for a next version some functions for assisted construction of the schema. Those could for instance be <code>setCluster()</code>, <code>setHeader()</code> and <code>setVariable()</code>, which could be piped into one another and finally into <code><a href="reference/makeSchema.html">makeSchema()</a></code>.</li>
+<li>A proper error-management. Due to the fuzzy nature of setting up a schema descriptions, interaction between machine and human is crucial. Whenever an instruction to extract information from a table results in an error, it should ideally be possible to pinpoint what exactly the issue with those instruction is. This might be a challenge, but it should be included in a future version of tabshiftr.</li>
 </ul>
 <p>Contributions to those points and discussions on where tabshiftr should go are highly welcome!</p>
 </div>
 <div id="acknowledgement" class="section level1">
 <h1 class="hasAnchor">
 <a href="#acknowledgement" class="anchor"></a>Acknowledgement</h1>
+<p>This work was supported by funding to Carsten Meyer through the Flexpool mechanism of the German Centre for Integrative Biodiversity Research (Div) (FZT-118, DFG).</p>
 </div>
 
   </div>

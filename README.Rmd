@@ -129,7 +129,7 @@ output <- reorganise(input = input, schema = schema)
 kable(output)
 ```
 
-# To implement
+# Contributions
 
 * tabshiftr is still in development. So far it reliably reorganises 19 different types of tables all of which are combinations of the four dimensions of disorganisation outlined in the vignette.
 We suspect that there are further table arrangements, but they are not clear at this stage, issues submitted by users and contributors should be helpful.

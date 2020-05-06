@@ -220,7 +220,7 @@ kable(output)
 |   unit 3    | year 2 | maize       |      3221 |       3222 |
 |   unit 3    | year 2 | soybean     |      3211 |       3212 |
 
-# To implement
+# Contributions
 
   - tabshiftr is still in development. So far it reliably reorganises 19
     different types of tables all of which are combinations of the four
