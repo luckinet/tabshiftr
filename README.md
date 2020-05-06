@@ -125,7 +125,7 @@ example, the "origin" of the first cluster is at the first row from the
 top and the first cell from left (`1|1`), the second at `1|8` and the
 third cluster originates at `4|8`. All clusters are 3 cells wide and 6
 cells high. Moreover, we already recognised that each cluster represents
-one teritorial unit, so we record the variable `territories` as cluster
+one territorial unit, so we record the variable `territories` as cluster
 ID. A table should have some sort of header, i.e., one or more rows that
 describes which information a column contains and we need to register
 this header, in the example this is the first row of each cluster. When
@@ -173,10 +173,10 @@ schema <- makeSchema(schema = list(
 
 Some further fields that have not been mentioned here are:
 
-  - `split`, to seperate an identifying variable via a regular
+  - `split`, to separate an identifying variable via a regular
     expression from some column
   - `key` and `value`, when the names of measured variables are provided
-    in a column while the respective values are in a seperate column.
+    in a column while the respective values are in a separate column.
     Here, `key` is the column that contains the names and `value` is the
     level of the measured variable that should be "pulled" out of `key`.
 
@@ -224,20 +224,32 @@ kable(output)
 
   - tabshiftr is still in development. So far it reliably reorganises 19
     different types of tables all of which are combinations of the four
-    dimensions of disorganisation outlined in the vignette. We suspsect
+    dimensions of disorganisation outlined in the vignette. We suspect
     that there are further table arrangements, but they are not clear at
-    this stage, issues submitted by users and contributers should be
+    this stage, issues submitted by users and contributors should be
     helpful.
   - Moreover, the resulting schema descriptions can be useful for data
     archiving or database building and tabshiftr should at some point
     support that those schemas can be exported into data-formats that
-    are used by downstream applications (xml, json, …)
+    are used by downstream applications (xml, json, …), following proper
+    (ISO) standards.
   - We envision for a next version some functions for assisted
     construction of the schema. Those could for instance be
     `setCluster()`, `setHeader()` and `setVariable()`, which could be
     piped into one another and finally into `makeSchema()`.
+  - A proper error-management. Due to the fuzzy nature of setting up a
+    schema descriptions, interaction between machine and human is
+    crucial. Whenever an instruction to extract information from a table
+    results in an error, it should ideally be possible to pinpoint what
+    exactly the issue with those instruction is. This might be a
+    challenge, but it should be included in a future version of
+    tabshiftr.
 
 Contributions to those points and discussions on where tabshiftr should
 go are highly welcome\!
 
 # Acknowledgement
+
+This work was supported by funding to Carsten Meyer through the Flexpool
+mechanism of the German Centre for Integrative Biodiversity Research
+(Div) (FZT-118, DFG).
