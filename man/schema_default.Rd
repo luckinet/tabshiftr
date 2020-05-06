@@ -57,7 +57,7 @@ The object of class \code{schema} describes at which position in a
   the variable values are recorded. \item \code{split}
   [\code{character(1)}]:\cr A regular expression that matches the part of
   values that are supposed to be part of the variable, when the cells contain
-  more than one value (for example seperated by a ","). \item \code{dist}
+  more than one value (for example separated by a ","). \item \code{dist}
   [\code{character(1)}]:\cr Whether or not the variable is distinct from a
   cluster. This is the case when the variable is not systematically available
   for all clusters and thus needs to be registered separately from the

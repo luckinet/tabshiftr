@@ -6,7 +6,7 @@
 \alias{schema}
 \title{The \code{schema} class (S4) and its methods}
 \description{
-A \code{schema} stores the information of where which information is tored in
+A \code{schema} stores the information of where which information is stored in
 a table of data.
 }
 \details{

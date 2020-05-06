@@ -52,7 +52,7 @@ However, in many disorganised tables variable names of measured variables are us
 
 4. Determine for each identifying variable the following:
 
-    - is the variable avaiable at all? This is particularly important when the data are split up into subtables that are in different spreadsheets or files. Often the variable that splits up the data (and thus identifies the clusters) is not explicitly available in the spreadsheet anymore. In such a case, provide the variables value for this cluster in `value` ([Tab. 5](#implicitVar)).
+    - is the variable available at all? This is particularly important when the data are split up into sub-tables that are in different spreadsheets or files. Often the variable that splits up the data (and thus identifies the clusters) is not explicitly available in the spreadsheet anymore. In such a case, provide the variables value for this cluster in `value` ([Tab. 5](#implicitVar)).
     - all columns in which the variable **names** sit.
     - in case the variable is in several columns, determine additionally the row in which its names sit ([Tab. 3](#nest2)).
     - whether the variable must be split off of another column ([Tab. 4](#splitCol)).

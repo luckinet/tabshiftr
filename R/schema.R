@@ -1,6 +1,6 @@
 #' The \code{schema} class (S4) and its methods
 #'
-#' A \code{schema} stores the information of where which information is tored in
+#' A \code{schema} stores the information of where which information is stored in
 #' a table of data.
 #' @slot cluster [\code{list(1)}]\cr description of clusters of data.
 #' @slot header [code{list(1)}]\cr description of the header.
