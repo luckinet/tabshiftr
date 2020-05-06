@@ -1,5 +1,5 @@
 Package: tabshiftr
-Title: Reshape disorganised messy data
+Title: Reshape Disorganised Messy Data
 Version: 0.1.2
 Authors@R: c(
     person("Steffen", "Ehrmann", 
