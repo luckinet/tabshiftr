@@ -45,7 +45,7 @@
 
 <meta property="og:title" content="Make a schema description — makeSchema" />
 
-<meta property="og:description" content="Make a schema description" />
+<meta property="og:description" content="This function checks whether the schema description is formally correct." />
 
 <meta property="og:image" content="http://EhrmannS.github.io/tabshiftr/logo.svg" />
 
@@ -130,7 +130,7 @@
 
     <div class="ref-description">
     
-    <p>Make a schema description</p>
+    <p>This function checks whether the schema description is formally correct.</p>
     
     </div>
 
@@ -143,11 +143,218 @@
       <th>schema</th>
       <td><p>[<code><a href='https://rdrr.io/r/base/list.html'>list(.)</a></code>]<br /> the list of schema information. This can
 contain the lists <code>clusters</code>, <code>meta</code>, <code>header</code> and
-<code>variables</code>. See <code><a href='schema_default.html'>schema_default</a></code> for more details.</p></td>
+<code>variables</code>.</p></td>
     </tr>
     </table>
     
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
+    <p>An object of class <code><a href='schema-class.html'>schema</a></code>.</p>
+    
+    <h2 class="hasAnchor" id="setting-up-schema-descriptions"><a class="anchor" href="#setting-up-schema-descriptions"></a>Setting up schema descriptions</h2>
+
+    <p>The recommended strategy for setting
+  up a schema description is the following recently.</p><ol>
+<li><p>Clarify which are the identifying variables and which are the measured
+  variables and create a new entry for each of them in the schema.</p></li>
+<li><p>Determine whether there are clusters and find the origin (top left cell) of
+  each cluster. Follow the next steps for each cluster...</p></li>
+<li><p>Determine
+  which variable identifies clusters and provide that as cluster ID.</p></li>
+<li><p>Determine for each identifying variable the following:</p><ul>
+<li><p>is
+  the variable available at all? If not, provide the variable value for this
+  cluster in `value`.</p></li>
+<li><p>all columns in which the variable <em>names</em>
+  sit.</p></li>
+<li><p>in case the variable is in several columns, determine
+  additionally the row in which its <em>names</em> sit.</p></li>
+<li><p>whether the
+  variable is distinct from the main table.</p></li>
+<li><p>whether the variable must
+  be split off of another column.</p></li>
+</ul></li>
+<li><p>Determine for each measured
+  variable the following:</p><ul>
+<li><p>all columns in which the
+  <em>values</em> of the variable sit.</p></li>
+<li><p>the unit and conversion factor</p></li>
+<li><p>in case the variable is not tidy, one of the three following cases
+  should apply:</p><ol>
+<li><p>in case the variable is nested in a wide
+  identifying variable, determine in addition to the columns in which the
+  values sit also the rows in which the <em>variable name</em> sits.</p></li>
+<li><p>in
+  case the names of the variable are given as a value of an identifying
+  variable, give the column name as <code>key</code>, together with the respective
+  name of the measured variable in <code>values</code>.</p></li>
+<li><p>in case the name of
+  the variable is the ID of clusters, specify <code>key = "cluster"</code> and in
+  <code>values</code> the cluster number the variable refers to.</p></li>
+</ol></li>
+</ul></li>
+</ol><p>See below
+  for a more detailed description of the fields used in schemas or read the
+  vignette.</p>
+    
+    <h2 class="hasAnchor" id="fields-of-a-schema"><a class="anchor" href="#fields-of-a-schema"></a>Fields of a schema</h2>
+
+    <p>The following section contains a list of all the
+  fields recently evaluated in a schema. The information is split up into the
+  four sub-sections <em>clusters</em>, <em>header</em>, <em>meta</em> and
+  <em>variables</em>.</p>
+<p>There is hardly any limit to how data can be arranged in a spreadsheet,
+  apart from the apparent organisation into a lattice of cells. However, it
+  is often the case that data are gathered into topologically coherent
+  chunks. Those chunks are what is considered 'cluster' in arealDB. Clusters
+  are described by the properties:</p><ul>
+<li><p><code>row</code>
+  [<code>integerish(1)</code>]:<br /> The vertical cell values of the top-left cell of
+  each cluster. This can also be a vector of values in case there are several
+  clusters.</p></li>
+<li><p><code>col</code> [<code>integerish(1)</code>]:<br /> The horizontal cell
+  value of the top-left cell of each cluster. This can also be a vector of
+  values in case there are several clusters.</p></li>
+<li><p><code>width</code>
+  [<code>integerish(1)</code>]:<br /> The width of each cluster in cells. This can
+  also be a vector of values in case there are several clusters</p></li>
+<li><p><code>height</code> [<code>integerish(1)</code>]:<br /> The height of each cluster in
+  cells. This can also be a vector of values in case there are several
+  clusters</p></li>
+<li><p><code>id</code> [<code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code>]:<br /> When data are clustered,
+  it is often the case that the data are segregated according to one of the
+  variables of interest. In such cases, this variable needs to be registered
+  as cluster ID.</p></li>
+</ul>
+
+<p>The slot <code>header</code> describes in which rows the header informations are
+  stored and how they should be treated. It contains the properties</p><ul>
+<li><p><code>row</code> [<code>integerish(.)</code>]<br /> The rows in which the header
+  information are stored.</p></li>
+<li><p><code>rel</code> [<code><a href='https://rdrr.io/r/base/logical.html'>logical(1)</a></code>]<br />  Whether or
+  not the values in <code>row</code> are relative to the cluster positions or
+  whether they refer to the overall table.</p></li>
+<li><p><code>merge</code>
+  [<code><a href='https://rdrr.io/r/base/logical.html'>logical(1)</a></code>]<br /> When there is more than one row, this determines
+  whether or not those rows should be merged.</p></li>
+</ul>
+
+<p>The slot <code>meta</code> describes information concerning the values in a
+  spreadsheet. It contains the properties</p><ul>
+<li><p><code>del</code>
+  [<code><a href='https://rdrr.io/r/base/character.html'>character(.)</a></code>]<br /> The symbol(s) that are used as delimiter in the
+  table to reorganise.</p></li>
+<li><p><code>dec</code> [<code><a href='https://rdrr.io/r/base/character.html'>character(.)</a></code>]<br /> The
+  symbol(s) that are used as decimal symbol in the table to reorganise.</p></li>
+<li><p><code>na</code> [<code><a href='https://rdrr.io/r/base/character.html'>character(.)</a></code>]<br /> The symbol(s) that are used as "not
+  available" values in the table to reorganise.</p></li>
+</ul>
+
+<p>Each element in the slot <code>variables</code> is a list that describes one of
+  the variables that shall be comprised in the final database. Variables are
+  either so-called <em>identifying variables</em>, which indicate observation
+  units, or <em>measured variables</em>, which carry the observed values.
+  Identifying variables are described by the properties:</p><ul>
+<li><p><code>type</code> [<code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code>]:<br /> The value <code>"id"</code> signals that
+  this is an identifying variable.</p></li>
+<li><p><code>col</code>
+  [<code>integerish(1)</code>]:<br /> The column(s) in which the variable values are
+  recorded.</p></li>
+<li><p><code>row</code> [<code>integerish(1)</code>]:<br /> The row(s) in which
+  the variable values are recorded.</p></li>
+<li><p><code>split</code>
+  [<code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code>]:<br /> A regular expression that matches the part of
+  values that are supposed to be part of the variable, when the cells contain
+  more than one value (for example separated by a ",").</p></li>
+<li><p><code>dist</code>
+  [<code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code>]:<br /> Whether or not the variable is distinct from a
+  cluster. This is the case when the variable is not systematically available
+  for all clusters and thus needs to be registered separately from the
+  clusters.</p></li>
+<li><p><code>rel</code> [<code><a href='https://rdrr.io/r/base/logical.html'>logical(1)</a></code>]:<br /> Whether or not the
+  values in <code>row</code> and <code>col</code> are relative to the cluster positions
+  or whether they refer to the overall table.</p></li>
+</ul>
+
+<p>Measured variables are described by the properties:</p><ul>
+<li><p><code>type</code> [<code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code>]:<br /> the value <code>"measured"</code> signals
+  that this is a measured variable.</p></li>
+<li><p><code>unit</code> [<code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code>]:<br />
+  The unit in which the values shall be recorded in the database.</p></li>
+<li><p><code>factor</code> [<code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code>]:<br /> A factor to transform the values to
+  <code>unit</code>. For instance, if values are recorded in acres, but shall be
+  contained in the database in hectare, the factor would be 0.40468.</p></li>
+<li><p><code>row</code> [<code>integerish(1)</code>]:<br /> The row(s) in which the variable
+  values are recorded.</p></li>
+<li><p><code>col</code> [<code>integerish(1)</code>]:<br /> The
+  column(s) in which the variable values are recorded.</p></li>
+<li><p><code>rel</code>
+  [<code><a href='https://rdrr.io/r/base/logical.html'>logical(1)</a></code>]:<br /> Whether or not the values in <code>row</code> and
+  <code>col</code> are relative to the cluster positions or whether they refer to
+  the overall table.</p></li>
+<li><p><code>key</code> [<code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code>]:<br /> If the
+  variable is recorded, together with other variables, so that the variable
+  names are listed in one column and the respective values are listed in
+  another column, give here the name of the column that contains the variable
+  names.</p></li>
+<li><p><code>value</code> [<code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code>]:<br /> If the variable is
+  recorded, together with other variables, so that the variable names are
+  listed in one column and the respective values are listed in another
+  column, give here the level in the names column that stands for the values
+  of this variable.</p></li>
+<li><p><code>dist</code> [<code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code>]:<br /> Whether or
+  not the variable is distinct from a cluster. This is the case when the
+  variable is not systematically available for all clusters and thus needs to
+  be registered separately from the clusters.</p></li>
+</ul>
+
+    
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='co'># define outline of the cluster(s)</span>
+<span class='no'>theClusters</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>row</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>8</span>, <span class='fl'>8</span>),
+                    <span class='kw'>col</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>4</span>),
+                    <span class='kw'>width</span> <span class='kw'>=</span> <span class='fl'>3</span>,
+                    <span class='kw'>height</span> <span class='kw'>=</span> <span class='fl'>6</span>,
+                    <span class='kw'>id</span> <span class='kw'>=</span> <span class='st'>"territories"</span>)
+
+<span class='co'># identify the row(s) where the header is</span>
+<span class='no'>theHeader</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>row</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>rel</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+
+<span class='co'># document identifying variables</span>
+<span class='no'>idVars</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(
+  <span class='kw'>territories</span> <span class='kw'>=</span>
+    <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"id"</span>, <span class='kw'>row</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>col</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>rel</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>),
+  <span class='kw'>year</span> <span class='kw'>=</span>
+    <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"id"</span>, <span class='kw'>row</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>3</span>:<span class='fl'>6</span>), <span class='kw'>col</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>dist</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>),
+  <span class='kw'>commodities</span> <span class='kw'>=</span>
+    <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"id"</span>, <span class='kw'>col</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>rel</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>))
+
+<span class='co'># document measured variables</span>
+<span class='no'>measuredVars</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(
+  <span class='kw'>harvested</span> <span class='kw'>=</span>
+    <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"measured"</span>, <span class='kw'>unit</span> <span class='kw'>=</span> <span class='st'>"ha"</span>, <span class='kw'>factor</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+         <span class='kw'>col</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>rel</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>),
+  <span class='kw'>production</span> <span class='kw'>=</span>
+    <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"measured"</span>, <span class='kw'>unit</span> <span class='kw'>=</span> <span class='st'>"t"</span>, <span class='kw'>factor</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+         <span class='kw'>col</span> <span class='kw'>=</span> <span class='fl'>3</span>, <span class='kw'>rel</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>))
+
+<span class='co'># make the schema</span>
+<span class='no'>mySchema</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>clusters</span> <span class='kw'>=</span> <span class='no'>theClusters</span>,
+                 <span class='kw'>header</span> <span class='kw'>=</span> <span class='no'>theHeader</span>,
+                 <span class='kw'>variables</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='no'>idVars</span>, <span class='no'>measuredVars</span>))
+
+<span class='fu'>makeSchema</span>(<span class='kw'>schema</span> <span class='kw'>=</span> <span class='no'>mySchema</span>)</div><div class='output co'>#&gt;   3 clusters
+#&gt;     origin: 1|1, 8|1, 8|4  (row|col)
+#&gt;     id    : territories
+#&gt; 
+#&gt;    variable      type       row   col   rel   dist 
+#&gt;   ------------- ---------- ----- ----- ----- ------  
+#&gt;    <span style='color: #BBBB00;'>territories</span><span>   id         1     1     T     F  
+#&gt;    </span><span style='color: #BBBB00;'>year</span><span>          id         3:6   4     F     T  
+#&gt;    </span><span style='color: #BBBB00;'>commodities</span><span>   id               1     T     F  
+#&gt;    </span><span style='color: #BBBB00;'>harvested</span><span>     measured         2     T     F  
+#&gt;    </span><span style='color: #BBBB00;'>production</span><span>    measured         3     T     F  </div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -18,8 +18,12 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
 <script src="pkgdown.js"></script><meta property="og:title" content="Reshape Disorganised Messy Data">
-<meta property="og:description" content="Registers schema descriptions of disorganised (messy) tables and 
-    reorganises them into a standardised (tidy) format.">
+<meta property="og:description" content="Helps the user to build and register schema descriptions of 
+    disorganised (messy) tables. Disorganised tables are tables that are 
+    not in a topologically coherent form, where packages such as tidyr could 
+    be used for reshaping. The schema description documents the arrangement of 
+    input tables and is used to reshape them into a standardised (tidy) output 
+    format.">
 <meta property="og:image" content="http://EhrmannS.github.io/tabshiftr/logo.svg">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -385,9 +389,9 @@
 </table>
 </div>
 </div>
-<div id="to-implement" class="section level1">
+<div id="contributions" class="section level1">
 <h1 class="hasAnchor">
-<a href="#to-implement" class="anchor"></a>To implement</h1>
+<a href="#contributions" class="anchor"></a>Contributions</h1>
 <ul>
 <li>tabshiftr is still in development. So far it reliably reorganises 19 different types of tables all of which are combinations of the four dimensions of disorganisation outlined in the vignette. We suspect that there are further table arrangements, but they are not clear at this stage, issues submitted by users and contributors should be helpful.</li>
 <li>Moreover, the resulting schema descriptions can be useful for data archiving or database building and tabshiftr should at some point support that those schemas can be exported into data-formats that are used by downstream applications (xml, json, …), following proper (ISO) standards.</li>
