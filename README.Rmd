@@ -134,7 +134,7 @@ kable(output)
 We suspect that there are further table arrangements, but they are not clear at this stage, issues submitted by users and contributors should be helpful.
 * Moreover, the resulting schema descriptions can be useful for data archiving or database building and tabshiftr should at some point support that those schemas can be exported into data-formats that are used by downstream applications (xml, json, ...), following proper (ISO) standards.
 * We envision for a next version some functions for assisted construction of the schema. Those could for instance be `setCluster()`, `setHeader()` and `setVariable()`, which could be piped into one another and finally into `makeSchema()`.
-* A proper error-management. Due to the fuzzy nature of setting up a schema descriptions, interaction between machine and human is crucial. Whenever an instruction to extract information from a table results in an error, it should ideally be possible to pinpoint what exactly the issue with those instruction is. This might be a challenge, but it should be included in a future version of tabshiftr.
+* A proper error-management. Due to the fuzzy nature of setting up a schema description, interaction between machine and human is crucial. Whenever an instruction to extract information from a table results in an error, it should ideally be possible to pinpoint what exactly the issue with those instruction is. This might be a challenge, but it should be included in a future version of tabshiftr.
 
 Contributions to those points and discussions on where tabshiftr should go are highly welcome!
 

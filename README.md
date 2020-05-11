@@ -237,7 +237,7 @@ kable(output)
     `setCluster()`, `setHeader()` and `setVariable()`, which could be
     piped into one another and finally into `makeSchema()`.
   - A proper error-management. Due to the fuzzy nature of setting up a
-    schema descriptions, interaction between machine and human is
+    schema description, interaction between machine and human is
     crucial. Whenever an instruction to extract information from a table
     results in an error, it should ideally be possible to pinpoint what
     exactly the issue with those instruction is. This might be a
