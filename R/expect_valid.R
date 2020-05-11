@@ -1,9 +1,14 @@
 #' Test for a valid table
+#'
+#' This function is a collection of expectations which ensure that the output of
+#' \code{\link{reorganise}} is formally and contentwise correct. It is used in
+#' the tests of this package.
 #' @param x a table to test.
 #' @param units the number of units in the output table (from 1 to 3)
+#' @return Either an error message of the invalid expectations, or the output of
+#'   the last successful expectation.
 #' @importFrom testthat expect_identical
 #' @importFrom checkmate expect_names expect_tibble expect_list assertChoice
-#' @export
 
 expect_valid_table <- function(x = NULL, units = 1){
 

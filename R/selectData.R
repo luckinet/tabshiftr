@@ -1,12 +1,15 @@
 #' Select data chunks from a spreadsheet
+#'
+#' This function builds a list of those chunks that contain the data.
 #' @param input the raw table from which to select clusters
 #' @param clusters the "clusters" slot of a schema description.
 #' @param header the "header" slot of a schema description.
+#' @return A list of the rows and columns in the spreadsheet that contain data
+#'   plus the header and the data, per cluster.
 #' @importFrom checkmate assertDataFrame assertNames
 #' @importFrom dplyr group_by ungroup select mutate arrange
 #' @importFrom tidyr fill spread gather
 #' @importFrom tibble rownames_to_column
-#' @export
 
 selectData <- function(input = NULL, clusters = NULL, header = NULL){
 

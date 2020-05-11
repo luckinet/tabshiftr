@@ -1,13 +1,16 @@
-#' get the names from a schema description
+#' Determine the names from a schema description
+#'
+#' This function determines the specific column names that are required in the
+#' process of reshaping.
 #' @param header the header from which to derive names.
 #' @param meta the output of \code{getMetadata} as basis to derive names.
+#' @return A vector of column names.
 #' @importFrom checkmate assertCharacter assertList assertNames
 #' @importFrom stats na.omit
 #' @importFrom tibble tibble as_tibble
 #' @importFrom dplyr select
 #' @importFrom stringr str_c
 #' @importFrom tidyr unite
-#' @export
 
 getNames <- function(header = NULL, meta = NULL){
 

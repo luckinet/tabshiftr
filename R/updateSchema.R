@@ -1,12 +1,18 @@
 #' Check schema description for consistency
+#'
+#' This function takes an input table and a respective input schema and ensures
+#' that the cluster specification is complete and that column and row values are
+#' consistent.
 #' @param input an input for which to check a schema description.
 #' @param schema the schema description.
+#' @return An updated schema description that fulfills formal requirements to be
+#'   processed by \code{\link{reorganise}}.
 #' @importFrom checkmate assertNames assertClass
 #' @importFrom methods new
-#' @export
 
 updateSchema <- function(input = NULL, schema = NULL){
 
+  assertDataFrame(x = input)
   assertClass(x = schema, classes = "schema")
 
   # 1. complete cluster information ----

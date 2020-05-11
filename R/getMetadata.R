@@ -1,9 +1,13 @@
 #' Derive metadata from a schema description
+#'
+#' This function scrutinises the schema description in response to the data to
+#' prepare metadata that are required when reshaping the input data.
 #' @param data a list containing the values of \code{selectData}.
 #' @param schema the schema description that is the basis to derive metadata.
+#' @return A list of metadata for a single cluster, that simplifies reshaping
+#'   the data.
 #' @importFrom checkmate assertList assertNames
 #' @importFrom stats setNames
-#' @export
 
 getMetadata <- function(data = NULL, schema = NULL){
 
@@ -189,7 +193,7 @@ getMetadata <- function(data = NULL, schema = NULL){
 
     # set mergeOrder so that it starts at 1
     if(!is.null(mergeOrder)){
-      mergeOrder <- mergeOrder - min(mergeOrder, na.rm = TRUE)+1
+      mergeOrder <- mergeOrder - min(mergeOrder, na.rm = TRUE) + 1
     }
 
     temp <- list(cluster = list(cluster_rows = clustRows,
