@@ -17,8 +17,12 @@ Authors@R: c(
            role = c("ctb"),
            comment = c(ORCID = "0000-0001-8637-9071"))
     )
-Description: Registers schema descriptions of disorganised (messy) tables and 
-    reorganises them into a standardised (tidy) format.
+Description: Helps the user to build and register schema descriptions of 
+    disorganised (messy) tables. Disorganised tables are tables that are 
+    not in a topologically coherent form, where packages such as tidyr could 
+    be used for reshaping. The schema description documents the arrangement of 
+    input tables and is used to reshape them into a standardised (tidy) output 
+    format.
 URL: https://github.com/EhrmannS/tabshiftr
 BugReports: https://github.com/EhrmannS/tabshiftr/issues
 Depends:
