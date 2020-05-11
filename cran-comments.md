@@ -1,3 +1,7 @@
+11.05.2020
+
+- fix crucial typo in DESCRIPTION
+
 10.05.2020
 
 - More details in DESCRIPTION
