@@ -1,0 +1,6 @@
+10.05.2020
+
+- More details in DESCRIPTION
+- Better description of all included functions
+- A descriptive example for each exported function (makeSchema, reorganise)
+- proper description of return value for all functions

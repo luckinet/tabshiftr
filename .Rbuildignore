@@ -12,3 +12,5 @@ ToDo.md
 ^codecov\.yml$
 ^\.travis\.yml$
 ^appveyor\.yml$
+^CRAN-RELEASE$
+^cran-comments\.md$
