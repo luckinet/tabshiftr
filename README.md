@@ -66,9 +66,8 @@ library(readr)
 library(tabshiftr)
 library(knitr)
 
-input <- read_csv(
-  file = paste0(system.file("test_datasets", package = "tabshiftr"), "/table13.csv"),
-  col_names = FALSE, col_types = cols(.default = "c"))
+input <- read_csv(file = paste0(system.file("test_datasets", package = "tabshiftr"), "/table13.csv"),
+                  col_names = FALSE, col_types = cols(.default = "c"))
 kable(input)
 ```
 
