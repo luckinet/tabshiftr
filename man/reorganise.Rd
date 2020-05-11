@@ -7,35 +7,49 @@
 reorganise(input = NULL, schema = NULL)
 }
 \arguments{
-\item{input}{[\code{data.frame(1)}]\cr table to rectangularise.}
+\item{input}{[\code{data.frame(1)}]\cr table to reorganise.}
 
 \item{schema}{[\code{symbol(1)}]\cr the schema description for reorganising
 \code{input}.}
+}
+\value{
+A (tidy) table which is the result of employing \code{schema} on
+  \code{input}.
 }
 \description{
 This function takes a disorganised messy table and rearranges columns and
 rows into a tidy dataset that can be sorted into the areal database.
 }
-\section{Setting up schema descriptions}{
- See \code{\link{schema_default}} for
-  a template of schema descriptions. \enumerate{ \item Clarify which are the
-  identifying variables and which are the values variables. \item Determine
-  whether there are clusters and find the origin (top left \item Determine
-  whether a table can be separated into a "long" and an "other" part. The
-  long part would consist of columns that contain identifying variables that
-  do not need to be rearranged and the other part would contain data that
-  need to be rearranged. \item Find the column index of all identifying
-  variables, \itemize{ \item if identifying variables are wide, additionally
-  find their row index. } \item Find the column index of all values
-  variables, \itemize{ \item if a variable is spread over several columns,
-  write down all columns for that particular variable. } \item If the names
-  of values variables are given as an identifying variable, give that column
-  name as \code{id} of the values variable, together with the respective term
-  (\code{value}) of the values variables (this indicates that this
-  \emph{key-values pair} must be spread). \itemize{ \item if the names of
-  values variables are not given as column names, but spread across a
-  particular row, register a variable that describes the values variables and
-  use that variable in the \code{id} of the values variable. } \item
-  Determine unit and transformation factor for each values variable. }
-}
+\examples{
 
+# read in a disorganised messy dataset
+library(readr)
+ds <- system.file("test_datasets", package = "tabshiftr")
+input <- read_csv(file = paste0(ds, "/table13.csv"),
+                  col_names = FALSE, col_types = cols(.default = "c"))
+input
+
+# put together schema description (see makeSchema function)
+mySchema <- makeSchema(schema = list(
+  clusters =
+    list(row = c(1, 8, 8), col = c(1, 1, 4), width = 3, height = 6,
+         id = "territories"),
+  header = list(row = 1, rel = TRUE),
+  variables =
+    list(territories =
+           list(type = "id", row = 1, col = 1, rel = TRUE),
+         year =
+           list(type = "id", row = c(3:6), col = 4, dist = TRUE),
+         commodities =
+           list(type = "id", col = 1, rel = TRUE),
+         harvested =
+           list(type = "measured", unit = "ha", factor = 1,
+                col = 2, rel = TRUE),
+         production =
+           list(type = "measured", unit = "t", factor = 1,
+                col = 3, rel = TRUE))
+))
+
+# get the tidy output
+reorganise(input, mySchema)
+}

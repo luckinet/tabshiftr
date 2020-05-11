@@ -11,6 +11,12 @@ updateSchema(input = NULL, schema = NULL)
 
 \item{schema}{the schema description.}
 }
+\value{
+An updated schema description that fulfills formal requirements to be
+  processed by \code{\link{reorganise}}.
+}
 \description{
-Check schema description for consistency
+This function takes an input table and a respective input schema and ensures
+that the cluster specification is complete and that column and row values are
+consistent.
 }

@@ -11,6 +11,11 @@ getMetadata(data = NULL, schema = NULL)
 
 \item{schema}{the schema description that is the basis to derive metadata.}
 }
+\value{
+A list of metadata for a single cluster, that simplifies reshaping
+  the data.
+}
 \description{
-Derive metadata from a schema description
+This function scrutinises the schema description in response to the data to
+prepare metadata that are required when reshaping the input data.
 }

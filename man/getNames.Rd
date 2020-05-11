@@ -2,7 +2,7 @@
 % Please edit documentation in R/getNames.R
 \name{getNames}
 \alias{getNames}
-\title{get the names from a schema description}
+\title{Determine the names from a schema description}
 \usage{
 getNames(header = NULL, meta = NULL)
 }
@@ -11,6 +11,10 @@ getNames(header = NULL, meta = NULL)
 
 \item{meta}{the output of \code{getMetadata} as basis to derive names.}
 }
+\value{
+A vector of column names.
+}
 \description{
-get the names from a schema description
+This function determines the specific column names that are required in the
+process of reshaping.
 }

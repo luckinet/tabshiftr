@@ -11,6 +11,12 @@ expect_valid_table(x = NULL, units = 1)
 
 \item{units}{the number of units in the output table (from 1 to 3)}
 }
+\value{
+Either an error message of the invalid expectations, or the output of
+  the last successful expectation.
+}
 \description{
-Test for a valid table
+This function is a collection of expectations which ensure that the output of
+\code{\link{reorganise}} is formally and contentwise correct. It is used in
+the tests of this package.
 }

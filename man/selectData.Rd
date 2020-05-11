@@ -13,6 +13,10 @@ selectData(input = NULL, clusters = NULL, header = NULL)
 
 \item{header}{the "header" slot of a schema description.}
 }
+\value{
+A list of the rows and columns in the spreadsheet that contain data
+  plus the header and the data, per cluster.
+}
 \description{
-Select data chunks from a spreadsheet
+This function builds a list of those chunks that contain the data.
 }
