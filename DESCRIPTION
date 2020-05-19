@@ -15,7 +15,9 @@ Authors@R: c(
     person("Arne", "Rümmler", 
            email = "arne.ruemmler@tu-dresden.de", 
            role = c("ctb"),
-           comment = c(ORCID = "0000-0001-8637-9071"))
+           comment = c(ORCID = "0000-0001-8637-9071")),
+    person("Caroline", "Busse", 
+           role = c("ctb"))
     )
 Description: Helps the user to build and register schema descriptions of 
     disorganised (messy) tables. Disorganised tables are tables that are 
