@@ -1,6 +1,6 @@
 library(testthat)
 library(checkmate)
-context("reorganise")
+context("show")
 
 
 test_that("a schema is printed properly", {
