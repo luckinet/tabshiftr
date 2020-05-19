@@ -12,7 +12,7 @@
 #' # read in a disorganised messy dataset
 #' library(readr)
 #' ds <- system.file("test_datasets", package = "tabshiftr")
-#' input <- read_csv(file = paste0(ds, "/table13.csv"),
+#' input <- read_csv(file = paste0(ds, "/table_mismatch_3.csv"),
 #'                   col_names = FALSE, col_types = cols(.default = "c"))
 #' input
 #'
@@ -46,7 +46,7 @@
 #' @importFrom tibble rownames_to_column as_tibble add_column
 #' @importFrom tidyr fill drop_na pivot_longer spread separate unite extract
 #'   gather pivot_wider
-#' @importFrom tidyselect everything
+#' @importFrom tidyselect everything all_of
 #' @importFrom magrittr %>%
 #' @importFrom rlang :=
 #' @importFrom stringr str_replace
@@ -203,6 +203,21 @@ reorganise <- function(input = NULL, schema = NULL){
       colnames(temp) <- theNames
     }
 
+    # merge id-columns that have a merge expression
+    if(length(theMeta$table$merge) != 0){
+      for(k in seq_along(theMeta$table$merge)){
+        theMerge <- theMeta$table$merge[[k]]
+        mergeName <- names(theMeta$table$merge)[k]
+        mergeCols <- names(temp)[theMerge$mergeCols]
+        mergeSep <- theMerge$mergeExpr
+
+        temp <- temp %>%
+          unite(!!mergeName, all_of(mergeCols), sep = mergeSep)
+
+        theMeta$table$tidy <- c(theMeta$table$tidy, mergeName)
+      }
+    }
+
     # split id-columns that have a split expression
     if(length(theMeta$table$split) != 0){
       for(k in seq_along(theMeta$table$split)){
@@ -263,7 +278,7 @@ reorganise <- function(input = NULL, schema = NULL){
     }
 
     temp <- temp %>%
-      select(c(theMeta$var_type$ids, valuesInCluster)) %>%
+      select(c(theMeta$var_type$ids, all_of(valuesInCluster))) %>%
       mutate_if(is.character, trimws) %>% # remove leading/trailing whitespace
       arrange_at(.vars = theMeta$var_type$ids)
 
