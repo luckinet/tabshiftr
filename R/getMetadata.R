@@ -34,7 +34,7 @@ getMetadata <- function(data = NULL, schema = NULL){
     idVars <- valVars <- valFctrs <- tidyVars <- outVar <- spreadVars <- gatherVars <- NULL
     splitCols <- tidyCols <- spreadCols <- gatherCols <- NULL
     mergeOrder <- valOrder <- gatherVals <- NULL
-    splitVars <- list()
+    splitVars <- mergeVars <- list()
 
     # go through variables and determine whether it ... ----
     for(i in seq_along(variables)){
@@ -56,7 +56,7 @@ getMetadata <- function(data = NULL, schema = NULL){
         idVars <- c(idVars, varName)
 
         # determine tidy id variables
-        if((is.null(varProp$row) | varName %in% clusters$id) & !distinct){
+        if((is.null(varProp$row) | varName %in% clusters$id) & !distinct & is.null(varProp$merge)){
           tidyVars <- c(tidyVars, varName)
           tidyCols <- c(tidyCols, varProp$col[j])
         }
@@ -159,6 +159,13 @@ getMetadata <- function(data = NULL, schema = NULL){
         }
       }
 
+      # ... should be merged ----
+      if(!is.null(varProp$merge)){
+        tempMerge <- list(mergeCols = varProp$col,
+                          mergeExpr = varProp$merge)
+        mergeVars <- c(mergeVars, setNames(object = list(tempMerge), nm = varName))
+      }
+
       # ... should be split ----
       if(!is.null(varProp$split)){
 
@@ -211,6 +218,7 @@ getMetadata <- function(data = NULL, schema = NULL){
                               gather_cols = gatherCols,
                               spread_from = spreadVars,
                               spread_cols = spreadCols,
+                              merge = mergeVars,
                               split = splitVars)
     )
     out <- c(out, list(temp))
