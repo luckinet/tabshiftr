@@ -137,8 +137,8 @@ setValidity(Class = "schema", function(object){
       }
 
       if(theVariable$type == "id"){
-        if(!all(names(theVariable) %in% c("type", "value", "split", "row", "col", "rel", "dist"))){
-          errors <- c(errors, paste0("'names(", theName, ")' must be a permutation of set {type,value,split,row,col,rel,dist}"))
+        if(!all(names(theVariable) %in% c("type", "value", "row", "col", "rel", "split", "dist", "merge"))){
+          errors <- c(errors, paste0("'names(", theName, ")' must be a permutation of set {type,value,row,col,rel,split,merge,dist}"))
         }
         if(!is.null(theVariable$value)){
           if(!is.character(theVariable$value)){
