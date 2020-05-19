@@ -214,14 +214,17 @@ makeSchema <- function(schema = NULL){
       if(!any(names(varProp) %in% "value")){
         varProp <- c(varProp, list(value = NULL))
       }
-      if(!any(names(varProp) %in% "split")){
-        varProp <- c(varProp, list(split = NULL))
-      }
       if(!any(names(varProp) %in% "row")){
         varProp <- c(varProp, list(row = NULL))
       }
       if(!any(names(varProp) %in% "col")){
         varProp <- c(varProp, list(col = NULL))
+      }
+      if(!any(names(varProp) %in% "split")){
+        varProp <- c(varProp, list(split = NULL))
+      }
+      if(!any(names(varProp) %in% "merge")){
+        varProp <- c(varProp, list(merge = NULL))
       }
       if(!any(names(varProp) %in% "rel")){
         varProp <- c(varProp, list(rel = FALSE))
@@ -243,17 +246,17 @@ makeSchema <- function(schema = NULL){
       if(!any(names(varProp) %in% "col")){
         varProp <- c(varProp, list(col = NULL))
       }
-      if(!any(names(varProp) %in% "rel")){
-        varProp <- c(varProp, list(rel = FALSE))
-      }
-      if(!any(names(varProp) %in% "dist")){
-        varProp <- c(varProp, list(dist = FALSE))
-      }
       if(!any(names(varProp) %in% "key")){
         varProp <- c(varProp, list(key = NULL))
       }
       if(!any(names(varProp) %in% "value")){
         varProp <- c(varProp, list(value = NULL))
+      }
+      if(!any(names(varProp) %in% "rel")){
+        varProp <- c(varProp, list(rel = FALSE))
+      }
+      if(!any(names(varProp) %in% "dist")){
+        varProp <- c(varProp, list(dist = FALSE))
       }
     }
     variables[[i]] <- varProp
