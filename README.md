@@ -66,7 +66,7 @@ library(readr)
 library(tabshiftr)
 library(knitr)
 
-input <- read_csv(file = paste0(system.file("test_datasets", package = "tabshiftr"), "/table13.csv"),
+input <- read_csv(file = paste0(system.file("test_datasets", package = "tabshiftr"), "/table_mismatch_3.csv"),
                   col_names = FALSE, col_types = cols(.default = "c"))
 kable(input)
 ```
@@ -221,7 +221,7 @@ kable(output)
 
 # Contributions
 
-  - tabshiftr is still in development. So far it reliably reorganises 19
+  - tabshiftr is still in development. So far it reliably reorganises 20
     different types of tables all of which are combinations of the four
     dimensions of disorganisation outlined in the vignette. We suspect
     that there are further table arrangements, but they are not clear at
