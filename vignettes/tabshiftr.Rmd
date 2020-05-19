@@ -72,12 +72,17 @@ However, in many disorganised tables variable names of measured variables are us
 # Table types
 
 From the point of view of `tabshiftr` there are four dimensions of how data can be disorganised.
-Several of these dimensions can co-occur in one table, which might make it tricky for some tables to find the correct schema ad-hoc.
+Several of these dimensions can co-occur in one table, which might make it tricky to find the correct schema ad-hoc for some tables.
 
 1) Either the levels of an id variable, or the measured variables are organised into separate topologically coherent chunks (clusters) of data, instead of all variables in one clusters.
-2) The names of measured variables are treated as if they were the levels of an id variable (they are listed), instead of each measured variable in its own column.
-3) The levels of one or more id variable are spread over several columns, instead of all id variables in only one column.
-4) Several id variables are stored in one column.
+2) The names of measured variables are treated as if they were the levels of an identifying variable (they are listed), instead of each measured variable in its own column. This has also been called "long" table in the past.
+3) The levels of one or more identifying variable are spread over several columns, instead of all identifying variables in only one column. This has also been called "wide" table in the past.
+4) There is a mismatch of columns and variables, which might manifest either in that 
+
+    * several identifying variables are stored in the same column, 
+    * one identifying variable is split up into several columns,
+    * variables are stored in a location that is not connected to the remaining topologically coherent chunk or
+    * a variable is available only implicitly (typically the cluster ID), either as table name or somewhere in the metadata.
 
 The following sections are organised according to those dimensions, first introducing the problem more in detail and then giving a description of some typical table arrangements, followed by a schema description that can be used for their reorganisation.
 This is certainly not an exhaustive list of possible table arrangements, but it covers certain basic building blocks of the most common operations and should be extensible enough to capture many mutations of the presented tables.
