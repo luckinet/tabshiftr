@@ -25,7 +25,7 @@ rows into a tidy dataset that can be sorted into the areal database.
 # read in a disorganised messy dataset
 library(readr)
 ds <- system.file("test_datasets", package = "tabshiftr")
-input <- read_csv(file = paste0(ds, "/table13.csv"),
+input <- read_csv(file = paste0(ds, "/table_mismatch_3.csv"),
                   col_names = FALSE, col_types = cols(.default = "c"))
 input
 
