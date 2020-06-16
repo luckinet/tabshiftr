@@ -260,6 +260,9 @@ reorganise <- function(input = NULL, schema = NULL){
         theVar <- gsub(schema@meta$del, "", theVar)
       }
       if(!is.null(schema@meta$dec)){
+        if(schema@meta$dec == "."){
+          schema@meta$dec <- "[.]"
+        }
         theVar <- gsub(schema@meta$dec, ".", theVar)
       }
       theVar <- suppressWarnings(as.numeric(theVar))
