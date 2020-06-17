@@ -194,7 +194,7 @@ reorganise <- function(input = NULL, schema = NULL){
       temp <- temp %>%
         pivot_wider(id_cols = theMeta$var_type$ids,
                     names_from = theMeta$table$spread_from,
-                    values_from = spreadCols)
+                    values_from = all_of(spreadCols))
       theNames <- c(theMeta$var_type$ids, valuesInCluster)
     }
 

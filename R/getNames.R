@@ -25,9 +25,12 @@ getNames <- function(header = NULL, meta = NULL){
   }
 
   if(!is.null(meta$table$gather_into)){
-      theNames <- suppressMessages(header %>%
+    theNames <- suppressMessages(
+      header %>%
         t() %>%
         as_tibble(.name_repair = "unique") %>%
+        mutate_if(is_character, list(~na_if(.,""))) %>%
+        fill(1) %>%
         select(meta$header$cols) %>%
         unite(col = "name", sep = "-_-_", na.rm = TRUE) %>%
         unlist())
