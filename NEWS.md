@@ -1,6 +1,7 @@
 # 0.1.4
 
 - include a control that user-provided "." as decimal symbol is turned into "[.]" to be used as regular expression.
+- re-enable completion of when values in the header are missing. Values are now completed with their left neighbour, as this is the most frequent use-case when values in the header are omitted.
 
 # 0.1.3
 
