@@ -8,7 +8,8 @@
 #' @importFrom checkmate assertCharacter assertList assertNames
 #' @importFrom stats na.omit
 #' @importFrom tibble tibble as_tibble
-#' @importFrom dplyr select
+#' @importFrom purrr is_character
+#' @importFrom dplyr select na_if
 #' @importFrom stringr str_c
 #' @importFrom tidyr unite
 
