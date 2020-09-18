@@ -30,6 +30,10 @@ getMetadata <- function(data = NULL, schema = NULL){
     clustDim <- c(clusters$row[j], clusters$row[j]+clusters$height[j]-1,
                   clusters$col[j], clusters$col[j]+clusters$width[j]-1)
 
+    varRows <- sapply(seq_along(variables), function(x){
+      variables[[x]]$row
+    })
+
     # define some variables
     idVars <- valVars <- valFctrs <- tidyVars <- outVar <- spreadVars <- gatherVars <- NULL
     splitCols <- tidyCols <- spreadCols <- gatherCols <- NULL
@@ -50,6 +54,10 @@ getMetadata <- function(data = NULL, schema = NULL){
       } else {
         distinct <- FALSE
       }
+
+      # ... needs merging
+      otherRows <- unlist(varRows[-i])
+      doMerge <- ifelse(varProp$type != "id" & !varProp$row %in% otherRows, FALSE, TRUE)
 
       # ... is an id variable ----
       if(varProp$type == "id"){
@@ -118,7 +126,9 @@ getMetadata <- function(data = NULL, schema = NULL){
       } else {
         # if a row has been registered, use this to derive spread/gather information
         if(!is.null(varProp$row) & !distinct){
-          spreadVars <- c(spreadVars, "key")
+          # if(doMerge){
+            spreadVars <- c(spreadVars, "key")
+          # }
           gatherCols <- c(gatherCols, varProp$col)
           spreadCols <- length(idVars) + 2
         } else if(!is.null(varProp$key)) {
@@ -144,6 +154,7 @@ getMetadata <- function(data = NULL, schema = NULL){
       # ... occupies a row in the cluster ----
       if(!distinct){
         if(!is.null(varProp$row)){
+
           # only add merge row when it hasn't been added yet
           if(!any(mergeOrder %in% varProp$row[j])){
             if(!varProp$rel){
@@ -152,6 +163,7 @@ getMetadata <- function(data = NULL, schema = NULL){
               dataRows[varProp$row[j]] <- FALSE
             }
             # if it is cluster ID or only in a single cell, don't merge
+            # if(!varName %in% clusters$id & length(varProp$col) != 1 & doMerge){
             if(!varName %in% clusters$id & length(varProp$col) != 1){
               mergeOrder <- c(mergeOrder, varProp$row[j])
             }
@@ -198,7 +210,8 @@ getMetadata <- function(data = NULL, schema = NULL){
       }
     }
 
-    # set mergeOrder so that it starts at 1
+    # set mergeOrder so that it starts at 1 and remove merges when a measured
+    # variable is the only variable in a row
     if(!is.null(mergeOrder)){
       mergeOrder <- mergeOrder - min(mergeOrder, na.rm = TRUE) + 1
     }
