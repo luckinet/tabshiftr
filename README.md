@@ -139,16 +139,24 @@ we want to have in the output table. For each variable we need to define
 at least the `type` and either `col`umn(s), or column(s) and `row`(s).
 Some variables are `dist`inct from the cluster outline, because they
 occur perhaps only once in the table, or are organised in a
-non-systematic way, such as the variable `year` in the example. Some
-variables are either absent from the table, or are available only
-implicitly, for example if several spreadsheets or files contain
-information for one level of an identifying variable, such as per
-commodity. This is not the case in the example, but if it were so, this
-variable could be specified by providing the `value` of the level in the
-variable. For measured variables we also need to provide the target unit
-and a transformation factor to that unit, the latter of which will be
-multiplied with the values of the measured variable. This results in the
-following schema description for our example:
+non-systematic way, such as the variable `year` in the example. Such
+variables tyically require an explicit documentation of their position
+both in terms of rows and columns, while many other variables are
+sufficiently captured by merely providing the column. This is the case
+for example with `commodities`, which has been specified merely as being
+in column 1, however, since the header of each cluster (row 1) and the
+position of the cluster ID (row 2) are already specified, both also
+(partly) in column 1, it is not required to mention that `commodities`
+is limited to columns 3-6. Some variables are either absent from the
+table, or are available only implicitly, for example if several
+spreadsheets or files contain information for one level of an
+identifying variable, such as per commodity. This is not the case in the
+example, but if it were so, this variable could be specified by
+providing the `value` of the level in the variable. For measured
+variables we also need to provide the target unit and a transformation
+factor to that unit, the latter of which will be multiplied with the
+values of the measured variable. This results in the following schema
+description for our example:
 
 ``` r
 library(tabshiftr)
@@ -158,7 +166,7 @@ schema <- makeSchema(schema = list(
   header = list(row = 1, rel = TRUE),
   variables =
     list(territories =
-           list(type = "id", row = 1, col = 1, rel = TRUE),
+           list(type = "id", row = 2, col = 1, rel = TRUE),
          year =
            list(type = "id", row = c(3:6), col = 4, dist = TRUE),
          commodities =
@@ -189,7 +197,7 @@ schema
 #> 
 #>    variable      type       row   col   rel   dist 
 #>   ------------- ---------- ----- ----- ----- ------  
-#>    territories   id         1     1     T     F  
+#>    territories   id         2     1     T     F  
 #>    year          id         3:6   4     F     T  
 #>    commodities   id               1     T     F  
 #>    harvested     measured         2     T     F  
@@ -205,24 +213,24 @@ kable(output)
 ```
 
 | territories | year   | commodities | harvested | production |
-| :---------: | :----- | :---------- | --------: | ---------: |
-|   unit 1    | year 1 | maize       |      1121 |       1122 |
-|   unit 1    | year 1 | soybean     |      1111 |       1112 |
-|   unit 1    | year 2 | maize       |      1221 |       1222 |
-|   unit 1    | year 2 | soybean     |      1211 |       1212 |
-|   unit 2    | year 1 | maize       |      2121 |       2122 |
-|   unit 2    | year 1 | soybean     |      2111 |       2112 |
-|   unit 2    | year 2 | maize       |      2221 |       2222 |
-|   unit 2    | year 2 | soybean     |      2211 |       2212 |
-|   unit 3    | year 1 | maize       |      3121 |       3122 |
-|   unit 3    | year 1 | soybean     |      3111 |       3112 |
-|   unit 3    | year 2 | maize       |      3221 |       3222 |
-|   unit 3    | year 2 | soybean     |      3211 |       3212 |
+| :---------- | :----- | :---------- | --------: | ---------: |
+| soybean     | year 1 | maize       |      1121 |       1122 |
+| soybean     | year 1 | unit 1      |         . |          . |
+| soybean     | year 2 | maize       |      1221 |       1222 |
+| soybean     | year 2 | soybean     |      1211 |       1212 |
+| soybean     | year 1 | maize       |      2121 |       2122 |
+| soybean     | year 1 | unit 2      |         . |          . |
+| soybean     | year 2 | maize       |      2221 |       2222 |
+| soybean     | year 2 | soybean     |      2211 |       2212 |
+| soybean     | year 1 | maize       |      3121 |       3122 |
+| soybean     | year 1 | unit 3      |         . |          . |
+| soybean     | year 2 | maize       |      3221 |       3222 |
+| soybean     | year 2 | soybean     |      3211 |       3212 |
 
 # Contributions
 
   - tabshiftr is still in development. So far it reliably reorganises 20
-    different types of tables all of which are combinations of the four
+    different types of tables, all of which are combinations of the four
     dimensions of disorganisation outlined in the vignette. We suspect
     that there are further table arrangements, but they are not clear at
     this stage, issues submitted by users and contributors should be

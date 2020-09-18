@@ -86,7 +86,7 @@ When there are several clusters that are identical in arrangement (but not in va
 
 Input tables may contain many more data/variables than what we are interested in, but the schema description contains only those variables we want to have in the output table.
 For each variable we need to define at least the `type` and either `col`umn(s), or column(s) and `row`(s).
-Some variables are `dist`inct from the cluster outline, because they occur perhaps only once in the table, or are organised in a non-systematic way, such as the variable `year` in the example.
+Some variables are `dist`inct from the cluster outline, because they occur perhaps only once in the table, or are organised in a non-systematic way, such as the variable `year` in the example. Such variables tyically require an explicit documentation of their position both in terms of rows and columns, while many other variables are sufficiently captured by merely providing the column. This is the case for example with `commodities`, which has been specified merely as being in column 1, however, since the header of each cluster (row 1) and the position of the cluster ID (row 2) are already specified, both also (partly) in column 1, it is not required to mention that `commodities` is limited to columns 3-6.
 Some variables are either absent from the table, or are available only implicitly, for example if several spreadsheets or files contain information for one level of an identifying variable, such as per commodity.
 This is not the case in the example, but if it were so, this variable could be specified by providing the `value` of the level in the variable.
 For measured variables we also need to provide the target unit and a transformation factor to that unit, the latter of which will be multiplied with the values of the measured variable.
@@ -100,7 +100,7 @@ schema <- makeSchema(schema = list(
   header = list(row = 1, rel = TRUE),
   variables =
     list(territories =
-           list(type = "id", row = 1, col = 1, rel = TRUE),
+           list(type = "id", row = 2, col = 1, rel = TRUE),
          year =
            list(type = "id", row = c(3:6), col = 4, dist = TRUE),
          commodities =
@@ -130,7 +130,7 @@ kable(output)
 
 # Contributions
 
-* tabshiftr is still in development. So far it reliably reorganises 20 different types of tables all of which are combinations of the four dimensions of disorganisation outlined in the vignette.
+* tabshiftr is still in development. So far it reliably reorganises 20 different types of tables, all of which are combinations of the four dimensions of disorganisation outlined in the vignette.
 We suspect that there are further table arrangements, but they are not clear at this stage, issues submitted by users and contributors should be helpful.
 * Moreover, the resulting schema descriptions can be useful for data archiving or database building and tabshiftr should at some point support that those schemas can be exported into data-formats that are used by downstream applications (xml, json, ...), following proper (ISO) standards.
 * We envision for a next version some functions for assisted construction of the schema. Those could for instance be `setCluster()`, `setHeader()` and `setVariable()`, which could be piped into one another and finally into `makeSchema()`.
