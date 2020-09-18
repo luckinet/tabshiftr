@@ -179,7 +179,7 @@ reorganise <- function(input = NULL, schema = NULL){
       spreadCols <- valuesInCluster[1]
       temp <- temp %>%
         pivot_longer(cols = theMeta$table$gather_cols,
-                     values_to = spreadCols)
+                     values_to = spreadCols, names_repair = "minimal")
       theNames <- NULL
 
       # ... and separate the column containing column names
@@ -245,6 +245,9 @@ reorganise <- function(input = NULL, schema = NULL){
     # if there are columns in the table that don't have a name, remove them
     if(anyNA(names(temp))){
       temp <- temp[,which(!is.na(names(temp)))]
+    }
+    if(any(names(temp) == "")){
+      temp <- temp[,-which(names(temp) == "")]
     }
 
     # make sure that all measured variables are numeric and have the correct value
