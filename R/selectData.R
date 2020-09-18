@@ -46,9 +46,13 @@ selectData <- function(input = NULL, clusters = NULL, header = NULL){
       toRemove <- tempHeader[tempHeader >= clusters$row[i]]
       clustRows[toRemove] <- FALSE
     }
-    # and remove rows that contain only NAs
+    # remove rows that contain only NAs
     clustRows <- clustRows & rowSums(is.na(tempCols)) != ncol(tempCols)
     temp <- tempCols[clustRows, ]
+    # remove cols that contain only NAs
+    validCols <- colSums(is.na(temp)) != nrow(temp)
+    clusterCols <- clusterCols[validCols]
+    temp <- temp[, validCols]
 
     # determine header
     tempHeader <- input[tempHeader, clusterCols]
