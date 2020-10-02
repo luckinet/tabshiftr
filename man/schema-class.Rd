@@ -6,22 +6,52 @@
 \alias{schema}
 \title{The \code{schema} class (S4) and its methods}
 \description{
-A \code{schema} stores the information of where which information is stored in
-a table of data.
-}
-\details{
-The slot \code{variables} typically contains several lists that each
-record the metadata of the respective variables.
+A \code{schema} stores the information of where which information is stored
+in a table of data.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{cluster}}{[\code{list(1)}]\cr description of clusters of data.}
+\item{\code{cluster}}{[\code{list(1)}]\cr description of
+\code{\link[=setCluster]{clusters}} in the table.}
 
-\item{\code{header}}{[code{list(1)}]\cr description of the header.}
+\item{\code{header}}{[\code{list(1)}]\cr description of the
+\code{\link[=setHeader]{header}}.}
 
-\item{\code{meta}}{[\code{list(1)}]\cr description of the metadata.}
+\item{\code{format}}{[\code{list(1)}]\cr description of the table
+\code{\link[=setFormat]{format}}}
 
-\item{\code{variables}}{[\code{named list(.)}]\cr description of variables.}
+\item{\code{variables}}{[\code{named list(.)}]\cr description of
+\code{\link[=setIDVar]{identifying}} and \code{\link[=setObsVar]{observed}}
+variables.}
 }}
+
+\section{Setting up schema descriptions}{
+ The recommended strategy for setting
+  up a schema description is the following recently. \enumerate{ \item
+  Clarify which are the identifying variables and which are the measured
+  variables and create a new entry for each of them in the schema. \item
+  Determine whether there are clusters and find the origin (top left cell) of
+  each cluster. Follow the next steps for each cluster... \item Determine
+  which variable identifies clusters and provide that as cluster ID. \item
+  Determine for each identifying variable the following: \itemize{ \item is
+  the variable available at all? If not, provide the variable value for this
+  cluster in `value`. \item all columns in which the variable \emph{names}
+  sit. \item in case the variable is in several columns, determine
+  additionally the row in which its \emph{names} sit. \item whether the
+  variable is distinct from the main table. \item whether the variable must
+  be split off of another column. } \item Determine for each measured
+  variable the following: \itemize{ \item all columns in which the
+  \emph{values} of the variable sit. \item the unit and conversion factor
+
+  \item in case the variable is not tidy, one of the three following cases
+  should apply: \enumerate{ \item in case the variable is nested in a wide
+  identifying variable, determine in addition to the columns in which the
+  values sit also the rows in which the \emph{variable name} sits. \item in
+  case the names of the variable are given as a value of an identifying
+  variable, give the column name as \code{key}, together with the respective
+  name of the measured variable in \code{values}. \item in case the name of
+  the variable is the ID of clusters, specify \code{key = "cluster"} and in
+  \code{values} the cluster number the variable refers to. } } }
+}
 
