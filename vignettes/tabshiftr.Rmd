@@ -22,77 +22,97 @@ vignette: >
 # Introduction
 
 Spreadsheets as places where data tables are recorded can be pretty messy.
-Ideally, data are organised into topologically coherent (rectangular) chunks of tidy data, where variables are recorded in columns and observations in rows [@Wickham2014].
-However, in spreadsheets that were scraped off the internet, all thinkable arrangements of the data may be encountered, culminating in several non-uniformly arranged tables that are placed non-systematically within one spreadsheet.
-Each of such individual chunks within a spreadsheet is called *cluster* and data that are not organised into topologically coherent chunks are called *disorganised (messy) data* in `tabshiftr`.
+The 'tidy' paradigm in R proposes that data are organised so that variables are recorded in columns, observations in rows and that there is only one value per cell [@Wickham2014].
+This, however, is only one interpretation of how data should be organised and especially when scraping data from multiple heterogeneous sources off the internet, one frequently encounters messy data that don't follow this paradigm.
 
-When it comes to the organisation of data in tables, variables can be distinguished into two kinds of variables:
+The `tidyr` package is one of the most popular tools to bring data into a tidy format. 
+However, up until today it is limited to tables that are already organised into topologically coherent (rectangular) chunks.
+In `tabshiftr` we try to describe and work with a further dimension of messiness, where data are available as so-called *disorganised (messy) data*, data that are not yet arranged into rectangular form.
 
-1. Variables that identify the unit for which values have been measured (they are called *identifying variables* here).
-2. Variables that have been measured and that consequently represent the target values of that measurement, be they continuous or categorical (they are called *measured variables* here).
+## The basics
 
-These two variable types are the target variables in `tabshiftr`.
-The primary aim of reorganising messy tables lays in determining where those two kinds of variables are located in each cluster.
+Data can be disorganised according to multiple dimensions.
+To understand those dimensions, we first need to understand the nature of data.
+Data \"of the same kind\" are collected in a variable, which is always a combination of a \'name\' and the \'values\'. 
+In a table, names are typically in the topmost row and values are in the column below that name ([Tab. 1](#tabExample)).
+Conceptually, there are two types of variables in any dataset:
+
+1. Variables that contain categorical levels that identify the units for which values have been observed (they are called *identifying variables* here).
+2. Variables that have been observed or observed and that consequently represent the target values of that measurement, be they continuous or categorical (they are called *observed variables* here).
+
+| identifying variable | observed variable (continuous) | observed variable (categorical) |
+| :- | :- | :- |
+| sample 1 | 10 | blue |
+| sample 2 | 20 | green |
+| sample 3 | 30 | blue |
+| sample 4 | 40 | green |
+
+Table: <a name="tabExample"></a>Table 1: An example table containing one identifying and two observed variables, with the variable names in the topmost row and the values in all consecutive rows.
+
+## Dimensions of disorganisation
+
+The following lists the dimensions of how data can be disorganised, several of which can co-occur in one table.
+
+1) Each levels of an identifying variable, or the different values of a categorical observed variable are organised into separate topologically coherent chunks (clusters) of data, instead of all variables in one cluster/table.
+2) The names of observed variables are treated as if they were the levels of an identifying variable (they are *listed*), instead of each observed variable in its own column. This is also called \"long\" data.
+3) The levels of one or more identifying variable are spread over several columns, instead of all levels in only one column. This is also called \"wide\" data.
+4) Several identifying variables are stored in the same column or one identifying variable is split up into several columns.
+5) One or more variables are stored in a spreadsheet so that the resulting table is topologically non-coherent.
+6) One or more variables are merely implicitly available (e.g., as spreadsheet or file name)
 
 
-# Setting up schema descriptions
+## Schema descriptions
 
-To set up a schema description, the recommended strategy is the following:
+The approach of `tabshiftr` is based on capturing the arrangement of a table in a so-called  [schema](https://en.wikipedia.org/wiki/Database_schema) description.
+Typically there is an input and an output schema, describing the arrangement of the input and output tables, respectively.
+The advantage of this procedure is that input and output tables exist explicitly and the schema maps the transformation of the data.
+As we want to end up with tidy tables the output schema is pre-determined by a tidy table of the included variables, but the input schema description needs to be provided by the user.
 
-1. Clarify which are the identifying variables and which are the measured variables and create a new entry for each of them in the schema. A variable is always a combination of **name** and **values**. Names are typically the column names and values are typically in the column below that name.
-However, in many disorganised tables variable names of measured variables are used as values of an identifying variable or measured variables are nested in identifying variables and values are thus not exclusively in the same column as their name.
+To set up a schema description, the following steps should be taken:
 
-2. Determine whether there are clusters and find the origin (top left cell) of each cluster ([Tab. 8](#clusHor), [Tab. 9](#clusId) & [Tab. 10](#clusMeas)). Follow the next steps for each cluster...
+1. Clarify which are the identifying variables and which are the observed variables. Make sure not to mistake a listed observed variable as identifying variable. 
 
-3. Determine which variable identifies clusters and provide that as cluster ID. It can also be the case that the data are organised into separate spreadsheets or files according to one of the variables and also those cases should be treated as if they were clusters, even if each spreadsheet/file contains a topologically coherent table. It may be that either an identifying variable, or a measured variable identifies clusters:
+2. Determine whether there are clusters, find the origin (top left cell) of each cluster and provide the required information in `setCluster()` ([Tab. 9](#clusHor), [Tab. 10](#clusId) & [Tab. 11](#clusMeas)). It might make sense to treat a table that does not start at the topmost left cell as cluster ([Tab. 6](#implicitVar)). Follow the next steps for each cluster...
 
-    - in case it is an identifying variable, provide this variables' name (and also register its metadata).
-    - in case it is a measured variable, provide simply `"measured"` as cluster ID.
+3. Determine which variable identifies clusters and specify that as identifying variable. It can also be the case that the data are organised into separate spreadsheets or files according to one of the variables and also those cases should be treated as if they were clusters, even if each spreadsheet/file contains a topologically coherent table. It may be that either an identifying variable, or a observed variable identifies clusters:
+
+    - in case it is an identifying variable, provide its name in `setCluster(id = ...)` and specify it as an identifying variable (`setIDVar()`)
+    - in case it is a observed variable, provide simply `"observed"` as cluster ID.
     <br><br>
 
 4. Determine for each identifying variable the following:
 
-    - is the variable available at all? This is particularly important when the data are split up into sub-tables that are in different spreadsheets or files. Often the variable that splits up the data (and thus identifies the clusters) is not explicitly available in the spreadsheet anymore. In such a case, provide the variables value for this cluster in `value` ([Tab. 5](#implicitVar)).
-    - all columns in which the variable **names** sit.
-    - in case the variable is in several columns, determine additionally the row in which its names sit ([Tab. 3](#nest2)).
-    - whether the variable must be split off of another column ([Tab. 4](#splitCol)).
-    - whether the variable is distinct from the main table ([Tab. 11](#distVar)).
+    - is the variable available at all? This is particularly important when the data are split up into sub-tables that are in different spreadsheets or files. Often the variable that splits up the data (and thus identifies the clusters) is not explicitly available in the spreadsheet anymore. In such a case, provide the value in `setIDVar(value = ...)` ([Tab. 6](#implicitVar)).
+    - all columns in which the variable values sit.
+    - in case the variable is in several columns, determine additionally the row in which its values sit. In this case, the values will look like they are part of the header ([Tab. 4](#nest2)).
+    - in case the variable must be split off of another column, provide a regular expression that results in the target subset via `setIDVar(split = ...)` ([Tab. 5](#splitCol)).
+    - in case the variable is distinct from the main table, provide the explicit position and set `setIDVar(distinct = TRUE)` ([Tab. 12](#distVar)).
     <br><br>
     
-5. Determine for each measured variable the following:
+5. Determine for each observed variable the following:
 
-    - all columns in which the values of the variable sit ([Tab. 6](#long)).
+    - all columns in which the values of the variable sit ([Tab. 7](#long)).
     - the unit and conversion factor.
-    - in case the variable is not tidy, one of the three following cases should apply:
-        * in case the variable is nested in a wide identifying variable, determine in addition to the columns in which the values sit also the rows in which the **variable name** sits ([Tab. 2](#nest1) & [Tab. 3](#nest2)).
-        * in case the names of the variable are given as a value of an identifying variable ([Tab. 7](#wideLong)), give the column name as `key`, together with the respective name of the measured variable in `values`.
-        * in case the name of the variable is the ID of clusters, specify `key = "cluster"` and in `values` the cluster number the variable refers to ([Tab. 10](#clusMeas)).
+    - in case the variable is not tidy, go through the following cases step by step:
+        * in case the variable is nested in a wide identifying variable, determine in addition to the columns in which the values sit also the rows in which the **variable name** sits ([Tab. 3](#nest1) & [Tab. 4](#nest2)).
+        * in case the names of the variable are given as a value of an identifying variable ([Tab. 8](#wideLong)), give the column number as `key`, together with the name of the respective observed variable (as it appears in the table) in `values`.
+        * in case the name of the variable is the ID of clusters, specify `key = "cluster"` and in `values` the cluster number the variable refers to ([Tab. 11](#clusMeas)).
+    <br><br>
 
+6. Provide potentially information about the table header (`setHeader()`) and format (`setFormat()`).
 
 # Table types
 
-From the point of view of `tabshiftr` there are four dimensions of how data can be disorganised.
-Several of these dimensions can co-occur in one table, which might make it tricky to find the correct schema ad-hoc for some tables.
 
-1) Either the levels of an id variable, or the measured variables are organised into separate topologically coherent chunks (clusters) of data, instead of all variables in one clusters.
-2) The names of measured variables are treated as if they were the levels of an identifying variable (they are listed), instead of each measured variable in its own column. This has also been called "long" table in the past.
-3) The levels of one or more identifying variable are spread over several columns, instead of all identifying variables in only one column. This has also been called "wide" table in the past.
-4) There is a mismatch of columns and variables, which might manifest either in that 
-
-    * several identifying variables are stored in the same column, 
-    * one identifying variable is split up into several columns,
-    * variables are stored in a location that is not connected to the remaining topologically coherent chunk or
-    * a variable is available only implicitly (typically the cluster ID), either as table name or somewhere in the metadata.
-
-The following sections are organised according to those dimensions, first introducing the problem more in detail and then giving a description of some typical table arrangements, followed by a schema description that can be used for their reorganisation.
-This is certainly not an exhaustive list of possible table arrangements, but it covers certain basic building blocks of the most common operations and should be extensible enough to capture many mutations of the presented tables.
+The following sections are organised according to the dimensions of disorganisation outlined above, first introducing the problem more in detail and then giving a description of some typical table arrangements, followed by a schema description that can be used for their reorganisation.
+This is certainly not an exhaustive list of possible table arrangements, but it covers certain basic building blocks of the most common operations and should be extensible enough to capture many mutations of the presented tables. 
 
 
 ## Spreadsheet contains one cluster
 
-### Separated *measured variables*
+### Separated *observed variables*
 
-In case the measured variables are arranged into individual columns ([Tab. 1](#tab1)), we have tidy data [@Wickham2014], which are already in the target arrangement.
+In case the observed variables are arranged into individual columns ([Tab. 2](#tab1)), we have tidy data [@Wickham2014], which are already in the target arrangement.
 The variables in a tidy table may however, still need different names, units and transformation factors.
 
 | X1 | X2 | X3 | X4 | X5 |
@@ -107,28 +127,21 @@ The variables in a tidy table may however, still need different names, units and
 | unit 2 | year 2 | soybean | 2211 | 2212 |
 | unit 2 | year 2 | maize | 2221 | 2222 |
 
-Table: <a name="tab1"></a>Table 1: A tidy table.
+Table: <a name="tab1"></a>Table 2: A tidy table.
 
 ```{r, eval=FALSE}
-makeSchema(list(
-  header = list(row = 1),
-  variables =
-    list(territories =
-           list(type = "id", col = 1),
-         year =
-           list(type = "id", col = 2),
-         commodities =
-           list(type = "id", col = 3),
-         harvested =
-           list(type = "measured", unit = "ha", factor = 1, col = 4),
-         production =
-           list(type = "measured", unit = "t", factor = 1, col = 5))))
+schema <- setHeader(rows = 1) %>%
+  setIDVar(name = "territories", columns = 1) %>%
+  setIDVar(name = "year", columns = 2) %>%
+  setIDVar(name = "commodities", columns = 3) %>%
+  setObsVar(name = "harvested", unit = "ha", columns = 4) %>%
+  setObsVar(name = "production", unit = "t", columns = 5)
 ```
 
-In case identifying variables are factors with a limited number of levels, those levels may be used as names of other variables, where they would be next to each other and thus \"wide\".
-The other variables (both identifying and measured variables) would then be \"nested\" in those wide identifying variables.
-In those cases we have to record the row and the specific columns in which the identifying variables names are found, because those values will be used to reconstruct the variable as \"long\" variable.
-Beware that in those case you need to change the default header specification.
+In case identifying variables are factors with a small number of levels, those levels may falsely be used as names of (some) other variables, where they would be next to each other and thus \"wide\".
+The other variables (both identifying and observed variables) would then be \"nested\" in those wide identifying variables.
+In those cases we have to record the columns **and the row** in which the values of the identifying variable (which appear to be names) are found.
+Beware that in those cases you also need to adapt the header specification, so that this row is excluded from the respective nested variable.
 
 | X1 | X2 | X3 | X4 | X5 | X6 |	
 | :- | :- | :- | :- | :- | :- |
@@ -139,27 +152,18 @@ Beware that in those case you need to change the default header specification.
 | unit 2 | year 1 | 2111 | 2112 | 2112 | 2122 |
 | unit 2 | year 2 | 2211 | 2212 | 2121 | 2222 |
 
-Table: <a name="nest1"></a>Table 2: The values variables are nested within the identifying variable `commodities`.
+Table: <a name="nest1"></a>Table 3: The values variables are nested within the identifying variable `commodities`.
 
 ```{r, eval=FALSE}
-makeSchema(list(
-  header = list(row = c(1, 2)),
-  variables =
-    list(territories =
-           list(type = "id", col = 1),
-         year =
-           list(type = "id", col = 2),
-         commodities =
-           list(type = "id", row = 1, col = c(3, 5)),
-         harvested =
-           list(type = "measured", unit = "ha", factor = 1,
-                row = 2, col = c(3, 5)),
-         production =
-           list(type = "measured", unit = "t", factor = 1,
-                row = 2, col = c(4, 6)))))
+schema <- setHeader(rows = c(1, 2)) %>%
+  setIDVar(name = "territories", columns = 1) %>%
+  setIDVar(name = "year", columns = 2) %>%
+  setIDVar(name = "commodities", columns = c(3, 5), row = 1) %>%
+  setObsVar(name = "harvested", unit = "ha", columns = c(3, 5), row = 2) %>%
+  setObsVar(name = "production", unit = "t", columns = c(4, 6), row = 2)
 ```
 
-In case several variables are nested within other variables, we have to specify for all nested or nesting variables in which rows they sit.
+In case several variables are nested within other variables, we have to specify for all nested or nesting variables in which rows their values sit and adapt the header.
 
 | X1 | X2 | X3 | X4 | X5 | X6 | X7 | X8 | X9 |
 | :- | :- | :- | :- | :- | :- | :- | :- | :- |
@@ -169,24 +173,15 @@ In case several variables are nested within other variables, we have to specify 
 | unit 1 | 1111 | 1112 | 1121 | 1122 | 1211 | 1212 | 1221 | 1222 |
 | unit 2 | 2111 | 2211 | 2121 | 2221 | 2112 | 2212 | 2122 | 2222 |
 
-Table: <a name="nest2"></a>Table 3: The identifying variable `commodities` is nested in the identifying variable `period`. The target variable is spread across those nested columns.
+Table: <a name="nest2"></a>Table 4: The identifying variable `commodities` is nested in the identifying variable `period`. The target variable is spread across those nested columns.
 
 ```{r, eval=FALSE}
-makeSchema(list(
-  header = list(row = c(1:3)),
-  variables =
-    list(territories =
-           list(type = "id", col = 1),
-         year =
-           list(type = "id", row = 1, col = c(2, 6)),
-         commodities =
-           list(type = "id", row = 2, col = c(2, 4, 6, 8)),
-         harvested =
-           list(type = "measured", unit = "ha", factor = 1,
-                row = 3, col = c(2, 4, 6, 8)),
-         production =
-           list(type = "measured", unit = "t", factor = 1,
-                row = 3, col = c(3, 5, 7, 9)))))
+schema <- setHeader(rows = c(1:3)) %>%
+  setIDVar(name = "territories", columns = 1) %>%
+  setIDVar(name = "year", columns = c(2, 6), row = 1) %>%
+  setIDVar(name = "commodities", columns = c(2, 4, 6, 8), row = 2) %>%
+  setObsVar(name = "harvested", unit = "ha", columns = c(2, 4, 6, 8), row = 3) %>%
+  setObsVar(name = "production", unit = "t", columns = c(3, 5, 7, 9), row = 3)
 ```
 
 
@@ -208,22 +203,15 @@ For example, `.+?(?=_)` gives everything up until the first `_` and `(?<=\\_).*`
 | unit 2 | year 2_soybean | 2211 | 2212 |
 | unit 2 | year 2_maize | 2221 | 2222 |
 
-Table: <a name="splitCol"></a>Table 4: Several variables are stored in the same column.
+Table: <a name="splitCol"></a>Table 5: Several variables are stored in the same column.
 
 ```{r, eval=FALSE}
-makeSchema(list(
-  header = list(row = 1),
-  variables =
-    list(territories =
-           list(type = "id", col = 1),
-         year =
-           list(type = "id", split = ".+?(?=_)", col = 2),
-         commodities =
-           list(type = "id", split = "(?<=\\_).*", col = 2),
-         harvested =
-           list(type = "measured", unit = "ha", factor = 1, col = 3),
-         production =
-           list(type = "measured", unit = "t", factor = 1, col = 4))))
+schema <- setHeader(rows = 1) %>%
+  setIDVar(name = "territories", columns = 1) %>%
+  setIDVar(name = "year", columns = 2, split = ".+?(?=_)") %>%
+  setIDVar(name = "commodities", columns = 2, split = "(?<=\\_).*") %>%
+  setObsVar(name = "harvested", unit = "ha", columns = 3) %>%
+  setObsVar(name = "production", unit = "t", columns = 4)
 ```
 
 ### Implicit variables
@@ -240,33 +228,23 @@ In those cases, we have to register the variable nevertheless, and provide the v
 | soybean | 1211 | 1212 | year 2 |
 | maize | 1221 | 1222 | year 2 |
 
-Table: <a name="implicitVar"></a>Table 5: Several variables are stored in the same column.
+Table: <a name="implicitVar"></a>Table 6: Several variables are stored in the same column.
 
 ```{r, eval=FALSE}
-makeSchema(list(
-  clusters =
-    list(row = 2, col = 1, id = "territories"),
-  header = list(row = 1, rel = TRUE),
-  variables =
-    list(territories =
-           list(type = "id", value = "unit 1"),
-         year =
-           list(type = "id", col = 4, rel = TRUE),
-         commodities =
-           list(type = "id", col = 1, rel = TRUE),
-         harvested =
-           list(type = "measured", unit = "ha", factor = 1,
-                col = 2, rel = TRUE),
-         production =
-           list(type = "measured", unit = "t", factor = 1,
-                col = 3, rel = TRUE))))
+schema <- setCluster(id = "territories", top = 2, left = 1) %>%
+  setHeader(rows = 1, relative = TRUE) %>%
+  setIDVar(name = "territories", value = "unit 1") %>%
+  setIDVar(name = "year", columns = 4, relative = TRUE) %>%
+  setIDVar(name = "commodities", columns = 1, relative = TRUE) %>%
+  setObsVar(name = "harvested", unit = "ha", columns = 2, relative = TRUE) %>%
+  setObsVar(name = "production", unit = "t", columns = 3, relative = TRUE)
 ```
 
-### Listed *measured variables*
+### Listed *observed variables*
 
-Some tables contain a column where the names of measured variables (`harvested` and `production`) are treated as if they were the values of an identifying variable (`dimension`), while the values are presented in only one column (`values`) ([Tab. 6](#long)).
-To end up with tidy data in those cases, we need to extract the values associated with the measured variables.
-Thus, we define the measured variables and specify the `key = ` in which the variable names sit, and the `value = ` the variable name has, to extract that variable.
+Some tables contain a column where the names of observed variables (`harvested` and `production`) are treated as if they were the values of an identifying variable (`dimension`), while the values are presented in only one column (`values`) ([Tab. 7](#long)).
+To end up with tidy data in those cases, we need to extract the values associated with the observed variables.
+Thus, we define the observed variables and specify the `key = ` in which the variable names sit, and the `value = ` the variable name has, to extract that variable.
 
 | X1 | X2 | X3 | X4 | X5 |
 | :- | :- | :- | :- | :- |
@@ -288,24 +266,17 @@ Thus, we define the measured variables and specify the `key = ` in which the var
 | unit 2 | year 2 | soybean | production | 2212 |
 | unit 2 | year 2 | maize | production | 2222 |
 
-Table: <a name="long"></a>Table 6: The variable names of the measured variable are treated as if they were the values of an identifying variable.
+Table: <a name="long"></a>Table 7: The variable names of the observed variable are treated as if they were the values of an identifying variable.
 
 ```{r, eval=FALSE}
-makeSchema(list(
-  header = list(row = 1),
-  variables =
-    list(territories =
-           list(type = "id", col = 1),
-         year =
-           list(type = "id", col = 2),
-         commodities =
-           list(type = "id", col = 3),
-         harvested =
-           list(type = "measured", unit = "ha", factor = 1,
-                col = 5, key = "dimension", value = "harvested"),
-         production =
-           list(type = "measured", unit = "t", factor = 1,
-                col = 5, key = "dimension", value = "production"))))
+schema <- setHeader(rows = 1) %>%
+  setIDVar(name = "territories", columns = 1) %>%
+  setIDVar(name = "year", columns = 2) %>%
+  setIDVar(name = "commodities", columns = 3) %>%
+  setObsVar(name = "harvested", unit = "ha", columns = 5,
+            key = "dimension", value = "harvested") %>%
+  setObsVar(name = "production", unit = "t", columns = 5,
+            key = "dimension", value = "production")
 ```
 
 Moreover, (several) identifying variables may be wide additionally and we have to proceed as mentioned above, by providing the row and columns of the wide identifying variables.
@@ -322,7 +293,7 @@ Moreover, (several) identifying variables may be wide additionally and we have t
 | unit 2 | year 2 | harvested | 2211 | 2221 |
 | unit 2 | year 2 | production | 2212 | 2222 |
 
-Table: <a name="wideLong"></a>Table 7: The identifying variable `commodities` is treated as if it were the observed variable.
+Table: <a name="wideLong"></a>Table 8: The identifying variable `commodities` is treated as if it were the observed variable.
 
 ```{r, eval=FALSE}
  makeSchema(list(
@@ -353,7 +324,7 @@ To reorganise the data into tidy form, each cluster is \"cut out\", rearranged i
 
 ### Horizontal clusters
 
-In case horizontal clusters are sitting right next to each other in the same origin row ([Tab. 8](#clusHor)), it is sufficient to provide the topmost row and all leftmost columns at which a new cluster starts.
+In case horizontal clusters are sitting right next to each other in the same origin row ([Tab. 9](#clusHor)), it is sufficient to provide the topmost row and all leftmost columns at which a new cluster starts.
 In case there is some arbitrary horizontal space between clusters, also the width (of each cluster) needs to be provided.
 
 
@@ -366,7 +337,7 @@ In case there is some arbitrary horizontal space between clusters, also the widt
 | year 2 | soybean | 1211 | 1212 | soybean | 2211 | 2212 |
 | year 2 | maize | 1221 | 1222 | maize | 2221 | 2222 |
 
-Table: <a name="clusHor"></a>Table 8: Horizontal clusters of the identifying variable `period`.
+Table: <a name="clusHor"></a>Table 9: Horizontal clusters of the identifying variable `period`.
 
 ```{r, eval=FALSE}
 makeSchema(list(
@@ -389,7 +360,7 @@ makeSchema(list(
 
 ### Vertical clusters
 
-For vertically arranged clusters ([Tab. 9](#clusId)), just like for the horizontal case, the respective rows, columns (and heights) need to be provided.
+For vertically arranged clusters ([Tab. 10](#clusId)), just like for the horizontal case, the respective rows, columns (and heights) need to be provided.
 
 | X1 | X2 | X3 | X4 | X5 |
 | :- | :- | :- | :- | :- |
@@ -405,7 +376,7 @@ For vertically arranged clusters ([Tab. 9](#clusId)), just like for the horizont
 |  | year 2 | soybean | 2211 | 2212 |
 |  | year 2 | maize | 2221 | 2222 |
 
-Table: <a name="clusId"></a>Table 9: Vertical clusters of the identifying variable `period`.
+Table: <a name="clusId"></a>Table 10: Vertical clusters of the identifying variable `period`.
 
 ```{r, eval=FALSE}
 makeSchema(list(
@@ -447,13 +418,13 @@ Additionally, given that at least the tables within each cluster are all arrange
 If also that is not the case, the row and column values for each cluster need to be provided for the respective variables in the same way as for cluster positions.
 
 
-### Clusters of measured variables
+### Clusters of observed variables
 
-The previous two types of clusters are clusters of identifying variables, but it may also be the case that the measured variables are split up into distinct clusters.
-Here, we need to specify first of all in `clusters` `"id = "measured"` to indicate that the measured variable is the cluster ID.
-Next, we need to set up the measured variables so that they contain `"key = "cluster"` and in `value` the number of the cluster this variable can be found in.
-Moreover, we provide the column(s) and all rows that contain the values of each measured variable.
-This is in contrast to nested measured variables, where the rows of the variable names need to be provided.
+The previous two types of clusters are clusters of identifying variables, but it may also be the case that the observed variables are split up into distinct clusters.
+Here, we need to specify first of all in `clusters` `"id = "observed"` to indicate that the observed variable is the cluster ID.
+Next, we need to set up the observed variables so that they contain `"key = "cluster"` and in `value` the number of the cluster this variable can be found in.
+Moreover, we provide the column(s) and all rows that contain the values of each observed variable.
+This is in contrast to nested observed variables, where the rows of the variable names need to be provided.
 
 | X1 | X2 | X3 | X4 | X5 |
 | :- | :- | :- | :- | :- |
@@ -477,7 +448,7 @@ This is in contrast to nested measured variables, where the rows of the variable
 |  | unit 2 | year 2 | soybean | 2212 |
 |  | unit 2 | year 2 | maize | 2222 |
 
-Table: <a name="clusMeas"></a>Table 10: Vertical clusters of the measured variables.
+Table: <a name="clusMeas"></a>Table 11: Vertical clusters of the observed variables.
 
 ```{r, eval=FALSE}
 makeSchema(list(
@@ -520,7 +491,7 @@ This is done by providing `row` and `col` as absolute values and setting `dist =
 | soybean | 2211 | 2212 | soybean | 3211 | 3212 | year 2 |
 | maize | 2221 | 2222 | maize | 3221 | 3222 | year 2 |
 
-Table: <a name="distVar"></a>Table 11: Several clusters where one variable is not available for each cluster, but distinct of them.
+Table: <a name="distVar"></a>Table 12: Several clusters where one variable is not available for each cluster, but distinct of them.
 
 
 ```{r, eval=FALSE}
