@@ -1,7 +1,8 @@
 authors:
   Steffen Ehrmann:
     href:  https://orcid.org/0000-0002-2958-0796
-title: tabshiftr
+  Arne Rümmler:
+title:  tabshiftr
 url: http://EhrmannS.github.io/tabshiftr
 development:
   mode: unreleased
@@ -9,8 +10,11 @@ development:
 reference:
   - title: make a schema description
     contents:
-      - makeSchema
-      - schema_default
+      - setCluster
+      - setHeader
+      - setFormat
+      - setIDVar
+      - setObsVar
   - title: reorganise tables
     contents:
       - reorganise
