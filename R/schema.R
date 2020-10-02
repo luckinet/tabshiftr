@@ -1,20 +1,49 @@
 #' The \code{schema} class (S4) and its methods
 #'
-#' A \code{schema} stores the information of where which information is stored in
-#' a table of data.
-#' @slot cluster [\code{list(1)}]\cr description of clusters of data.
-#' @slot header [code{list(1)}]\cr description of the header.
-#' @slot meta [\code{list(1)}]\cr description of the metadata.
-#' @slot variables [\code{named list(.)}]\cr description of variables.
-#' @details The slot \code{variables} typically contains several lists that each
-#' record the metadata of the respective variables.
+#' A \code{schema} stores the information of where which information is stored
+#' in a table of data.
+#' @slot cluster [\code{list(1)}]\cr description of
+#'   \code{\link[=setCluster]{clusters}} in the table.
+#' @slot header [\code{list(1)}]\cr description of the
+#'   \code{\link[=setHeader]{header}}.
+#' @slot format [\code{list(1)}]\cr description of the table
+#'   \code{\link[=setFormat]{format}}
+#' @slot variables [\code{named list(.)}]\cr description of
+#'   \code{\link[=setIDVar]{identifying}} and \code{\link[=setObsVar]{observed}}
+#'   variables.
+#' @section Setting up schema descriptions: The recommended strategy for setting
+#'   up a schema description is the following recently. \enumerate{ \item
+#'   Clarify which are the identifying variables and which are the measured
+#'   variables and create a new entry for each of them in the schema. \item
+#'   Determine whether there are clusters and find the origin (top left cell) of
+#'   each cluster. Follow the next steps for each cluster... \item Determine
+#'   which variable identifies clusters and provide that as cluster ID. \item
+#'   Determine for each identifying variable the following: \itemize{ \item is
+#'   the variable available at all? If not, provide the variable value for this
+#'   cluster in `value`. \item all columns in which the variable \emph{names}
+#'   sit. \item in case the variable is in several columns, determine
+#'   additionally the row in which its \emph{names} sit. \item whether the
+#'   variable is distinct from the main table. \item whether the variable must
+#'   be split off of another column. } \item Determine for each measured
+#'   variable the following: \itemize{ \item all columns in which the
+#'   \emph{values} of the variable sit. \item the unit and conversion factor
+#'
+#'   \item in case the variable is not tidy, one of the three following cases
+#'   should apply: \enumerate{ \item in case the variable is nested in a wide
+#'   identifying variable, determine in addition to the columns in which the
+#'   values sit also the rows in which the \emph{variable name} sits. \item in
+#'   case the names of the variable are given as a value of an identifying
+#'   variable, give the column name as \code{key}, together with the respective
+#'   name of the measured variable in \code{values}. \item in case the name of
+#'   the variable is the ID of clusters, specify \code{key = "cluster"} and in
+#'   \code{values} the cluster number the variable refers to. } } }
 #' @importFrom rlang is_integerish
 #' @importFrom stringr str_sub
 
 schema <- setClass(Class = "schema",
                    slots = c(clusters = "list",
                              header = "list",
-                             meta = "list",
+                             format = "list",
                              variables = "list"
                    )
 )
@@ -29,8 +58,8 @@ setValidity(Class = "schema", function(object){
     if(!is.list(object@clusters)){
       errors <- c(errors, "the slot 'clusters' is not a list.")
     }
-    if(!all(names(object@clusters) %in% c("row", "col", "width", "height", "id"))){
-      errors <- c(errors, "'names(schema$clusters)' must be a permutation of set {row,col,width,height,id}")
+    if(!all(names(object@clusters) %in% c("row", "col", "width", "height", "id", "type"))){
+      errors <- c(errors, "'names(schema$clusters)' must be a permutation of set {id,row,col,width,height,type}")
     }
     if(!is.null(object@clusters$row)){
       if(!is.numeric(object@clusters$row)){
@@ -55,6 +84,11 @@ setValidity(Class = "schema", function(object){
     if(!is.null(object@clusters$id)){
       if(!is.character(object@clusters$id)){
         errors <- c(errors, "'schema$clusters$id' must have a character value.")
+      }
+    }
+    if(!is.null(object@clusters$type)){
+      if(!is.character(object@clusters$type)){
+        errors <- c(errors, "'schema$clusters$type' must have a character value.")
       }
     }
   }
@@ -84,36 +118,36 @@ setValidity(Class = "schema", function(object){
     }
   }
 
-  if(!.hasSlot(object = object, name = "meta")){
-    errors <- c(errors, "the schema does not have a 'meta' slot.")
+  if(!.hasSlot(object = object, name = "format")){
+    errors <- c(errors, "the schema does not have a 'format' slot.")
   } else {
-    if(!is.list(object@meta)){
-      errors <- c(errors, "the slot 'meta' is not a list.")
+    if(!is.list(object@format)){
+      errors <- c(errors, "the slot 'format' is not a list.")
     }
-    if(length(object@meta) == 0){
-      errors <- c(errors, "the slot 'meta' does not contain any entries.")
+    if(length(object@format) == 0){
+      errors <- c(errors, "the slot 'format' does not contain any entries.")
     }
-    if(!all(names(object@meta) %in% c("del", "dec", "na"))){
-      errors <- c(errors, "'names(schema$meta)' must be a permutation of set {del,dec,na}")
+    if(!all(names(object@format) %in% c("del", "dec", "na"))){
+      errors <- c(errors, "'names(schema$format)' must be a permutation of set {del,dec,na}")
     }
-    if(!is.null(object@meta$del)){
-      if(!is.character(object@meta$del)){
-        errors <- c(errors, "'schema$meta$del' must have a character value.")
+    if(!is.null(object@format$del)){
+      if(!is.character(object@format$del)){
+        errors <- c(errors, "'schema$format$del' must have a character value.")
       }
     }
-    if(!is.null(object@meta$dec)){
-      if(!is.character(object@meta$dec)){
-        errors <- c(errors, "'schema$meta$dec' must have a character value.")
+    if(!is.null(object@format$dec)){
+      if(!is.character(object@format$dec)){
+        errors <- c(errors, "'schema$format$dec' must have a character value.")
       }
     }
-    if(!is.null(object@meta$na)){
-      if(!is.character(object@meta$na)){
-        errors <- c(errors, "'schema$meta$na' must have a character value.")
+    if(!is.null(object@format$na)){
+      if(!is.character(object@format$na)){
+        errors <- c(errors, "'schema$format$na' must have a character value.")
       }
     }
-    # if(!is.null(object@meta$types)){
-    #   if(!is.character(object@meta$types)){
-    #     errors <- c(errors, "'schema$meta$types' must have a character value.")
+    # if(!is.null(object@format$types)){
+    #   if(!is.character(object@format$types)){
+    #     errors <- c(errors, "'schema$format$types' must have a character value.")
     #   }
     # }
   }
