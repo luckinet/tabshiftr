@@ -15,11 +15,13 @@
 <link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png" />
 <link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png" />
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png" />
+
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
 
 <!-- bootstrap-toc -->
@@ -43,13 +45,11 @@
 
 
 
+
 <meta property="og:title" content="The <code>schema</code> class (S4) and its methods — schema-class" />
-
-<meta property="og:description" content="A schema stores the information of where which information is stored in
-a table of data." />
-
+<meta property="og:description" content="A schema stores the information of where which information is stored
+in a table of data." />
 <meta property="og:image" content="http://EhrmannS.github.io/tabshiftr/logo.svg" />
-
 
 
 
@@ -81,7 +81,7 @@ a table of data." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tabshiftr</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="Unreleased version">0.1.2</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="Unreleased version">0.2.0</span>
       </span>
     </div>
 
@@ -97,7 +97,6 @@ a table of data." />
   <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
-      
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="http://www.twitter.com/DerEhrmann">
@@ -130,33 +129,75 @@ a table of data." />
     </div>
 
     <div class="ref-description">
-    
-    <p>A <code>schema</code> stores the information of where which information is stored in
-a table of data.</p>
-    
+    <p>A <code>schema</code> stores the information of where which information is stored
+in a table of data.</p>
     </div>
 
-        
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>The slot <code>variables</code> typically contains several lists that each
-record the metadata of the respective variables.</p>
-    
+
     <h2 class="hasAnchor" id="slots"><a class="anchor" href="#slots"></a>Slots</h2>
 
     
 
 <dl'>
-<dt><code>cluster</code></dt><dd><p>[<code><a href='https://rdrr.io/r/base/list.html'>list(1)</a></code>]<br /> description of clusters of data.</p></dd>
+<dt><code>cluster</code></dt><dd><p>[<code><a href='https://rdrr.io/r/base/list.html'>list(1)</a></code>]<br /> description of
+<code><a href='setCluster.html'>clusters</a></code> in the table.</p></dd>
 
-<dt><code>header</code></dt><dd><p>[codelist(1)]<br /> description of the header.</p></dd>
+<dt><code>header</code></dt><dd><p>[<code><a href='https://rdrr.io/r/base/list.html'>list(1)</a></code>]<br /> description of the
+<code><a href='setHeader.html'>header</a></code>.</p></dd>
 
-<dt><code>meta</code></dt><dd><p>[<code><a href='https://rdrr.io/r/base/list.html'>list(1)</a></code>]<br /> description of the metadata.</p></dd>
+<dt><code>format</code></dt><dd><p>[<code><a href='https://rdrr.io/r/base/list.html'>list(1)</a></code>]<br /> description of the table
+<code><a href='setFormat.html'>format</a></code></p></dd>
 
-<dt><code>variables</code></dt><dd><p>[<code>named list(.)</code>]<br /> description of variables.</p></dd>
+<dt><code>variables</code></dt><dd><p>[<code>named list(.)</code>]<br /> description of
+<code><a href='setIDVar.html'>identifying</a></code> and <code><a href='setObsVar.html'>observed</a></code>
+variables.</p></dd>
 
 </dl>
-    
+    <h2 class="hasAnchor" id="setting-up-schema-descriptions"><a class="anchor" href="#setting-up-schema-descriptions"></a>Setting up schema descriptions</h2>
+
+    <p>The recommended strategy for setting
+  up a schema description is the following recently.</p><ol>
+<li><p>Clarify which are the identifying variables and which are the measured
+  variables and create a new entry for each of them in the schema.</p></li>
+<li><p>Determine whether there are clusters and find the origin (top left cell) of
+  each cluster. Follow the next steps for each cluster...</p></li>
+<li><p>Determine
+  which variable identifies clusters and provide that as cluster ID.</p></li>
+<li><p>Determine for each identifying variable the following:</p><ul>
+<li><p>is
+  the variable available at all? If not, provide the variable value for this
+  cluster in `value`.</p></li>
+<li><p>all columns in which the variable <em>names</em>
+  sit.</p></li>
+<li><p>in case the variable is in several columns, determine
+  additionally the row in which its <em>names</em> sit.</p></li>
+<li><p>whether the
+  variable is distinct from the main table.</p></li>
+<li><p>whether the variable must
+  be split off of another column.</p></li>
+</ul></li>
+<li><p>Determine for each measured
+  variable the following:</p><ul>
+<li><p>all columns in which the
+  <em>values</em> of the variable sit.</p></li>
+<li><p>the unit and conversion factor</p></li>
+<li><p>in case the variable is not tidy, one of the three following cases
+  should apply:</p><ol>
+<li><p>in case the variable is nested in a wide
+  identifying variable, determine in addition to the columns in which the
+  values sit also the rows in which the <em>variable name</em> sits.</p></li>
+<li><p>in
+  case the names of the variable are given as a value of an identifying
+  variable, give the column name as <code>key</code>, together with the respective
+  name of the measured variable in <code>values</code>.</p></li>
+<li><p>in case the name of
+  the variable is the ID of clusters, specify <code>key = "cluster"</code> and in
+  <code>values</code> the cluster number the variable refers to.</p></li>
+</ol></li>
+</ul></li>
+</ol>
+
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

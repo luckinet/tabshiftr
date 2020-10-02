@@ -3,7 +3,7 @@ pkgdown: 1.5.1
 pkgdown_sha: ~
 articles:
   tabshiftr: tabshiftr.html
-last_built: 2020-05-11T07:53Z
+last_built: 2020-10-02T15:24Z
 urls:
   reference: http://EhrmannS.github.io/tabshiftr/reference
   article: http://EhrmannS.github.io/tabshiftr/articles

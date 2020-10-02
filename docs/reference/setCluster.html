@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Print the <code>schema</code> — show,schema-method • tabshiftr</title>
+<title>Set where the clusters are — setCluster • tabshiftr</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,8 +46,11 @@
 
 
 
-<meta property="og:title" content="Print the <code>schema</code> — show,schema-method" />
-<meta property="og:description" content="Print the schema" />
+<meta property="og:title" content="Set where the clusters are — setCluster" />
+<meta property="og:description" content="There is hardly any limit to how data can be arranged in a spreadsheet, apart
+from the apparent organisation into a lattice of cells. However, it is often
+the case that data are gathered into topologically coherent chunks. Those
+chunks are what is called 'cluster' in tabshiftr." />
 <meta property="og:image" content="http://EhrmannS.github.io/tabshiftr/logo.svg" />
 
 
@@ -122,27 +125,81 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Print the <code>schema</code></h1>
-    <small class="dont-index">Source: <a href='https://github.com/EhrmannS/tabshiftr/blob/master/R/schema.R'><code>R/schema.R</code></a></small>
-    <div class="hidden name"><code>show-schema-method.Rd</code></div>
+    <h1>Set where the clusters are</h1>
+    <small class="dont-index">Source: <a href='https://github.com/EhrmannS/tabshiftr/blob/master/R/setClusters.R'><code>R/setClusters.R</code></a></small>
+    <div class="hidden name"><code>setCluster.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Print the <code>schema</code></p>
+    <p>There is hardly any limit to how data can be arranged in a spreadsheet, apart
+from the apparent organisation into a lattice of cells. However, it is often
+the case that data are gathered into topologically coherent chunks. Those
+chunks are what is called 'cluster' in <code>tabshiftr</code>.</p>
     </div>
 
-    <pre class="usage"><span class='co'># S4 method for schema</span>
-<span class='fu'>show</span>(<span class='no'>object</span>)</pre>
+    <pre class="usage"><span class='fu'>setCluster</span>(
+  <span class='kw'>schema</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>id</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>left</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>top</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>width</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>height</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>object</th>
-      <td><p>[<code>schema</code>]<br /> the schema to print.</p></td>
+      <th>schema</th>
+      <td><p>[<code><a href='schema-class.html'>schema(1)</a></code>]<br /> In case this information is added to an
+already existing schema, provide that schema here (overwrites previous
+information).</p></td>
+    </tr>
+    <tr>
+      <th>id</th>
+      <td><p>[<code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code>]<br /> When data are clustered, it is often the
+case that the data are segregated according to one of the variables of
+interest. In such cases, this variable needs to be registered as cluster
+ID.</p></td>
+    </tr>
+    <tr>
+      <th>left</th>
+      <td><p>[<code>integerish(.)</code>]<br /> The horizontal cell value of the
+top-left cell of each cluster. This can also be a vector of values in case
+there are several clusters.</p></td>
+    </tr>
+    <tr>
+      <th>top</th>
+      <td><p>[<code>integerish(.)</code>]<br /> The vertical cell values of the top-left
+cell of each cluster. This can also be a vector of values in case there are
+several clusters.</p></td>
+    </tr>
+    <tr>
+      <th>width</th>
+      <td><p>[<code>integerish(.)</code>]<br /> The width of each cluster in cells.
+This can also be a vector of values in case there are several clusters.</p></td>
+    </tr>
+    <tr>
+      <th>height</th>
+      <td><p>[<code>integerish(.)</code>]<br /> The height of each cluster in cells.
+This can also be a vector of values in case there are several clusters.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>An object of class <code><a href='schema-class.html'>schema</a></code>.</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>Please also take a look at the currently suggested strategy to set
+  up a <a href='schema-class.html'>schema description</a>.</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p>Other functions to describe table arrangement: 
+<code><a href='setFormat.html'>setFormat</a>()</code>,
+<code><a href='setHeader.html'>setHeader</a>()</code>,
+<code><a href='setIDVar.html'>setIDVar</a>()</code>,
+<code><a href='setObsVar.html'>setObsVar</a>()</code></p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

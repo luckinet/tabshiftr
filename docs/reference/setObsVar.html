@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Print the <code>schema</code> — show,schema-method • tabshiftr</title>
+<title>Set an observed variable — setObsVar • tabshiftr</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,8 +46,11 @@
 
 
 
-<meta property="og:title" content="Print the <code>schema</code> — show,schema-method" />
-<meta property="og:description" content="Print the schema" />
+<meta property="og:title" content="Set an observed variable — setObsVar" />
+<meta property="og:description" content="Observed variables are those variables that contain the (quantitative)
+observed/measured values of each unique unit (as described by the
+identifying variables). There may be several of them
+and in a tidy table they'd be recorded as separate columns." />
 <meta property="og:image" content="http://EhrmannS.github.io/tabshiftr/logo.svg" />
 
 
@@ -122,27 +125,108 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Print the <code>schema</code></h1>
-    <small class="dont-index">Source: <a href='https://github.com/EhrmannS/tabshiftr/blob/master/R/schema.R'><code>R/schema.R</code></a></small>
-    <div class="hidden name"><code>show-schema-method.Rd</code></div>
+    <h1>Set an observed variable</h1>
+    <small class="dont-index">Source: <a href='https://github.com/EhrmannS/tabshiftr/blob/master/R/setObsVar.R'><code>R/setObsVar.R</code></a></small>
+    <div class="hidden name"><code>setObsVar.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Print the <code>schema</code></p>
+    <p>Observed variables are those variables that contain the (quantitative)
+observed/measured values of each unique unit (as described by the
+<code><a href='setIDVar.html'>identifying variables</a></code>). There may be several of them
+and in a tidy table they'd be recorded as separate columns.</p>
     </div>
 
-    <pre class="usage"><span class='co'># S4 method for schema</span>
-<span class='fu'>show</span>(<span class='no'>object</span>)</pre>
+    <pre class="usage"><span class='fu'>setObsVar</span>(
+  <span class='kw'>schema</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>name</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>columns</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>row</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>relative</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>distinct</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>unit</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>factor</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>key</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>value</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>object</th>
-      <td><p>[<code>schema</code>]<br /> the schema to print.</p></td>
+      <th>schema</th>
+      <td><p>[<code><a href='schema-class.html'>schema(1)</a></code>]<br /> In case this information is added to an
+already existing schema, provide that schema here (overwrites previous
+information).</p></td>
+    </tr>
+    <tr>
+      <th>name</th>
+      <td><p>[<code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code>]<br /> Name of the new measured variable.</p></td>
+    </tr>
+    <tr>
+      <th>columns</th>
+      <td><p>[<code>integerish(.)</code>]<br /> The column(s) in which the
+<em>values</em> of the new variable are recorded.</p></td>
+    </tr>
+    <tr>
+      <th>row</th>
+      <td><p>[<code>integerish(.)</code>]<br /> In case the variable is nested in a wide
+identifying variable, specify here additionally the row(s) in which the
+variable <em>name</em> sits</p></td>
+    </tr>
+    <tr>
+      <th>relative</th>
+      <td><p>[<code><a href='https://rdrr.io/r/base/logical.html'>logical(1)</a></code>]<br /> whether or not the values provided in
+<code>columns</code> and <code>row</code> are relative to the cluster position(s) or
+whether they refer to the overall table.</p></td>
+    </tr>
+    <tr>
+      <th>distinct</th>
+      <td><p>[<code><a href='https://rdrr.io/r/base/logical.html'>logical(1)</a></code>]<br /> Whether or not the variable is
+distinct from a cluster. This is the case when the variable is recorded
+somewhere 'on the side' and thus not explicitly included in all clusters.</p></td>
+    </tr>
+    <tr>
+      <th>unit</th>
+      <td><p>[<code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code>]<br /> the unit of this variable.</p></td>
+    </tr>
+    <tr>
+      <th>factor</th>
+      <td><p>[<code><a href='https://rdrr.io/r/base/numeric.html'>numeric(1)</a></code>]<br /> the factor that needs to be multiplied
+with the values to convert to <code>unit</code>, defaults to 1. For instance, if
+values are recorded in acres, but shall be recorded in hectare, the factor
+would be 0.40468.</p></td>
+    </tr>
+    <tr>
+      <th>key</th>
+      <td><p>[<code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code>]<br /> If the variable is recorded (together
+with other variables) so that the variable names are listed in one column
+and the respective values are listed in another column, give here the name
+of the column that contains the variable names.</p></td>
+    </tr>
+    <tr>
+      <th>value</th>
+      <td><p>[<code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code>]<br /> If the variable is recorded (together
+with other variables) so that the variable names are listed in one column
+and the respective values are listed in another column, give here the level
+in the names column that refer to the values of this variable.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>An object of class <code><a href='schema-class.html'>schema</a></code>.</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>Please also take a look at the currently suggested strategy to set
+  up a <a href='schema-class.html'>schema description</a>.</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p>Other functions to describe table arrangement: 
+<code><a href='setCluster.html'>setCluster</a>()</code>,
+<code><a href='setFormat.html'>setFormat</a>()</code>,
+<code><a href='setHeader.html'>setHeader</a>()</code>,
+<code><a href='setIDVar.html'>setIDVar</a>()</code></p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

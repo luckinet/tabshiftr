@@ -15,11 +15,13 @@
 <link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png" />
 <link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png" />
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png" />
+
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
 
 <!-- bootstrap-toc -->
@@ -43,13 +45,11 @@
 
 
 
-<meta property="og:title" content="Reorganise a table — reorganise" />
 
+<meta property="og:title" content="Reorganise a table — reorganise" />
 <meta property="og:description" content="This function takes a disorganised messy table and rearranges columns and
 rows into a tidy dataset that can be sorted into the areal database." />
-
 <meta property="og:image" content="http://EhrmannS.github.io/tabshiftr/logo.svg" />
-
 
 
 
@@ -81,7 +81,7 @@ rows into a tidy dataset that can be sorted into the areal database." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tabshiftr</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="Unreleased version">0.1.2</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="Unreleased version">0.2.0</span>
       </span>
     </div>
 
@@ -97,7 +97,6 @@ rows into a tidy dataset that can be sorted into the areal database." />
   <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
-      
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="http://www.twitter.com/DerEhrmann">
@@ -130,14 +129,12 @@ rows into a tidy dataset that can be sorted into the areal database." />
     </div>
 
     <div class="ref-description">
-    
     <p>This function takes a disorganised messy table and rearranges columns and
 rows into a tidy dataset that can be sorted into the areal database.</p>
-    
     </div>
 
     <pre class="usage"><span class='fu'>reorganise</span>(<span class='kw'>input</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>schema</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
-    
+
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
@@ -151,19 +148,18 @@ rows into a tidy dataset that can be sorted into the areal database.</p>
 <code>input</code>.</p></td>
     </tr>
     </table>
-    
+
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A (tidy) table which is the result of employing <code>schema</code> on
   <code>input</code>.</p>
-    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
 <span class='co'># read in a disorganised messy dataset</span>
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>readr</span>)
 <span class='no'>ds</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"test_datasets"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"tabshiftr"</span>)
-<span class='no'>input</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://readr.tidyverse.org/reference/read_delim.html'>read_csv</a></span>(<span class='kw'>file</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span>(<span class='no'>ds</span>, <span class='st'>"/table13.csv"</span>),
+<span class='no'>input</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://readr.tidyverse.org/reference/read_delim.html'>read_csv</a></span>(<span class='kw'>file</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span>(<span class='no'>ds</span>, <span class='st'>"/table_mismatch_3.csv"</span>),
                   <span class='kw'>col_names</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>col_types</span> <span class='kw'>=</span> <span class='fu'><a href='https://readr.tidyverse.org/reference/cols.html'>cols</a></span>(<span class='kw'>.default</span> <span class='kw'>=</span> <span class='st'>"c"</span>))
 <span class='no'>input</span></div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 13 x 7</span><span>
 #&gt;    X1          X2        X3         X4          X5        X6         X7    
@@ -200,8 +196,7 @@ rows into a tidy dataset that can be sorted into the areal database.</p>
          <span class='kw'>production</span> <span class='kw'>=</span>
            <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"measured"</span>, <span class='kw'>unit</span> <span class='kw'>=</span> <span class='st'>"t"</span>, <span class='kw'>factor</span> <span class='kw'>=</span> <span class='fl'>1</span>,
                 <span class='kw'>col</span> <span class='kw'>=</span> <span class='fl'>3</span>, <span class='kw'>rel</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>))
-))
-
+))</div><div class='output co'>#&gt; <span class='message'>please don't use this function anymore, but instead look into setCluster, setHeader or setFormat</span></div><div class='input'>
 <span class='co'># get the tidy output</span>
 <span class='fu'>reorganise</span>(<span class='no'>input</span>, <span class='no'>mySchema</span>)</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 12 x 5</span><span>
 #&gt;    territories year   commodities harvested production

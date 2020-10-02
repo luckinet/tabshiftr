@@ -43,7 +43,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">tabshiftr</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="Unreleased version">0.1.2</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="Unreleased version">0.2.0</span>
       </span>
     </div>
 
@@ -94,7 +94,7 @@
 <h2 class="hasAnchor">
 <a href="#overview" class="anchor"></a>Overview</h2>
 <p>Data are stored in many different ways in tables or spreadsheets because no strict semantic or topographic standards for the organisation of tables are commonly accepted. In the R environment the <em>tidy</em> paradigm is a first step towards interoperability of data, in that it requires a certain arrangement of tables, where variables are recorded in columns and observations in rows (see <a href="https://tidyr.tidyverse.org/" class="uri">https://tidyr.tidyverse.org/</a>). Tables can be tidied (i.e., brought into a tidy arrangement) via packages such as <code>tidyr</code>, however, all functions that deal with reshaping tables to date require data that are already organised into topologically coherent, rectangular tables. This is often violated in practice, for example when data are scraped off of the internet.</p>
-<p><code>tabshiftr</code> fills this gap in the toolchain for reproducible data management via <code>schema</code> descriptions and a <code><a href="reference/reorganise.html">reorganise()</a></code> function that is largely based on <code>tidyr</code>. We call data that are not topologically coherent <em>disorganised (messy) data</em> and they are characterised not only by “being messy” (as in opposed to tidy), but also by being arranged so that not all variables are part of the same “chunk” of data or even that some variables are only available by implication.</p>
+<p><code>tabshiftr</code> fills this gap in the toolchain for reproducible data management via <code>schema</code> descriptions and a <code><a href="reference/reorganise.html">reorganise()</a></code> function that is largely based on <code>tidyr</code>.</p>
 </div>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
@@ -104,7 +104,7 @@
 <div class="sourceCode" id="cb1"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"tabshiftr"</span>)</pre></div>
 <p>or the latest development version from github:</p>
 <div class="sourceCode" id="cb2"><pre class="r"><span class="kw pkg">devtools</span><span class="kw ns">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span>(<span class="st">"EhrmannS/tabshiftr"</span>)</pre></div>
-<p>2) The <a href="https://ehrmanns.github.io/tabshiftr/articles/tabshiftr.html">vignette</a> provides an instruction on how to set up schema descriptions and shows the table arrangements that can be reorganised in this version, and which schemas apply to them.</p>
+<p>2) The <a href="https://ehrmanns.github.io/tabshiftr/articles/tabshiftr.html">vignette</a> gives an introduction, provides an instruction on how to set up schema descriptions by going step by step through certain dimensions of disorganisation to show which table arrangements can be reorganised and how that works.</p>
 </div>
 <div id="examples" class="section level2">
 <h2 class="hasAnchor">
@@ -114,9 +114,8 @@
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">tabshiftr</span>)
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">knitr</span>)
 
-<span class="no">input</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html">read_csv</a></span>(
-  <span class="kw">file</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"test_datasets"</span>, <span class="kw">package</span> <span class="kw">=</span> <span class="st">"tabshiftr"</span>), <span class="st">"/table13.csv"</span>),
-  <span class="kw">col_names</span> <span class="kw">=</span> <span class="fl">FALSE</span>, <span class="kw">col_types</span> <span class="kw">=</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/cols.html">cols</a></span>(<span class="kw">.default</span> <span class="kw">=</span> <span class="st">"c"</span>))
+<span class="no">input</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html">read_csv</a></span>(<span class="kw">file</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"test_datasets"</span>, <span class="kw">package</span> <span class="kw">=</span> <span class="st">"tabshiftr"</span>), <span class="st">"/table_mismatch_3.csv"</span>),
+                  <span class="kw">col_names</span> <span class="kw">=</span> <span class="fl">FALSE</span>, <span class="kw">col_types</span> <span class="kw">=</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/cols.html">cols</a></span>(<span class="kw">.default</span> <span class="kw">=</span> <span class="st">"c"</span>))
 <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span>(<span class="no">input</span>)</pre></div>
 <table class="table">
 <thead><tr class="header">
@@ -248,53 +247,41 @@
 </tr>
 </tbody>
 </table>
-<p>This table contains two chunks of data at the rows 1 to 6 and 8 to 13 and they are further organised into three similar groups (so-called <em>clusters</em>). The clusters are somewhat systematic in that there are three variables in common, <code>commodities</code>, <code>harvested</code> and <code>production</code>. The variable <code>year</code> has values but no explicit name and is not available for each cluster, and the variable <code>territories</code> is not even stored in a column, but is implicit and noted in the second row of each cluster.</p>
-<p>In <code>tabshiftr</code> we distinguish between <em>identifying variables</em>, variables that describe an observational unit, and <em>measured variables</em>, variables that provide some value for that observational unit. In the example, <code>territories</code>, <code>year</code> and <code>commodities</code> are identifying variables and <code>harvested</code> and <code>production</code> are measured variables, they give the harvested area and the production of the given commodity at a given year in a given territory.</p>
-<p>The approach of <code>tabshiftr</code> is based on capturing the arrangement of tables in so-called <a href="https://en.wikipedia.org/wiki/Database_schema">schema</a> description. Typically there is an input and an output schema, describing the arrangement of the input and output tables, respectively. The advantage of this procedure is that input and output tables exist explicitly and the schema maps the transformation of the data. As we want to end up with tidy tables the output schema is pre-determined by a tidy table of the included variables, but the input schema description needs to be provided by the user.</p>
-<p>For the input schema we have to describe, according to a <a href="https://ehrmanns.github.io/tabshiftr/articles/tabshiftr.html#setting-up-schema-descriptions">hierarchical set of rules</a>, in which rows and columns of a table which information can be found (see the example below). First, we need to describe whether the table is organised in several clusters, and if so where they are located. In the example, the “origin” of the first cluster is at the first row from the top and the first cell from left (<code>1|1</code>), the second at <code>1|8</code> and the third cluster originates at <code>4|8</code>. All clusters are 3 cells wide and 6 cells high. Moreover, we already recognised that each cluster represents one territorial unit, so we record the variable <code>territories</code> as cluster ID. A table should have some sort of header, i.e., one or more rows that describes which information a column contains and we need to register this header, in the example this is the first row of each cluster. When there are several clusters that are identical in arrangement (but not in values), it makes sense to describe them in terms of <code>rel</code>ative values, i.e., starting to count from the origin of the cluster instead of the spreadsheet.</p>
-<p>Input tables may contain many more data/variables than what we are interested in, but the schema description contains only those variables we want to have in the output table. For each variable we need to define at least the <code>type</code> and either <code>col</code>umn(s), or column(s) and <code>row</code>(s). Some variables are <code>dist</code>inct from the cluster outline, because they occur perhaps only once in the table, or are organised in a non-systematic way, such as the variable <code>year</code> in the example. Some variables are either absent from the table, or are available only implicitly, for example if several spreadsheets or files contain information for one level of an identifying variable, such as per commodity. This is not the case in the example, but if it were so, this variable could be specified by providing the <code>value</code> of the level in the variable. For measured variables we also need to provide the target unit and a transformation factor to that unit, the latter of which will be multiplied with the values of the measured variable. This results in the following schema description for our example:</p>
-<div class="sourceCode" id="cb4"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">tabshiftr</span>)
-<span class="no">schema</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/makeSchema.html">makeSchema</a></span>(<span class="kw">schema</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(
-  <span class="kw">clusters</span> <span class="kw">=</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">row</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>, <span class="fl">8</span>, <span class="fl">8</span>), <span class="kw">col</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">4</span>), <span class="kw">width</span> <span class="kw">=</span> <span class="fl">3</span>, <span class="kw">height</span> <span class="kw">=</span> <span class="fl">6</span>, <span class="kw">id</span> <span class="kw">=</span> <span class="st">"territories"</span>),
-  <span class="kw">header</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">row</span> <span class="kw">=</span> <span class="fl">1</span>, <span class="kw">rel</span> <span class="kw">=</span> <span class="fl">TRUE</span>),
-  <span class="kw">variables</span> <span class="kw">=</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">territories</span> <span class="kw">=</span>
-           <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">type</span> <span class="kw">=</span> <span class="st">"id"</span>, <span class="kw">row</span> <span class="kw">=</span> <span class="fl">1</span>, <span class="kw">col</span> <span class="kw">=</span> <span class="fl">1</span>, <span class="kw">rel</span> <span class="kw">=</span> <span class="fl">TRUE</span>),
-         <span class="kw">year</span> <span class="kw">=</span>
-           <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">type</span> <span class="kw">=</span> <span class="st">"id"</span>, <span class="kw">row</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">3</span>:<span class="fl">6</span>), <span class="kw">col</span> <span class="kw">=</span> <span class="fl">4</span>, <span class="kw">dist</span> <span class="kw">=</span> <span class="fl">TRUE</span>),
-         <span class="kw">commodities</span> <span class="kw">=</span>
-           <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">type</span> <span class="kw">=</span> <span class="st">"id"</span>, <span class="kw">col</span> <span class="kw">=</span> <span class="fl">1</span>, <span class="kw">rel</span> <span class="kw">=</span> <span class="fl">TRUE</span>),
-         <span class="kw">harvested</span> <span class="kw">=</span>
-           <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">type</span> <span class="kw">=</span> <span class="st">"measured"</span>, <span class="kw">unit</span> <span class="kw">=</span> <span class="st">"ha"</span>, <span class="kw">factor</span> <span class="kw">=</span> <span class="fl">1</span>, <span class="kw">col</span> <span class="kw">=</span> <span class="fl">2</span>, <span class="kw">rel</span> <span class="kw">=</span> <span class="fl">TRUE</span>),
-         <span class="kw">production</span> <span class="kw">=</span>
-           <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">type</span> <span class="kw">=</span> <span class="st">"measured"</span>, <span class="kw">unit</span> <span class="kw">=</span> <span class="st">"t"</span>, <span class="kw">factor</span> <span class="kw">=</span> <span class="fl">1</span>, <span class="kw">col</span> <span class="kw">=</span> <span class="fl">3</span>, <span class="kw">rel</span> <span class="kw">=</span> <span class="fl">TRUE</span>))
-))</pre></div>
-<p>Some further fields that have not been mentioned here are:</p>
-<ul>
-<li>
-<code>split</code>, to separate an identifying variable via a regular expression from some column</li>
-<li>
-<code>key</code> and <code>value</code>, when the names of measured variables are provided in a column while the respective values are in a separate column. Here, <code>key</code> is the column that contains the names and <code>value</code> is the level of the measured variable that should be “pulled” out of <code>key</code>.</li>
-</ul>
-<!-- end list --><div class="sourceCode" id="cb5"><pre class="r"><span class="no">schema</span>
+<p>If we were to transform this data into tidy data by merely using the functions in <code>tidyr</code> (or the extended <code>tidyverse</code> in general), we’d potentially end up with a massive algorithm, especially for such complicated table arrangements. For other tables that may or may not be as complicated, we’d have to set up yet more algorithms and while a pipeline of tidy functions is relatively easy to set up, it would still become very laborious to repeat this for the dozens of potential table arrangements. In <code>tabshiftr</code> we solve that by describing the schema of the input table and providing this schema description to the <code><a href="reference/reorganise.html">reorganise()</a></code> function. This requires us to use a vastly smaller set of code and makes it thus a lot more efficient to bring multiple heterogeneous data into an interoperable format.</p>
+<p>A schema description can be started with any of the <code>set*</code> functions in this package and for the example table, we start the schema description by setting the clusters. This table contains two chunks of data at the rows 1 to 6 and 8 to 13 with a height of 6 cells and they are further organised into three similar groups (so-called <em>clusters</em>) with a width of 3 cells. In the second row of each cluster is another variable that is unique for each cluster and thus presumable the cluster identifier, we call it <code>territories</code>.</p>
+<div class="sourceCode" id="cb4"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">magrittr</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">tabshiftr</span>)
+<span class="no">schema</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/setCluster.html">setCluster</a></span>(<span class="kw">id</span> <span class="kw">=</span> <span class="st">"territories"</span>, <span class="kw">top</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>, <span class="fl">8</span>, <span class="fl">8</span>), <span class="kw">left</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">4</span>),
+                     <span class="kw">width</span> <span class="kw">=</span> <span class="fl">3</span>, <span class="kw">height</span> <span class="kw">=</span> <span class="fl">6</span>)</pre></div>
+<p>Next, we recognise that each cluster has variable names in the first row, so we set those as header. We decide to describe the positions in terms of values that are relative to the cluster positions, because that allows us to end up with a more concise schema description.</p>
+<div class="sourceCode" id="cb5"><pre class="r"><span class="no">schema</span> <span class="kw">&lt;-</span> <span class="no">schema</span> <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="reference/setHeader.html">setHeader</a></span>(<span class="kw">rows</span> <span class="kw">=</span> <span class="fl">1</span>, <span class="kw">relative</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></div>
+<p>Each cluster contains the identifying variable <code>commodities</code> in the first column and the two observed variables <code>harvested</code> and <code>production</code> in the second and third column respectively. Moreover, the identifying variable <code>year</code> has values but no explicit name and is distinct from clusters (i.e., it doesn’t appear in each cluster). It thus has to be described with a position that is not relative to clusters, but to the spreadsheet. Before describing those variables though, we have to make sure that the cluster ID is set.</p>
+<div class="sourceCode" id="cb6"><pre class="r"><span class="no">schema</span> <span class="kw">&lt;-</span> <span class="no">schema</span> <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="reference/setIDVar.html">setIDVar</a></span>(<span class="kw">name</span> <span class="kw">=</span> <span class="st">"territories"</span>, <span class="kw">columns</span> <span class="kw">=</span> <span class="fl">1</span>, <span class="kw">row</span> <span class="kw">=</span> <span class="fl">2</span>, <span class="kw">relative</span> <span class="kw">=</span> <span class="fl">TRUE</span>) <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="reference/setIDVar.html">setIDVar</a></span>(<span class="kw">name</span> <span class="kw">=</span> <span class="st">"year"</span>, <span class="kw">columns</span> <span class="kw">=</span> <span class="fl">4</span>, <span class="kw">row</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">3</span>:<span class="fl">6</span>), <span class="kw">distinct</span> <span class="kw">=</span> <span class="fl">TRUE</span>) <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="reference/setIDVar.html">setIDVar</a></span>(<span class="kw">name</span> <span class="kw">=</span> <span class="st">"commodities"</span>, <span class="kw">columns</span> <span class="kw">=</span> <span class="fl">1</span>, <span class="kw">relative</span> <span class="kw">=</span> <span class="fl">TRUE</span>) <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="reference/setObsVar.html">setObsVar</a></span>(<span class="kw">name</span> <span class="kw">=</span> <span class="st">"harvested"</span>, <span class="kw">unit</span> <span class="kw">=</span> <span class="st">"ha"</span>, <span class="kw">columns</span> <span class="kw">=</span> <span class="fl">2</span>, <span class="kw">relative</span> <span class="kw">=</span> <span class="fl">TRUE</span>) <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="reference/setObsVar.html">setObsVar</a></span>(<span class="kw">name</span> <span class="kw">=</span> <span class="st">"production"</span>, <span class="kw">unit</span> <span class="kw">=</span> <span class="st">"t"</span>, <span class="kw">columns</span> <span class="kw">=</span> <span class="fl">3</span>, <span class="kw">relative</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></div>
+<p>Input tables may contain many more data/variables than what we are interested in, but the schema description contains only those variables that shall be in the output table. Eventually, we end up with the following schema description.</p>
+<div class="sourceCode" id="cb7"><pre class="r"><span class="no">schema</span>
 <span class="co">#&gt;   3 clusters</span>
 <span class="co">#&gt;     origin: 1|1, 8|1, 8|4  (row|col)</span>
 <span class="co">#&gt;     id    : territories</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt;    variable      type       row   col   rel   dist </span>
 <span class="co">#&gt;   ------------- ---------- ----- ----- ----- ------  </span>
-<span class="co">#&gt;    territories   id         1     1     T     F  </span>
+<span class="co">#&gt;    territories   id         2     1     T     F  </span>
 <span class="co">#&gt;    year          id         3:6   4     F     T  </span>
 <span class="co">#&gt;    commodities   id               1     T     F  </span>
 <span class="co">#&gt;    harvested     measured         2     T     F  </span>
 <span class="co">#&gt;    production    measured         3     T     F</span></pre></div>
 <p>Finally, the input table is reorganised simply by calling <code><a href="reference/reorganise.html">reorganise()</a></code>.</p>
-<div class="sourceCode" id="cb6"><pre class="r"><span class="no">output</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/reorganise.html">reorganise</a></span>(<span class="kw">input</span> <span class="kw">=</span> <span class="no">input</span>, <span class="kw">schema</span> <span class="kw">=</span> <span class="no">schema</span>)
+<div class="sourceCode" id="cb8"><pre class="r"><span class="no">output</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/reorganise.html">reorganise</a></span>(<span class="kw">input</span> <span class="kw">=</span> <span class="no">input</span>, <span class="kw">schema</span> <span class="kw">=</span> <span class="no">schema</span>)
 <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span>(<span class="no">output</span>)</pre></div>
 <table class="table">
 <thead><tr class="header">
-<th align="center">territories</th>
+<th align="left">territories</th>
 <th align="left">year</th>
 <th align="left">commodities</th>
 <th align="right">harvested</th>
@@ -302,84 +289,84 @@
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="center">unit 1</td>
+<td align="left">soybean</td>
 <td align="left">year 1</td>
 <td align="left">maize</td>
 <td align="right">1121</td>
 <td align="right">1122</td>
 </tr>
 <tr class="even">
-<td align="center">unit 1</td>
-<td align="left">year 1</td>
 <td align="left">soybean</td>
-<td align="right">1111</td>
-<td align="right">1112</td>
+<td align="left">year 1</td>
+<td align="left">unit 1</td>
+<td align="right">.</td>
+<td align="right">.</td>
 </tr>
 <tr class="odd">
-<td align="center">unit 1</td>
+<td align="left">soybean</td>
 <td align="left">year 2</td>
 <td align="left">maize</td>
 <td align="right">1221</td>
 <td align="right">1222</td>
 </tr>
 <tr class="even">
-<td align="center">unit 1</td>
+<td align="left">soybean</td>
 <td align="left">year 2</td>
 <td align="left">soybean</td>
 <td align="right">1211</td>
 <td align="right">1212</td>
 </tr>
 <tr class="odd">
-<td align="center">unit 2</td>
+<td align="left">soybean</td>
 <td align="left">year 1</td>
 <td align="left">maize</td>
 <td align="right">2121</td>
 <td align="right">2122</td>
 </tr>
 <tr class="even">
-<td align="center">unit 2</td>
-<td align="left">year 1</td>
 <td align="left">soybean</td>
-<td align="right">2111</td>
-<td align="right">2112</td>
+<td align="left">year 1</td>
+<td align="left">unit 2</td>
+<td align="right">.</td>
+<td align="right">.</td>
 </tr>
 <tr class="odd">
-<td align="center">unit 2</td>
+<td align="left">soybean</td>
 <td align="left">year 2</td>
 <td align="left">maize</td>
 <td align="right">2221</td>
 <td align="right">2222</td>
 </tr>
 <tr class="even">
-<td align="center">unit 2</td>
+<td align="left">soybean</td>
 <td align="left">year 2</td>
 <td align="left">soybean</td>
 <td align="right">2211</td>
 <td align="right">2212</td>
 </tr>
 <tr class="odd">
-<td align="center">unit 3</td>
+<td align="left">soybean</td>
 <td align="left">year 1</td>
 <td align="left">maize</td>
 <td align="right">3121</td>
 <td align="right">3122</td>
 </tr>
 <tr class="even">
-<td align="center">unit 3</td>
-<td align="left">year 1</td>
 <td align="left">soybean</td>
-<td align="right">3111</td>
-<td align="right">3112</td>
+<td align="left">year 1</td>
+<td align="left">unit 3</td>
+<td align="right">.</td>
+<td align="right">.</td>
 </tr>
 <tr class="odd">
-<td align="center">unit 3</td>
+<td align="left">soybean</td>
 <td align="left">year 2</td>
 <td align="left">maize</td>
 <td align="right">3221</td>
 <td align="right">3222</td>
 </tr>
 <tr class="even">
-<td align="center">unit 3</td>
+<td align="left">soybean</td>
 <td align="left">year 2</td>
 <td align="left">soybean</td>
 <td align="right">3211</td>
@@ -393,10 +380,8 @@
 <h1 class="hasAnchor">
 <a href="#contributions" class="anchor"></a>Contributions</h1>
 <ul>
-<li>tabshiftr is still in development. So far it reliably reorganises 19 different types of tables all of which are combinations of the four dimensions of disorganisation outlined in the vignette. We suspect that there are further table arrangements, but they are not clear at this stage, issues submitted by users and contributors should be helpful.</li>
+<li>tabshiftr is still in development. So far it reliably reorganises 20 different types of tables, all of which are combinations of the dimensions of disorganisation outlined in the vignette. We suspect that there are further table arrangements, but they are not clear at this stage, issues submitted by users and contributors should be helpful.</li>
 <li>Moreover, the resulting schema descriptions can be useful for data archiving or database building and tabshiftr should at some point support that those schemas can be exported into data-formats that are used by downstream applications (xml, json, …), following proper (ISO) standards.</li>
-<li>We envision for a next version some functions for assisted construction of the schema. Those could for instance be <code>setCluster()</code>, <code>setHeader()</code> and <code>setVariable()</code>, which could be piped into one another and finally into <code><a href="reference/makeSchema.html">makeSchema()</a></code>.</li>
-<li>A proper error-management. Due to the fuzzy nature of setting up a schema descriptions, interaction between machine and human is crucial. Whenever an instruction to extract information from a table results in an error, it should ideally be possible to pinpoint what exactly the issue with those instruction is. This might be a challenge, but it should be included in a future version of tabshiftr.</li>
 </ul>
 <p>Contributions to those points and discussions on where tabshiftr should go are highly welcome!</p>
 </div>
@@ -412,6 +397,8 @@
     <div class="links">
 <h2>Links</h2>
 <ul class="list-unstyled">
+<li>Download from CRAN at <br><a href="https://cloud.r-project.org/package=tabshiftr">https://​cloud.r-project.org/​package=tabshiftr</a>
+</li>
 <li>Browse source code at <br><a href="https://github.com/EhrmannS/tabshiftr/">https://​github.com/​EhrmannS/​tabshiftr/​</a>
 </li>
 <li>Report a bug at <br><a href="https://github.com/EhrmannS/tabshiftr/issues">https://​github.com/​EhrmannS/​tabshiftr/​issues</a>
