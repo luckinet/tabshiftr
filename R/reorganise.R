@@ -256,17 +256,17 @@ reorganise <- function(input = NULL, schema = NULL){
       varFactor <- theMeta$var_type$factor[j]
       theVar <- temp[varName] %>% unlist(use.names = FALSE)
       theVar <- gsub(" ", "", theVar)
-      if(!is.null(schema@meta$na)){
-        theVar[theVar %in% schema@meta$na] <- NA
+      if(!is.null(schema@format$na)){
+        theVar[theVar %in% schema@format$na] <- NA
       }
-      if(!is.null(schema@meta$del)){
-        theVar <- gsub(schema@meta$del, "", theVar)
+      if(!is.null(schema@format$del)){
+        theVar <- gsub(schema@format$del, "", theVar)
       }
-      if(!is.null(schema@meta$dec)){
-        if(schema@meta$dec == "."){
-          schema@meta$dec <- "[.]"
+      if(!is.null(schema@format$dec)){
+        if(schema@format$dec == "."){
+          schema@format$dec <- "[.]"
         }
-        theVar <- gsub(schema@meta$dec, ".", theVar)
+        theVar <- gsub(schema@format$dec, ".", theVar)
       }
       theVar <- suppressWarnings(as.numeric(theVar))
 

@@ -136,7 +136,7 @@ updateSchema <- function(input = NULL, schema = NULL){
   out <- new(Class = "schema",
              clusters = clusters,
              header = schema@header,
-             meta = schema@meta,
+             format = schema@format,
              variables = variables)
 
   return(out)
