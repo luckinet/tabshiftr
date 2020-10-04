@@ -1,3 +1,9 @@
+# 0.2.0
+
+- include functions `setCluster`, `setHeader`,`setFormat`, `setIDVar` and `setObsVar` for easier schema setup.
+- improved documentation
+- first steps in implementing errors/warnings when setting up a schema that will likely not result in a successful reorganisation
+
 # 0.1.4
 
 - include a control that user-provided "." as decimal symbol is turned into "[.]" to be used as regular expression.
