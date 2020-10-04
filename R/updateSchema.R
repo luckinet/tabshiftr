@@ -21,6 +21,11 @@ updateSchema <- function(input = NULL, schema = NULL){
   if(nClusters == 0) nClusters <- 1
   tabDim <- dim(input)
 
+  # set ID to NA in case nothing has been set
+  # if(is.null(clusters$id)){
+  #   clusters$id <- NA_character_
+  # }
+
   # set cluster start if it is NULL
   if(is.null(clusters$row)){
     clusters$row <- 1
@@ -82,6 +87,8 @@ updateSchema <- function(input = NULL, schema = NULL){
           if(!all(varProp$col < clusters$col)){
             leftEdge <- clusters$col
             setRel <- TRUE
+          } else {
+            varProp$dist <- TRUE
           }
 
         } else if(clusType == "vertical"){
@@ -102,6 +109,7 @@ updateSchema <- function(input = NULL, schema = NULL){
 
         if(varProp$type == "id" & !is.null(varProp$val)){
           setRel <- FALSE
+          varProp$dist <- TRUE
         }
 
         if(setRel){
