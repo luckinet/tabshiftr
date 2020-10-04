@@ -131,7 +131,7 @@
     <p>This function builds a list of those chunks that contain the data.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>selectData</span>(<span class='kw'>input</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>clusters</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>header</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>selectData</span>(<span class='kw'>input</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>schema</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -141,12 +141,8 @@
       <td><p>the raw table from which to select clusters</p></td>
     </tr>
     <tr>
-      <th>clusters</th>
-      <td><p>the "clusters" slot of a schema description.</p></td>
-    </tr>
-    <tr>
-      <th>header</th>
-      <td><p>the "header" slot of a schema description.</p></td>
+      <th>schema</th>
+      <td><p>the schema description that is the basis to derive data.</p></td>
     </tr>
     </table>
 

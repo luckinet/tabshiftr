@@ -111,7 +111,6 @@
 <a href="#examples" class="anchor"></a>Examples</h2>
 <p>A disorganised table may look like the following table:</p>
 <div class="sourceCode" id="cb3"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">readr</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">tabshiftr</span>)
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">knitr</span>)
 
 <span class="no">input</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html">read_csv</a></span>(<span class="kw">file</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"test_datasets"</span>, <span class="kw">package</span> <span class="kw">=</span> <span class="st">"tabshiftr"</span>), <span class="st">"/table_mismatch_3.csv"</span>),
@@ -274,8 +273,8 @@
 <span class="co">#&gt;    territories   id         2     1     T     F  </span>
 <span class="co">#&gt;    year          id         3:6   4     F     T  </span>
 <span class="co">#&gt;    commodities   id               1     T     F  </span>
-<span class="co">#&gt;    harvested     measured         2     T     F  </span>
-<span class="co">#&gt;    production    measured         3     T     F</span></pre></div>
+<span class="co">#&gt;    harvested     observed         2     T     F  </span>
+<span class="co">#&gt;    production    observed         3     T     F</span></pre></div>
 <p>Finally, the input table is reorganised simply by calling <code><a href="reference/reorganise.html">reorganise()</a></code>.</p>
 <div class="sourceCode" id="cb8"><pre class="r"><span class="no">output</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/reorganise.html">reorganise</a></span>(<span class="kw">input</span> <span class="kw">=</span> <span class="no">input</span>, <span class="kw">schema</span> <span class="kw">=</span> <span class="no">schema</span>)
 <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span>(<span class="no">output</span>)</pre></div>
@@ -289,84 +288,84 @@
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left">soybean</td>
+<td align="left">unit 1</td>
 <td align="left">year 1</td>
 <td align="left">maize</td>
 <td align="right">1121</td>
 <td align="right">1122</td>
 </tr>
 <tr class="even">
-<td align="left">soybean</td>
-<td align="left">year 1</td>
 <td align="left">unit 1</td>
-<td align="right">.</td>
-<td align="right">.</td>
+<td align="left">year 1</td>
+<td align="left">soybean</td>
+<td align="right">1111</td>
+<td align="right">1112</td>
 </tr>
 <tr class="odd">
-<td align="left">soybean</td>
+<td align="left">unit 1</td>
 <td align="left">year 2</td>
 <td align="left">maize</td>
 <td align="right">1221</td>
 <td align="right">1222</td>
 </tr>
 <tr class="even">
-<td align="left">soybean</td>
+<td align="left">unit 1</td>
 <td align="left">year 2</td>
 <td align="left">soybean</td>
 <td align="right">1211</td>
 <td align="right">1212</td>
 </tr>
 <tr class="odd">
-<td align="left">soybean</td>
+<td align="left">unit 2</td>
 <td align="left">year 1</td>
 <td align="left">maize</td>
 <td align="right">2121</td>
 <td align="right">2122</td>
 </tr>
 <tr class="even">
-<td align="left">soybean</td>
-<td align="left">year 1</td>
 <td align="left">unit 2</td>
-<td align="right">.</td>
-<td align="right">.</td>
+<td align="left">year 1</td>
+<td align="left">soybean</td>
+<td align="right">2111</td>
+<td align="right">2112</td>
 </tr>
 <tr class="odd">
-<td align="left">soybean</td>
+<td align="left">unit 2</td>
 <td align="left">year 2</td>
 <td align="left">maize</td>
 <td align="right">2221</td>
 <td align="right">2222</td>
 </tr>
 <tr class="even">
-<td align="left">soybean</td>
+<td align="left">unit 2</td>
 <td align="left">year 2</td>
 <td align="left">soybean</td>
 <td align="right">2211</td>
 <td align="right">2212</td>
 </tr>
 <tr class="odd">
-<td align="left">soybean</td>
+<td align="left">unit 3</td>
 <td align="left">year 1</td>
 <td align="left">maize</td>
 <td align="right">3121</td>
 <td align="right">3122</td>
 </tr>
 <tr class="even">
-<td align="left">soybean</td>
-<td align="left">year 1</td>
 <td align="left">unit 3</td>
-<td align="right">.</td>
-<td align="right">.</td>
+<td align="left">year 1</td>
+<td align="left">soybean</td>
+<td align="right">3111</td>
+<td align="right">3112</td>
 </tr>
 <tr class="odd">
-<td align="left">soybean</td>
+<td align="left">unit 3</td>
 <td align="left">year 2</td>
 <td align="left">maize</td>
 <td align="right">3221</td>
 <td align="right">3222</td>
 </tr>
 <tr class="even">
-<td align="left">soybean</td>
+<td align="left">unit 3</td>
 <td align="left">year 2</td>
 <td align="left">soybean</td>
 <td align="right">3211</td>
