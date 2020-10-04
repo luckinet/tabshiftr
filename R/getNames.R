@@ -51,8 +51,15 @@ getNames <- function(header = NULL, meta = NULL){
     unlist()
 
   # make sure that tidy variables actually have correct names
-  for(j in seq_along(meta$table$tidy)){
-    testVar <- meta$table$tidy[j]
+  targetCols <- meta$cluster$cluster_cols[meta$table$tidy_cols]
+  for(j in seq_along(theNames)){
+
+    testVar <- theNames[j]
+
+    # if the recent name is not from a tidy column, remove it ...
+    if(!j %in% targetCols){
+      next
+    }
     isClust <- isOut <- FALSE
     if(!is.null(meta$cluster$cluster_id)){
       if(testVar == meta$cluster$cluster_id){
@@ -65,7 +72,7 @@ getNames <- function(header = NULL, meta = NULL){
       }
     }
     if(!isClust & !isOut){
-      theNames[meta$table$tidy_cols[j]] <- meta$table$tidy[j]
+      theNames[j] <- meta$table$tidy[which(targetCols == j)]
     }
   }
 

@@ -24,6 +24,7 @@ getMetadata <- function(data = NULL, schema = NULL){
     theData <- data[[j]]$data
     theHeader <- data[[j]]$header
     clustRows <- data[[j]]$cluster_rows
+    clustCols <- data[[j]]$cluster_cols
     tableRows <- seq_along(clustRows)
     tableRows <- tableRows[clustRows]
     dataRows <- rep(TRUE, length(tableRows))
@@ -64,14 +65,14 @@ getMetadata <- function(data = NULL, schema = NULL){
         idVars <- c(idVars, varName)
 
         # determine tidy id variables
-        if((is.null(varProp$row) | varName %in% clusters$id) & !distinct & is.null(varProp$merge)){
+        if(is.null(varProp$row) & !distinct & is.null(varProp$merge) & is.null(varProp$split)){
           tidyVars <- c(tidyVars, varName)
           tidyCols <- c(tidyCols, varProp$col[j])
         }
       }
 
       # ... is a values variable ----
-      if(varProp$type == "measured"){
+      if(varProp$type == "observed"){
         valVars <- c(valVars, varName)
         valFctrs <- c(valFctrs, varProp$factor)
 
@@ -82,6 +83,12 @@ getMetadata <- function(data = NULL, schema = NULL){
             tidyVars <- c(tidyVars, varName)
             tidyCols <- c(tidyCols, varProp$col[j])
           }
+        } else if(varProp$key == "cluster") {
+          if(length(unique(varProp$col)) == 1 & varProp$value == j){
+            tidyVars <- c(tidyVars, varName)
+            tidyCols <- c(tidyCols, unique(varProp$col))
+          }
+
         }
       }
 
@@ -217,6 +224,7 @@ getMetadata <- function(data = NULL, schema = NULL){
     }
 
     temp <- list(cluster = list(cluster_rows = clustRows,
+                                cluster_cols = clustCols,
                                 outside_cluster = outVar,
                                 cluster_id = clusters$id),
                  header = list(cols = mergeOrder,
