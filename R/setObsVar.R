@@ -54,7 +54,7 @@ setObsVar <- function(schema = NULL, name = NULL, columns = NULL, row = NULL,
   assertCharacter(x = unit, len = 1, any.missing = FALSE)
   assertNumeric(x = factor, len = 1, any.missing = FALSE)
   assertCharacter(x = key, len = 1, any.missing = FALSE, null.ok = TRUE)
-  assertCharacter(x = value, len = 1, any.missing = FALSE, null.ok = TRUE)
+  # assertCharacter(x = value, len = 1, any.missing = FALSE, null.ok = TRUE)
 
   if(is.null(schema)){
     schema <- schema_default
@@ -69,7 +69,7 @@ setObsVar <- function(schema = NULL, name = NULL, columns = NULL, row = NULL,
 
 
   # update schema ----
-  temp <- list(type = "measured",
+  temp <- list(type = "observed",
                col = columns,
                row = row,
                rel = relative,

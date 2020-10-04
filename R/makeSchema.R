@@ -5,41 +5,6 @@
 #'   contain the lists \code{clusters}, \code{format}, \code{header} and
 #'   \code{variables}.
 #' @return An object of class \code{\link{schema}}.
-#' @examples
-#' # define outline of the cluster(s)
-#' theClusters <- list(row = c(1, 8, 8),
-#'                     col = c(1, 1, 4),
-#'                     width = 3,
-#'                     height = 6,
-#'                     id = "territories")
-#'
-#' # identify the row(s) where the header is
-#' theHeader <- list(row = 1, rel = TRUE)
-#'
-#' # document identifying variables
-#' idVars <- list(
-#'   territories =
-#'     list(type = "id", row = 1, col = 1, rel = TRUE),
-#'   year =
-#'     list(type = "id", row = c(3:6), col = 4, dist = TRUE),
-#'   commodities =
-#'     list(type = "id", col = 1, rel = TRUE))
-#'
-#' # document measured variables
-#' measuredVars <- list(
-#'   harvested =
-#'     list(type = "measured", unit = "ha", factor = 1,
-#'          col = 2, rel = TRUE),
-#'   production =
-#'     list(type = "measured", unit = "t", factor = 1,
-#'          col = 3, rel = TRUE))
-#'
-#' # make the schema
-#' mySchema <- list(clusters = theClusters,
-#'                  header = theHeader,
-#'                  variables = c(idVars, measuredVars))
-#'
-#' makeSchema(schema = mySchema)
 #' @importFrom checkmate assertNames
 #' @importFrom methods new
 #' @export
@@ -117,7 +82,7 @@ makeSchema <- function(schema = NULL){
         varProp <- c(varProp, list(dist = FALSE))
       }
 
-    } else if(varProp$type == "measured"){
+    } else if(varProp$type == "observed"){
       if(!any(names(varProp) %in% "unit")){
         varProp <- c(varProp, list(unit = NULL))
       }
