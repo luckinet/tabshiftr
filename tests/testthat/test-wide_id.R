@@ -8,21 +8,12 @@ context("wide_id")
 # bring one wide identifying variable into long form ----
 test_that("bring one wide identifying variable into long form", {
   # wide variable in first row of header, values next to each other
-  schema <- makeSchema(
-    list(header = list(row = c(1, 2)),
-         variables =
-           list(territories =
-                  list(type = "id", col = 1),
-                year =
-                  list(type = "id", col = 2),
-                commodities =
-                  list(type = "id", row = 1, col = c(3, 4, 5, 6)),
-                harvested =
-                  list(type = "measured", unit = "ha", factor = 1,
-                       row = 2, col = c(3, 4)),
-                production =
-                  list(type = "measured", unit = "t", factor = 1,
-                       row = 2, col = c(5, 6)))))
+  schema <- setHeader(rows = c(1, 2)) %>%
+    setIDVar(name = "territories", columns = 1) %>%
+    setIDVar(name = "year", columns = 2) %>%
+    setIDVar(name = "commodities", columns = c(3, 4, 5, 6), row = 1) %>%
+    setObsVar(name = "harvested", unit = "ha", columns = c(3, 4), row = 2) %>%
+    setObsVar(name = "production", unit = "t", columns = c(5, 6), row = 2)
 
   input <- read_csv(paste0(system.file("test_datasets",
                                        package="tabshiftr",
@@ -33,21 +24,12 @@ test_that("bring one wide identifying variable into long form", {
   expect_valid_table(x = output, units = 2)
 
   # wide variable in first row of header, values separated
-  schema <- makeSchema(
-    list(header = list(row = c(1, 2)),
-         variables =
-           list(territories =
-                  list(type = "id", col = 1),
-                year =
-                  list(type = "id", col = 2),
-                commodities =
-                  list(type = "id", row = 1, col = c(3, 5)),
-                harvested =
-                  list(type = "measured", unit = "ha", factor = 1,
-                       row = 2, col = c(3, 5)),
-                production =
-                  list(type = "measured", unit = "t", factor = 1,
-                       row = 2, col = c(4, 6)))))
+  schema <- setHeader(rows = c(1, 2)) %>%
+    setIDVar(name = "territories", columns = 1) %>%
+    setIDVar(name = "year", columns = 2) %>%
+    setIDVar(name = "commodities", columns = c(3, 5), row = 1) %>%
+    setObsVar(name = "harvested", unit = "ha", columns = c(3, 5), row = 2) %>%
+    setObsVar(name = "production", unit = "t", columns = c(4, 6), row = 2)
 
   input <- read_csv(paste0(system.file("test_datasets",
                                        package="tabshiftr",
@@ -58,21 +40,12 @@ test_that("bring one wide identifying variable into long form", {
   expect_valid_table(x = output, units = 2)
 
   # wide variable in second row of header, values next to each other
-  schema <- makeSchema(
-    list(header = list(row = c(1, 2)),
-         variables =
-           list(territories =
-                  list(type = "id", col = 1),
-                year =
-                  list(type = "id", col = 2),
-                commodities =
-                  list(type = "id", row = 2),
-                harvested =
-                  list(type = "measured", unit = "ha", factor = 1,
-                       row = 1, col = c(3, 4)),
-                production =
-                  list(type = "measured", unit = "t", factor = 1,
-                       row = 1, col = c(5, 6)))))
+  schema <- setHeader(rows = c(1, 2)) %>%
+    setIDVar(name = "territories", columns = 1) %>%
+    setIDVar(name = "year", columns = 2) %>%
+    setIDVar(name = "commodities", columns = c(3:6), row = 2) %>%
+    setObsVar(name = "harvested", unit = "ha", columns = c(3, 4), row = 1) %>%
+    setObsVar(name = "production", unit = "t", columns = c(5, 6), row = 1)
 
   input <- read_csv(paste0(system.file("test_datasets",
                                        package="tabshiftr",
@@ -83,21 +56,12 @@ test_that("bring one wide identifying variable into long form", {
   expect_valid_table(x = output, units = 2)
 
   # wide variable in second row of header, values spearated
-  schema <- makeSchema(
-    list(header = list(row = c(1, 2)),
-         variables =
-           list(territories =
-                  list(type = "id", col = 1),
-                year =
-                  list(type = "id", col = 2),
-                commodities =
-                  list(type = "id", row = 2),
-                harvested =
-                  list(type = "measured", unit = "ha", factor = 1,
-                       row = 1, col = c(3, 5)),
-                production =
-                  list(type = "measured", unit = "t", factor = 1,
-                       row = 1, col = c(4, 6)))))
+  schema <- setHeader(rows = c(1, 2)) %>%
+    setIDVar(name = "territories", columns = 1) %>%
+    setIDVar(name = "year", columns = 2) %>%
+    setIDVar(name = "commodities", columns = c(3, 5), row = 2) %>%
+    setObsVar(name = "harvested", unit = "ha", columns = c(3, 5), row = 1) %>%
+    setObsVar(name = "production", unit = "t", columns = c(4, 6), row = 1)
 
   input <- read_csv(paste0(system.file("test_datasets",
                                        package="tabshiftr",
@@ -110,21 +74,12 @@ test_that("bring one wide identifying variable into long form", {
 
 # bring several wide identifying variables into long form ----
 test_that("bring several wide identifying variables into long form", {
-  schema <- makeSchema(
-    list(header = list(row = c(1:3)),
-         variables =
-           list(territories =
-                  list(type = "id", col = 1),
-                year =
-                  list(type = "id", row = 1, col = c(2, 6)),
-                commodities =
-                  list(type = "id", row = 2, col = c(2, 4, 6, 8)),
-                harvested =
-                  list(type = "measured", unit = "ha", factor = 1,
-                       row = 3, col = c(2, 4, 6, 8)),
-                production =
-                  list(type = "measured", unit = "t", factor = 1,
-                       row = 3, col = c(3, 5, 7, 9)))))
+  schema <- setHeader(rows = c(1:3)) %>%
+    setIDVar(name = "territories", columns = 1) %>%
+    setIDVar(name = "year", columns = c(2, 6), row = 1) %>%
+    setIDVar(name = "commodities", columns = c(2, 4, 6, 8), row = 2) %>%
+    setObsVar(name = "harvested", unit = "ha", columns = c(2, 4, 6, 8), row = 3) %>%
+    setObsVar(name = "production", unit = "t", columns = c(3, 5, 7, 9), row = 3)
 
   input <- read_csv(paste0(system.file("test_datasets",
                                        package="tabshiftr",

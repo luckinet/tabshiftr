@@ -5,20 +5,13 @@ library(checkmate)
 context("mismatch")
 
 
-test_that("split a column that contains several variables in one columne", {
-  schema <- makeSchema(
-    list(header = list(row = 1),
-         variables =
-           list(territories =
-                  list(type = "id", col = 1),
-                year =
-                  list(type = "id", col = 2, split = ".+?(?=_)"),
-                commodities =
-                  list(type = "id", col = 2, split = "(?<=\\_).*"),
-                harvested =
-                  list(type = "measured", unit = "ha", factor = 1, col = 3),
-                production =
-                  list(type = "measured", unit = "t", factor = 1, col = 4))))
+test_that("split a column that contains several variables in one column", {
+  schema <- setHeader(rows = 1) %>%
+    setIDVar(name = "territories", columns = 1) %>%
+    setIDVar(name = "year", columns = 2, split = ".+?(?=_)") %>%
+    setIDVar(name = "commodities", columns = 2, split = "(?<=\\_).*") %>%
+    setObsVar(name = "harvested", unit = "ha", columns = 3) %>%
+    setObsVar(name = "production", unit = "t", columns = 4)
 
   input <- read_csv(paste0(system.file("test_datasets",
                                        package="tabshiftr",
@@ -30,19 +23,12 @@ test_that("split a column that contains several variables in one columne", {
 })
 
 test_that("recognise an identifying variable that is actually a merge of two columns", {
-  schema <- makeSchema(
-    list(header = list(row = 1),
-         variables =
-           list(territories =
-                  list(type = "id", col = 1),
-                year =
-                  list(type = "id", col = c(2, 3), merge = " "),
-                commodities =
-                  list(type = "id", col = 4),
-                harvested =
-                  list(type = "measured", unit = "ha", factor = 1, col = 5),
-                production =
-                  list(type = "measured", unit = "t", factor = 1, col = 6))))
+  schema <- setHeader(rows = 1) %>%
+    setIDVar(name = "territories", columns = 1) %>%
+    setIDVar(name = "year", columns = c(2, 3), merge = " ") %>%
+    setIDVar(name = "commodities", columns = 4) %>%
+    setObsVar(name = "harvested", unit = "ha", columns = 5) %>%
+    setObsVar(name = "production", unit = "t", columns = 6)
 
   input <- read_csv(paste0(system.file("test_datasets",
                                        package="tabshiftr",
@@ -54,25 +40,14 @@ test_that("recognise an identifying variable that is actually a merge of two col
 })
 
 test_that("recognise a distinct variable that is not valid for every cluster", {
-  schema <- makeSchema(
-    list(clusters =
-           list(row = c(1, 8, 8), col = c(1, 1, 4), width = 3, height = 6,
-                id = "territories"),
-         meta = list(del = NULL, dec = NULL, na = NULL),
-         header = list(row = 1, rel = TRUE),
-         variables =
-           list(territories =
-                  list(type = "id", row = 1, col = 1, rel = TRUE),
-                year =
-                  list(type = "id", row = c(3:6), col = 4, dist = TRUE),
-                commodities =
-                  list(type = "id", col = 1, rel = TRUE),
-                harvested =
-                  list(type = "measured", unit = "ha", factor = 1,
-                       col = 2, rel = TRUE),
-                production =
-                  list(type = "measured", unit = "t", factor = 1,
-                       col = 3, rel = TRUE))))
+  schema <- setCluster(id = "territories", top = c(1, 8, 8), left = c(1, 1, 4),
+                       width = 3, height = 6) %>%
+    setHeader(rows = 1, relative = TRUE) %>%
+    setIDVar(name = "territories", columns = 1, row = 2, relative = TRUE) %>%
+    setIDVar(name = "year", columns = 4, row = c(3:6), distinct = TRUE) %>%
+    setIDVar(name = "commodities", columns = 1, relative = TRUE) %>%
+    setObsVar(name = "harvested", unit = "ha", columns = 2, relative = TRUE) %>%
+    setObsVar(name = "production", unit = "t", columns = 3, relative = TRUE)
 
   input <- read_csv(paste0(system.file("test_datasets",
                                        package="tabshiftr",
@@ -83,24 +58,14 @@ test_that("recognise a distinct variable that is not valid for every cluster", {
   expect_valid_table(x = output, units = 3)
 })
 
-test_that("set a id variable manually that is not in the table", {
-  schema <- makeSchema(
-    list(clusters =
-           list(row = c(2, 6), col = 1, id = "year"),
-         header = list(row = 1),
-         variables =
-           list(territories =
-                  list(type = "id", value = "unit 1"),
-                year =
-                  list(type = "id", row = c(2, 6), col = 1),
-                commodities =
-                  list(type = "id", col = 2, rel = TRUE),
-                harvested =
-                  list(type = "measured", unit = "ha", factor = 1,
-                       col = 3),
-                production =
-                  list(type = "measured", unit = "t", factor = 1,
-                       col = 4))))
+test_that("set an id variable manually that is not in the table", {
+  schema <- setCluster(id = "year", top = c(2, 6), left = 1) %>%
+    setHeader(rows = 1) %>%
+    setIDVar(name = "territories", value = "unit 1") %>%
+    setIDVar(name = "year", columns = 1, row = c(2, 6)) %>%
+    setIDVar(name = "commodities", columns = 2, relative = TRUE) %>%
+    setObsVar(name = "harvested", unit = "ha", columns = 3) %>%
+    setObsVar(name = "production", unit = "t", columns = 4)
 
   input <- read_csv(paste0(system.file("test_datasets",
                                        package="tabshiftr",
@@ -112,23 +77,13 @@ test_that("set a id variable manually that is not in the table", {
 })
 
 test_that("set an id variable that is not in the table manually", {
-  schema <- makeSchema(
-    list(clusters =
-           list(row = 4, col = 1, id = "territories"),
-         header = list(row = 1, rel = TRUE),
-         variables =
-           list(territories =
-                  list(type = "id", value = "unit 1"),
-                year =
-                  list(type = "id", col = 4, rel = TRUE),
-                commodities =
-                  list(type = "id", col = 1, rel = TRUE),
-                harvested =
-                  list(type = "measured", unit = "ha", factor = 1,
-                       col = 2, rel = TRUE),
-                production =
-                  list(type = "measured", unit = "t", factor = 1,
-                       col = 3, rel = TRUE))))
+  schema <- setCluster(id = "territories", top = 4, left = 1) %>%
+    setHeader(rows = 1, relative = TRUE) %>%
+    setIDVar(name = "territories", value = "unit 1") %>%
+    setIDVar(name = "year", columns = 4, relative = TRUE) %>%
+    setIDVar(name = "commodities", columns = 1, relative = TRUE) %>%
+    setObsVar(name = "harvested", unit = "ha", columns = 2, relative = TRUE) %>%
+    setObsVar(name = "production", unit = "t", columns = 3, relative = TRUE)
 
   input <- read_csv(paste0(system.file("test_datasets",
                                        package="tabshiftr",

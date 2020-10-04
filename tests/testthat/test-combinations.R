@@ -6,19 +6,12 @@ context("combinations")
 
 
 test_that("already tidy table", {
-  schema <- makeSchema(
-    list(header = list(row = 1),
-         variables =
-           list(territories =
-                  list(type = "id", col = 1),
-                year =
-                  list(type = "id", col = 2),
-                commodities =
-                  list(type = "id", col = 3),
-                harvested =
-                  list(type = "measured", unit = "ha", factor = 1, col = 4),
-                production =
-                  list(type = "measured", unit = "t", factor = 1, col = 5))))
+  schema <- setHeader(rows = 1) %>%
+    setIDVar(name = "territories", columns = 1) %>%
+    setIDVar(name = "year", columns = 2) %>%
+    setIDVar(name = "commodities", columns = 3) %>%
+    setObsVar(name = "harvested", unit = "ha", columns = 4) %>%
+    setObsVar(name = "production", unit = "t", columns = 5)
 
   input <- read_csv(paste0(system.file("test_datasets",
                                        package="tabshiftr",
@@ -29,25 +22,16 @@ test_that("already tidy table", {
   expect_valid_table(x = output, units = 2)
 })
 
-test_that("vertical clusters per measured variable with a wide identifying variable", {
-  schema <- makeSchema(
-    list(clusters =
-           list(row = c(3, 9), col = 2, height = 4, id = "measured"),
-         header = list(row = 1),
-         meta = list(del = NULL, dec = NULL, na = NULL),
-         variables =
-           list(territories =
-                  list(type = "id", col = 2),
-                year =
-                  list(type = "id", col = 3),
-                commodities =
-                  list(type = "id", row = 1, col = c(4, 5)),
-                harvested =
-                  list(type = "measured", unit = "ha", factor = 1,
-                       col = c(4, 5), key = "cluster", value = 1),
-                production =
-                  list(type = "measured", unit = "t", factor = 1,
-                       col = c(4, 5), key = "cluster", value = 2))))
+test_that("vertical clusters per observed variable with a wide identifying variable", {
+  schema <- setCluster(id = "observed", top = c(3, 9), left = 2, height = 4) %>%
+    setHeader(rows = 1) %>%
+    setIDVar(name = "territories", columns = 2) %>%
+    setIDVar(name = "year", columns = 3) %>%
+    setIDVar(name = "commodities", columns = c(4, 5), row = 1) %>%
+    setObsVar(name = "harvested", unit = "ha", columns = c(4, 5),
+              key = "cluster", value = 1) %>%
+    setObsVar(name = "production", unit = "t", columns = c(4, 5),
+              key = "cluster", value = 2)
 
   input <- read_csv(paste0(system.file("test_datasets",
                                        package="tabshiftr",
@@ -59,24 +43,15 @@ test_that("vertical clusters per measured variable with a wide identifying varia
 })
 
 test_that("vertical clusters per values variable with two nested wide identifying variables", {
-  schema <- makeSchema(
-    list(clusters =
-           list(row = c(4, 8), col = 2, height = 2,
-                id = "measured"),
-         header = list(row = c(1, 2)),
-         variables =
-           list(territories =
-                  list(type = "id", row = NULL, col = 2),
-                year =
-                  list(type = "id", row = 1, col = c(3, 5)),
-                commodities =
-                  list(type = "id", row = 2, col = c(3:6)),
-                harvested =
-                  list(type = "measured", unit = "ha", factor = 1, col = c(3:6),
-                       key = "cluster", value = 1),
-                production =
-                  list(type = "measured", unit = "t", factor = 1, col = c(3:6),
-                       key = "cluster", value = 2))))
+  schema <- setCluster(id = "observed", top = c(4, 8), left = 2, height = 2) %>%
+    setHeader(rows = c(1, 2)) %>%
+    setIDVar(name = "territories", columns = 2) %>%
+    setIDVar(name = "year", columns = c(3, 5), row = 1) %>%
+    setIDVar(name = "commodities", columns = c(3:6), row = 2) %>%
+    setObsVar(name = "harvested", unit = "ha", columns = c(3:6),
+              key = "cluster", value = 1) %>%
+    setObsVar(name = "production", unit = "t", columns = c(3:6),
+              key = "cluster", value = 2)
 
   input <- read_csv(paste0(system.file("test_datasets",
                                        package="tabshiftr",
@@ -87,22 +62,15 @@ test_that("vertical clusters per values variable with two nested wide identifyin
   expect_valid_table(x = output, units = 2)
 })
 
-test_that("bring one wide identifying variable into long form and unlist measured variable", {
-  schema <- makeSchema(
-    list(header = list(row = 1),
-         variables =
-           list(territories =
-                  list(type = "id", col = 1),
-                year =
-                  list(type = "id", row = NULL, col = 2),
-                commodities =
-                  list(type = "id", row = 1, col = c(4, 5)),
-                harvested =
-                  list(type = "measured", unit = "ha", factor = 1,
-                       col = c(4, 5), key = "dimension", value = "harvested"),
-                production =
-                  list(type = "measured", unit = "t", factor = 1,
-                       col = c(4, 5), key = "dimension", value = "production"))))
+test_that("bring one wide identifying variable into long form and unlist observed variable", {
+  schema <- setHeader(rows = 1) %>%
+    setIDVar(name = "territories", columns = 1) %>%
+    setIDVar(name = "year", columns = 2) %>%
+    setIDVar(name = "commodities", columns = c(4, 5), row = 1) %>%
+    setObsVar(name = "harvested", unit = "ha", columns = c(4, 5),
+              key = "dimension", value = "harvested") %>%
+    setObsVar(name = "production", unit = "t", columns = c(4, 5),
+              key = "dimension", value = "production")
 
   input <- read_csv(paste0(system.file("test_datasets",
                                        package="tabshiftr",
@@ -114,22 +82,15 @@ test_that("bring one wide identifying variable into long form and unlist measure
 })
 
 # bring several wide identifying variable into long form and spread long table ----
-test_that("several wide identifying variable into long form and unlist measured variable", {
-  schema <- makeSchema(
-    list(header = list(row = c(1, 2)),
-         variables =
-           list(territories =
-                  list(type = "id", col = 1),
-                year =
-                  list(type = "id", row = 1, col = c(3, 5)),
-                commodities =
-                  list(type = "id", row = 2, col = c(3, 4, 5, 6)),
-                harvested =
-                  list(type = "measured", unit = "ha", factor = 1, col = c(3, 4, 5, 6),
-                       key = "dimension", value = "harvested"),
-                production =
-                  list(type = "measured", unit = "t", factor = 1, col = c(3, 4, 5, 6),
-                       key = "dimension", value = "production"))))
+test_that("several wide identifying variable into long form and unlist observed variable", {
+  schema <- setHeader(rows = c(1, 2)) %>%
+    setIDVar(name = "territories", columns = 1) %>%
+    setIDVar(name = "year", columns = c(3, 5), row = 1) %>%
+    setIDVar(name = "commodities", columns = c(3:6), row = 2) %>%
+    setObsVar(name = "harvested", unit = "ha", columns = c(3:6),
+              key = "dimension", value = "harvested") %>%
+    setObsVar(name = "production", unit = "t", columns = c(3:6),
+              key = "dimension", value = "production")
 
   input <- read_csv(paste0(system.file("test_datasets",
                                        package="tabshiftr",

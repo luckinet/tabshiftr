@@ -8,21 +8,14 @@ context("listed")
 # spread long table ----
 test_that("unlist measured variable", {
   # without random other columns
-  schema <- makeSchema(
-    list(header = list(row = 1),
-         variables =
-           list(territories =
-                  list(type = "id", col = 1),
-                year =
-                  list(type = "id", col = 2),
-                commodities =
-                  list(type = "id", col = 3),
-                harvested =
-                  list(type = "measured", unit = "ha", factor = 1,
-                       col = 5, key = "dimension", value = "harvested"),
-                production =
-                  list(type = "measured", unit = "t", factor = 1,
-                       col = 5, key = "dimension", value = "production"))))
+  schema <- setHeader(rows = 1) %>%
+    setIDVar(name = "territories", columns = 1) %>%
+    setIDVar(name = "year", columns = 2) %>%
+    setIDVar(name = "commodities", columns = 3) %>%
+    setObsVar(name = "harvested", unit = "ha", columns = 5,
+              key = "dimension", value = "harvested") %>%
+    setObsVar(name = "production", unit = "t", columns = 5,
+              key = "dimension", value = "production")
 
   input <- read_csv(paste0(system.file("test_datasets",
                                        package="tabshiftr",
@@ -33,21 +26,14 @@ test_that("unlist measured variable", {
   expect_valid_table(x = output, units = 2)
 
   # with a couple of other columns
-  schema <- makeSchema(
-    list(header = list(row = 1),
-         variables =
-           list(territories =
-                  list(type = "id", col = 1),
-                year =
-                  list(type = "id", col = 2),
-                commodities =
-                  list(type = "id", col = 3),
-                harvested =
-                  list(type = "measured", unit = "ha", factor = 1, col = 6,
-                       key = "dimension", value = "harvested"),
-                production =
-                  list(type = "measured", unit = "t", factor = 1, col = 6,
-                       key = "dimension", value = "production"))))
+  schema <- setHeader(rows = 1) %>%
+    setIDVar(name = "territories", columns = 1) %>%
+    setIDVar(name = "year", columns = 2) %>%
+    setIDVar(name = "commodities", columns = 3) %>%
+    setObsVar(name = "harvested", unit = "ha", columns = 6,
+              key = "dimension", value = "harvested") %>%
+    setObsVar(name = "production", unit = "t", columns = 6,
+              key = "dimension", value = "production")
 
   input <- read_csv(paste0(system.file("test_datasets",
                                        package="tabshiftr",
