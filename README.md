@@ -60,7 +60,6 @@ A disorganised table may look like the following table:
 
 ``` r
 library(readr)
-library(tabshiftr)
 library(knitr)
 
 input <- read_csv(file = paste0(system.file("test_datasets", package = "tabshiftr"), "/table_mismatch_3.csv"),
@@ -157,8 +156,8 @@ schema
 #>    territories   id         2     1     T     F  
 #>    year          id         3:6   4     F     T  
 #>    commodities   id               1     T     F  
-#>    harvested     measured         2     T     F  
-#>    production    measured         3     T     F
+#>    harvested     observed         2     T     F  
+#>    production    observed         3     T     F
 ```
 
 Finally, the input table is reorganised simply by calling
@@ -171,18 +170,18 @@ kable(output)
 
 | territories | year   | commodities | harvested | production |
 | :---------- | :----- | :---------- | --------: | ---------: |
-| soybean     | year 1 | maize       |      1121 |       1122 |
-| soybean     | year 1 | unit 1      |         . |          . |
-| soybean     | year 2 | maize       |      1221 |       1222 |
-| soybean     | year 2 | soybean     |      1211 |       1212 |
-| soybean     | year 1 | maize       |      2121 |       2122 |
-| soybean     | year 1 | unit 2      |         . |          . |
-| soybean     | year 2 | maize       |      2221 |       2222 |
-| soybean     | year 2 | soybean     |      2211 |       2212 |
-| soybean     | year 1 | maize       |      3121 |       3122 |
-| soybean     | year 1 | unit 3      |         . |          . |
-| soybean     | year 2 | maize       |      3221 |       3222 |
-| soybean     | year 2 | soybean     |      3211 |       3212 |
+| unit 1      | year 1 | maize       |      1121 |       1122 |
+| unit 1      | year 1 | soybean     |      1111 |       1112 |
+| unit 1      | year 2 | maize       |      1221 |       1222 |
+| unit 1      | year 2 | soybean     |      1211 |       1212 |
+| unit 2      | year 1 | maize       |      2121 |       2122 |
+| unit 2      | year 1 | soybean     |      2111 |       2112 |
+| unit 2      | year 2 | maize       |      2221 |       2222 |
+| unit 2      | year 2 | soybean     |      2211 |       2212 |
+| unit 3      | year 1 | maize       |      3121 |       3122 |
+| unit 3      | year 1 | soybean     |      3111 |       3112 |
+| unit 3      | year 2 | maize       |      3221 |       3222 |
+| unit 3      | year 2 | soybean     |      3211 |       3212 |
 
 # Contributions
 
@@ -192,6 +191,7 @@ kable(output)
     that there are further table arrangements, but they are not clear at
     this stage, issues submitted by users and contributors should be
     helpful.
+  - Informative error management is work in process.
   - Moreover, the resulting schema descriptions can be useful for data
     archiving or database building and tabshiftr should at some point
     support that those schemas can be exported into data-formats that

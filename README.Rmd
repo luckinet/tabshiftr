@@ -55,7 +55,6 @@ A disorganised table may look like the following table:
 
 ```{r}
 library(readr)
-library(tabshiftr)
 library(knitr)
 
 input <- read_csv(file = paste0(system.file("test_datasets", package = "tabshiftr"), "/table_mismatch_3.csv"),
@@ -119,6 +118,7 @@ kable(output)
 
 * tabshiftr is still in development. So far it reliably reorganises 20 different types of tables, all of which are combinations of the dimensions of disorganisation outlined in the vignette.
 We suspect that there are further table arrangements, but they are not clear at this stage, issues submitted by users and contributors should be helpful.
+* Informative error management is work in process.
 * Moreover, the resulting schema descriptions can be useful for data archiving or database building and tabshiftr should at some point support that those schemas can be exported into data-formats that are used by downstream applications (xml, json, ...), following proper (ISO) standards.
 
 Contributions to those points and discussions on where tabshiftr should go are highly welcome!

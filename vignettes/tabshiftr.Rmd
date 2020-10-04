@@ -296,23 +296,15 @@ Moreover, (several) identifying variables may be wide additionally and we have t
 Table: <a name="wideLong"></a>Table 8: The identifying variable `commodities` is treated as if it were the observed variable.
 
 ```{r, eval=FALSE}
- makeSchema(list(
-   header = list(row = 1),
-   variables =
-     list(territories =
-            list(type = "id", col = 1),
-          year =
-            list(type = "id", row = NULL, col = 2),
-          commodities =
-            list(type = "id", row = 1, col = c(4, 5)),
-          harvested =
-            list(type = "measured", unit = "ha", factor = 1,
-                 col = c(4, 5), key = "dimension", value = "harvested"),
-          production =
-            list(type = "measured", unit = "t", factor = 1,
-                 col = c(4, 5), key = "dimension", value = "production"))))
+schema <- setHeader(rows = 1) %>%
+    setIDVar(name = "territories", columns = 1) %>%
+    setIDVar(name = "year", columns = 2) %>%
+    setIDVar(name = "commodities", columns = c(4, 5), row = 1) %>%
+    setObsVar(name = "harvested", unit = "ha", columns = c(4, 5),
+              key = "dimension", value = "harvested") %>%
+    setObsVar(name = "production", unit = "t", columns = c(4, 5),
+              key = "dimension", value = "production")
 ```
-
 
 
 ## Spreadsheet contains several clusters
@@ -340,21 +332,13 @@ In case there is some arbitrary horizontal space between clusters, also the widt
 Table: <a name="clusHor"></a>Table 9: Horizontal clusters of the identifying variable `period`.
 
 ```{r, eval=FALSE}
-makeSchema(list(
-  clusters =
-    list(row = 2, col = c(2, 5), id = "territories"),
-  header = list(row = 1),
-  variables =
-    list(territories =
-           list(type = "id", row = 2, col = c(2, 5)),
-         year =
-           list(type = "id", col = 1),
-         commodities =
-           list(type = "id", col = c(2, 5)),
-         harvested =
-           list(type = "measured", col = c(3, 6), unit = "ha", factor = 1),
-         production =
-           list(type = "measured", col = c(4, 7), unit = "t", factor = 1))))
+schema <- setCluster(id = "territories", left = c(2, 5), top = 2) %>%
+  setHeader(rows = 1) %>%
+  setIDVar(name = "territories", columns = c(2, 5), row = 2) %>%
+  setIDVar(name = "year", columns = 1) %>%
+  setIDVar(name = "commodities", columns = c(2, 5)) %>%
+  setObsVar(name = "harvested", columns = c(3, 6), unit = "ha") %>%
+  setObsVar(name = "production", columns = c(4, 7), unit = "t")
 ```
 
 
@@ -379,21 +363,13 @@ For vertically arranged clusters ([Tab. 10](#clusId)), just like for the horizon
 Table: <a name="clusId"></a>Table 10: Vertical clusters of the identifying variable `period`.
 
 ```{r, eval=FALSE}
-makeSchema(list(
-  clusters =
-    list(row = c(2, 7), col = 2, height = 4, id = "territories"),
-  header = list(row = 1),
-  variables =
-    list(territories =
-           list(type = "id", row = c(2, 9), col = 1),
-         year =
-           list(type = "id", col = 1, rel = TRUE),
-         commodities =
-           list(type = "id", col = 2, rel = TRUE),
-         harvested =
-           list(type = "measured", col = 3, unit = "ha", factor = 1, rel = TRUE),
-         production =
-           list(type = "measured", col = 4, unit = "t", factor = 1, rel = TRUE))))
+schema <- setCluster(id = "territories", top = c(3, 8), left = 2) %>%
+  setHeader(rows = 1) %>%
+  setIDVar(name = "territories", columns = 1, row = c(2, 7)) %>%
+  setIDVar(name = "year", columns = 2) %>%
+  setIDVar(name = "commodities", columns = 3) %>%
+  setObsVar(name = "harvested", columns = 4, unit = "ha") %>%
+  setObsVar(name = "production", columns = 5, unit = "t")
 ```
 
 ### Messy clusters
@@ -402,16 +378,11 @@ In case several clusters are neither aligned along a row nor a column, and are a
 For example, three clusters, where the first cluster starts at (1,1) and is 3 by 4 cells in size, where the second clusters starts at (5,2) and is 5 by 5 cells in size, and so on, needs to be specified as below.
 
 ```{r, eval=FALSE}
-list(clusters = 
-       list(top = c(1, 5, 1), left = c(1, 2, 5), 
-            width = c(3, 5, 2), height = c(4, 5, 3), id = ...),
-     header = list(row = 1),
-     variables =
-       list(territories = 
-              list(type = "id", col = 2, rel = TRUE),
-            period = 
-              list(type = "id", col = 1, rel = TRUE),
-            ...))
+schema <- setCluster(top = c(1, 5, 1), left = c(1, 2, 5), 
+                     width = c(3, 5, 2), height = c(4, 5, 3), id = ...) %>% 
+  setHeader(rows = 1) %>% 
+  setIDVar(name = "territories", columns = 1, relative = TRUE) %>% 
+  ...
 ```
 
 Additionally, given that at least the tables within each cluster are all arranged in the same way, the contained variables can be specified so that their row and column indices are given relative to the cluster position (`rel = TRUE`).
@@ -441,7 +412,7 @@ This is in contrast to nested observed variables, where the rows of the variable
 | production |  |  |  |  |
 |  | unit 1 | year 1 | soybean | 1112 |
 |  | unit 1 | year 1 | maize | 1122 |
-|  | unit 1 | year 2 | soybean | 1212 |
+|  | unit 1 | year 2 | soybean | 1212 |   
 |  | unit 1 | year 2 | maize | 1222 |
 |  | unit 2 | year 1 | soybean | 2112 |
 |  | unit 2 | year 1 | maize | 2122 |
@@ -451,23 +422,15 @@ This is in contrast to nested observed variables, where the rows of the variable
 Table: <a name="clusMeas"></a>Table 11: Vertical clusters of the observed variables.
 
 ```{r, eval=FALSE}
-makeSchema(list(
-  clusters =
-    list(row = c(3, 12), col = 2, height = 8, id = "measured"),
-  header = list(row = 1),
-  variables =
-    list(territories =
-           list(type = "id", col = 2),
-         year =
-           list(type = "id", col = 3),
-         commodities =
-           list(type = "id", col = 4),
-         harvested =
-           list(type = "measured", unit = "ha", factor = 1, col = 5,
-                key = "cluster", value = 1),
-         production =
-           list(type = "measured", unit = "t", factor = 1, col = 5,
-                key = "cluster", value = 2))))
+schema <- setCluster(id = "observed", left = 2, top = c(3, 12), height = 8) %>%
+  setHeader(rows = 1) %>%
+  setIDVar(name = "territories", columns = 2) %>%
+  setIDVar(name = "year", columns = 3) %>%
+  setIDVar(name = "commodities", columns = 4) %>%
+  setObsVar(name = "harvested", columns = 5, unit = "ha",
+            key = "cluster", value = 1) %>%
+  setObsVar(name = "production", columns = 5, unit = "t",
+            key = "cluster", value = 2)
 ```
 
 ### Variables that are distinct from a cluster
@@ -495,25 +458,14 @@ Table: <a name="distVar"></a>Table 12: Several clusters where one variable is no
 
 
 ```{r, eval=FALSE}
-makeSchema(list(
-  clusters =
-    list(row = c(1, 8, 8), col = c(1, 1, 4), width = 3, height = 6,
-         id = "territories"),
-  meta = list(del = NULL, dec = NULL, na = NULL, types = NULL),
-  header = list(row = 1, rel = TRUE),
-  variables =
-    list(territories =
-           list(type = "id", row = 1, col = 1, rel = TRUE),
-         year =
-           list(type = "id", row = c(3:6), col = 4, dist = TRUE),
-         commodities =
-           list(type = "id", col = 1, rel = TRUE),
-         harvested =
-           list(type = "measured", unit = "ha", factor = 1,
-                col = 2, rel = TRUE),
-         production =
-           list(type = "measured", unit = "t", factor = 1,
-                col = 3, rel = TRUE))))
+schema <- setCluster(id = "territories", top = c(1, 8, 8), left = c(1, 1, 4),
+                     width = 3, height = 6) %>%
+  setHeader(rows = 1, relative = TRUE) %>%
+  setIDVar(name = "territories", columns = 1, row = 2, relative = TRUE) %>%
+  setIDVar(name = "year", columns = 4, row = c(3:6), distinct = TRUE) %>%
+  setIDVar(name = "commodities", columns = 1, relative = TRUE) %>%
+  setObsVar(name = "harvested", unit = "ha", columns = 2, relative = TRUE) %>%
+  setObsVar(name = "production", unit = "t", columns = 3, relative = TRUE)
 ```
 
 
