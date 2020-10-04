@@ -29,7 +29,7 @@ variables.}
 \section{Setting up schema descriptions}{
  The recommended strategy for setting
   up a schema description is the following recently. \enumerate{ \item
-  Clarify which are the identifying variables and which are the measured
+  Clarify which are the identifying variables and which are the observed
   variables and create a new entry for each of them in the schema. \item
   Determine whether there are clusters and find the origin (top left cell) of
   each cluster. Follow the next steps for each cluster... \item Determine
@@ -40,7 +40,7 @@ variables.}
   sit. \item in case the variable is in several columns, determine
   additionally the row in which its \emph{names} sit. \item whether the
   variable is distinct from the main table. \item whether the variable must
-  be split off of another column. } \item Determine for each measured
+  be split off of another column. } \item Determine for each observed
   variable the following: \itemize{ \item all columns in which the
   \emph{values} of the variable sit. \item the unit and conversion factor
 
@@ -50,7 +50,7 @@ variables.}
   values sit also the rows in which the \emph{variable name} sits. \item in
   case the names of the variable are given as a value of an identifying
   variable, give the column name as \code{key}, together with the respective
-  name of the measured variable in \code{values}. \item in case the name of
+  name of the observed variable in \code{values}. \item in case the name of
   the variable is the ID of clusters, specify \code{key = "cluster"} and in
   \code{values} the cluster number the variable refers to. } } }
 }

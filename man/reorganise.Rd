@@ -22,34 +22,23 @@ rows into a tidy dataset that can be sorted into the areal database.
 }
 \examples{
 
-# read in a disorganised messy dataset
+# read in a disorganised messy dataset (without column names)
 library(readr)
+library(magrittr)
 ds <- system.file("test_datasets", package = "tabshiftr")
 input <- read_csv(file = paste0(ds, "/table_mismatch_3.csv"),
                   col_names = FALSE, col_types = cols(.default = "c"))
-input
 
-# put together schema description (see makeSchema function)
-mySchema <- makeSchema(schema = list(
-  clusters =
-    list(row = c(1, 8, 8), col = c(1, 1, 4), width = 3, height = 6,
-         id = "territories"),
-  header = list(row = 1, rel = TRUE),
-  variables =
-    list(territories =
-           list(type = "id", row = 1, col = 1, rel = TRUE),
-         year =
-           list(type = "id", row = c(3:6), col = 4, dist = TRUE),
-         commodities =
-           list(type = "id", col = 1, rel = TRUE),
-         harvested =
-           list(type = "measured", unit = "ha", factor = 1,
-                col = 2, rel = TRUE),
-         production =
-           list(type = "measured", unit = "t", factor = 1,
-                col = 3, rel = TRUE))
-))
+# put together schema description
+schema <- setCluster(id = "territories", top = c(1, 8, 8), left = c(1, 1, 4),
+                     width = 3, height = 6) \%>\%
+  setHeader(rows = 1, relative = TRUE) \%>\%
+  setIDVar(name = "territories", columns = 1, row = 2, relative = TRUE) \%>\%
+  setIDVar(name = "year", columns = 4, row = c(3:6), distinct = TRUE) \%>\%
+  setIDVar(name = "commodities", columns = 1, relative = TRUE) \%>\%
+  setObsVar(name = "harvested", unit = "ha", columns = 2, relative = TRUE) \%>\%
+  setObsVar(name = "production", unit = "t", columns = 3, relative = TRUE)
 
 # get the tidy output
-reorganise(input, mySchema)
+reorganise(input, schema)
 }
