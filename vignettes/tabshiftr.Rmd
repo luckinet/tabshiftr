@@ -38,14 +38,13 @@ In a table, names are typically in the topmost row and values are in the column 
 Conceptually, there are two types of variables in any dataset:
 
 1. Variables that contain categorical levels that identify the units for which values have been observed (they are called *identifying variables* here).
-2. Variables that have been observed or observed and that consequently represent the target values of that measurement, be they continuous or categorical (they are called *observed variables* here).
+2. Variables that have been measured or observed and that consequently represent the target values of that measurement, be they continuous or categorical (they are called *observed variables* here).
 
 | identifying variable | observed variable (continuous) | observed variable (categorical) |
 | :- | :- | :- |
 | sample 1 | 10 | blue |
-| sample 2 | 20 | green |
-| sample 3 | 30 | blue |
-| sample 4 | 40 | green |
+| sample 2 | 20 | black |
+| sample 3 | 30 | white |
 
 Table: <a name="tabExample"></a>Table 1: An example table containing one identifying and two observed variables, with the variable names in the topmost row and the values in all consecutive rows.
 
@@ -53,7 +52,7 @@ Table: <a name="tabExample"></a>Table 1: An example table containing one identif
 
 The following lists the dimensions of how data can be disorganised, several of which can co-occur in one table.
 
-1) Each levels of an identifying variable, or the different values of a categorical observed variable are organised into separate topologically coherent chunks (clusters) of data, instead of all variables in one cluster/table.
+1) Each level of an identifying variable, or the different values of a categorical observed variable are organised into separate topologically coherent chunks (clusters) of data, instead of all variables in one cluster/table.
 2) The names of observed variables are treated as if they were the levels of an identifying variable (they are *listed*), instead of each observed variable in its own column. This is also called \"long\" data.
 3) The levels of one or more identifying variable are spread over several columns, instead of all levels in only one column. This is also called \"wide\" data.
 4) Several identifying variables are stored in the same column or one identifying variable is split up into several columns.
@@ -86,7 +85,7 @@ To set up a schema description, the following steps should be taken:
     - all columns in which the variable values sit.
     - in case the variable is in several columns, determine additionally the row in which its values sit. In this case, the values will look like they are part of the header ([Tab. 4](#nest2)).
     - in case the variable must be split off of another column, provide a regular expression that results in the target subset via `setIDVar(split = ...)` ([Tab. 5](#splitCol)).
-    - in case the variable is distinct from the main table, provide the explicit position and set `setIDVar(distinct = TRUE)` ([Tab. 12](#distVar)).
+    - in case the variable is distinct from the main table, provide the explicit (non-relative) position and set `setIDVar(distinct = TRUE)` ([Tab. 12](#distVar)).
     <br><br>
     
 5. Determine for each observed variable the following:
@@ -105,7 +104,9 @@ To set up a schema description, the following steps should be taken:
 
 
 The following sections are organised according to the dimensions of disorganisation outlined above, first introducing the problem more in detail and then giving a description of some typical table arrangements, followed by a schema description that can be used for their reorganisation.
-This is certainly not an exhaustive list of possible table arrangements, but it covers certain basic building blocks of the most common operations and should be extensible enough to capture many mutations of the presented tables. 
+This is certainly not an exhaustive list of possible table arrangements, but it covers certain basic building blocks of the most common operations and should be extensible enough to capture many mutations of the presented tables.
+
+Ideally, we read in tables while treating any header rows *as data*, i.e., by not setting the first row as header. This makes sense, because in disorganised tables it's often not only the first row that is part of the header. 
 
 
 ## Spreadsheet contains one cluster
@@ -203,7 +204,7 @@ For example, `.+?(?=_)` gives everything up until the first `_` and `(?<=\\_).*`
 | unit 2 | year 2_soybean | 2211 | 2212 |
 | unit 2 | year 2_maize | 2221 | 2222 |
 
-Table: <a name="splitCol"></a>Table 5: Several variables are stored in the same column.
+Table: <a name="splitCol"></a>Table 5: The variables `year` and `commodities` are stored in the same column.
 
 ```{r, eval=FALSE}
 schema <- setHeader(rows = 1) %>%
@@ -228,7 +229,7 @@ In those cases, we have to register the variable nevertheless, and provide the v
 | soybean | 1211 | 1212 | year 2 |
 | maize | 1221 | 1222 | year 2 |
 
-Table: <a name="implicitVar"></a>Table 6: Several variables are stored in the same column.
+Table: <a name="implicitVar"></a>Table 6: The information about which territory we are dealing with is missing or implied by some meta-data.
 
 ```{r, eval=FALSE}
 schema <- setCluster(id = "territories", top = 2, left = 1) %>%
@@ -266,7 +267,7 @@ Thus, we define the observed variables and specify the `key = ` in which the var
 | unit 2 | year 2 | soybean | production | 2212 |
 | unit 2 | year 2 | maize | production | 2222 |
 
-Table: <a name="long"></a>Table 7: The variable names of the observed variable are treated as if they were the values of an identifying variable.
+Table: <a name="long"></a>Table 7: The variable names of the observed variable are treated as if they were the values of the identifying variable `dimension`.
 
 ```{r, eval=FALSE}
 schema <- setHeader(rows = 1) %>%
@@ -293,7 +294,7 @@ Moreover, (several) identifying variables may be wide additionally and we have t
 | unit 2 | year 2 | harvested | 2211 | 2221 |
 | unit 2 | year 2 | production | 2212 | 2222 |
 
-Table: <a name="wideLong"></a>Table 8: The identifying variable `commodities` is treated as if it were the observed variable.
+Table: <a name="wideLong"></a>Table 8: The identifying variable `commodities` is treated as if it were the observed variables while the variable names of the observed variable are treated as if they were the values of the identifying variable `dimension`.
 
 ```{r, eval=FALSE}
 schema <- setHeader(rows = 1) %>%
@@ -312,11 +313,11 @@ schema <- setHeader(rows = 1) %>%
 Clusters are often of the same arrangement within one spreadsheet, they can be repeated along rows (horizontally) or along columns (vertically).
 A table should be treated like a cluster also when the spreadsheet contains not only the table, but perhaps also text that may be scattered across the document and that does not allow the table to start at the spreadsheet origin in the topmost left cell.
 
-To reorganise the data into tidy form, each cluster is \"cut out\", rearranged individually and appended to the end of an output table by `reorganise()`.
+To reorganise those data into tidy form, each cluster is \"cut out\", rearranged individually and appended to the end of an output table by `reorganise()`.
 
 ### Horizontal clusters
 
-In case horizontal clusters are sitting right next to each other in the same origin row ([Tab. 9](#clusHor)), it is sufficient to provide the topmost row and all leftmost columns at which a new cluster starts.
+In case clusters are sitting right next to each other in the same origin row ([Tab. 9](#clusHor)), it is sufficient to provide the topmost row and all leftmost columns at which a new cluster starts.
 In case there is some arbitrary horizontal space between clusters, also the width (of each cluster) needs to be provided.
 
 
@@ -385,7 +386,7 @@ schema <- setCluster(top = c(1, 5, 1), left = c(1, 2, 5),
   ...
 ```
 
-Additionally, given that at least the tables within each cluster are all arranged in the same way, the contained variables can be specified so that their row and column indices are given relative to the cluster position (`rel = TRUE`).
+Additionally, given that at least the tables within each cluster are all arranged in the same way, the contained variables can be specified so that their row and column indices are given relative to the cluster position (`relative = TRUE`).
 If also that is not the case, the row and column values for each cluster need to be provided for the respective variables in the same way as for cluster positions.
 
 
@@ -436,7 +437,9 @@ schema <- setCluster(id = "observed", left = 2, top = c(3, 12), height = 8) %>%
 ### Variables that are distinct from a cluster
 
 When not all identifying variables can be provided relative to the cluster origin, for example because they are missing for some clusters, it makes more sense to define such a variable as a distinct variable.
-This is done by providing `row` and `col` as absolute values and setting `dist = TRUE`.
+This is done by providing `row` and `col` as absolute values and setting `distinct = TRUE`.
+Other variables that are all arranged in the same way in each cluster can be specified so that their row and column indices are given relative to the cluster position (`relative = TRUE`).
+
 
 | X1 | X2 | X3 | X4 | X5 | X6 | X7 |
 | :- | :- | :- | :- | :- | :- | :- |
