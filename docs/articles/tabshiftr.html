@@ -77,7 +77,7 @@
 
       
 
-      </header><script src="tabshiftr_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="tabshiftr_files/header-attrs-2.3/header-attrs.js"></script><script src="tabshiftr_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>tabshiftr - Reshape disorganised messy data</h1>
@@ -101,7 +101,7 @@
 <p>Data can be disorganised according to multiple dimensions. To understand those dimensions, we first need to understand the nature of data. Data "of the same kind" are collected in a variable, which is always a combination of a 'name' and the 'values'. In a table, names are typically in the topmost row and values are in the column below that name (<a href="#tabExample">Tab. 1</a>). Conceptually, there are two types of variables in any dataset:</p>
 <ol style="list-style-type: decimal">
 <li>Variables that contain categorical levels that identify the units for which values have been observed (they are called <em>identifying variables</em> here).</li>
-<li>Variables that have been observed or observed and that consequently represent the target values of that measurement, be they continuous or categorical (they are called <em>observed variables</em> here).</li>
+<li>Variables that have been measured or observed and that consequently represent the target values of that measurement, be they continuous or categorical (they are called <em>observed variables</em> here).</li>
 </ol>
 <table class="table">
 <caption>
@@ -125,17 +125,12 @@
 <tr class="even">
 <td align="left">sample 2</td>
 <td align="left">20</td>
-<td align="left">green</td>
+<td align="left">black</td>
 </tr>
 <tr class="odd">
 <td align="left">sample 3</td>
 <td align="left">30</td>
-<td align="left">blue</td>
-</tr>
-<tr class="even">
-<td align="left">sample 4</td>
-<td align="left">40</td>
-<td align="left">green</td>
+<td align="left">white</td>
 </tr>
 </tbody>
 </table>
@@ -145,7 +140,7 @@
 <a href="#dimensions-of-disorganisation" class="anchor"></a>Dimensions of disorganisation</h2>
 <p>The following lists the dimensions of how data can be disorganised, several of which can co-occur in one table.</p>
 <ol style="list-style-type: decimal">
-<li>Each levels of an identifying variable, or the different values of a categorical observed variable are organised into separate topologically coherent chunks (clusters) of data, instead of all variables in one cluster/table.</li>
+<li>Each level of an identifying variable, or the different values of a categorical observed variable are organised into separate topologically coherent chunks (clusters) of data, instead of all variables in one cluster/table.</li>
 <li>The names of observed variables are treated as if they were the levels of an identifying variable (they are <em>listed</em>), instead of each observed variable in its own column. This is also called "long" data.</li>
 <li>The levels of one or more identifying variable are spread over several columns, instead of all levels in only one column. This is also called "wide" data.</li>
 <li>Several identifying variables are stored in the same column or one identifying variable is split up into several columns.</li>
@@ -176,7 +171,7 @@
 <li>all columns in which the variable values sit.</li>
 <li>in case the variable is in several columns, determine additionally the row in which its values sit. In this case, the values will look like they are part of the header (<a href="#nest2">Tab. 4</a>).</li>
 <li>in case the variable must be split off of another column, provide a regular expression that results in the target subset via <code><a href="../reference/setIDVar.html">setIDVar(split = ...)</a></code> (<a href="#splitCol">Tab. 5</a>).</li>
-<li>in case the variable is distinct from the main table, provide the explicit position and set <code><a href="../reference/setIDVar.html">setIDVar(distinct = TRUE)</a></code> (<a href="#distVar">Tab. 12</a>). <br><br>
+<li>in case the variable is distinct from the main table, provide the explicit (non-relative) position and set <code><a href="../reference/setIDVar.html">setIDVar(distinct = TRUE)</a></code> (<a href="#distVar">Tab. 12</a>). <br><br>
 </li>
 </ul>
 </li>
@@ -203,6 +198,7 @@
 <h1 class="hasAnchor">
 <a href="#table-types" class="anchor"></a>Table types</h1>
 <p>The following sections are organised according to the dimensions of disorganisation outlined above, first introducing the problem more in detail and then giving a description of some typical table arrangements, followed by a schema description that can be used for their reorganisation. This is certainly not an exhaustive list of possible table arrangements, but it covers certain basic building blocks of the most common operations and should be extensible enough to capture many mutations of the presented tables.</p>
+<p>Ideally, we read in tables while treating any header rows <em>as data</em>, i.e., by not setting the first row as header. This makes sense, because in disorganised tables it’s often not only the first row that is part of the header.</p>
 <div id="spreadsheet-contains-one-cluster" class="section level2">
 <h2 class="hasAnchor">
 <a href="#spreadsheet-contains-one-cluster" class="anchor"></a>Spreadsheet contains one cluster</h2>
@@ -459,7 +455,7 @@
 <p>Sometimes it may be the case that several variables are stored in the same column, for example when a territorial unit is given together with the year of observation (e.g. <code>unit1, year1</code>). In those cases, the resulting variables in the output schema need to be specified so that they point to that same column but extract information via a regular expression (find more information <a href="https://edrub.in/CheatSheets/cheatSheetStringr.pdf">here</a>). For example, <code>.+?(?=_)</code> gives everything up until the first <code>_</code> and <code>(?&lt;=\\_).*</code> everything after the <code>_</code>.</p>
 <table class="table">
 <caption>
-<a name="splitCol"></a>Table 5: Several variables are stored in the same column.</caption>
+<a name="splitCol"></a>Table 5: The variables <code>year</code> and <code>commodities</code> are stored in the same column.</caption>
 <thead><tr class="header">
 <th align="left">X1</th>
 <th align="left">X2</th>
@@ -536,7 +532,7 @@
 <p>When data are split up into clusters, the identifying variable is often recorded not in the table as an explicit variable, but is only provided in the file or spreadsheet name. In those cases, we have to register the variable nevertheless, and provide the value of that variable in <code>value =</code> of the identifying variable.</p>
 <table class="table">
 <caption>
-<a name="implicitVar"></a>Table 6: Several variables are stored in the same column.</caption>
+<a name="implicitVar"></a>Table 6: The information about which territory we are dealing with is missing or implied by some meta-data.</caption>
 <thead><tr class="header">
 <th align="left">X1</th>
 <th align="left">X2</th>
@@ -597,7 +593,7 @@
 <p>Some tables contain a column where the names of observed variables (<code>harvested</code> and <code>production</code>) are treated as if they were the values of an identifying variable (<code>dimension</code>), while the values are presented in only one column (<code>values</code>) (<a href="#long">Tab. 7</a>). To end up with tidy data in those cases, we need to extract the values associated with the observed variables. Thus, we define the observed variables and specify the <code>key =</code> in which the variable names sit, and the <code>value =</code> the variable name has, to extract that variable.</p>
 <table class="table">
 <caption>
-<a name="long"></a>Table 7: The variable names of the observed variable are treated as if they were the values of an identifying variable.</caption>
+<a name="long"></a>Table 7: The variable names of the observed variable are treated as if they were the values of the identifying variable <code>dimension</code>.</caption>
 <thead><tr class="header">
 <th align="left">X1</th>
 <th align="left">X2</th>
@@ -738,7 +734,7 @@
 <p>Moreover, (several) identifying variables may be wide additionally and we have to proceed as mentioned above, by providing the row and columns of the wide identifying variables.</p>
 <table class="table">
 <caption>
-<a name="wideLong"></a>Table 8: The identifying variable <code>commodities</code> is treated as if it were the observed variable.</caption>
+<a name="wideLong"></a>Table 8: The identifying variable <code>commodities</code> is treated as if it were the observed variables while the variable names of the observed variable are treated as if they were the values of the identifying variable <code>dimension</code>.</caption>
 <thead><tr class="header">
 <th align="left">X1</th>
 <th align="left">X2</th>
@@ -826,11 +822,11 @@
 <h2 class="hasAnchor">
 <a href="#spreadsheet-contains-several-clusters" class="anchor"></a>Spreadsheet contains several clusters</h2>
 <p>Clusters are often of the same arrangement within one spreadsheet, they can be repeated along rows (horizontally) or along columns (vertically). A table should be treated like a cluster also when the spreadsheet contains not only the table, but perhaps also text that may be scattered across the document and that does not allow the table to start at the spreadsheet origin in the topmost left cell.</p>
-<p>To reorganise the data into tidy form, each cluster is "cut out", rearranged individually and appended to the end of an output table by <code><a href="../reference/reorganise.html">reorganise()</a></code>.</p>
+<p>To reorganise those data into tidy form, each cluster is "cut out", rearranged individually and appended to the end of an output table by <code><a href="../reference/reorganise.html">reorganise()</a></code>.</p>
 <div id="horizontal-clusters" class="section level3">
 <h3 class="hasAnchor">
 <a href="#horizontal-clusters" class="anchor"></a>Horizontal clusters</h3>
-<p>In case horizontal clusters are sitting right next to each other in the same origin row (<a href="#clusHor">Tab. 9</a>), it is sufficient to provide the topmost row and all leftmost columns at which a new cluster starts. In case there is some arbitrary horizontal space between clusters, also the width (of each cluster) needs to be provided.</p>
+<p>In case clusters are sitting right next to each other in the same origin row (<a href="#clusHor">Tab. 9</a>), it is sufficient to provide the topmost row and all leftmost columns at which a new cluster starts. In case there is some arbitrary horizontal space between clusters, also the width (of each cluster) needs to be provided.</p>
 <table class="table">
 <caption>
 <a name="clusHor"></a>Table 9: Horizontal clusters of the identifying variable <code>period</code>.</caption>
@@ -1019,7 +1015,7 @@
   <span class="fu"><a href="../reference/setHeader.html">setHeader</a></span>(<span class="kw">rows</span> <span class="kw">=</span> <span class="fl">1</span>) <span class="kw">%&gt;%</span>
   <span class="fu"><a href="../reference/setIDVar.html">setIDVar</a></span>(<span class="kw">name</span> <span class="kw">=</span> <span class="st">"territories"</span>, <span class="kw">columns</span> <span class="kw">=</span> <span class="fl">1</span>, <span class="kw">relative</span> <span class="kw">=</span> <span class="fl">TRUE</span>) <span class="kw">%&gt;%</span>
   <span class="no">...</span></pre></body></html></div>
-<p>Additionally, given that at least the tables within each cluster are all arranged in the same way, the contained variables can be specified so that their row and column indices are given relative to the cluster position (<code>rel = TRUE</code>). If also that is not the case, the row and column values for each cluster need to be provided for the respective variables in the same way as for cluster positions.</p>
+<p>Additionally, given that at least the tables within each cluster are all arranged in the same way, the contained variables can be specified so that their row and column indices are given relative to the cluster position (<code>relative = TRUE</code>). If also that is not the case, the row and column values for each cluster need to be provided for the respective variables in the same way as for cluster positions.</p>
 </div>
 <div id="clusters-of-observed-variables" class="section level3">
 <h3 class="hasAnchor">
@@ -1184,7 +1180,7 @@
 <div id="variables-that-are-distinct-from-a-cluster" class="section level3">
 <h3 class="hasAnchor">
 <a href="#variables-that-are-distinct-from-a-cluster" class="anchor"></a>Variables that are distinct from a cluster</h3>
-<p>When not all identifying variables can be provided relative to the cluster origin, for example because they are missing for some clusters, it makes more sense to define such a variable as a distinct variable. This is done by providing <code>row</code> and <code>col</code> as absolute values and setting <code>dist = TRUE</code>.</p>
+<p>When not all identifying variables can be provided relative to the cluster origin, for example because they are missing for some clusters, it makes more sense to define such a variable as a distinct variable. This is done by providing <code>row</code> and <code>col</code> as absolute values and setting <code>distinct = TRUE</code>. Other variables that are all arranged in the same way in each cluster can be specified so that their row and column indices are given relative to the cluster position (<code>relative = TRUE</code>).</p>
 <table class="table">
 <caption>
 <a name="distVar"></a>Table 12: Several clusters where one variable is not available for each cluster, but distinct of them.</caption>
@@ -1331,7 +1327,7 @@
 <div id="references" class="section level1 unnumbered">
 <h1 class="hasAnchor">
 <a href="#references" class="anchor"></a>References</h1>
-<div id="refs" class="references">
+<div id="refs" class="references hanging-indent">
 <div id="ref-Wickham2014">
 <p>Wickham, Hadley. 2014. “Tidy Data.” <em>Journal of Statistical Software</em> 59 (10): 1–23. <a href="https://doi.org/10.18637/jss.v059.i10">https://doi.org/10.18637/jss.v059.i10</a>.</p>
 </div>
