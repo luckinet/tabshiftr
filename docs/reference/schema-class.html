@@ -159,41 +159,35 @@ variables.</p></dd>
     <p>The recommended strategy for setting
   up a schema description is the following recently.</p><ol>
 <li><p>Clarify which are the identifying variables and which are the observed
-  variables and create a new entry for each of them in the schema.</p></li>
-<li><p>Determine whether there are clusters and find the origin (top left cell) of
-  each cluster. Follow the next steps for each cluster...</p></li>
-<li><p>Determine
-  which variable identifies clusters and provide that as cluster ID.</p></li>
-<li><p>Determine for each identifying variable the following:</p><ul>
-<li><p>is
-  the variable available at all? If not, provide the variable value for this
-  cluster in `value`.</p></li>
-<li><p>all columns in which the variable <em>names</em>
-  sit.</p></li>
-<li><p>in case the variable is in several columns, determine
-  additionally the row in which its <em>names</em> sit.</p></li>
-<li><p>whether the
-  variable is distinct from the main table.</p></li>
-<li><p>whether the variable must
-  be split off of another column.</p></li>
+  variables. Make sure not to Determine whether there are clusters, find the
+  origin (top left cell) of each cluster and provide the required information
+  in <code>setCluster</code>. It might make sense to treat a table that does
+  not start at the topmost left cell as cluster. Follow the next steps for
+  each cluster...</p></li>
+<li><p>Determine which variable identifies clusters and
+  specify that as identifying variable. It can also be the case that the data
+  are organised into separate spreadsheets or files according to one of the
+  variables and also those cases should be treated as if they were clusters,
+  even if each spreadsheet/file contains a topologically coherent table. It
+  may be that either an identifying variable, or a observed variable
+  identifies clusters:</p><ul>
+<li><p>in case it is an identifying variable, provide its name in <code><a href='setCluster.html'>setCluster(id = ...)</a></code> and specify it as an identifying variable <code>setIDVar</code>.</p></li>
+<li><p>in case it is a observed variable, provide simply "observed" as cluster ID.</p></li>
 </ul></li>
-<li><p>Determine for each observed
-  variable the following:</p><ul>
-<li><p>all columns in which the
-  <em>values</em> of the variable sit.</p></li>
-<li><p>the unit and conversion factor</p></li>
-<li><p>in case the variable is not tidy, one of the three following cases
-  should apply:</p><ol>
-<li><p>in case the variable is nested in a wide
-  identifying variable, determine in addition to the columns in which the
-  values sit also the rows in which the <em>variable name</em> sits.</p></li>
-<li><p>in
-  case the names of the variable are given as a value of an identifying
-  variable, give the column name as <code>key</code>, together with the respective
-  name of the observed variable in <code>values</code>.</p></li>
-<li><p>in case the name of
-  the variable is the ID of clusters, specify <code>key = "cluster"</code> and in
-  <code>values</code> the cluster number the variable refers to.</p></li>
+<li><p>Determine for each identifying variable the following:</p><ul>
+<li><p>is the variable available at all? This is particularly important when the data are split up into sub-tables that are in different spreadsheets or files. Often the variable that splits up the data (and thus identifies the clusters) is not explicitly available in the spreadsheet anymore. In such a case, provide the value in <code><a href='setIDVar.html'>setIDVar(value = ...)</a></code>.</p></li>
+<li><p>all columns in which the variable values sit.</p></li>
+<li><p>in case the variable is in several columns, determine additionally the row in which its values sit. In this case, the values will look like they are part of the header.</p></li>
+<li><p>in case the variable must be split off of another column, provide a regular expression that results in the target subset via <code><a href='setIDVar.html'>setIDVar(split = ...)</a></code>.</p></li>
+<li><p>in case the variable is distinct from the main table, provide the explicit (non-relative) position and set <code><a href='setIDVar.html'>setIDVar(distinct = TRUE)</a></code>.</p></li>
+</ul></li>
+<li><p>Determine for each observed variable the following:</p><ul>
+<li><p>all columns in which the values of the variable sit.</p></li>
+<li><p>the unit and conversion factor.</p></li>
+<li><p>in case the variable is not tidy, go through the following cases step by step:</p><ol>
+<li><p>in case the variable is nested in a wide identifying variable, determine in addition to the columns in which the values sit also the rows in which the <em>variable name</em> sits.</p></li>
+<li><p>in case the names of the variable are given as a value of an identifying variable, give the column number as <code>key</code>, together with the name of the respective observed variable (as it appears in the table) in <code>values</code>.</p></li>
+<li><p>in case the name of the variable is the ID of clusters, specify <code>key = "cluster"</code> and in <code>values</code> the cluster number the variable refers to.</p></li>
 </ol></li>
 </ul></li>
 </ol>
