@@ -40,18 +40,23 @@ getNames <- function(header = NULL, meta = NULL){
       unlist()
   }
 
-  # check that no name is duplicated
-  theNames <- tibble(name = theNames) %>%
-    group_by(name) %>%
-    mutate(count = seq_along(name),
-           count = ifelse(count == 1, "", str_c(".", count))) %>%
-    ungroup() %>%
-    mutate(name = str_c(name, count)) %>%
-    select(-count) %>%
-    unlist()
+  # # check that no name is duplicated
+  # theNames <- tibble(name = theNames) %>%
+  #   group_by(name) %>%
+  #   mutate(count = seq_along(name),
+  #          count = ifelse(count == 1, "", str_c(".", count))) %>%
+  #   ungroup() %>%
+  #   mutate(name = str_c(name, count)) %>%
+  #   select(-count) %>%
+  #   unlist()
 
   # make sure that tidy variables actually have correct names
-  targetCols <- meta$cluster$cluster_cols[meta$table$tidy_cols]
+  targetCols <- meta$table$tidy_cols
+  for(k in seq_along(targetCols)){
+    if(meta$table$tidy_rel[k]){
+      targetCols[k] <- meta$cluster$cluster_cols[targetCols[k]]
+    }
+  }
   for(j in seq_along(theNames)){
 
     testVar <- theNames[j]

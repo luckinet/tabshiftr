@@ -36,7 +36,7 @@ getMetadata <- function(data = NULL, schema = NULL){
     })
 
     # define some variables
-    idVars <- valVars <- valFctrs <- tidyVars <- outVar <- spreadVars <- gatherVars <- NULL
+    idVars <- valVars <- valFctrs <- tidyVars <- tidyRel <- outVar <- spreadVars <- gatherVars <- NULL
     splitCols <- tidyCols <- spreadCols <- gatherCols <- NULL
     mergeOrder <- valOrder <- gatherVals <- NULL
     splitVars <- mergeVars <- list()
@@ -68,6 +68,7 @@ getMetadata <- function(data = NULL, schema = NULL){
         if(is.null(varProp$row) & !distinct & is.null(varProp$merge) & is.null(varProp$split)){
           tidyVars <- c(tidyVars, varName)
           tidyCols <- c(tidyCols, varProp$col[j])
+          tidyRel <- c(tidyRel, varProp$rel)
         }
       }
 
@@ -82,11 +83,13 @@ getMetadata <- function(data = NULL, schema = NULL){
           if(length(data) == length(varProp$col)){ #this is a useless test, see 'schema_agcensus2'
             tidyVars <- c(tidyVars, varName)
             tidyCols <- c(tidyCols, varProp$col[j])
+            tidyRel <- c(tidyRel, varProp$rel)
           }
         } else if(varProp$key == "cluster") {
           if(length(unique(varProp$col)) == 1 & varProp$value == j){
             tidyVars <- c(tidyVars, varName)
             tidyCols <- c(tidyCols, unique(varProp$col))
+            tidyRel <- c(tidyRel, varProp$rel)
           }
 
         }
@@ -235,6 +238,7 @@ getMetadata <- function(data = NULL, schema = NULL){
                  table = list(data_rows = dataRows,
                               tidy = tidyVars,
                               tidy_cols = tidyCols,
+                              tidy_rel = tidyRel,
                               gather_into = gatherVars,
                               gather_cols = gatherCols,
                               spread_from = spreadVars,

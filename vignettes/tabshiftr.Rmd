@@ -52,11 +52,11 @@ Table: <a name="tabExample"></a>Table 1: An example table containing one identif
 
 The following lists the dimensions of how data can be disorganised, several of which can co-occur in one table.
 
-1) Each level of an identifying variable, or the different values of a categorical observed variable are organised into separate topologically coherent chunks (clusters) of data, instead of all variables in one cluster/table.
+1) Each level of an identifying variable, or observed variables are organised into separate topologically coherent chunks (clusters) of data, instead of all variables in one cluster/table.
 2) The names of observed variables are treated as if they were the levels of an identifying variable (they are *listed*), instead of each observed variable in its own column. This is also called \"long\" data.
 3) The levels of one or more identifying variable are spread over several columns, instead of all levels in only one column. This is also called \"wide\" data.
 4) Several identifying variables are stored in the same column or one identifying variable is split up into several columns.
-5) One or more variables are stored in a spreadsheet so that the resulting table is topologically non-coherent.
+5) One or more variables are stored in a spreadsheet so that the resulting table is topologically non-coherent (\"not in one piece\").
 6) One or more variables are merely implicitly available (e.g., as spreadsheet or file name)
 
 
@@ -103,7 +103,7 @@ To set up a schema description, the following steps should be taken:
 # Table types
 
 
-The following sections are organised according to the dimensions of disorganisation outlined above, first introducing the problem more in detail and then giving a description of some typical table arrangements, followed by a schema description that can be used for their reorganisation.
+In this section we look at some examples of disorganised data, discuss the dimension along which they are disorganised and show which schema description can be used to reorganise them.
 This is certainly not an exhaustive list of possible table arrangements, but it covers certain basic building blocks of the most common operations and should be extensible enough to capture many mutations of the presented tables.
 
 Ideally, we read in tables while treating any header rows *as data*, i.e., by not setting the first row as header. This makes sense, because in disorganised tables it's often not only the first row that is part of the header. 

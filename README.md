@@ -24,12 +24,12 @@ and observations in rows (see <https://tidyr.tidyverse.org/>). Tables
 can be tidied (i.e., brought into a tidy arrangement) via packages such
 as `tidyr`, however, all functions that deal with reshaping tables to
 date require data that are already organised into topologically
-coherent, rectangular tables. This is often violated in practice, for
-example when data are scraped off of the internet.
+coherent, rectangular tables. This is often violated in practice,
+especially in data that are scraped off of the internet.
 
-`tabshiftr` fills this gap in the toolchain for reproducible data
-management via `schema` descriptions and a `reorganise()` function that
-is largely based on `tidyr`.
+`tabshiftr` fills this gap in the toolchain towards more interoperable
+data via `schema` descriptions and a `reorganise()` function that is
+largely based on `tidyr`.
 
 ## Installation
 
@@ -108,6 +108,7 @@ we call it `territories`.
 ``` r
 library(magrittr)
 library(tabshiftr)
+
 schema <- setCluster(id = "territories", top = c(1, 8, 8), left = c(1, 1, 4), 
                      width = 3, height = 6)
 ```
@@ -129,7 +130,7 @@ variable `year` has values but no explicit name and is distinct from
 clusters (i.e., it doesn’t appear in each cluster). It thus has to be
 described with a position that is not relative to clusters, but to the
 spreadsheet. Before describing those variables though, we have to make
-sure that the cluster ID is set.
+sure that `territories` (the cluster ID) is set.
 
 ``` r
 schema <- schema %>% 
@@ -141,9 +142,10 @@ schema <- schema %>%
 ```
 
 Input tables may contain many more data/variables than what we are
-interested in, but the schema description contains only those variables
-that shall be in the output table. Eventually, we end up with the
-following schema description.
+interested in (for example if there were some metadata or another
+distinct variable in the empty cells in columns 5-7), but the schema
+description contains only those variables that shall be in the output
+table. Eventually, we end up with the following schema description.
 
 ``` r
 schema
