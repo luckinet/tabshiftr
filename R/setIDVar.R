@@ -10,7 +10,7 @@
 #' @param value [\code{character(1)}]\cr In case the variable is an implicit
 #'   variable (i.e., which is not in the origin table), specify it here.
 #' @param columns [\code{integerish(.)}]\cr The column(s) in which the
-#'   \emph{names} of the new variable are recorded.
+#'   \emph{values} of the new variable are recorded.
 #' @param row [\code{integerish(.)}]\cr In case the variable is in several
 #'   columns, specify here additionally the row in which the names are recorded.
 #' @param split [\code{character(1)}]\cr In case the variable is part of a

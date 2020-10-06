@@ -15,6 +15,7 @@
 #' ds <- system.file("test_datasets", package = "tabshiftr")
 #' input <- read_csv(file = paste0(ds, "/table_mismatch_3.csv"),
 #'                   col_names = FALSE, col_types = cols(.default = "c"))
+#' input
 #'
 #' # put together schema description
 #' schema <- setCluster(id = "territories", top = c(1, 8, 8), left = c(1, 1, 4),

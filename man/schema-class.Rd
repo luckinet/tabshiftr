@@ -30,28 +30,34 @@ variables.}
  The recommended strategy for setting
   up a schema description is the following recently. \enumerate{ \item
   Clarify which are the identifying variables and which are the observed
-  variables and create a new entry for each of them in the schema. \item
-  Determine whether there are clusters and find the origin (top left cell) of
-  each cluster. Follow the next steps for each cluster... \item Determine
-  which variable identifies clusters and provide that as cluster ID. \item
-  Determine for each identifying variable the following: \itemize{ \item is
-  the variable available at all? If not, provide the variable value for this
-  cluster in `value`. \item all columns in which the variable \emph{names}
-  sit. \item in case the variable is in several columns, determine
-  additionally the row in which its \emph{names} sit. \item whether the
-  variable is distinct from the main table. \item whether the variable must
-  be split off of another column. } \item Determine for each observed
-  variable the following: \itemize{ \item all columns in which the
-  \emph{values} of the variable sit. \item the unit and conversion factor
-
-  \item in case the variable is not tidy, one of the three following cases
-  should apply: \enumerate{ \item in case the variable is nested in a wide
-  identifying variable, determine in addition to the columns in which the
-  values sit also the rows in which the \emph{variable name} sits. \item in
-  case the names of the variable are given as a value of an identifying
-  variable, give the column name as \code{key}, together with the respective
-  name of the observed variable in \code{values}. \item in case the name of
-  the variable is the ID of clusters, specify \code{key = "cluster"} and in
-  \code{values} the cluster number the variable refers to. } } }
+  variables. Make sure not to Determine whether there are clusters, find the
+  origin (top left cell) of each cluster and provide the required information
+  in \code{setCluster}. It might make sense to treat a table that does
+  not start at the topmost left cell as cluster. Follow the next steps for
+  each cluster... \item Determine which variable identifies clusters and
+  specify that as identifying variable. It can also be the case that the data
+  are organised into separate spreadsheets or files according to one of the
+  variables and also those cases should be treated as if they were clusters,
+  even if each spreadsheet/file contains a topologically coherent table. It
+  may be that either an identifying variable, or a observed variable
+  identifies clusters: \itemize{
+    \item in case it is an identifying variable, provide its name in \code{setCluster(id = ...)} and specify it as an identifying variable \code{setIDVar}.
+    \item in case it is a observed variable, provide simply "observed" as cluster ID.}
+  \item Determine for each identifying variable the following: \itemize{
+    \item is the variable available at all? This is particularly important when the data are split up into sub-tables that are in different spreadsheets or files. Often the variable that splits up the data (and thus identifies the clusters) is not explicitly available in the spreadsheet anymore. In such a case, provide the value in \code{setIDVar(value = ...)}.
+    \item all columns in which the variable values sit.
+    \item in case the variable is in several columns, determine additionally the row in which its values sit. In this case, the values will look like they are part of the header.
+    \item in case the variable must be split off of another column, provide a regular expression that results in the target subset via \code{setIDVar(split = ...)}.
+    \item in case the variable is distinct from the main table, provide the explicit (non-relative) position and set \code{setIDVar(distinct = TRUE)}.
+  }
+  \item Determine for each observed variable the following: \itemize{
+    \item all columns in which the values of the variable sit.
+    \item the unit and conversion factor.
+    \item in case the variable is not tidy, go through the following cases step by step: \enumerate{
+      \item in case the variable is nested in a wide identifying variable, determine in addition to the columns in which the values sit also the rows in which the \emph{variable name} sits.
+      \item in case the names of the variable are given as a value of an identifying variable, give the column number as \code{key}, together with the name of the respective observed variable (as it appears in the table) in \code{values}.
+      \item in case the name of the variable is the ID of clusters, specify \code{key = "cluster"} and in \code{values} the cluster number the variable refers to.
+    }
+  } }
 }
 
