@@ -154,8 +154,11 @@ reorganise <- function(input = NULL, schema = NULL){
     }
 
     # complete id-columns so that there are no missing rows in them
+    toComplete <- theMeta$var_type$ids
+    toComplete <- toComplete[!toComplete %in% names(theMeta$table$split)]
+    toComplete <- toComplete[!toComplete %in% theMeta$table$gather_into]
     theTable <- theTable %>%
-      fill(theMeta$var_type$ids)
+      fill(all_of(toComplete))
 
     # gather all gather variables
     if(!is.null(theMeta$table$gather_into)){
