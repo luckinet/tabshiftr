@@ -145,19 +145,24 @@ selectData <- function(input = NULL, schema = NULL){
     # new code
     tempData2 <- input[outRows, outCols]
     # remove invalid rows
-    toRemove2 <- which(rowSums((is.na(tempData2))) == ncol(tempData2))
+    removeRows <- NULL
     if(header$rel){
-      toRemove2 <- clusters$row[i] - headerRows + 1
+      removeRows <- headerRows - clusters$row[i] + 1
     } else {
       if(any(headerRows >= clusters$row[i])){
-        toRemove2 <- c(toRemove2, headerRows[headerRows >= clusters$row[i]])
+        removeRows <- c(removeRows, which(outRows %in% headerRows[headerRows >= clusters$row[i]]))
       }
     }
+    removeRows <- c(removeRows, which(rowSums(is.na(tempData2)) == ncol(tempData2)))
+    removeCols <- which(colSums(is.na(tempData2)) == nrow(tempData2))
 
-    if(length(toRemove2) != 0){
-      outRows <- outRows[-toRemove2]
+    if(length(removeRows) != 0){
+      outRows <- outRows[-removeRows]
     }
-    tempData2 <- input[outRows, clusterCols2]
+    if(length(removeCols) != 0){
+      outCols <- outCols[-removeCols]
+    }
+    tempData2 <- input[outRows, outCols]
 
     # determine header
     tempHeader <- input[headerRows, ]
