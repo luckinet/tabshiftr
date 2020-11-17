@@ -81,6 +81,23 @@ test_that("bring one wide identifying variable into long form and unlist observe
   expect_valid_table(x = output, units = 2)
 })
 
+test_that("bring one wide identifying variable into long form and select only a subset of the long variable", {
+  schema <- setHeader(rows = 1) %>%
+    setIDVar(name = "territories", columns = 1) %>%
+    setIDVar(name = "year", columns = 2) %>%
+    setIDVar(name = "commodities", columns = c(4, 5), row = 1) %>%
+    setObsVar(name = "production", unit = "t", columns = c(4, 5),
+              key = "dimension", value = "production")
+
+  input <- read_csv(paste0(system.file("test_datasets",
+                                       package="tabshiftr",
+                                       mustWork = TRUE), "/table_wide_listed_1.csv"),
+                    col_names = FALSE)
+  output <- reorganise(input = input, schema = schema)
+
+  expect_valid_table(x = output, units = 2, variables = "production")
+})
+
 # bring several wide identifying variable into long form and spread long table ----
 test_that("several wide identifying variable into long form and unlist observed variable", {
   schema <- setHeader(rows = c(1, 2)) %>%

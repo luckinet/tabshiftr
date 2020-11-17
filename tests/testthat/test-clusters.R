@@ -14,7 +14,7 @@ test_that("several vertical clusters of otherwise tidy data", {
     setObsVar(name = "production", columns = 5, unit = "t")
 
   input <- read_csv(paste0(system.file("test_datasets",
-                                       package="tabshiftr",
+                                       package = "tabshiftr",
                                        mustWork = TRUE), "/table_clust_1.csv"),
                     col_names = FALSE)
   output <- reorganise(input = input, schema = schema)
