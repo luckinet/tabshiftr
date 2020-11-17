@@ -83,7 +83,7 @@ is used as decimal sign." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tabshiftr</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="Unreleased version">0.2.0</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="Unreleased version">0.2.1</span>
       </span>
     </div>
 
@@ -137,7 +137,7 @@ example, the symbol(s) that signal "not available" values or the symbol that
 is used as decimal sign.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>setFormat</span>(<span class='kw'>schema</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>decimal</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>delimiter</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>na_values</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>setFormat</span>(<span class='kw'>schema</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>decimal</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>thousand</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>na_values</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -151,12 +151,12 @@ information).</p></td>
     <tr>
       <th>decimal</th>
       <td><p>[<code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code>]<br /> The symbols that should be
-interpreted as decimal sign.</p></td>
+interpreted as decimal separator.</p></td>
     </tr>
     <tr>
-      <th>delimiter</th>
+      <th>thousand</th>
       <td><p>[<code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code>]<br /> The symbols that should be
-interpreted as delimiter of cells.</p></td>
+interpreted as thousand separator.</p></td>
     </tr>
     <tr>
       <th>na_values</th>

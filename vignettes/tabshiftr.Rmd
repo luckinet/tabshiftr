@@ -71,7 +71,7 @@ To set up a schema description, the following steps should be taken:
 
 1. Clarify which are the identifying variables and which are the observed variables. Make sure not to mistake a listed observed variable as identifying variable. 
 
-2. Determine whether there are clusters, find the origin (top left cell) of each cluster and provide the required information in `setCluster()` ([Tab. 9](#clusHor), [Tab. 10](#clusId) & [Tab. 11](#clusMeas)). It might make sense to treat a table that does not start at the topmost left cell as cluster ([Tab. 6](#implicitVar)). Follow the next steps for each cluster...
+2. Determine whether there are clusters, find the origin (top left cell) of each cluster and provide the required information in `setCluster()` ([Tab. 9](#clusHor), [Tab. 10](#clusId) & [Tab. 11](#clusMeas)). It is encouraged to treat a table that does not start at the topmost left cell as cluster ([Tab. 6](#implicitVar)). Follow the next steps for each cluster...
 
 3. Determine which variable identifies clusters and specify that as identifying variable. It can also be the case that the data are organised into separate spreadsheets or files according to one of the variables and also those cases should be treated as if they were clusters, even if each spreadsheet/file contains a topologically coherent table. It may be that either an identifying variable, or a observed variable identifies clusters:
 
@@ -94,7 +94,7 @@ To set up a schema description, the following steps should be taken:
     - the unit and conversion factor.
     - in case the variable is not tidy, go through the following cases step by step:
         * in case the variable is nested in a wide identifying variable, determine in addition to the columns in which the values sit also the rows in which the **variable name** sits ([Tab. 3](#nest1) & [Tab. 4](#nest2)).
-        * in case the names of the variable are given as a value of an identifying variable ([Tab. 8](#wideLong)), give the column number as `key`, together with the name of the respective observed variable (as it appears in the table) in `values`.
+        * in case the names of the variable are given as a value of an identifying variable ([Tab. 8](#wideLong)), give the column name as `key`, together with the name of the respective observed variable (as it appears in the table) in `values`.
         * in case the name of the variable is the ID of clusters, specify `key = "cluster"` and in `values` the cluster number the variable refers to ([Tab. 11](#clusMeas)).
     <br><br>
 

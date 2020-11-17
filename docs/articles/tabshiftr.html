@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tabshiftr</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="Unreleased version">0.2.0</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="Unreleased version">0.2.1</span>
       </span>
     </div>
 
@@ -155,7 +155,7 @@
 <p>To set up a schema description, the following steps should be taken:</p>
 <ol style="list-style-type: decimal">
 <li><p>Clarify which are the identifying variables and which are the observed variables. Make sure not to mistake a listed observed variable as identifying variable.</p></li>
-<li><p>Determine whether there are clusters, find the origin (top left cell) of each cluster and provide the required information in <code><a href="../reference/setCluster.html">setCluster()</a></code> (<a href="#clusHor">Tab. 9</a>, <a href="#clusId">Tab. 10</a> &amp; <a href="#clusMeas">Tab. 11</a>). It might make sense to treat a table that does not start at the topmost left cell as cluster (<a href="#implicitVar">Tab. 6</a>). Follow the next steps for each cluster…</p></li>
+<li><p>Determine whether there are clusters, find the origin (top left cell) of each cluster and provide the required information in <code><a href="../reference/setCluster.html">setCluster()</a></code> (<a href="#clusHor">Tab. 9</a>, <a href="#clusId">Tab. 10</a> &amp; <a href="#clusMeas">Tab. 11</a>). It is encouraged to treat a table that does not start at the topmost left cell as cluster (<a href="#implicitVar">Tab. 6</a>). Follow the next steps for each cluster…</p></li>
 <li>
 <p>Determine which variable identifies clusters and specify that as identifying variable. It can also be the case that the data are organised into separate spreadsheets or files according to one of the variables and also those cases should be treated as if they were clusters, even if each spreadsheet/file contains a topologically coherent table. It may be that either an identifying variable, or a observed variable identifies clusters:</p>
 <ul>
@@ -183,7 +183,7 @@
 <li>in case the variable is not tidy, go through the following cases step by step:
 <ul>
 <li>in case the variable is nested in a wide identifying variable, determine in addition to the columns in which the values sit also the rows in which the <strong>variable name</strong> sits (<a href="#nest1">Tab. 3</a> &amp; <a href="#nest2">Tab. 4</a>).</li>
-<li>in case the names of the variable are given as a value of an identifying variable (<a href="#wideLong">Tab. 8</a>), give the column number as <code>key</code>, together with the name of the respective observed variable (as it appears in the table) in <code>values</code>.</li>
+<li>in case the names of the variable are given as a value of an identifying variable (<a href="#wideLong">Tab. 8</a>), give the column name as <code>key</code>, together with the name of the respective observed variable (as it appears in the table) in <code>values</code>.</li>
 <li>in case the name of the variable is the ID of clusters, specify <code>key = "cluster"</code> and in <code>values</code> the cluster number the variable refers to (<a href="#clusMeas">Tab. 11</a>). <br><br>
 </li>
 </ul>

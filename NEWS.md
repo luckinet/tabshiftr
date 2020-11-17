@@ -1,3 +1,8 @@
+# 0.2.1
+
+- automatically complete id-columns that contain missing values in some rows.
+- automatically remove rows and columns that contain merely NA values.
+
 # 0.2.0
 
 - include functions `setCluster`, `setHeader`,`setFormat`, `setIDVar` and `setObsVar` for easier schema setup.

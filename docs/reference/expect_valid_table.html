@@ -82,7 +82,7 @@ the tests of this package." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tabshiftr</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="Unreleased version">0.2.0</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="Unreleased version">0.2.1</span>
       </span>
     </div>
 
@@ -135,7 +135,7 @@ the tests of this package." />
 the tests of this package.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>expect_valid_table</span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>units</span> <span class='kw'>=</span> <span class='fl'>1</span>)</pre>
+    <pre class="usage"><span class='fu'>expect_valid_table</span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>units</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>variables</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -147,6 +147,11 @@ the tests of this package.</p>
     <tr>
       <th>units</th>
       <td><p>the number of units in the output table (from 1 to 3)</p></td>
+    </tr>
+    <tr>
+      <th>variables</th>
+      <td><p>the variables that should be in the output table (either
+"harvested" or "production")</p></td>
     </tr>
     </table>
 
