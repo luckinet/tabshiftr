@@ -4,7 +4,7 @@
 \alias{expect_valid_table}
 \title{Test for a valid table}
 \usage{
-expect_valid_table(x = NULL, units = 1)
+expect_valid_table(x = NULL, units = 1, variables = NULL)
 }
 \arguments{
 \item{x}{a table to test.}

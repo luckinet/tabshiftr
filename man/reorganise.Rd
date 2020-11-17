@@ -18,7 +18,7 @@ A (tidy) table which is the result of employing \code{schema} on
 }
 \description{
 This function takes a disorganised messy table and rearranges columns and
-rows into a tidy dataset that can be sorted into the areal database.
+rows into a tidy table.
 }
 \examples{
 
