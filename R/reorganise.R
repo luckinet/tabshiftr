@@ -1,7 +1,7 @@
 #' Reorganise a table
 #'
 #' This function takes a disorganised messy table and rearranges columns and
-#' rows into a tidy dataset that can be sorted into the areal database.
+#' rows into a tidy table.
 #' @param input [\code{data.frame(1)}]\cr table to reorganise.
 #' @param schema [\code{symbol(1)}]\cr the schema description for reorganising
 #'   \code{input}.
@@ -71,7 +71,6 @@ reorganise <- function(input = NULL, schema = NULL){
     theTable <- input[theData$data_rows, theData$data_cols]
     theHeader <- theData$header
     theMeta <- varMeta[[i]]
-
 
     # make required columnnames
     theNames <- getNames(header = theHeader, meta = theMeta)
@@ -154,29 +153,9 @@ reorganise <- function(input = NULL, schema = NULL){
       theNames <- NULL
     }
 
-    # split id-columns that have a split expression
-    if(length(theMeta$table$split) != 0){
-      for(k in seq_along(theMeta$table$split)){
-        if(k == length(theMeta$table$split)){
-          doRemove <- TRUE
-        } else {
-          doRemove <- FALSE
-        }
-        theSplit <- theMeta$table$split[[k]]
-        splitName <- names(theMeta$table$split)[k]
-        splitCol <- which(colnames(theTable) == splitName)
-        if(length(splitCol) == 0){
-          splitCol <- theSplit$splitCol
-        }
-        theTable <- theTable %>%
-          tidyr::extract(col = splitCol,
-                         into = splitName,
-                         regex = theSplit$splitExpr,
-                         remove = doRemove)
-        theMeta$table$tidy <- c(theMeta$table$tidy, splitName)
-      }
-      theNames <- NULL
-    }
+    # complete id-columns so that there are no missing rows in them
+    theTable <- theTable %>%
+      fill(theMeta$var_type$ids)
 
     # gather all gather variables
     if(!is.null(theMeta$table$gather_into)){
@@ -199,13 +178,38 @@ reorganise <- function(input = NULL, schema = NULL){
       theTable <- theTable %>%
         pivot_wider(id_cols = theMeta$var_type$ids,
                     names_from = theMeta$table$spread_from,
-                    values_from = all_of(spreadCols))
+                    values_from = all_of(spreadCols)) %>%
+        select(theMeta$var_type$ids, theMeta$table$spread_target)
       theNames <- c(theMeta$var_type$ids, valuesInCluster)
     }
 
     # sort the data
     if(!is.null(theNames)){
       colnames(theTable) <- theNames
+    }
+
+    # split id-columns that have a split expression
+    if(length(theMeta$table$split) != 0){
+      for(k in seq_along(theMeta$table$split)){
+        if(k == length(theMeta$table$split)){
+          doRemove <- TRUE
+        } else {
+          doRemove <- FALSE
+        }
+        theSplit <- theMeta$table$split[[k]]
+        splitName <- names(theMeta$table$split)[k]
+        splitCol <- which(colnames(theTable) == splitName)
+        if(length(splitCol) == 0){
+          splitCol <- theSplit$splitCol
+        }
+        theTable <- theTable %>%
+          tidyr::extract(col = splitCol,
+                         into = splitName,
+                         regex = theSplit$splitExpr,
+                         remove = doRemove)
+        theMeta$table$tidy <- c(theMeta$table$tidy, splitName)
+      }
+      theNames <- NULL
     }
 
     # if there is nothing to gather and spread, there are only tidy columns
@@ -234,6 +238,9 @@ reorganise <- function(input = NULL, schema = NULL){
         theVar[theVar %in% schema@format$na] <- NA
       }
       if(!is.null(schema@format$del)){
+        if(schema@format$del == "."){
+          schema@format$del <- "[.]"
+        }
         theVar <- gsub(schema@format$del, "", theVar)
       }
       if(!is.null(schema@format$dec)){
