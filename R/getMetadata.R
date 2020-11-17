@@ -36,9 +36,9 @@ getMetadata <- function(data = NULL, schema = NULL){
     })
 
     # define some variables
-    idVars <- valVars <- valFctrs <- tidyVars <- tidyRel <- outVar <- spreadVars <- gatherVars <- NULL
-    splitCols <- tidyCols <- spreadCols <- gatherCols <- NULL
-    mergeOrder <- valOrder <- gatherVals <- NULL
+    idVars <- valVars <- valFctrs <- tidyVars <- tidyRel <- outVar <- spreadVars <-
+      spreadTarget <- gatherVars <- splitCols <- tidyCols <- spreadCols <- gatherCols <-
+      mergeOrder <- valOrder <- gatherVals <- NULL
     splitVars <- mergeVars <- list()
 
     # go through variables and determine whether it ... ----
@@ -138,12 +138,20 @@ getMetadata <- function(data = NULL, schema = NULL){
         if(!is.null(varProp$row) & !distinct){
           # if(doMerge){
             spreadVars <- c(spreadVars, "key")
-          # }
+            spreadTarget <- c(spreadTarget, varName)
+            # }
           gatherCols <- c(gatherCols, varProp$col)
           spreadCols <- length(idVars) + 2
         } else if(!is.null(varProp$key)) {
           # if not that but a key is given, use the key
           spreadVars <- c(spreadVars, varProp$key)
+          if(varProp$key == "cluster"){
+            if(varProp$value == j){
+              spreadTarget <- c(spreadTarget, as.character(varProp$value))
+            }
+          } else {
+            spreadTarget <- c(spreadTarget, varProp$value)
+          }
           if(is.null(gatherVars)){
             spreadCols <- c(spreadCols, varProp$col)
           } else {
@@ -243,6 +251,7 @@ getMetadata <- function(data = NULL, schema = NULL){
                               gather_cols = gatherCols,
                               spread_from = spreadVars,
                               spread_cols = spreadCols,
+                              spread_target = spreadTarget,
                               merge = mergeVars,
                               split = splitVars)
     )
