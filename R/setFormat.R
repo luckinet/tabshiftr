@@ -8,9 +8,9 @@
 #'   already existing schema, provide that schema here (overwrites previous
 #'   information).
 #' @param decimal [\code{character(1)}]\cr The symbols that should be
-#'   interpreted as decimal sign.
-#' @param delimiter [\code{character(1)}]\cr The symbols that should be
-#'   interpreted as delimiter of cells.
+#'   interpreted as decimal separator.
+#' @param thousand [\code{character(1)}]\cr The symbols that should be
+#'   interpreted as thousand separator.
 #' @param na_values [\code{character(.)}]\cr The symbols that should be
 #'   interpreted as \code{NA}.
 #' @details Please also take a look at the currently suggested strategy to set
@@ -20,11 +20,11 @@
 #' @importFrom checkmate assertClass assertCharacter
 #' @export
 
-setFormat <- function(schema = NULL, decimal = NULL, delimiter = NULL, na_values = NULL){
+setFormat <- function(schema = NULL, decimal = NULL, thousand = NULL, na_values = NULL){
 
   assertClass(x = schema, classes = "schema", null.ok = TRUE)
   assertCharacter(x = decimal, len = 1, any.missing = FALSE, null.ok = TRUE)
-  assertCharacter(x = delimiter, len = 1, any.missing = FALSE, null.ok = TRUE)
+  assertCharacter(x = thousand, len = 1, any.missing = FALSE, null.ok = TRUE)
   assertCharacter(x = na_values, any.missing = FALSE, null.ok = TRUE)
 
   if(is.null(schema)){
@@ -35,8 +35,8 @@ setFormat <- function(schema = NULL, decimal = NULL, delimiter = NULL, na_values
     schema@format$dec <- decimal
   }
 
-  if(!is.null(delimiter)){
-    schema@format$del <- delimiter
+  if(!is.null(thousand)){
+    schema@format$del <- thousand
   }
 
   if(!is.null(na_values)){

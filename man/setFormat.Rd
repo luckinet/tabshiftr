@@ -4,7 +4,7 @@
 \alias{setFormat}
 \title{Set the specific format of a table}
 \usage{
-setFormat(schema = NULL, decimal = NULL, delimiter = NULL, na_values = NULL)
+setFormat(schema = NULL, decimal = NULL, thousand = NULL, na_values = NULL)
 }
 \arguments{
 \item{schema}{[\code{schema(1)}]\cr In case this information is added to an
@@ -12,10 +12,10 @@ already existing schema, provide that schema here (overwrites previous
 information).}
 
 \item{decimal}{[\code{character(1)}]\cr The symbols that should be
-interpreted as decimal sign.}
+interpreted as decimal separator.}
 
-\item{delimiter}{[\code{character(1)}]\cr The symbols that should be
-interpreted as delimiter of cells.}
+\item{thousand}{[\code{character(1)}]\cr The symbols that should be
+interpreted as thousand separator.}
 
 \item{na_values}{[\code{character(.)}]\cr The symbols that should be
 interpreted as \code{NA}.}
