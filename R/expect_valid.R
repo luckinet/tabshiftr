@@ -5,6 +5,8 @@
 #' the tests of this package.
 #' @param x a table to test.
 #' @param units the number of units in the output table (from 1 to 3)
+#' @param variables the variables that should be in the output table (either
+#'   "harvested" or "production")
 #' @return Either an error message of the invalid expectations, or the output of
 #'   the last successful expectation.
 #' @importFrom testthat expect_identical

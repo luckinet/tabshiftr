@@ -10,6 +10,9 @@ expect_valid_table(x = NULL, units = 1, variables = NULL)
 \item{x}{a table to test.}
 
 \item{units}{the number of units in the output table (from 1 to 3)}
+
+\item{variables}{the variables that should be in the output table (either
+"harvested" or "production")}
 }
 \value{
 Either an error message of the invalid expectations, or the output of
