@@ -41,7 +41,12 @@ setIDVar <- function(schema = NULL, name = NULL, value = NULL, columns = NULL,
   # assertions ----
   assertClass(x = schema, classes = "schema", null.ok = TRUE)
   assertCharacter(x = name, len = 1, any.missing = FALSE)
-  assertIntegerish(x = columns, lower = 1, min.len = 1, null.ok = TRUE)
+  colInt <- testIntegerish(x = columns, lower = 1, min.len = 1, null.ok = TRUE)
+  colQuo <- testClass(x = columns, classes = "quosure")
+  assert(colInt, colQuo)
+  rowInt <- testIntegerish(x = row, lower = 1, min.len = 1, null.ok = TRUE)
+  rowQuo <- testClass(x = row, classes = "quosure")
+  assert(rowInt, rowQuo)
   assertIntegerish(x = row, lower = 1, null.ok = TRUE)
   assertCharacter(x = value, len = 1, any.missing = FALSE, null.ok = TRUE)
   assertCharacter(x = split, len = 1, any.missing = FALSE, null.ok = TRUE)
@@ -79,9 +84,11 @@ setIDVar <- function(schema = NULL, name = NULL, value = NULL, columns = NULL,
       }
     }
     # ensure that a split expression is set, in case the variable is contained in a column that already contains another variable
-    if(any(columns %in% prevIDcols)){
-      if(is.null(split)){
-        message("  -> the variable '", name, "' is in a column (", paste(columns, collapse = ", "), ") that already contains another variable, but no split-expression is set.")
+    if(!colQuo){
+      if(any(columns %in% prevIDcols)){
+        if(is.null(split)){
+          message("  -> the variable '", name, "' is in a column (", paste(columns, collapse = ", "), ") that already contains another variable, but no split-expression is set.")
+        }
       }
     }
   } else{

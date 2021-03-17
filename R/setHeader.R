@@ -20,6 +20,7 @@
 #' @return An object of class \code{\link{schema}}.
 #' @family functions to describe table arrangement
 #' @importFrom checkmate assertClass assertIntegerish assertLogical
+#'   testIntegerish testClass
 #' @export
 
 setHeader <- function(schema = NULL, rows = NULL, relative = FALSE,
@@ -27,7 +28,9 @@ setHeader <- function(schema = NULL, rows = NULL, relative = FALSE,
 
   # assertions ----
   assertClass(x = schema, classes = "schema", null.ok = TRUE)
-  assertIntegerish(x = rows, min.len = 1, any.missing = FALSE, null.ok = TRUE)
+  rowInt <- testIntegerish(x = rows, lower = 1, min.len = 1, null.ok = TRUE)
+  rowQuo <- testClass(x = rows, classes = "quosure")
+  assert(rowInt, rowQuo)
   assertLogical(x = relative, any.missing = FALSE, len = 1)
   assertLogical(x = merge, any.missing = FALSE, len = 1)
 

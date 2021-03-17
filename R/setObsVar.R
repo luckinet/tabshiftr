@@ -37,7 +37,7 @@
 #' @return An object of class \code{\link{schema}}.
 #' @family functions to describe table arrangement
 #' @importFrom checkmate assertClass assertIntegerish assertLogical
-#'   assertCharacter assertNumeric
+#'   assertCharacter assertNumeric testIntegerish testCharacter assert
 #' @export
 
 setObsVar <- function(schema = NULL, name = NULL, columns = NULL, row = NULL,
@@ -47,7 +47,12 @@ setObsVar <- function(schema = NULL, name = NULL, columns = NULL, row = NULL,
   # assertions ----
   assertClass(x = schema, classes = "schema", null.ok = TRUE)
   assertCharacter(x = name, len = 1, any.missing = FALSE)
-  assertIntegerish(x = columns, lower = 1, min.len = 1, null.ok = TRUE)
+  colInt <- testIntegerish(x = columns, lower = 1, min.len = 1, null.ok = TRUE)
+  colQuo <- testClass(x = columns, classes = "quosure")
+  assert(colInt, colQuo)
+  rowInt <- testIntegerish(x = row, lower = 1, min.len = 1, null.ok = TRUE)
+  rowQuo <- testClass(x = row, classes = "quosure")
+  assert(rowInt, rowQuo)
   assertIntegerish(x = row, null.ok = TRUE)
   assertLogical(x = relative, any.missing = FALSE, len = 1)
   assertLogical(x = distinct, any.missing = FALSE, len = 1)
