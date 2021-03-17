@@ -42,4 +42,10 @@ test_that("unlist measured variable", {
   output <- reorganise(input = input, schema = schema)
 
   expect_valid_table(x = output, units = 2)
+
+
+  # ... with regular expressions for observed variables
+
+
+  # ... with regular expressions for identifying variables
 })

@@ -20,6 +20,28 @@ test_that("split a column that contains several variables in one column", {
   output <- reorganise(input = input, schema = schema)
 
   expect_valid_table(x = output, units = 2)
+
+
+  # ... with regular expressions for observed variables
+
+  input <- read_csv(paste0(system.file("test_datasets",
+                                       package="tabshiftr",
+                                       mustWork = TRUE), "/table_mismatch_1.csv"),
+                    col_names = FALSE)
+  output <- reorganise(input = input, schema = schema)
+
+  expect_valid_table(x = output, units = 2)
+
+
+  # ... with regular expressions for identifying variables
+
+  input <- read_csv(paste0(system.file("test_datasets",
+                                       package="tabshiftr",
+                                       mustWork = TRUE), "/table_mismatch_1.csv"),
+                    col_names = FALSE)
+  output <- reorganise(input = input, schema = schema)
+
+  expect_valid_table(x = output, units = 2)
 })
 
 test_that("recognise an identifying variable that is actually a merge of two columns", {
@@ -29,6 +51,28 @@ test_that("recognise an identifying variable that is actually a merge of two col
     setIDVar(name = "commodities", columns = 4) %>%
     setObsVar(name = "harvested", unit = "ha", columns = 5) %>%
     setObsVar(name = "production", unit = "t", columns = 6)
+
+  input <- read_csv(paste0(system.file("test_datasets",
+                                       package="tabshiftr",
+                                       mustWork = TRUE), "/table_mismatch_2.csv"),
+                    col_names = FALSE)
+  output <- reorganise(input = input, schema = schema)
+
+  expect_valid_table(x = output, units = 2)
+
+
+  # ... with regular expressions for observed variables
+
+  input <- read_csv(paste0(system.file("test_datasets",
+                                       package="tabshiftr",
+                                       mustWork = TRUE), "/table_mismatch_2.csv"),
+                    col_names = FALSE)
+  output <- reorganise(input = input, schema = schema)
+
+  expect_valid_table(x = output, units = 2)
+
+
+  # ... with regular expressions for identifying variables
 
   input <- read_csv(paste0(system.file("test_datasets",
                                        package="tabshiftr",
@@ -56,6 +100,28 @@ test_that("recognise a distinct variable that is not valid for every cluster", {
   output <- reorganise(input = input, schema = schema)
 
   expect_valid_table(x = output, units = 3)
+
+
+  # ... with regular expressions for observed variables
+
+  input <- read_csv(paste0(system.file("test_datasets",
+                                       package="tabshiftr",
+                                       mustWork = TRUE), "/table_mismatch_3.csv"),
+                    col_names = FALSE)
+  output <- reorganise(input = input, schema = schema)
+
+  expect_valid_table(x = output, units = 3)
+
+
+  # ... with regular expressions for identifying variables
+
+  input <- read_csv(paste0(system.file("test_datasets",
+                                       package="tabshiftr",
+                                       mustWork = TRUE), "/table_mismatch_3.csv"),
+                    col_names = FALSE)
+  output <- reorganise(input = input, schema = schema)
+
+  expect_valid_table(x = output, units = 3)
 })
 
 test_that("set an id variable manually that is not in the table", {
@@ -74,6 +140,28 @@ test_that("set an id variable manually that is not in the table", {
   output <- reorganise(input = input, schema = schema)
 
   expect_valid_table(x = output, units = 1)
+
+
+  # ... with regular expressions for observed variables
+
+  input <- read_csv(paste0(system.file("test_datasets",
+                                       package="tabshiftr",
+                                       mustWork = TRUE), "/table_mismatch_4.csv"),
+                    col_names = FALSE)
+  output <- reorganise(input = input, schema = schema)
+
+  expect_valid_table(x = output, units = 1)
+
+
+  # ... with regular expressions for identifying variables
+
+  input <- read_csv(paste0(system.file("test_datasets",
+                                       package="tabshiftr",
+                                       mustWork = TRUE), "/table_mismatch_4.csv"),
+                    col_names = FALSE)
+  output <- reorganise(input = input, schema = schema)
+
+  expect_valid_table(x = output, units = 1)
 })
 
 test_that("set an id variable that is not in the table manually", {
@@ -84,6 +172,28 @@ test_that("set an id variable that is not in the table manually", {
     setIDVar(name = "commodities", columns = 1, relative = TRUE) %>%
     setObsVar(name = "harvested", unit = "ha", columns = 2, relative = TRUE) %>%
     setObsVar(name = "production", unit = "t", columns = 3, relative = TRUE)
+
+  input <- read_csv(paste0(system.file("test_datasets",
+                                       package="tabshiftr",
+                                       mustWork = TRUE), "/table_mismatch_5.csv"),
+                    col_names = FALSE)
+  output <- reorganise(input = input, schema = schema)
+
+  expect_valid_table(x = output, units = 1)
+
+
+  # ... with regular expressions for observed variables
+
+  input <- read_csv(paste0(system.file("test_datasets",
+                                       package="tabshiftr",
+                                       mustWork = TRUE), "/table_mismatch_5.csv"),
+                    col_names = FALSE)
+  output <- reorganise(input = input, schema = schema)
+
+  expect_valid_table(x = output, units = 1)
+
+
+  # ... with regular expressions for identifying variables
 
   input <- read_csv(paste0(system.file("test_datasets",
                                        package="tabshiftr",

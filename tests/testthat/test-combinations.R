@@ -20,6 +20,12 @@ test_that("already tidy table", {
   output <- reorganise(input = input, schema = schema)
 
   expect_valid_table(x = output, units = 2)
+
+
+  # ... with regular expressions for observed variables
+
+
+  # ... with regular expressions for identifying variables
 })
 
 test_that("vertical clusters per observed variable with a wide identifying variable", {
@@ -40,6 +46,12 @@ test_that("vertical clusters per observed variable with a wide identifying varia
   output <- reorganise(input = input, schema = schema)
 
   expect_valid_table(x = output, units = 2)
+
+
+  # ... with regular expressions for observed variables
+
+
+  # ... with regular expressions for identifying variables
 })
 
 test_that("vertical clusters per values variable with two nested wide identifying variables", {
@@ -60,6 +72,12 @@ test_that("vertical clusters per values variable with two nested wide identifyin
   output <- reorganise(input = input, schema = schema)
 
   expect_valid_table(x = output, units = 2)
+
+
+  # ... with regular expressions for observed variables
+
+
+  # ... with regular expressions for identifying variables
 })
 
 test_that("bring one wide identifying variable into long form and unlist observed variable", {
@@ -79,6 +97,12 @@ test_that("bring one wide identifying variable into long form and unlist observe
   output <- reorganise(input = input, schema = schema)
 
   expect_valid_table(x = output, units = 2)
+
+
+  # ... with regular expressions for observed variables
+
+
+  # ... with regular expressions for identifying variables
 })
 
 test_that("bring one wide identifying variable into long form and select only a subset of the long variable", {
@@ -96,9 +120,14 @@ test_that("bring one wide identifying variable into long form and select only a 
   output <- reorganise(input = input, schema = schema)
 
   expect_valid_table(x = output, units = 2, variables = "production")
+
+
+  # ... with regular expressions for observed variables
+
+
+  # ... with regular expressions for identifying variables
 })
 
-# bring several wide identifying variable into long form and spread long table ----
 test_that("several wide identifying variable into long form and unlist observed variable", {
   schema <- setHeader(rows = c(1, 2)) %>%
     setIDVar(name = "territories", columns = 1) %>%
@@ -108,6 +137,28 @@ test_that("several wide identifying variable into long form and unlist observed 
               key = "dimension", value = "harvested") %>%
     setObsVar(name = "production", unit = "t", columns = c(3:6),
               key = "dimension", value = "production")
+
+  input <- read_csv(paste0(system.file("test_datasets",
+                                       package="tabshiftr",
+                                       mustWork = TRUE), "/table_wide_listed_2.csv"),
+                    col_names = FALSE)
+  output <- reorganise(input = input, schema = schema)
+
+  expect_valid_table(x = output, units = 2)
+
+
+  # ... with regular expressions for observed variables
+
+  input <- read_csv(paste0(system.file("test_datasets",
+                                       package="tabshiftr",
+                                       mustWork = TRUE), "/table_wide_listed_2.csv"),
+                    col_names = FALSE)
+  output <- reorganise(input = input, schema = schema)
+
+  expect_valid_table(x = output, units = 2)
+
+
+  # ... with regular expressions for identifying variables
 
   input <- read_csv(paste0(system.file("test_datasets",
                                        package="tabshiftr",
