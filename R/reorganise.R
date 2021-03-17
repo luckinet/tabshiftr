@@ -45,6 +45,11 @@
 
 reorganise <- function(input = NULL, schema = NULL){
 
+  # source('/media/se87kuhe/external1/projekte/r-dev/tabshiftr/R/updateSchema.R')
+  # source('/media/se87kuhe/external1/projekte/r-dev/tabshiftr/R/selectData.R')
+  # source('/media/se87kuhe/external1/projekte/r-dev/tabshiftr/R/getMetadata.R')
+  # source('/media/se87kuhe/external1/projekte/r-dev/tabshiftr/R/getNames.R')
+
   # check validity of arguments
   assertDataFrame(x = input)
 
@@ -52,15 +57,16 @@ reorganise <- function(input = NULL, schema = NULL){
     mutate_all(as.character)
 
   # 1. add missing information in schema ----
-  schema <- updateSchema(input = input, schema = schema)
+  schema <- .updateSchema(input = input, schema = schema)
   theVariables <- schema@variables
   theClusters <- schema@clusters
+  theFormat <- schema@format
 
   # 2. use cluster information to make list of data ----
-  data <- selectData(input = input, schema = schema)
+  data <- .selectData(input = input, schema = schema)
 
   # 3. for each element in 'data' determine metadata ---
-  varMeta <- getMetadata(data = data, schema = schema)
+  varMeta <- .getMetadata(data = data, schema = schema)
 
   # 4. go through all clusters and ... ----
   theValues <- list()
@@ -73,7 +79,7 @@ reorganise <- function(input = NULL, schema = NULL){
     theMeta <- varMeta[[i]]
 
     # make required columnnames
-    theNames <- getNames(header = theHeader, meta = theMeta)
+    theNames <- .getNames(header = theHeader, meta = theMeta)
     theNames <- theNames[theData$data_cols]
 
     colnames(theTable) <- theNames
@@ -111,7 +117,7 @@ reorganise <- function(input = NULL, schema = NULL){
     # if a cluster id has been specified, reconstruct the column
     clusterVar <- theData$cluster_var
     if(!is.null(clusterVar)){
-      if(schema@clusters$id == "observed"){
+      if(theClusters$id == "observed"){
         clusterVal <- data[[i]]$cluster_val
         clustName <- "cluster"
       #
@@ -131,7 +137,7 @@ reorganise <- function(input = NULL, schema = NULL){
       theMeta$table$tidy <- c(theMeta$table$tidy, clustName)
     }
 
-    if(any(schema@clusters$id == "observed")){
+    if(any(theClusters$id == "observed")){
       valuesInCluster <- theMeta$var_type$vals[i]
     } else {
       valuesInCluster <- theMeta$var_type$vals
@@ -237,20 +243,20 @@ reorganise <- function(input = NULL, schema = NULL){
       varFactor <- theMeta$var_type$factor[j]
       theVar <- theTable[varName] %>% unlist(use.names = FALSE)
       theVar <- gsub(" ", "", theVar)
-      if(!is.null(schema@format$na)){
-        theVar[theVar %in% schema@format$na] <- NA
+      if(!is.null(theFormat$na)){
+        theVar[theVar %in% theFormat$na] <- NA
       }
-      if(!is.null(schema@format$del)){
-        if(schema@format$del == "."){
-          schema@format$del <- "[.]"
+      if(!is.null(theFormat$del)){
+        if(theFormat$del == "."){
+          theFormat$del <- "[.]"
         }
-        theVar <- gsub(schema@format$del, "", theVar)
+        theVar <- gsub(theFormat$del, "", theVar)
       }
-      if(!is.null(schema@format$dec)){
-        if(schema@format$dec == "."){
-          schema@format$dec <- "[.]"
+      if(!is.null(theFormat$dec)){
+        if(theFormat$dec == "."){
+          theFormat$dec <- "[.]"
         }
-        theVar <- gsub(schema@format$dec, ".", theVar)
+        theVar <- gsub(theFormat$dec, ".", theVar)
       }
       theVar <- suppressWarnings(as.numeric(theVar))
 
@@ -276,7 +282,7 @@ reorganise <- function(input = NULL, schema = NULL){
     theValues <- c(theValues, list(theTable))
   }
 
-  if(any(schema@clusters$id == "observed")){
+  if(any(theClusters$id == "observed")){
     out <- theValues %>% reduce(left_join)
   } else {
     out <- bind_rows(theValues)
