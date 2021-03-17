@@ -10,7 +10,7 @@
 #' @importFrom tidyr fill spread gather
 #' @importFrom tibble rownames_to_column
 
-selectData <- function(input = NULL, schema = NULL){
+.selectData <- function(input = NULL, schema = NULL){
 
   assertDataFrame(x = input)
 
@@ -57,7 +57,6 @@ selectData <- function(input = NULL, schema = NULL){
     clusterCols2 <- outCols <- clusters$col[i]:(clusters$col[i]+clusters$width[i] - 1)
     thisClust <- input[clusterRows2, clusterCols2]
     clustVar <- clusterVar[[i]]
-
 
     if(!is.null(clusterID)){
       # in case clusterID is in column/row without any other values, remove it
@@ -167,8 +166,8 @@ selectData <- function(input = NULL, schema = NULL){
     # determine header
     tempHeader <- input[headerRows, ]
 
-    # fill NA to the right side of wide identifying variables (this will add the
-    # value to the left of an NA instead of the NA)
+    # fill NA to the right side of wide identifying variables (this will replace
+    # the NA with the value to the left of that NA)
     colnames(tempHeader) <- formatC(c(1:dim(tempHeader)[2]), width = nchar(dim(tempHeader)[2]), flag = "0")
     tempHeader <- tempHeader %>%
       rownames_to_column('rn') %>%

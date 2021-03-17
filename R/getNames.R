@@ -13,7 +13,7 @@
 #' @importFrom stringr str_c
 #' @importFrom tidyr unite
 
-getNames <- function(header = NULL, meta = NULL){
+.getNames <- function(header = NULL, meta = NULL){
 
   assertDataFrame(x = header)
   assertList(x = meta, len = 4)
