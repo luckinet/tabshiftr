@@ -112,7 +112,7 @@ setValidity(Class = "schema", function(object){
       errors <- c(errors, "'names(header)' must be a permutation of set {row,rel,merge}")
     }
     if(!is.null(object@header$row)){
-      if(!is.numeric(object@header$row)){
+      if(!is.numeric(object@header$row) | testClass(x = object@header$row, classes = "quosure")){
         errors <- c(errors, "'header$row' must have a numeric value.")
       }
     }
@@ -191,12 +191,12 @@ setValidity(Class = "schema", function(object){
           }
         }
         if(!is.null(theVariable$row)){
-          if(!is.numeric(theVariable$row)){
+          if(!(is.numeric(theVariable$row) | testClass(x = theVariable$row, classes = "quosure"))){
             errors <- c(errors, paste0("'", theName, "$row' must have a numeric value."))
           }
         }
         if(!is.null(theVariable$col)){
-          if(!is.numeric(theVariable$col)){
+          if(!(is.numeric(theVariable$col) | testClass(x = theVariable$col, classes = "quosure"))){
             errors <- c(errors, paste0("'", theName, "$col' must have a numeric value."))
           }
         }
@@ -222,12 +222,12 @@ setValidity(Class = "schema", function(object){
           }
         }
         if(!is.null(theVariable$row)){
-          if(!is.numeric(theVariable$row)){
+          if(!(is.numeric(theVariable$row) | testClass(x = theVariable$row, classes = "quosure"))){
             errors <- c(errors, paste0("'", theName, "$row' must have a numeric value."))
           }
         }
         if(!is.null(theVariable$col)){
-          if(!is.numeric(theVariable$col)){
+          if(!(is.numeric(theVariable$col) | testClass(x = theVariable$col, classes = "quosure"))){
             errors <- c(errors, paste0("'", theName, "$col' must have a numeric value."))
           }
         }
@@ -271,6 +271,7 @@ setValidity(Class = "schema", function(object){
 #' @param object [\code{schema}]\cr the schema to print.
 #' @importFrom crayon yellow
 #' @importFrom stringr str_split
+#' @importFrom rlang eval_tidy
 
 setMethod(f = "show",
           signature = "schema",
@@ -344,10 +345,16 @@ setMethod(f = "show",
             theCols <- sapply(seq_along(variables), function(x){
               if(is.null(variables[[x]]$col)){
                 ""
+              } else if(testClass(x = variables[[x]]$col, classes = "quosure")){
+                eval_tidy(variables[[x]]$col)
               } else {
                 temp <- unique(variables[[x]]$col)
                 # make a short sequence of 'theRows'
-                dists <- temp - c(temp[1]-1, temp)[-(length(temp)+1)]
+                if(is.numeric(temp)){
+                  dists <- temp - c(temp[1]-1, temp)[-(length(temp)+1)]
+                } else {
+                  dists <- 0
+                }
                 if(all(dists == 1) & length(temp) > 1){
                   paste0(min(temp), ":", max(temp))
                 } else {
