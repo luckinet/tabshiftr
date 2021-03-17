@@ -8,9 +8,11 @@
 #' @return An updated schema description that fulfills formal requirements to be
 #'   processed by \code{\link{reorganise}}.
 #' @importFrom checkmate assertNames assertClass
+#' @importFrom rlang is_quosure
+#' @importFrom purrr map_int
 #' @importFrom methods new
 
-updateSchema <- function(input = NULL, schema = NULL){
+.updateSchema <- function(input = NULL, schema = NULL){
 
   assertDataFrame(x = input)
   assertClass(x = schema, classes = "schema")
@@ -20,7 +22,6 @@ updateSchema <- function(input = NULL, schema = NULL){
   nClusters <- max(lengths(clusters))
   if(nClusters == 0) nClusters <- 1
   tabDim <- dim(input)
-
 
   # set cluster start if it is NULL
   if(is.null(clusters$row)){
@@ -64,7 +65,17 @@ updateSchema <- function(input = NULL, schema = NULL){
     clusType <- "none"
   }
 
-  # 2. complete variables ----
+  # 2. complete header ----
+  header <- schema@header
+  if(is_quosure(header$row)){
+    term <- eval_tidy(header$row)
+    rows <- map_int(.x = 1:dim(input)[1], .f = function(ix){
+      grepl(x = paste(input[ix,], collapse = " "), pattern = term)
+    })
+    header$row <- which(rows == 1)
+  }
+
+  # 3. complete variables ----
   variables <- schema@variables
 
   outsideCluster <- NULL
@@ -121,6 +132,22 @@ updateSchema <- function(input = NULL, schema = NULL){
     #   }
     # }
 
+    # resolve quosures from grep-ing unkown col/rows
+    if(is_quosure(varProp$row)){
+      term <- eval_tidy(varProp$row)
+      rows <- map_int(.x = 1:dim(input)[1], .f = function(ix){
+        grepl(x = paste(input[ix,], collapse = " "), pattern = term)
+      })
+      varProp$row <- which(rows == 1)
+    }
+    if(is_quosure(varProp$col)){
+      term <- eval_tidy(varProp$col)
+      cols <- map_int(.x = 1:dim(input)[2], .f = function(ix){
+        grepl(x = paste(input[[ix]], collapse = " "), pattern = term)
+      })
+      varProp$col <- which(cols == 1)
+    }
+
     # make sure that all elements occur the same number of times
     if(!is.null(varProp$row)){
       if(length(varProp$row) == 1){
@@ -139,7 +166,7 @@ updateSchema <- function(input = NULL, schema = NULL){
 
   out <- new(Class = "schema",
              clusters = clusters,
-             header = schema@header,
+             header = header,
              format = schema@format,
              variables = variables)
 
