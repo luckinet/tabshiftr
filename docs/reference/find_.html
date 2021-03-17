@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Articles • tabshiftr</title>
+<title>Determine row or column from a data-frame — find_ • tabshiftr</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,7 +46,8 @@
 
 
 
-<meta property="og:title" content="Articles" />
+<meta property="og:title" content="Determine row or column from a data-frame — find_" />
+<meta property="og:description" content="Determine row or column from a data-frame" />
 <meta property="og:image" content="http://EhrmannS.github.io/tabshiftr/logo.svg" />
 
 
@@ -66,7 +67,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-article-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -121,18 +122,50 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Articles</h1>
+    <h1>Determine row or column from a data-frame</h1>
+    <small class="dont-index">Source: <a href='https://github.com/EhrmannS/tabshiftr/blob/master/R/findRowCol.R'><code>R/findRowCol.R</code></a></small>
+    <div class="hidden name"><code>find_.Rd</code></div>
     </div>
 
-    <div class="section ">
-      <h3>All vignettes</h3>
-      <p class="section-desc"></p>
-
-      <dl>
-        <dt><a href="tabshiftr.html">tabshiftr - Reshape disorganised messy data</a></dt>
-        <dd></dt>
-      </dl>
+    <div class="ref-description">
+    <p>Determine row or column from a data-frame</p>
     </div>
+
+    <pre class="usage"><span class='fu'>find_row</span><span class='op'>(</span><span class='va'>pattern</span>, input <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span>
+
+<span class='fu'>find_col</span><span class='op'>(</span><span class='va'>pattern</span>, input <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>pattern</th>
+      <td><p>[<code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code>]<br /> character string containing a regular
+expression to be matched in the <code>input</code> rows or columns.</p></td>
+    </tr>
+    <tr>
+      <th>input</th>
+      <td><p>[<code>data.frame</code>]<br /> the input data-frame to match the
+<code>pattern</code> with.</p></td>
+    </tr>
+    </table>
+
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>the index values where <code>pattern</code> was found.</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>In case <code>input</code> is not provided or the match fails, the return
+  value is <code>NULL</code>, which is an adaption to these two functions' primary
+  use-case as helpers in building a schema description. When piping through
+  <code><a href='reorganise.html'>reorganise</a></code>, the function will be provided with the respective
+  input, to determine the specific index values of that data-frame.</p>
+
+  </div>
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 

@@ -57,13 +57,13 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="http://www.twitter.com/DerEhrmann">
-    <span class="fa fa-twitter fa-lg"></span>
+    <span class="fas fa-twitter fa-lg"></span>
      
   </a>
 </li>
 <li>
   <a href="https://github.com/EhrmannS/tabshiftr">
-    <span class="fa fa-github"></span>
+    <span class="fas fa-github"></span>
      
   </a>
 </li>
@@ -77,8 +77,7 @@
 
       
 
-      </header><script src="tabshiftr_files/header-attrs-2.5/header-attrs.js"></script><script src="tabshiftr_files/accessible-code-block-0.0.1/empty-anchor.js"></script><link href="tabshiftr_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
-<script src="tabshiftr_files/anchor-sections-1.0/anchor-sections.js"></script><div class="row">
+      </header><script src="tabshiftr_files/header-attrs-2.7/header-attrs.js"></script><script src="tabshiftr_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>tabshiftr - Reshape disorganised messy data</h1>
@@ -149,7 +148,7 @@
 <li>A table is organised so that one or more variables are "not in one piece" (e.g., empty rows and/or columns).</li>
 <li>One or more variables are merely implicitly available (e.g., as table or file name)</li>
 <li>Tables that are part of the same series (i.e., that contain the same variables), contain variables in different columns in each table.</li>
-<li>Some columns of a particular chunk are missplaced vertically or some rows are missplaced horizontally so that variables and observations don’t match across the whole table.</li>
+<li>Some columns of a particular chunk are missplaced vertically or some rows are missplaced horizontally so that variables and observations don’t match across the whole table (not yet explicitly solved here).</li>
 </ol>
 </div>
 <div id="schema-descriptions" class="section level2">
@@ -158,38 +157,31 @@
 <p>The approach of <code>tabshiftr</code> is based on capturing the arrangement of a table in a so-called <a href="https://en.wikipedia.org/wiki/Database_schema">schema</a> description. Typically there is an input and an output schema, describing the arrangement of the input and output tables, respectively. The advantage of this procedure is that input and output tables exist explicitly and the schema maps the transformation of the data. As we want to end up with tidy tables, the output schema is pre-determined by a tidy table of the included variables. The input schema description, however, needs to be provided by the user.</p>
 <p>To set up a schema description, the following steps should be taken:</p>
 <ol style="list-style-type: decimal">
-<li><p>Clarify which are the identifying variables and which are the observed variables. Make sure not to mistake a listed observed variable as identifying variable.</p></li>
+<li><p><strong>Variables</strong>: Clarify which are the identifying variables and which are the observed variables. Make sure not to mistake a listed observed variable as identifying variable.</p></li>
 <li>
-<p>Determine whether there are clusters and if so, find the origin (top left cell) of each cluster and provide the required information in <code><a href="../reference/setCluster.html">setCluster(top = ..., left = ...)</a></code> (<a href="#clusHor">Tab. 9</a>, <a href="#clusId">Tab. 10</a> &amp; <a href="#clusMeas">Tab. 11</a>). A table is organised into clusters under two circumstances:</p>
-<ol style="list-style-type: lower-alpha">
-<li>whenever a set of variables occurs more than once in the same table, nested into another variable,</li>
-<li>when the data are organised into separate spreadsheets or files according to one of the variables.</li>
-</ol>
-</li>
-</ol>
-<p>In both cases the variable responsible for clustering (the cluster ID) can be either an identifying variable, or a categorical observed variable:</p>
-<pre><code>- in case the cluster ID is an identifying variable, provide its name in `setCluster(id = ...)` and specify it as an identifying variable (`setIDVar()`)
-- in case it is a observed variable, provide simply `"observed"` in `setCluster(id = ...)`.
-&lt;br&gt;&lt;br&gt;</code></pre>
-<p>It is advised to treat a table that does not start at the topmost left cell as cluster (<a href="#implicitVar">Tab. 6</a>), as this is often the case for data that are organised into several spreadsheets/files. All variables need to be specified in each cluster (in case clusters are all organised in the same arrangement), or <code>relative = TRUE</code> can be used.</p>
-<ol start="3" style="list-style-type: decimal">
-<li>
-<p>Determine for each identifying variable the following:</p>
+<p><strong>Clusters</strong>: Determine whether there are clusters and if so, find the origin (top left cell) of each cluster and provide the required information in <code><a href="../reference/setCluster.html">setCluster(top = ..., left = ...)</a></code> (<a href="#clusHor">Tab. 9</a>, <a href="#clusId">Tab. 10</a> &amp; <a href="#clusMeas">Tab. 11</a>). It is advised to treat a table that contains meta-data in the top rows as cluster, as this is often the case with implicit variables (<a href="#implicitVar">Tab. 6</a>). All variables need to be specified in each cluster (in case clusters are all organised in the same arrangement), or <code>relative = TRUE</code> can be used. Data may be organised into clusters a) whenever a set of variables occurs more than once in the same table, nested into another variable, or b) when the data are organised into separate spreadsheets or files according to one of the variables (depending on the context, these issues can also be solved differently). In both cases the variable responsible for clustering (the cluster ID) can be either an identifying variable, or a categorical observed variable:</p>
 <ul>
-<li>is the variable available at all? This is particularly important when the data are split up into sub-tables that are in different tables or files. Often the variable that splits up the data (and thus identifies the clusters) is not explicitly available in the table anymore. In such a case, provide the value in <code><a href="../reference/setIDVar.html">setIDVar(value = ...)</a></code> (<a href="#implicitVar">Tab. 6</a>).</li>
+<li>in case the cluster ID is an identifying variable, provide its name in <code><a href="../reference/setCluster.html">setCluster(id = ...)</a></code> and specify it as an identifying variable (<code><a href="../reference/setIDVar.html">setIDVar()</a></code>)</li>
+<li>in case it is a observed variable, provide simply <code>"observed"</code> in <code><a href="../reference/setCluster.html">setCluster(id = ...)</a></code>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Identifying variables</strong>: Determine the following:</p>
+<ul>
+<li>is the variable available at all? This is particularly important when the data are split up into tables that are in spreadsheets or files. Often the variable that splits up the data (and thus identifies the clusters) is not explicitly available in the table anymore. In such a case, provide the value in <code><a href="../reference/setIDVar.html">setIDVar(..., value = ...)</a></code> (<a href="#implicitVar">Tab. 6</a>).</li>
 <li>all columns in which the variable values sit.</li>
 <li>in case the variable is in several columns, determine additionally the row in which its values sit. In this case, the values will look like they are part of the header (<a href="#nest2">Tab. 4</a>).</li>
-<li>in case the variable must be split off of another column, provide a regular expression that results in the target subset via <code><a href="../reference/setIDVar.html">setIDVar(split = ...)</a></code> (<a href="#splitCol">Tab. 5</a>).</li>
-<li>in case the variable is distinct from the main table, provide the explicit (non-relative) position and set <code><a href="../reference/setIDVar.html">setIDVar(distinct = TRUE)</a></code> (<a href="#distVar">Tab. 12</a>). <br><br>
+<li>in case the variable must be split off of another column, provide a regular expression that results in the target subset via <code><a href="../reference/setIDVar.html">setIDVar(..., split = ...)</a></code> (<a href="#splitCol">Tab. 5</a>).</li>
+<li>in case the variable is distinct from the main table, provide the explicit (non-relative) position and set <code><a href="../reference/setIDVar.html">setIDVar(..., distinct = TRUE)</a></code> (<a href="#distVar">Tab. 12</a>). <br><br>
 </li>
 </ul>
 </li>
 <li>
-<p>Determine for each observed variable the following:</p>
+<p><strong>Observed variable</strong>: Determine the following:</p>
 <ul>
 <li>all columns in which the values of the variable sit (<a href="#long">Tab. 7</a>).</li>
 <li>the unit and conversion factor.</li>
-<li>in case the variable is not tidy, go through the following cases step by step:
+<li>in case the variable is not tidy, go through the following cases one after the other:
 <ul>
 <li>in case the variable is nested in a wide identifying variable, determine in addition to the columns in which the values sit also the rows in which the <strong>variable name</strong> sits (<a href="#nest1">Tab. 3</a> &amp; <a href="#nest2">Tab. 4</a>).</li>
 <li>in case the names of the variable are given as a value of an identifying variable (<a href="#wideLong">Tab. 8</a>), give the column name as <code>key</code>, together with the name of the respective observed variable (as it appears in the table) in <code>values</code>.</li>
@@ -199,7 +191,7 @@
 </li>
 </ul>
 </li>
-<li><p>Provide potentially information about the table header (<code><a href="../reference/setHeader.html">setHeader()</a></code>) and format (<code><a href="../reference/setFormat.html">setFormat()</a></code>).</p></li>
+<li><p><strong>Meta-data</strong>: Provide potentially information about the table header (<code><a href="../reference/setHeader.html">setHeader()</a></code>) and format (<code><a href="../reference/setFormat.html">setFormat()</a></code>).</p></li>
 </ol>
 </div>
 </div>
@@ -292,14 +284,14 @@
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">schema</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/setHeader.html">setHeader</a></span><span class="op">(</span>rows <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"territories"</span>, columns <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"year"</span>, columns <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"commodities"</span>, columns <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/setObsVar.html">setObsVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"harvested"</span>, unit <span class="op">=</span> <span class="st">"ha"</span>, columns <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/setObsVar.html">setObsVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"production"</span>, unit <span class="op">=</span> <span class="st">"t"</span>, columns <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></code></pre></div>
-<p>In case identifying variables are factors with a small number of levels, those levels may falsely be used as names of (some) other variables, where they would be next to each other and thus "wide". The other variables (both identifying and observed variables) would then be "nested" in those wide identifying variables. In those cases we have to record the columns <strong>and the row</strong> in which the values of the identifying variable (which appear to be names) are found. Beware that in those cases you also need to adapt the header specification, so that this row is excluded from the respective nested variable.</p>
+<p>In case identifying variables are factors with a small number of levels, those levels may falsely be used as names of (several) other variables, where they would be next to each other and thus "wide". The other variables (both identifying and observed variables) would then be "nested" in those wide identifying variables. In those cases we have to record the columns <strong>and the row</strong> in which the values of the identifying variable (which appear to be names) are found. Beware that in those cases you also need to adapt the header specification, so that this row is excluded from the respective nested variable.</p>
 <table class="table">
 <caption>
 <a name="nest1"></a>Table 3: The values variables are nested within the identifying variable <code>commodities</code>.</caption>
@@ -362,7 +354,7 @@
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">schema</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/setHeader.html">setHeader</a></span><span class="op">(</span>rows <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"territories"</span>, columns <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"year"</span>, columns <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">%&gt;%</span>
@@ -453,7 +445,7 @@
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">schema</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/setHeader.html">setHeader</a></span><span class="op">(</span>rows <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"territories"</span>, columns <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"year"</span>, columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">6</span><span class="op">)</span>, row <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">%&gt;%</span>
@@ -531,7 +523,7 @@
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">schema</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/setHeader.html">setHeader</a></span><span class="op">(</span>rows <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"territories"</span>, columns <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"year"</span>, columns <span class="op">=</span> <span class="fl">2</span>, split <span class="op">=</span> <span class="st">".+?(?=_)"</span><span class="op">)</span> <span class="op">%&gt;%</span>
@@ -591,7 +583,7 @@
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">schema</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/setCluster.html">setCluster</a></span><span class="op">(</span>id <span class="op">=</span> <span class="st">"territories"</span>, top <span class="op">=</span> <span class="fl">2</span>, left <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/setHeader.html">setHeader</a></span><span class="op">(</span>rows <span class="op">=</span> <span class="fl">1</span>, relative <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"territories"</span>, value <span class="op">=</span> <span class="st">"unit 1"</span><span class="op">)</span> <span class="op">%&gt;%</span>
@@ -737,7 +729,7 @@
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">schema</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/setHeader.html">setHeader</a></span><span class="op">(</span>rows <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"territories"</span>, columns <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"year"</span>, columns <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">%&gt;%</span>
@@ -746,7 +738,7 @@
             key <span class="op">=</span> <span class="st">"dimension"</span>, value <span class="op">=</span> <span class="st">"harvested"</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/setObsVar.html">setObsVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"production"</span>, unit <span class="op">=</span> <span class="st">"t"</span>, columns <span class="op">=</span> <span class="fl">5</span>,
             key <span class="op">=</span> <span class="st">"dimension"</span>, value <span class="op">=</span> <span class="st">"production"</span><span class="op">)</span></code></pre></div>
-<p>Moreover, (several) identifying variables may be wide additionally and we have to proceed as mentioned above, by providing the row and columns of the wide identifying variables.</p>
+<p>Moreover, (several) identifying variables may be wide additionally and we have to proceed as mentioned above, by providing the columns and the rows of the variable values (which appear to be names).</p>
 <table class="table">
 <caption>
 <a name="wideLong"></a>Table 8: The identifying variable <code>commodities</code> is treated as if it were the observed variables while the variable names of the observed variable are treated as if they were the values of the identifying variable <code>dimension</code>.</caption>
@@ -823,7 +815,7 @@
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">schema</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/setHeader.html">setHeader</a></span><span class="op">(</span>rows <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">%&gt;%</span>
     <span class="fu"><a href="../reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"territories"</span>, columns <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">%&gt;%</span>
     <span class="fu"><a href="../reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"year"</span>, columns <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">%&gt;%</span>
@@ -836,6 +828,12 @@
 <div id="fuzzy-column-names" class="section level3">
 <h3 class="hasAnchor">
 <a href="#fuzzy-column-names" class="anchor"></a>Fuzzy column names</h3>
+<p>WIP</p>
+</div>
+<div id="missplaced-columns-or-rows" class="section level3">
+<h3 class="hasAnchor">
+<a href="#missplaced-columns-or-rows" class="anchor"></a>Missplaced columns or rows</h3>
+<p>WIP</p>
 </div>
 </div>
 <div id="table-contains-several-clusters" class="section level2">
@@ -916,7 +914,7 @@
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">schema</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/setCluster.html">setCluster</a></span><span class="op">(</span>id <span class="op">=</span> <span class="st">"territories"</span>, left <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">5</span><span class="op">)</span>, top <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/setHeader.html">setHeader</a></span><span class="op">(</span>rows <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"territories"</span>, columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">5</span><span class="op">)</span>, row <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">%&gt;%</span>
@@ -1019,7 +1017,7 @@
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">schema</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/setCluster.html">setCluster</a></span><span class="op">(</span>id <span class="op">=</span> <span class="st">"territories"</span>, top <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">8</span><span class="op">)</span>, left <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/setHeader.html">setHeader</a></span><span class="op">(</span>rows <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"territories"</span>, columns <span class="op">=</span> <span class="fl">1</span>, row <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">7</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
@@ -1032,7 +1030,7 @@
 <h3 class="hasAnchor">
 <a href="#messy-clusters" class="anchor"></a>Messy clusters</h3>
 <p>In case several clusters are neither aligned along a row nor a column, and are all of differing size, the respective information need to be provided at the same index of the respective property. For example, three clusters, where the first cluster starts at (1,1) and is 3 by 4 cells in size, where the second clusters starts at (5,2) and is 5 by 5 cells in size, and so on, needs to be specified as below.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">schema</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/setCluster.html">setCluster</a></span><span class="op">(</span>top <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">5</span>, <span class="fl">1</span><span class="op">)</span>, left <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">5</span><span class="op">)</span>, 
                      width <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">5</span>, <span class="fl">2</span><span class="op">)</span>, height <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">3</span><span class="op">)</span>, id <span class="op">=</span> <span class="va">...</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="../reference/setHeader.html">setHeader</a></span><span class="op">(</span>rows <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">%&gt;%</span> 
@@ -1190,7 +1188,7 @@
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">schema</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/setCluster.html">setCluster</a></span><span class="op">(</span>id <span class="op">=</span> <span class="st">"observed"</span>, left <span class="op">=</span> <span class="fl">2</span>, top <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">12</span><span class="op">)</span>, height <span class="op">=</span> <span class="fl">8</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/setHeader.html">setHeader</a></span><span class="op">(</span>rows <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"territories"</span>, columns <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">%&gt;%</span>
@@ -1337,7 +1335,7 @@
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">schema</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/setCluster.html">setCluster</a></span><span class="op">(</span>id <span class="op">=</span> <span class="st">"territories"</span>, top <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">8</span>, <span class="fl">8</span><span class="op">)</span>, left <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">4</span><span class="op">)</span>,
                      width <span class="op">=</span> <span class="fl">3</span>, height <span class="op">=</span> <span class="fl">6</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/setHeader.html">setHeader</a></span><span class="op">(</span>rows <span class="op">=</span> <span class="fl">1</span>, relative <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">%&gt;%</span>
@@ -1350,6 +1348,7 @@
 <div id="fuzzy-cluster-positions" class="section level3">
 <h3 class="hasAnchor">
 <a href="#fuzzy-cluster-positions" class="anchor"></a>Fuzzy cluster positions</h3>
+<p>WIP</p>
 </div>
 </div>
 </div>
