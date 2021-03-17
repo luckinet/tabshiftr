@@ -8,8 +8,9 @@
 #'   the data.
 #' @importFrom checkmate assertList assertNames
 #' @importFrom stats setNames
+#' @importFrom dplyr summarise across everything
 
-getMetadata <- function(data = NULL, schema = NULL){
+.getMetadata <- function(data = NULL, schema = NULL){
 
   assertList(x = data)
   assertClass(x = schema, classes = "schema")
@@ -46,6 +47,27 @@ getMetadata <- function(data = NULL, schema = NULL){
 
       varProp <- variables[[i]]
       varName <- names(variables)[i]
+
+      # test whether varProp$col is numeric and if not, find the index assuming
+      # its a regular expression
+      # if(!is.null(varProp$col)){
+      #   if(!is.numeric(varProp$col)){
+      #     grepString <- varProp$col
+      #     if(!is.null(varProp$row)){
+      #       varProp$col <- grep(x = theHeader[varProp$row,], pattern = grepString)
+      #     } else {
+      #       colnames(theHeader) <- seq_along(theHeader)
+      #       testCols <- as.character(theHeader)
+      #       varProp$col <- grep(x = testCols, pattern = grepString)
+      #       # if there is more than one element, the variable is wide and thus
+      #       # has to have a row value for the rest of the function to work
+      #       if(length(varProp$col) > 1){
+      #         testRows <- as.character(as_tibble(t(theHeader), .name_repair = "minimal"))
+      #         varProp$row <- grep(x = testRows, pattern = grepString)
+      #       }
+      #     }
+      #   }
+      # }
 
       # ... occurs per each cluster ----
       if(varProp$dist){
@@ -136,10 +158,10 @@ getMetadata <- function(data = NULL, schema = NULL){
       } else {
         # if a row has been registered, use this to derive spread/gather information
         if(!is.null(varProp$row) & !distinct){
-          # if(doMerge){
-            spreadVars <- c(spreadVars, "key")
-            spreadTarget <- c(spreadTarget, varName)
-            # }
+          spreadVars <- c(spreadVars, "key")
+          tempTarget <- unique(unlist(theHeader[unique(varProp$row), unique(varProp$col)])) # here it allows me to do some more error management, when these terms should not be unique
+          assertCharacter(x = tempTarget, len = 1)
+          spreadTarget <- c(spreadTarget, tempTarget)
           gatherCols <- c(gatherCols, varProp$col)
           spreadCols <- length(idVars) + 2
         } else if(!is.null(varProp$key)) {
@@ -218,15 +240,15 @@ getMetadata <- function(data = NULL, schema = NULL){
     }
 
     # get the correct order of valVars
-    if(!is.null(spreadVars)){
-      if((!spreadVars %in% "key" & spreadVars %in% valVars) | any(spreadVars %in% theHeader)){
-        theLevels <- unlist(unique(theData[,which(theHeader %in% spreadVars)]), use.names = FALSE)
-        levelOrder <- sapply(seq_along(valVars), function(x){
-          which(theLevels %in% variables[[valVars[x]]]$value)
-        })
-        valVars <- valVars[order(levelOrder)]
-      }
-    }
+    # if(!is.null(spreadVars)){
+    #   if((!spreadVars %in% "key" & spreadVars %in% valVars) | any(spreadVars %in% theHeader)){
+    #     theLevels <- unlist(unique(theData[,which(theHeader %in% spreadVars)]), use.names = FALSE)
+    #     levelOrder <- sapply(seq_along(valVars), function(x){
+    #       which(theLevels %in% variables[[valVars[x]]]$value)
+    #     })
+    #     valVars <- valVars[order(levelOrder)]
+    #   }
+    # }
 
     # set mergeOrder so that it starts at 1 and remove merges when a measured
     # variable is the only variable in a row
