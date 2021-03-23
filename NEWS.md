@@ -1,3 +1,5 @@
+# tabshiftr 0.2.2
+
 # 0.2.1
 
 - automatically complete id-columns that contain missing values in some rows.
