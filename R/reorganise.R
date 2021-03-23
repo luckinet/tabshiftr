@@ -7,14 +7,13 @@
 #' @return A (tidy) table which is the result of reorganising \code{input} based
 #'   on \code{schema}.
 #' @examples
-#'
-#' # read in a disorganised messy dataset (without column names)
 #' library(readr)
 #' library(magrittr)
+#'
+#' # read in a disorganised messy dataset (without column names)
 #' ds <- system.file("test_datasets", package = "tabshiftr")
-#' input <- read_csv(file = paste0(ds, "/table_mismatch_3.csv"),
-#'                   col_names = FALSE, col_types = cols(.default = "c"))
-#' input
+#' (input <- read_csv(file = paste0(ds, "/table_mismatch_3.csv"),
+#'                    col_names = FALSE, col_types = cols(.default = "c")))
 #'
 #' # put together schema description (see vignette)
 #' schema <- setCluster(id = "territories", top = c(1, 8, 8), left = c(1, 1, 4),
