@@ -14,7 +14,7 @@ test_that("already tidy table", {
     setObsVar(name = "production", unit = "t", columns = 5)
 
   input <- read_csv(paste0(system.file("test_datasets",
-                                       package="tabshiftr",
+                                       package = "tabshiftr",
                                        mustWork = TRUE), "/table_tidy.csv"),
                     col_names = FALSE)
   output <- reorganise(input = input, schema = schema)
@@ -33,14 +33,14 @@ test_that("vertical clusters per observed variable with a wide identifying varia
     setHeader(rows = 1) %>%
     setIDVar(name = "territories", columns = 2) %>%
     setIDVar(name = "year", columns = 3) %>%
-    setIDVar(name = "commodities", columns = c(4, 5), row = 1) %>%
+    setIDVar(name = "commodities", columns = c(4, 5), rows = 1) %>%
     setObsVar(name = "harvested", unit = "ha", columns = c(4, 5),
               key = "cluster", value = 1) %>%
     setObsVar(name = "production", unit = "t", columns = c(4, 5),
               key = "cluster", value = 2)
 
   input <- read_csv(paste0(system.file("test_datasets",
-                                       package="tabshiftr",
+                                       package = "tabshiftr",
                                        mustWork = TRUE), "/table_clust_wide_1.csv"),
                     col_names = FALSE)
   output <- reorganise(input = input, schema = schema)
@@ -58,15 +58,15 @@ test_that("vertical clusters per values variable with two nested wide identifyin
   schema <- setCluster(id = "observed", top = c(4, 8), left = 2, height = 2) %>%
     setHeader(rows = c(1, 2)) %>%
     setIDVar(name = "territories", columns = 2) %>%
-    setIDVar(name = "year", columns = c(3, 5), row = 1) %>%
-    setIDVar(name = "commodities", columns = c(3:6), row = 2) %>%
+    setIDVar(name = "year", columns = c(3, 5), rows = 1) %>%
+    setIDVar(name = "commodities", columns = c(3:6), rows = 2) %>%
     setObsVar(name = "harvested", unit = "ha", columns = c(3:6),
               key = "cluster", value = 1) %>%
     setObsVar(name = "production", unit = "t", columns = c(3:6),
               key = "cluster", value = 2)
 
   input <- read_csv(paste0(system.file("test_datasets",
-                                       package="tabshiftr",
+                                       package = "tabshiftr",
                                        mustWork = TRUE), "/table_clust_wide_2.csv"),
                     col_names = FALSE)
   output <- reorganise(input = input, schema = schema)
@@ -84,14 +84,14 @@ test_that("bring one wide identifying variable into long form and unlist observe
   schema <- setHeader(rows = 1) %>%
     setIDVar(name = "territories", columns = 1) %>%
     setIDVar(name = "year", columns = 2) %>%
-    setIDVar(name = "commodities", columns = c(4, 5), row = 1) %>%
+    setIDVar(name = "commodities", columns = c(4, 5), rows = 1) %>%
     setObsVar(name = "harvested", unit = "ha", columns = c(4, 5),
               key = "dimension", value = "harvested") %>%
     setObsVar(name = "production", unit = "t", columns = c(4, 5),
               key = "dimension", value = "production")
 
   input <- read_csv(paste0(system.file("test_datasets",
-                                       package="tabshiftr",
+                                       package = "tabshiftr",
                                        mustWork = TRUE), "/table_wide_listed_1.csv"),
                     col_names = FALSE)
   output <- reorganise(input = input, schema = schema)
@@ -109,12 +109,12 @@ test_that("bring one wide identifying variable into long form and select only a 
   schema <- setHeader(rows = 1) %>%
     setIDVar(name = "territories", columns = 1) %>%
     setIDVar(name = "year", columns = 2) %>%
-    setIDVar(name = "commodities", columns = c(4, 5), row = 1) %>%
+    setIDVar(name = "commodities", columns = c(4, 5), rows = 1) %>%
     setObsVar(name = "production", unit = "t", columns = c(4, 5),
               key = "dimension", value = "production")
 
   input <- read_csv(paste0(system.file("test_datasets",
-                                       package="tabshiftr",
+                                       package = "tabshiftr",
                                        mustWork = TRUE), "/table_wide_listed_1.csv"),
                     col_names = FALSE)
   output <- reorganise(input = input, schema = schema)
@@ -131,15 +131,15 @@ test_that("bring one wide identifying variable into long form and select only a 
 test_that("several wide identifying variable into long form and unlist observed variable", {
   schema <- setHeader(rows = c(1, 2)) %>%
     setIDVar(name = "territories", columns = 1) %>%
-    setIDVar(name = "year", columns = c(3, 5), row = 1) %>%
-    setIDVar(name = "commodities", columns = c(3:6), row = 2) %>%
+    setIDVar(name = "year", columns = c(3, 5), rows = 1) %>%
+    setIDVar(name = "commodities", columns = c(3:6), rows = 2) %>%
     setObsVar(name = "harvested", unit = "ha", columns = c(3:6),
               key = "dimension", value = "harvested") %>%
     setObsVar(name = "production", unit = "t", columns = c(3:6),
               key = "dimension", value = "production")
 
   input <- read_csv(paste0(system.file("test_datasets",
-                                       package="tabshiftr",
+                                       package = "tabshiftr",
                                        mustWork = TRUE), "/table_wide_listed_2.csv"),
                     col_names = FALSE)
   output <- reorganise(input = input, schema = schema)
@@ -150,7 +150,7 @@ test_that("several wide identifying variable into long form and unlist observed 
   # ... with regular expressions for observed variables
 
   input <- read_csv(paste0(system.file("test_datasets",
-                                       package="tabshiftr",
+                                       package = "tabshiftr",
                                        mustWork = TRUE), "/table_wide_listed_2.csv"),
                     col_names = FALSE)
   output <- reorganise(input = input, schema = schema)
@@ -161,7 +161,7 @@ test_that("several wide identifying variable into long form and unlist observed 
   # ... with regular expressions for identifying variables
 
   input <- read_csv(paste0(system.file("test_datasets",
-                                       package="tabshiftr",
+                                       package = "tabshiftr",
                                        mustWork = TRUE), "/table_wide_listed_2.csv"),
                     col_names = FALSE)
   output <- reorganise(input = input, schema = schema)

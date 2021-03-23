@@ -60,7 +60,7 @@ Examples of each of them are presented in the section [Table types](#table-types
 3) The levels of one or more identifying variable are spread over several columns, instead of all levels in only one column. This is also called \"wide\" data.
 4) Several identifying variables are stored in the same column or one identifying variable is split up into several columns.
 5) A table is organised so that one or more variables are \"not in one piece\" (e.g., empty rows and/or columns).
-6) One or more variables are merely implicitly available (e.g., as table or file name)
+6) One or more variables are merely implicitly available (e.g., as table or file name or in a \"meta-data header\")
 7) Tables that are part of the same series (i.e., that contain the same variables), contain variables in different columns in each table.
 8) Some columns of a particular chunk are missplaced vertically or some rows are missplaced horizontally so that variables and observations don't match across the whole table (not yet explicitly solved here).
 

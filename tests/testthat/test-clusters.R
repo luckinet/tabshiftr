@@ -7,7 +7,7 @@ context("clusters")
 test_that("several vertical clusters of otherwise tidy data", {
   schema <- setCluster(id = "territories", top = c(3, 8), left = 2) %>%
     setHeader(rows = 1) %>%
-    setIDVar(name = "territories", columns = 1, row = c(2, 7)) %>%
+    setIDVar(name = "territories", columns = 1, rows = c(2, 7)) %>%
     setIDVar(name = "year", columns = 2) %>%
     setIDVar(name = "commodities", columns = 3) %>%
     setObsVar(name = "harvested", columns = 4, unit = "ha") %>%
@@ -47,7 +47,7 @@ test_that("several vertical clusters of otherwise tidy data", {
 test_that("clusterID is in absolute values, while all other are relative", {
   schema <- setCluster(id = "territories", top = c(3, 8), left = 2, height = 4) %>%
     setHeader(rows = 1) %>%
-    setIDVar(name = "territories", columns = 1, row = c(2, 7)) %>%
+    setIDVar(name = "territories", columns = 1, rows = c(2, 7)) %>%
     setIDVar(name = "year", columns = 1, relative = TRUE) %>%
     setIDVar(name = "commodities", columns = 2, relative = TRUE) %>%
     setObsVar(name = "harvested", unit = "ha", columns = 3, relative = TRUE) %>%
@@ -81,10 +81,10 @@ test_that("clusterID is in absolute values, while all other are relative", {
   expect_valid_table(x = output, units = 2)
 })
 
-test_that("relative column positions (all) are valid", {
+test_that("relative columns positions (all) are valid", {
   schema <- setCluster(id = "territories", top = c(2, 7), left = 1, height = 5) %>%
     setHeader(rows = 1) %>%
-    setIDVar(name = "territories", columns = 1, row = 1, relative = TRUE) %>%
+    setIDVar(name = "territories", columns = 1, rows = 1, relative = TRUE) %>%
     setIDVar(name = "year", columns = 2, relative = TRUE) %>%
     setIDVar(name = "commodities", columns = 3, relative = TRUE) %>%
     setObsVar(name = "harvested", unit = "ha", columns = 4, relative = TRUE) %>%
@@ -121,7 +121,7 @@ test_that("relative column positions (all) are valid", {
 test_that("several horizontal clusters of otherwise tidy data", {
   schema <- setCluster(id = "territories", left = c(2, 5), top = 2) %>%
     setHeader(rows = 1) %>%
-    setIDVar(name = "territories", columns = c(2, 5), row = 2) %>%
+    setIDVar(name = "territories", columns = c(2, 5), rows = 2) %>%
     setIDVar(name = "year", columns = 1) %>%
     setIDVar(name = "commodities", columns = c(2, 5)) %>%
     setObsVar(name = "harvested", columns = c(3, 6), unit = "ha") %>%
