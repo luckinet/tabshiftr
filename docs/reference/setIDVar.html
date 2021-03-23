@@ -82,7 +82,7 @@ observed variables) unique." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tabshiftr</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="Unreleased version">0.2.1</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="Unreleased version">0.2.2</span>
       </span>
     </div>
 
@@ -140,7 +140,7 @@ properties that make each observation (as described by the
   name <span class='op'>=</span> <span class='cn'>NULL</span>,
   value <span class='op'>=</span> <span class='cn'>NULL</span>,
   columns <span class='op'>=</span> <span class='cn'>NULL</span>,
-  row <span class='op'>=</span> <span class='cn'>NULL</span>,
+  rows <span class='op'>=</span> <span class='cn'>NULL</span>,
   split <span class='op'>=</span> <span class='cn'>NULL</span>,
   merge <span class='op'>=</span> <span class='cn'>NULL</span>,
   relative <span class='op'>=</span> <span class='cn'>FALSE</span>,
@@ -171,7 +171,7 @@ variable (i.e., which is not in the origin table), specify it here.</p></td>
 <em>values</em> of the new variable are recorded.</p></td>
     </tr>
     <tr>
-      <th>row</th>
+      <th>rows</th>
       <td><p>[<code>integerish(.)</code>]<br /> In case the variable is in several
 columns, specify here additionally the row in which the names are recorded.</p></td>
     </tr>
@@ -190,7 +190,7 @@ two columns (e.g., an empty space <code>" "</code>).</p></td>
     <tr>
       <th>relative</th>
       <td><p>[<code><a href='https://rdrr.io/r/base/logical.html'>logical(1)</a></code>]<br /> whether or not the values provided in
-<code>columns</code> and <code>row</code> are relative to the cluster position(s) or
+<code>columns</code> and <code>rows</code> are relative to the cluster position(s) or
 whether they refer to the overall table.</p></td>
     </tr>
     <tr>

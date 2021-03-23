@@ -81,7 +81,7 @@ rows into a tidy table." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tabshiftr</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="Unreleased version">0.2.1</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="Unreleased version">0.2.2</span>
       </span>
     </div>
 
@@ -144,68 +144,66 @@ rows into a tidy table.</p>
     </tr>
     <tr>
       <th>schema</th>
-      <td><p>[<code><a href='https://rdrr.io/r/grDevices/plotmath.html'>symbol(1)</a></code>]<br /> the schema description for reorganising
-<code>input</code>.</p></td>
+      <td><p>[<code><a href='https://rdrr.io/r/grDevices/plotmath.html'>symbol(1)</a></code>]<br /> the schema description of <code>input</code>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A (tidy) table which is the result of employing <code>schema</code> on
-  <code>input</code>.</p>
+    <p>A (tidy) table which is the result of reorganising <code>input</code> based
+  on <code>schema</code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='co'># read in a disorganised messy dataset (without column names)</span>
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://readr.tidyverse.org'>readr</a></span><span class='op'>)</span>
+    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://readr.tidyverse.org'>readr</a></span><span class='op'>)</span>
 <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://magrittr.tidyverse.org'>magrittr</a></span><span class='op'>)</span>
+
+<span class='co'># read in a disorganised messy dataset (without column names)</span>
 <span class='va'>ds</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"test_datasets"</span>, package <span class='op'>=</span> <span class='st'>"tabshiftr"</span><span class='op'>)</span>
-<span class='va'>input</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://readr.tidyverse.org/reference/read_delim.html'>read_csv</a></span><span class='op'>(</span>file <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='va'>ds</span>, <span class='st'>"/table_mismatch_3.csv"</span><span class='op'>)</span>,
-                  col_names <span class='op'>=</span> <span class='cn'>FALSE</span>, col_types <span class='op'>=</span> <span class='fu'><a href='https://readr.tidyverse.org/reference/cols.html'>cols</a></span><span class='op'>(</span>.default <span class='op'>=</span> <span class='st'>"c"</span><span class='op'>)</span><span class='op'>)</span>
-<span class='va'>input</span>
-</div><div class='output co'>#&gt; # A tibble: 13 x 7
+<span class='op'>(</span><span class='va'>input</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://readr.tidyverse.org/reference/read_delim.html'>read_csv</a></span><span class='op'>(</span>file <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='va'>ds</span>, <span class='st'>"/table_mismatch_3.csv"</span><span class='op'>)</span>,
+                   col_names <span class='op'>=</span> <span class='cn'>FALSE</span>, col_types <span class='op'>=</span> <span class='fu'><a href='https://readr.tidyverse.org/reference/cols.html'>cols</a></span><span class='op'>(</span>.default <span class='op'>=</span> <span class='st'>"c"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 13 x 7</span><span>
 #&gt;    X1          X2        X3         X4          X5        X6         X7    
-#&gt;    &lt;chr&gt;       &lt;chr&gt;     &lt;chr&gt;      &lt;chr&gt;       &lt;chr&gt;     &lt;chr&gt;      &lt;chr&gt; 
-#&gt;  1 commodities harvested production &lt;NA&gt;        &lt;NA&gt;      &lt;NA&gt;       &lt;NA&gt;  
-#&gt;  2 unit 1      &lt;NA&gt;      &lt;NA&gt;       &lt;NA&gt;        &lt;NA&gt;      &lt;NA&gt;       &lt;NA&gt;  
-#&gt;  3 soybean     1111      1112       year 1      &lt;NA&gt;      &lt;NA&gt;       &lt;NA&gt;  
-#&gt;  4 maize       1121      1122       year 1      &lt;NA&gt;      &lt;NA&gt;       &lt;NA&gt;  
-#&gt;  5 soybean     1211      1212       year 2      &lt;NA&gt;      &lt;NA&gt;       &lt;NA&gt;  
-#&gt;  6 maize       1221      1222       year 2      &lt;NA&gt;      &lt;NA&gt;       &lt;NA&gt;  
-#&gt;  7 &lt;NA&gt;        &lt;NA&gt;      &lt;NA&gt;       &lt;NA&gt;        &lt;NA&gt;      &lt;NA&gt;       &lt;NA&gt;  
-#&gt;  8 commodities harvested production commodities harvested production &lt;NA&gt;  
-#&gt;  9 unit 2      &lt;NA&gt;      &lt;NA&gt;       unit 3      &lt;NA&gt;      &lt;NA&gt;       &lt;NA&gt;  
-#&gt; 10 soybean     2111      2112       soybean     3111      3112       year 1
-#&gt; 11 maize       2121      2122       maize       3121      3122       year 1
-#&gt; 12 soybean     2211      2212       soybean     3211      3212       year 2
-#&gt; 13 maize       2221      2222       maize       3221      3222       year 2</div><div class='input'>
-<span class='co'># put together schema description</span>
+#&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>       </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>     </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>      </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>       </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>     </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>      </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span> 
+#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> commodities harvested production </span><span style='color: #BB0000;'>NA</span><span>          </span><span style='color: #BB0000;'>NA</span><span>        </span><span style='color: #BB0000;'>NA</span><span>         </span><span style='color: #BB0000;'>NA</span><span>    
+#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> unit 1      </span><span style='color: #BB0000;'>NA</span><span>        </span><span style='color: #BB0000;'>NA</span><span>         </span><span style='color: #BB0000;'>NA</span><span>          </span><span style='color: #BB0000;'>NA</span><span>        </span><span style='color: #BB0000;'>NA</span><span>         </span><span style='color: #BB0000;'>NA</span><span>    
+#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> soybean     1111      1112       year 1      </span><span style='color: #BB0000;'>NA</span><span>        </span><span style='color: #BB0000;'>NA</span><span>         </span><span style='color: #BB0000;'>NA</span><span>    
+#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> maize       1121      1122       year 1      </span><span style='color: #BB0000;'>NA</span><span>        </span><span style='color: #BB0000;'>NA</span><span>         </span><span style='color: #BB0000;'>NA</span><span>    
+#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> soybean     1211      1212       year 2      </span><span style='color: #BB0000;'>NA</span><span>        </span><span style='color: #BB0000;'>NA</span><span>         </span><span style='color: #BB0000;'>NA</span><span>    
+#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> maize       1221      1222       year 2      </span><span style='color: #BB0000;'>NA</span><span>        </span><span style='color: #BB0000;'>NA</span><span>         </span><span style='color: #BB0000;'>NA</span><span>    
+#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> </span><span style='color: #BB0000;'>NA</span><span>          </span><span style='color: #BB0000;'>NA</span><span>        </span><span style='color: #BB0000;'>NA</span><span>         </span><span style='color: #BB0000;'>NA</span><span>          </span><span style='color: #BB0000;'>NA</span><span>        </span><span style='color: #BB0000;'>NA</span><span>         </span><span style='color: #BB0000;'>NA</span><span>    
+#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> commodities harvested production commodities harvested production </span><span style='color: #BB0000;'>NA</span><span>    
+#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> unit 2      </span><span style='color: #BB0000;'>NA</span><span>        </span><span style='color: #BB0000;'>NA</span><span>         unit 3      </span><span style='color: #BB0000;'>NA</span><span>        </span><span style='color: #BB0000;'>NA</span><span>         </span><span style='color: #BB0000;'>NA</span><span>    
+#&gt; </span><span style='color: #BCBCBC;'>10</span><span> soybean     2111      2112       soybean     3111      3112       year 1
+#&gt; </span><span style='color: #BCBCBC;'>11</span><span> maize       2121      2122       maize       3121      3122       year 1
+#&gt; </span><span style='color: #BCBCBC;'>12</span><span> soybean     2211      2212       soybean     3211      3212       year 2
+#&gt; </span><span style='color: #BCBCBC;'>13</span><span> maize       2221      2222       maize       3221      3222       year 2</div><div class='input'>
+<span class='co'># put together schema description (see vignette)</span>
 <span class='va'>schema</span> <span class='op'>&lt;-</span> <span class='fu'><a href='setCluster.html'>setCluster</a></span><span class='op'>(</span>id <span class='op'>=</span> <span class='st'>"territories"</span>, top <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>8</span>, <span class='fl'>8</span><span class='op'>)</span>, left <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>4</span><span class='op'>)</span>,
                      width <span class='op'>=</span> <span class='fl'>3</span>, height <span class='op'>=</span> <span class='fl'>6</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='setHeader.html'>setHeader</a></span><span class='op'>(</span>rows <span class='op'>=</span> <span class='fl'>1</span>, relative <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='setIDVar.html'>setIDVar</a></span><span class='op'>(</span>name <span class='op'>=</span> <span class='st'>"territories"</span>, columns <span class='op'>=</span> <span class='fl'>1</span>, row <span class='op'>=</span> <span class='fl'>2</span>, relative <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='setIDVar.html'>setIDVar</a></span><span class='op'>(</span>name <span class='op'>=</span> <span class='st'>"year"</span>, columns <span class='op'>=</span> <span class='fl'>4</span>, row <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span><span class='op'>:</span><span class='fl'>6</span><span class='op'>)</span>, distinct <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='setIDVar.html'>setIDVar</a></span><span class='op'>(</span>name <span class='op'>=</span> <span class='st'>"commodities"</span>, columns <span class='op'>=</span> <span class='fl'>1</span>, relative <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='setObsVar.html'>setObsVar</a></span><span class='op'>(</span>name <span class='op'>=</span> <span class='st'>"harvested"</span>, unit <span class='op'>=</span> <span class='st'>"ha"</span>, columns <span class='op'>=</span> <span class='fl'>2</span>, relative <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='setObsVar.html'>setObsVar</a></span><span class='op'>(</span>name <span class='op'>=</span> <span class='st'>"production"</span>, unit <span class='op'>=</span> <span class='st'>"t"</span>, columns <span class='op'>=</span> <span class='fl'>3</span>, relative <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+  <span class='fu'><a href='setHeader.html'>setHeader</a></span><span class='op'>(</span>rows <span class='op'>=</span> <span class='fl'>1</span>, rel <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='setIDVar.html'>setIDVar</a></span><span class='op'>(</span>name <span class='op'>=</span> <span class='st'>"territories"</span>, col <span class='op'>=</span> <span class='fl'>1</span>, row <span class='op'>=</span> <span class='fl'>2</span>, rel <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='setIDVar.html'>setIDVar</a></span><span class='op'>(</span>name <span class='op'>=</span> <span class='st'>"year"</span>, col <span class='op'>=</span> <span class='fl'>4</span>, row <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span><span class='op'>:</span><span class='fl'>6</span><span class='op'>)</span>, dist <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='setIDVar.html'>setIDVar</a></span><span class='op'>(</span>name <span class='op'>=</span> <span class='st'>"commodities"</span>, col <span class='op'>=</span> <span class='fl'>1</span>, rel <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='setObsVar.html'>setObsVar</a></span><span class='op'>(</span>name <span class='op'>=</span> <span class='st'>"harvested"</span>, unit <span class='op'>=</span> <span class='st'>"ha"</span>, col <span class='op'>=</span> <span class='fl'>2</span>, rel <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='setObsVar.html'>setObsVar</a></span><span class='op'>(</span>name <span class='op'>=</span> <span class='st'>"production"</span>, unit <span class='op'>=</span> <span class='st'>"t"</span>, col <span class='op'>=</span> <span class='fl'>3</span>, rel <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 
 <span class='co'># get the tidy output</span>
 <span class='fu'>reorganise</span><span class='op'>(</span><span class='va'>input</span>, <span class='va'>schema</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; # A tibble: 12 x 5
+</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 12 x 5</span><span>
 #&gt;    territories year   commodities harvested production
-#&gt;    &lt;chr&gt;       &lt;chr&gt;  &lt;chr&gt;           &lt;dbl&gt;      &lt;dbl&gt;
-#&gt;  1 unit 1      year 1 maize            1121       1122
-#&gt;  2 unit 1      year 1 soybean          1111       1112
-#&gt;  3 unit 1      year 2 maize            1221       1222
-#&gt;  4 unit 1      year 2 soybean          1211       1212
-#&gt;  5 unit 2      year 1 maize            2121       2122
-#&gt;  6 unit 2      year 1 soybean          2111       2112
-#&gt;  7 unit 2      year 2 maize            2221       2222
-#&gt;  8 unit 2      year 2 soybean          2211       2212
-#&gt;  9 unit 3      year 1 maize            3121       3122
-#&gt; 10 unit 3      year 1 soybean          3111       3112
-#&gt; 11 unit 3      year 2 maize            3221       3222
-#&gt; 12 unit 3      year 2 soybean          3211       3212</div></pre>
+#&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>       </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>  </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>           </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>      </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> unit 1      year 1 maize            </span><span style='text-decoration: underline;'>1</span><span>121       </span><span style='text-decoration: underline;'>1</span><span>122
+#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> unit 1      year 1 soybean          </span><span style='text-decoration: underline;'>1</span><span>111       </span><span style='text-decoration: underline;'>1</span><span>112
+#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> unit 1      year 2 maize            </span><span style='text-decoration: underline;'>1</span><span>221       </span><span style='text-decoration: underline;'>1</span><span>222
+#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> unit 1      year 2 soybean          </span><span style='text-decoration: underline;'>1</span><span>211       </span><span style='text-decoration: underline;'>1</span><span>212
+#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> unit 2      year 1 maize            </span><span style='text-decoration: underline;'>2</span><span>121       </span><span style='text-decoration: underline;'>2</span><span>122
+#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> unit 2      year 1 soybean          </span><span style='text-decoration: underline;'>2</span><span>111       </span><span style='text-decoration: underline;'>2</span><span>112
+#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> unit 2      year 2 maize            </span><span style='text-decoration: underline;'>2</span><span>221       </span><span style='text-decoration: underline;'>2</span><span>222
+#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> unit 2      year 2 soybean          </span><span style='text-decoration: underline;'>2</span><span>211       </span><span style='text-decoration: underline;'>2</span><span>212
+#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> unit 3      year 1 maize            </span><span style='text-decoration: underline;'>3</span><span>121       </span><span style='text-decoration: underline;'>3</span><span>122
+#&gt; </span><span style='color: #BCBCBC;'>10</span><span> unit 3      year 1 soybean          </span><span style='text-decoration: underline;'>3</span><span>111       </span><span style='text-decoration: underline;'>3</span><span>112
+#&gt; </span><span style='color: #BCBCBC;'>11</span><span> unit 3      year 2 maize            </span><span style='text-decoration: underline;'>3</span><span>221       </span><span style='text-decoration: underline;'>3</span><span>222
+#&gt; </span><span style='color: #BCBCBC;'>12</span><span> unit 3      year 2 soybean          </span><span style='text-decoration: underline;'>3</span><span>211       </span><span style='text-decoration: underline;'>3</span><span>212</div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

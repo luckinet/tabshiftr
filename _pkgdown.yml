@@ -15,6 +15,9 @@ reference:
       - setFormat
       - setIDVar
       - setObsVar
+  - title: helpers
+    contents:
+      - find_
   - title: reorganise tables
     contents:
       - reorganise
