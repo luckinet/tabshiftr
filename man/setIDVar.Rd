@@ -9,7 +9,7 @@ setIDVar(
   name = NULL,
   value = NULL,
   columns = NULL,
-  row = NULL,
+  rows = NULL,
   split = NULL,
   merge = NULL,
   relative = FALSE,
@@ -29,7 +29,7 @@ variable (i.e., which is not in the origin table), specify it here.}
 \item{columns}{[\code{integerish(.)}]\cr The column(s) in which the
 \emph{values} of the new variable are recorded.}
 
-\item{row}{[\code{integerish(.)}]\cr In case the variable is in several
+\item{rows}{[\code{integerish(.)}]\cr In case the variable is in several
 columns, specify here additionally the row in which the names are recorded.}
 
 \item{split}{[\code{character(1)}]\cr In case the variable is part of a
@@ -41,7 +41,7 @@ several columns, this should be the character string that would connect the
 two columns (e.g., an empty space \code{" "}).}
 
 \item{relative}{[\code{logical(1)}]\cr whether or not the values provided in
-\code{columns} and \code{row} are relative to the cluster position(s) or
+\code{columns} and \code{rows} are relative to the cluster position(s) or
 whether they refer to the overall table.}
 
 \item{distinct}{[\code{logical(1)}]\cr Whether or not the variable is

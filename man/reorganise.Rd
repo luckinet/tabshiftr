@@ -9,12 +9,11 @@ reorganise(input = NULL, schema = NULL)
 \arguments{
 \item{input}{[\code{data.frame(1)}]\cr table to reorganise.}
 
-\item{schema}{[\code{symbol(1)}]\cr the schema description for reorganising
-\code{input}.}
+\item{schema}{[\code{symbol(1)}]\cr the schema description of \code{input}.}
 }
 \value{
-A (tidy) table which is the result of employing \code{schema} on
-  \code{input}.
+A (tidy) table which is the result of reorganising \code{input} based
+  on \code{schema}.
 }
 \description{
 This function takes a disorganised messy table and rearranges columns and
@@ -30,15 +29,15 @@ input <- read_csv(file = paste0(ds, "/table_mismatch_3.csv"),
                   col_names = FALSE, col_types = cols(.default = "c"))
 input
 
-# put together schema description
+# put together schema description (see vignette)
 schema <- setCluster(id = "territories", top = c(1, 8, 8), left = c(1, 1, 4),
                      width = 3, height = 6) \%>\%
-  setHeader(rows = 1, relative = TRUE) \%>\%
-  setIDVar(name = "territories", columns = 1, row = 2, relative = TRUE) \%>\%
-  setIDVar(name = "year", columns = 4, row = c(3:6), distinct = TRUE) \%>\%
-  setIDVar(name = "commodities", columns = 1, relative = TRUE) \%>\%
-  setObsVar(name = "harvested", unit = "ha", columns = 2, relative = TRUE) \%>\%
-  setObsVar(name = "production", unit = "t", columns = 3, relative = TRUE)
+  setHeader(rows = 1, rel = TRUE) \%>\%
+  setIDVar(name = "territories", col = 1, row = 2, rel = TRUE) \%>\%
+  setIDVar(name = "year", col = 4, row = c(3:6), dist = TRUE) \%>\%
+  setIDVar(name = "commodities", col = 1, rel = TRUE) \%>\%
+  setObsVar(name = "harvested", unit = "ha", col = 2, rel = TRUE) \%>\%
+  setObsVar(name = "production", unit = "t", col = 3, rel = TRUE)
 
 # get the tidy output
 reorganise(input, schema)

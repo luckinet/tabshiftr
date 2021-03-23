@@ -8,7 +8,7 @@ setObsVar(
   schema = NULL,
   name = NULL,
   columns = NULL,
-  row = NULL,
+  rows = NULL,
   relative = FALSE,
   distinct = FALSE,
   unit = NULL,
@@ -27,12 +27,12 @@ information).}
 \item{columns}{[\code{integerish(.)}]\cr The column(s) in which the
 \emph{values} of the new variable are recorded.}
 
-\item{row}{[\code{integerish(.)}]\cr In case the variable is nested in a wide
+\item{rows}{[\code{integerish(.)}]\cr In case the variable is nested in a wide
 identifying variable, specify here additionally the row(s) in which the
 variable \emph{name} sits}
 
 \item{relative}{[\code{logical(1)}]\cr whether or not the values provided in
-\code{columns} and \code{row} are relative to the cluster position(s) or
+\code{columns} and \code{rows} are relative to the cluster position(s) or
 whether they refer to the overall table.}
 
 \item{distinct}{[\code{logical(1)}]\cr Whether or not the variable is
