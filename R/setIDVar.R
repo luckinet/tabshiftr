@@ -11,7 +11,7 @@
 #'   variable (i.e., which is not in the origin table), specify it here.
 #' @param columns [\code{integerish(.)}]\cr The column(s) in which the
 #'   \emph{values} of the new variable are recorded.
-#' @param row [\code{integerish(.)}]\cr In case the variable is in several
+#' @param rows [\code{integerish(.)}]\cr In case the variable is in several
 #'   columns, specify here additionally the row in which the names are recorded.
 #' @param split [\code{character(1)}]\cr In case the variable is part of a
 #'   compound value, this should be a regular expression that splits the
@@ -20,7 +20,7 @@
 #'   several columns, this should be the character string that would connect the
 #'   two columns (e.g., an empty space \code{" "}).
 #' @param relative [\code{logical(1)}]\cr whether or not the values provided in
-#'   \code{columns} and \code{row} are relative to the cluster position(s) or
+#'   \code{columns} and \code{rows} are relative to the cluster position(s) or
 #'   whether they refer to the overall table.
 #' @param distinct [\code{logical(1)}]\cr Whether or not the variable is
 #'   distinct from a cluster. This is the case when the variable is not
@@ -35,7 +35,7 @@
 #' @export
 
 setIDVar <- function(schema = NULL, name = NULL, value = NULL, columns = NULL,
-                     row = NULL, split = NULL, merge = NULL, relative = FALSE,
+                     rows = NULL, split = NULL, merge = NULL, relative = FALSE,
                      distinct = FALSE){
 
   # assertions ----
@@ -44,10 +44,9 @@ setIDVar <- function(schema = NULL, name = NULL, value = NULL, columns = NULL,
   colInt <- testIntegerish(x = columns, lower = 1, min.len = 1, null.ok = TRUE)
   colQuo <- testClass(x = columns, classes = "quosure")
   assert(colInt, colQuo)
-  rowInt <- testIntegerish(x = row, lower = 1, min.len = 1, null.ok = TRUE)
-  rowQuo <- testClass(x = row, classes = "quosure")
+  rowInt <- testIntegerish(x = rows, lower = 1, min.len = 1, null.ok = TRUE)
+  rowQuo <- testClass(x = rows, classes = "quosure")
   assert(rowInt, rowQuo)
-  assertIntegerish(x = row, lower = 1, null.ok = TRUE)
   assertCharacter(x = value, len = 1, any.missing = FALSE, null.ok = TRUE)
   assertCharacter(x = split, len = 1, any.missing = FALSE, null.ok = TRUE)
   assertCharacter(x = merge, len = 1, any.missing = FALSE, null.ok = TRUE)
@@ -72,13 +71,13 @@ setIDVar <- function(schema = NULL, name = NULL, value = NULL, columns = NULL,
     # ensure that a row is set, in case the variable is contained in several columns
     if(nClusters == 1){
       if(length(columns) > 1){
-        if(is.null(row)){
+        if(is.null(rows)){
           if(is.null(merge)){
             message("  -> the variable '", name, "' is wide (i.e., in several columns), but no row with the names, nor the merge option is set.")
           }
         }
       } else{
-        if(!is.null(row)){
+        if(!is.null(rows)){
           message("  -> 'row' is set for the variable '", name, "', even though it is not needed.")
         }
       }
@@ -92,8 +91,8 @@ setIDVar <- function(schema = NULL, name = NULL, value = NULL, columns = NULL,
       }
     }
   } else{
-    # if(!is.null(row)){
-    #   message("  -> 'row' is set for the variable '", name, "', even though it is not needed.")
+    # if(!is.null(rows)){
+    #   message("  -> 'rows' is set for the variable '", name, "', even though it is not needed.")
     # }
   }
 
@@ -109,13 +108,13 @@ setIDVar <- function(schema = NULL, name = NULL, value = NULL, columns = NULL,
 
   # ensure that when not using 'value', either columns or rows is set
   if(is.null(value)){
-    if(is.null(columns) & is.null(row)){
+    if(is.null(columns) & is.null(rows)){
       message("  -> for the variable '", name, "' there is neither an explicit 'value' set, nor are there any column(s) (and rows).")
     }
   }
 
   # in case the user thought that it's sufficient to specify a row
-  if(!is.null(row)){
+  if(!is.null(rows)){
     if(is.null(columns)){
       message("  -> in case the variable '", name, "' is in several columns, set first those columns and then the row of the variable names.")
     } else{
@@ -145,7 +144,7 @@ setIDVar <- function(schema = NULL, name = NULL, value = NULL, columns = NULL,
   temp <- list(type = "id",
                value = value,
                col = columns,
-               row = row,
+               row = rows,
                split = split,
                merge = merge,
                rel = relative,

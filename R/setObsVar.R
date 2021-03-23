@@ -10,7 +10,7 @@
 #' @param name [\code{character(1)}]\cr Name of the new measured variable.
 #' @param columns [\code{integerish(.)}]\cr The column(s) in which the
 #'   \emph{values} of the new variable are recorded.
-#' @param row [\code{integerish(.)}]\cr In case the variable is nested in a wide
+#' @param rows [\code{integerish(.)}]\cr In case the variable is nested in a wide
 #'   identifying variable, specify here additionally the row(s) in which the
 #'   variable \emph{name} sits
 #' @param unit [\code{character(1)}]\cr the unit of this variable.
@@ -27,7 +27,7 @@
 #'   and the respective values are listed in another column, give here the level
 #'   in the names column that refer to the values of this variable.
 #' @param relative [\code{logical(1)}]\cr whether or not the values provided in
-#'   \code{columns} and \code{row} are relative to the cluster position(s) or
+#'   \code{columns} and \code{rows} are relative to the cluster position(s) or
 #'   whether they refer to the overall table.
 #' @param distinct [\code{logical(1)}]\cr Whether or not the variable is
 #'   distinct from a cluster. This is the case when the variable is recorded
@@ -40,7 +40,7 @@
 #'   assertCharacter assertNumeric testIntegerish testCharacter assert
 #' @export
 
-setObsVar <- function(schema = NULL, name = NULL, columns = NULL, row = NULL,
+setObsVar <- function(schema = NULL, name = NULL, columns = NULL, rows = NULL,
                       relative = FALSE, distinct = FALSE, unit = NULL,
                       factor = 1, key = NULL, value = NULL){
 
@@ -50,10 +50,9 @@ setObsVar <- function(schema = NULL, name = NULL, columns = NULL, row = NULL,
   colInt <- testIntegerish(x = columns, lower = 1, min.len = 1, null.ok = TRUE)
   colQuo <- testClass(x = columns, classes = "quosure")
   assert(colInt, colQuo)
-  rowInt <- testIntegerish(x = row, lower = 1, min.len = 1, null.ok = TRUE)
-  rowQuo <- testClass(x = row, classes = "quosure")
+  rowInt <- testIntegerish(x = rows, lower = 1, min.len = 1, null.ok = TRUE)
+  rowQuo <- testClass(x = rows, classes = "quosure")
   assert(rowInt, rowQuo)
-  assertIntegerish(x = row, null.ok = TRUE)
   assertLogical(x = relative, any.missing = FALSE, len = 1)
   assertLogical(x = distinct, any.missing = FALSE, len = 1)
   assertCharacter(x = unit, len = 1, any.missing = FALSE)
@@ -76,7 +75,7 @@ setObsVar <- function(schema = NULL, name = NULL, columns = NULL, row = NULL,
   # update schema ----
   temp <- list(type = "observed",
                col = columns,
-               row = row,
+               row = rows,
                rel = relative,
                dist = distinct,
                unit = unit,
