@@ -2,7 +2,6 @@
 
 export(find_col)
 export(find_row)
-export(makeSchema)
 export(reorganise)
 export(setCluster)
 export(setFormat)
