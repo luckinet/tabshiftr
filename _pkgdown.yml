@@ -5,11 +5,12 @@ authors:
 title:  tabshiftr
 url: http://EhrmannS.github.io/tabshiftr
 development:
-  mode: unreleased
+  mode: release
 
 reference:
   - title: make a schema description
     contents:
+      - schema
       - setCluster
       - setHeader
       - setFormat

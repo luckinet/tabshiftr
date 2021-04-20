@@ -1,6 +1,6 @@
 # tabshiftr 0.2.2
 
-- include functions `find_col` and `find_row` to determine columns and rows "\on the fly\"
+- include functions `find_col` and `find_row` to determine columns and rows \"on the fly\"
 
 # tabshiftr 0.2.1
 

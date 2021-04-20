@@ -102,7 +102,7 @@ variables.}
   \code{values}.
 
   \item in case the name of the variable is the ID of clusters, specify
-  code{\link[=setObsVar]{setObsVar}(..., key = "cluster", value = ...)},
+  \code{\link[=setObsVar]{setObsVar}(..., key = "cluster", value = ...)},
   where \code{values} has the cluster number the variable refers to. } } }
 }
 
