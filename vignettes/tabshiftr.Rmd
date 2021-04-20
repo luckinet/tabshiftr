@@ -82,7 +82,9 @@ To set up a schema description, the following steps should be taken:
     - in case the cluster ID is an identifying variable, provide its name in `setCluster(id = ...)` and specify it as an identifying variable (`setIDVar()`)
     - in case it is a observed variable, provide simply `"observed"` in `setCluster(id = ...)`.
 
-3. **Identifying variables**: Determine the following:
+3. **Meta-data**: Provide potentially information about the table header (`setHeader()`) and format (`setFormat()`).
+
+4. **Identifying variables**: Determine the following:
 
     - is the variable available at all? This is particularly important when the data are split up into tables that are in spreadsheets or files. Often the variable that splits up the data (and thus identifies the clusters) is not explicitly available in the table anymore. In such a case, provide the value in `setIDVar(..., value = ...)` ([Tab. 6](#implicitVar)).
     - all columns in which the variable values sit.
@@ -91,7 +93,7 @@ To set up a schema description, the following steps should be taken:
     - in case the variable is distinct from the main table, provide the explicit (non-relative) position and set `setIDVar(..., distinct = TRUE)` ([Tab. 12](#distVar)).
     <br><br>
     
-4. **Observed variable**: Determine the following:
+5. **Observed variable**: Determine the following:
 
     - all columns in which the values of the variable sit ([Tab. 7](#long)).
     - the unit and conversion factor.
@@ -100,8 +102,6 @@ To set up a schema description, the following steps should be taken:
         * in case the names of the variable are given as a value of an identifying variable ([Tab. 8](#wideLong)), give the column name as `key`, together with the name of the respective observed variable (as it appears in the table) in `values`.
         * in case the name of the variable is the ID of clusters, specify `key = "cluster"` and in `values` the cluster number the variable refers to ([Tab. 11](#clusMeas)).
     <br><br>
-
-5. **Meta-data**: Provide potentially information about the table header (`setHeader()`) and format (`setFormat()`).
 
 # Table types
 

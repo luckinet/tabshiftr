@@ -11,38 +11,83 @@
 #' @slot variables [\code{named list(.)}]\cr description of
 #'   \code{\link[=setIDVar]{identifying}} and \code{\link[=setObsVar]{observed}}
 #'   variables.
-#' @section Setting up schema descriptions: The recommended strategy for setting
-#'   up a schema description is the following recently. \enumerate{ \item
-#'   Clarify which are the identifying variables and which are the observed
-#'   variables. Make sure not to Determine whether there are clusters, find the
-#'   origin (top left cell) of each cluster and provide the required information
-#'   in \code{setCluster}. It might make sense to treat a table that does
-#'   not start at the topmost left cell as cluster. Follow the next steps for
-#'   each cluster... \item Determine which variable identifies clusters and
-#'   specify that as identifying variable. It can also be the case that the data
-#'   are organised into separate spreadsheets or files according to one of the
-#'   variables and also those cases should be treated as if they were clusters,
-#'   even if each spreadsheet/file contains a topologically coherent table. It
-#'   may be that either an identifying variable, or a observed variable
-#'   identifies clusters: \itemize{
-#'     \item in case it is an identifying variable, provide its name in \code{setCluster(id = ...)} and specify it as an identifying variable \code{setIDVar}.
-#'     \item in case it is a observed variable, provide simply "observed" as cluster ID.}
-#'   \item Determine for each identifying variable the following: \itemize{
-#'     \item is the variable available at all? This is particularly important when the data are split up into sub-tables that are in different spreadsheets or files. Often the variable that splits up the data (and thus identifies the clusters) is not explicitly available in the spreadsheet anymore. In such a case, provide the value in \code{setIDVar(value = ...)}.
-#'     \item all columns in which the variable values sit.
-#'     \item in case the variable is in several columns, determine additionally the row in which its values sit. In this case, the values will look like they are part of the header.
-#'     \item in case the variable must be split off of another column, provide a regular expression that results in the target subset via \code{setIDVar(split = ...)}.
-#'     \item in case the variable is distinct from the main table, provide the explicit (non-relative) position and set \code{setIDVar(distinct = TRUE)}.
-#'   }
-#'   \item Determine for each observed variable the following: \itemize{
-#'     \item all columns in which the values of the variable sit.
-#'     \item the unit and conversion factor.
-#'     \item in case the variable is not tidy, go through the following cases step by step: \enumerate{
-#'       \item in case the variable is nested in a wide identifying variable, determine in addition to the columns in which the values sit also the rows in which the \emph{variable name} sits.
-#'       \item in case the names of the variable are given as a value of an identifying variable, give the column number as \code{key}, together with the name of the respective observed variable (as it appears in the table) in \code{values}.
-#'       \item in case the name of the variable is the ID of clusters, specify \code{key = "cluster"} and in \code{values} the cluster number the variable refers to.
-#'     }
-#'   } }
+#' @section Setting up schema descriptions: This section outlines the currently
+#'   recommended strategy for setting up schema descriptions. For example tables
+#'   and the respective schemas, see the vignette.
+#'
+#'   \enumerate{ \item \emph{Variables}: Clarify which are the identifying
+#'   variables and which are the observed variables. Make sure not to mistake a
+#'   listed observed variable as identifying variable.
+#'
+#'   \item \emph{Clusters}: Determine whether there are clusters and if so, find
+#'   the origin (top left cell) of each cluster and provide the required
+#'   information in \code{\link[=setCluster]{setCluster}(top = ..., left =
+#'   ...)}. It is advised to treat a table that contains meta-data in the top
+#'   rows as cluster, as this is often the case with implicit variables. All
+#'   variables need to be specified in each cluster (in case clusters are all
+#'   organised in the same arrangement), or \code{relative = TRUE} can be used.
+#'   Data may be organised into clusters a) whenever a set of variables occurs
+#'   more than once in the same table, nested into another variable, or b) when
+#'   the data are organised into separate spreadsheets or files according to one
+#'   of the variables (depending on the context, these issues can also be solved
+#'   differently). In both cases the variable responsible for clustering (the
+#'   cluster ID) can be either an identifying variable, or a categorical
+#'   observed variable: \itemize{
+#'
+#'   \item in case the cluster ID is an identifying variable, provide its name
+#'   in \code{\link[=setCluster]{setCluster(id = ...)}} and specify it as an
+#'   identifying variable (\code{\link{setIDVar}})
+#'
+#'   \item in case it is a observed variable, provide simply
+#'   \code{\link[=setCluster]{setCluster}(..., id = "observed")}. }
+#'
+#'   \item \emph{Meta-data}: Provide potentially information about the table
+#'   header (\code{\link{setHeader}}) and format (\code{\link{setFormat}}).
+#'
+#'   \item \emph{Identifying variables}: Determine the following: \itemize{
+#'
+#'   \item is the variable available at all? This is particularly important when
+#'   the data are split up into tables that are in spreadsheets or files. Often
+#'   the variable that splits up the data (and thus identifies the clusters) is
+#'   not explicitly available in the table anymore. In such a case, provide the
+#'   value in \code{\link[=setIDVar]{setIDVar}(..., value = ...)}.
+#'
+#'   \item all columns in which the variable values sit.
+#'
+#'   \item in case the variable is in several columns, determine additionally
+#'   the row in which its values sit. In this case, the values will look like
+#'   they are part of the header.
+#'
+#'   \item in case the variable must be split off of another column, provide a
+#'   regular expression that results in the target subset via
+#'   \code{\link[=setIDVar]{setIDVar}(..., split = ...)}.
+#'
+#'   \item in case the variable is distinct from the main table, provide the
+#'   explicit (non-relative) position and set
+#'   \code{\link[=setIDVar]{setIDVar}(..., distinct = TRUE)}. }
+#'
+#'   \item \emph{Observed variable}: Determine the following: \itemize{
+#'
+#'   \item all columns in which the values of the variable sit.
+#'
+#'   \item the unit and conversion factor.
+#'
+#'   \item in case the variable is not tidy, go through the following cases one
+#'   after the other: \itemize{
+#'
+#'   \item in case the variable is nested in a wide identifying variable,
+#'   determine in addition to the columns in which the values sit also the rows
+#'   in which the \emph{variable name} sits.
+#'
+#'   \item in case the names of the variable are given as a value of an
+#'   identifying variable, give the column name as
+#'   \code{\link[=setObsVar]{setObsVar}(..., key = ...)}, together with the name
+#'   of the respective observed variable (as it appears in the table) in
+#'   \code{values}.
+#'
+#'   \item in case the name of the variable is the ID of clusters, specify
+#'   code{\link[=setObsVar]{setObsVar}(..., key = "cluster", value = ...)},
+#'   where \code{values} has the cluster number the variable refers to. } } }
 #' @importFrom rlang is_integerish
 #' @importFrom stringr str_sub
 
