@@ -34,7 +34,7 @@ In `tabshiftr` we try to describe and work with a further dimension of messiness
 Data can be disorganised according to multiple dimensions.
 To understand those dimensions, we first need to understand the nature of data.
 Data \"of the same kind\" are collected in a **variable**, which is always a combination of a **name** and the **values**. 
-In a table, names are typically in the topmost row and values are in the column below that name ([Tab. 1](#tabExample)).
+In a table, names are typically in the topmost row and values are in the column below that name ([Tab. 1](#tabExample1)).
 Conceptually, there are two types of variables in any table:
 
 1. Variables that contain categorical levels that identify the units for which values have been observed (they are called *identifying variables* here).
@@ -42,13 +42,29 @@ Conceptually, there are two types of variables in any table:
 
 Moreover, a table is part of a **series** when other tables of that series contain the same variables, irrespective of how the distinct tables of that series are arranged.
 
-| identifying variable | observed variable (continuous) | observed variable (categorical) |
+| identifying variable | observed variable (categorical) | observed variable (continuous) |
 | :- | :- | :- |
-| sample 1 | 10 | blue |
-| sample 2 | 20 | black |
-| sample 3 | 30 | white |
+| sample 1 | blue | 10 |
+| sample 1 | green | 20 |
+| sample 1 | red | 30 |
 
-Table: <a name="tabExample"></a>Table 1: An example table containing one identifying and two observed variables, with the variable names in the topmost row and the values in all consecutive rows.
+Table: <a name="tabExample1"></a>Table 1: An example table containing one identifying and two observed variables, with the variable names in the topmost row and the values in all consecutive rows.
+
+Even though data in many spreadsheet are \"disorganised\", they are mostly not non-systematic. Especially in complex spreadsheets, one often encounters a situation where a set of variables occurs more than once with the same or very similar organisation, which we call **cluster** here. Data that are part of clusters are split up by another, typically categorical variable (the **cluster ID**), with the aim to increase the visual accessibility or direct the focus for human readers ([Tab. 2](#tabExample2)). This may also be the case where data are split up across several files or spreadsheets of a file, where the cluster ID can be found in the file or spreasheet name or the meta-data. In that case, the cluster ID would be an **implicit variable** that needs to be recorded as such.
+
+| sample | colour | intensity | sample | colour | intensity |
+| :- | :- | :- | :- | :- | :- |
+| sample 1 |  |  | sample 2 |  |  |
+|  | blue | 10 |  | blue | 11 |
+|  | green | 20 |  | green | 24 |
+|  | red | 30 |  | red | 13 |
+|  |  |  |  |  |  |
+| sample 3 |  |  | sample 4 |  |  |
+|  | blue | 20 |  | blue | 10 |
+|  | green | 15 |  | green | 16 |
+|  | red | 33 |  | red | 21 |
+
+Table: <a name="tabExample2"></a>Table 2: An example of a table with several clusters of comparable variables.
 
 ## Dimensions of disorganisation
 
@@ -56,7 +72,7 @@ Several of the following dimensions of disorganisation can co-occur in one table
 Examples of each of them are presented in the section [Table types](#table-types).
 
 1) Each level of an identifying variable, or a categorical observed variable are organised into separate topologically coherent chunks (clusters) of data, instead of all variables in one cluster/table.
-2) The names of observed variables are treated as if they were the levels of an identifying variable (they are *listed*), instead of each observed variable in its own column. This is also called \"long\" data.
+2) The names of several observed variables are treated as if they were the levels of an identifying variable (they are *listed*), instead of each observed variable in its own column. This is also called \"long\" data.
 3) The levels of one or more identifying variable are spread over several columns, instead of all levels in only one column. This is also called \"wide\" data.
 4) Several identifying variables are stored in the same column or one identifying variable is split up into several columns.
 5) A table is organised so that one or more variables are \"not in one piece\" (e.g., empty rows and/or columns).
@@ -77,28 +93,31 @@ To set up a schema description, the following steps should be taken:
 
 1. **Variables**: Clarify which are the identifying variables and which are the observed variables. Make sure not to mistake a listed observed variable as identifying variable. 
 
-2. **Clusters**: Determine whether there are clusters and if so, find the origin (top left cell) of each cluster and provide the required information in `setCluster(top = ..., left = ...)` ([Tab. 9](#clusHor), [Tab. 10](#clusId) & [Tab. 11](#clusMeas)). It is advised to treat a table that contains meta-data in the top rows as cluster, as this is often the case with implicit variables ([Tab. 6](#implicitVar)). All variables need to be specified in each cluster (in case clusters are all organised in the same arrangement), or `relative = TRUE` can be used. Data may be organised into clusters a) whenever a set of variables occurs more than once in the same table, nested into another variable, or b) when the data are organised into separate spreadsheets or files according to one of the variables (depending on the context, these issues can also be solved differently). In both cases the variable responsible for clustering (the cluster ID) can be either an identifying variable, or a categorical observed variable:
-    
-    - in case the cluster ID is an identifying variable, provide its name in `setCluster(id = ...)` and specify it as an identifying variable (`setIDVar()`)
-    - in case it is a observed variable, provide simply `"observed"` in `setCluster(id = ...)`.
+2. **Meta-data**: Provide potentially information about the table header (`setHeader()`) and format (`setFormat()`).
 
-3. **Meta-data**: Provide potentially information about the table header (`setHeader()`) and format (`setFormat()`).
+3. **Clusters**: Determine the following:
+
+    - are there clusters and if so, find the origin (top left cell) of each cluster and provide the required information in `setCluster(top = ..., left = ...)` ([Tab. 9](#clusHor), [Tab. 10](#clusId) & [Tab. 11](#clusMeas)).  
+    - clarify whether the cluster ID is an identifying variable or a categorical observed variable:
+      * in case the cluster ID is an identifying variable, provide its name in `setCluster(id = ...)` and specify it as an identifying variable (`setIDVar()`)
+      * in case it is a observed variable, provide simply `"observed"` in `setCluster(id = ...)`.
+    - in case the data split up into several files or spreadsheets, identify the implicit variable, provide it as cluster ID and provide the value associated to the current table in `setIDVar(..., value = ...)` ([Tab. 6](#implicitVar)).
+    <br><br>
 
 4. **Identifying variables**: Determine the following:
 
-    - is the variable available at all? This is particularly important when the data are split up into tables that are in spreadsheets or files. Often the variable that splits up the data (and thus identifies the clusters) is not explicitly available in the table anymore. In such a case, provide the value in `setIDVar(..., value = ...)` ([Tab. 6](#implicitVar)).
-    - all columns in which the variable values sit.
-    - in case the variable is in several columns, determine additionally the row in which its values sit. In this case, the values will look like they are part of the header ([Tab. 4](#nest2)).
+    - all columns in which the variable values can be found.
+    - in case the variable is wide (i.e., its values are in several columns), determine additionally the row in which the values can be found. In this case, the values will look like they are part of the header ([Tab. 4](#nest2)).
     - in case the variable must be split off of another column, provide a regular expression that results in the target subset via `setIDVar(..., split = ...)` ([Tab. 5](#splitCol)).
     - in case the variable is distinct from the main table, provide the explicit (non-relative) position and set `setIDVar(..., distinct = TRUE)` ([Tab. 12](#distVar)).
     <br><br>
     
 5. **Observed variable**: Determine the following:
 
-    - all columns in which the values of the variable sit ([Tab. 7](#long)).
+    - all columns in which the values of the variable can be found ([Tab. 7](#long)).
     - the unit and conversion factor.
     - in case the variable is not tidy, go through the following cases one after the other:
-        * in case the variable is nested in a wide identifying variable, determine in addition to the columns in which the values sit also the rows in which the **variable name** sits ([Tab. 3](#nest1) & [Tab. 4](#nest2)).
+        * in case the variable is nested in a wide identifying variable, determine in addition to the columns in which the values can be found also the rows in which the **variable name** can be found ([Tab. 3](#nest1) & [Tab. 4](#nest2)).
         * in case the names of the variable are given as a value of an identifying variable ([Tab. 8](#wideLong)), give the column name as `key`, together with the name of the respective observed variable (as it appears in the table) in `values`.
         * in case the name of the variable is the ID of clusters, specify `key = "cluster"` and in `values` the cluster number the variable refers to ([Tab. 11](#clusMeas)).
     <br><br>
