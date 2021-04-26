@@ -42,8 +42,6 @@ find_row <- function(pattern, input = NULL){
   }
 }
 
-
-
 #' @rdname find_
 #' @export
 
@@ -65,4 +63,15 @@ find_col <- function(pattern, input = NULL){
   } else{
     return(enquo(pattern))
   }
+}
+
+#' @rdname find_
+#' @export
+
+.find <- function(pattern){
+
+  assertCharacter(x = pattern, min.len = 1, any.missing = FALSE)
+
+  return(enquo(pattern))
+
 }

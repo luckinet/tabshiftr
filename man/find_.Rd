@@ -4,11 +4,14 @@
 \alias{find_}
 \alias{find_row}
 \alias{find_col}
+\alias{.find}
 \title{Determine row or column on the fly}
 \usage{
 find_row(pattern, input = NULL)
 
 find_col(pattern, input = NULL)
+
+.find(pattern)
 }
 \arguments{
 \item{pattern}{[\code{character(1)}]\cr character string containing a regular
