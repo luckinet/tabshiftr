@@ -109,8 +109,8 @@ setValidity(Class = "schema", function(object){
     if(!is.list(object@clusters)){
       errors <- c(errors, "the slot 'clusters' is not a list.")
     }
-    if(!all(names(object@clusters) %in% c("row", "col", "width", "height", "id", "type"))){
-      errors <- c(errors, "'names(schema$clusters)' must be a permutation of set {id,row,col,width,height,type}")
+    if(!all(names(object@clusters) %in% c("row", "col", "width", "height", "id", "member", "parent", "header"))){
+      errors <- c(errors, "'names(schema$clusters)' must be a permutation of set {id,parent,header,top,left,width,height,member}")
     }
     if(!is.null(object@clusters$row)){
       if(!is.numeric(object@clusters$row)){
@@ -137,37 +137,47 @@ setValidity(Class = "schema", function(object){
         errors <- c(errors, "'schema$clusters$id' must have a character value.")
       }
     }
-    if(!is.null(object@clusters$type)){
-      if(!is.character(object@clusters$type)){
-        errors <- c(errors, "'schema$clusters$type' must have a character value.")
+    if(!is.null(object@clusters$parent)){
+      if(!is.character(object@clusters$parent)){
+        errors <- c(errors, "'schema$clusters$parent' must have a character value.")
+      }
+    }
+    if(!is.null(object@clusters$member)){
+      if(!is.numeric(object@clusters$member)){
+        errors <- c(errors, "'schema$clusters$member' must have a numeric value.")
+      }
+    }
+    if(!is.null(object@clusters$header)){
+      if(!is.numeric(object@clusters$header)){
+        errors <- c(errors, "'schema$clusters$header' must have a numeric value.")
       }
     }
   }
 
-  if(!.hasSlot(object = object, name = "header")){
-    errors <- c(errors, "the schema does not have a 'header' slot.")
-  } else {
-    if(!is.list(object@header)){
-      errors <- c(errors, "the slot 'header' is not a list.")
-    }
-    if(length(object@header) == 0){
-      errors <- c(errors, "the slot 'header' does not contain any entries.")
-    }
-    if(!all(names(object@header) %in% c("row", "rel", "merge"))){
-      errors <- c(errors, "'names(header)' must be a permutation of set {row,rel,merge}")
-    }
-    if(!is.null(object@header$row)){
-      if(!is.numeric(object@header$row) | testClass(x = object@header$row, classes = "quosure")){
-        errors <- c(errors, "'header$row' must have a numeric value.")
-      }
-    }
-    if(!is.logical(object@header$rel)){
-      errors <- c(errors, "'header$rel' must have a logical value.")
-    }
-    if(!is.logical(object@header$merge)){
-      errors <- c(errors, "'header$merge' must have a logical value.")
-    }
-  }
+  # if(!.hasSlot(object = object, name = "header")){
+  #   errors <- c(errors, "the schema does not have a 'header' slot.")
+  # } else {
+  #   if(!is.list(object@header)){
+  #     errors <- c(errors, "the slot 'header' is not a list.")
+  #   }
+  #   if(length(object@header) == 0){
+  #     errors <- c(errors, "the slot 'header' does not contain any entries.")
+  #   }
+  #   if(!all(names(object@header) %in% c("row", "rel", "merge"))){
+  #     errors <- c(errors, "'names(header)' must be a permutation of set {row,rel,merge}")
+  #   }
+  #   if(!is.null(object@header$row)){
+  #     if(!is.numeric(object@header$row) | testClass(x = object@header$row, classes = "quosure")){
+  #       errors <- c(errors, "'header$row' must have a numeric value.")
+  #     }
+  #   }
+  #   # if(!is.logical(object@header$rel)){
+  #   #   errors <- c(errors, "'header$rel' must have a logical value.")
+  #   # }
+  #   # if(!is.logical(object@header$merge)){
+  #   #   errors <- c(errors, "'header$merge' must have a logical value.")
+  #   # }
+  # }
 
   if(!.hasSlot(object = object, name = "format")){
     errors <- c(errors, "the schema does not have a 'format' slot.")
@@ -316,7 +326,7 @@ setValidity(Class = "schema", function(object){
 #' @param object [\code{schema}]\cr the schema to print.
 #' @importFrom crayon yellow
 #' @importFrom stringr str_split
-#' @importFrom rlang eval_tidy
+#' @importFrom rlang eval_tidy is_quosure
 
 setMethod(f = "show",
           signature = "schema",
@@ -365,6 +375,8 @@ setMethod(f = "show",
             theRows <- sapply(seq_along(variables), function(x){
               if(is.null(variables[[x]]$row)){
                 ""
+              } else if(is_quosure(variables[[x]]$row)){
+                eval_tidy(variables[[x]]$row)
               } else {
                 temp <- unique(variables[[x]]$row)
                 # make a short sequence of 'theRows'
@@ -390,7 +402,7 @@ setMethod(f = "show",
             theCols <- sapply(seq_along(variables), function(x){
               if(is.null(variables[[x]]$col)){
                 ""
-              } else if(testClass(x = variables[[x]]$col, classes = "quosure")){
+              } else if(is_quosure(variables[[x]]$col)){
                 eval_tidy(variables[[x]]$col)
               } else {
                 temp <- unique(variables[[x]]$col)
