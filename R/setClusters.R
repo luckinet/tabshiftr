@@ -11,11 +11,9 @@
 #'   the case that the data are segregated according to a categorical variables
 #'   of interest. In such cases, this variable needs to be registered as cluster
 #'   ID.
-#' @param parent [\code{character(1)}]\cr When clusters themselves are
+#' @param group [\code{character(1)}]\cr When clusters themselves are
 #'   clustered, they are typically nested into another categorical variable,
-#'   which needs to be registered as parent ID.
-#' @param header [\code{logical(1)}]\cr Whether or not the header is included in
-#'   the cluster definition.
+#'   which needs to be registered as group ID.
 #' @param left [\code{integerish(.)}]\cr The horizontal cell value of the
 #'   top-left cell of each cluster. This can also be a vector of values in case
 #'   there are several clusters.
@@ -27,7 +25,7 @@
 #' @param height [\code{integerish(.)}]\cr The height of each cluster in cells.
 #'   This can also be a vector of values in case there are several clusters.
 #' @param member [\code{integerish(.)}]\cr For each cluster, specify here to
-#'   which parent it belongs. Clusters are enumerated from left to right and
+#'   which group it belongs. Clusters are enumerated from left to right and
 #'   from top to bottom.
 #' @details Please also take a look at the currently suggested strategy to set
 #'   up a \link[=schema]{schema description}.
@@ -36,26 +34,22 @@
 #' @importFrom checkmate assertClass assertCharacter assertIntegerish
 #' @export
 
-setCluster <- function(schema = NULL, id = NULL, parent = NULL, header = NULL,
-                       left = NULL, top = NULL, width = NULL, height = NULL,
-                       member = NULL){
+setCluster <- function(schema = NULL, id = NULL, group = NULL, member = NULL,
+                       left = NULL, top = NULL, width = NULL, height = NULL){
 
   assertClass(x = schema, classes = "schema", null.ok = TRUE)
   assertCharacter(x = id, len = 1, any.missing = FALSE, null.ok = TRUE)
-  assertCharacter(x = parent, len = 1, any.missing = FALSE, null.ok = TRUE)
+  assertCharacter(x = group, len = 1, any.missing = FALSE, null.ok = TRUE)
   assertIntegerish(x = left, lower = 1, min.len = 1, null.ok = TRUE)
   assertIntegerish(x = top, null.ok = TRUE)
   assertIntegerish(x = width, null.ok = TRUE)
   assertIntegerish(x = height, null.ok = TRUE)
-  assertIntegerish(x = header, null.ok = TRUE)
+  # assertIntegerish(x = header, null.ok = TRUE)
   assertIntegerish(x = member, null.ok = TRUE)
 
   if(is.null(schema)){
     schema <- schema_default
   }
-  # nClusters <- max(lengths(schema@clusters))
-  # if(nClusters == 0) nClusters <- 1
-
 
   if(!is.null(left)){
     schema@clusters$col <- left
@@ -81,17 +75,17 @@ setCluster <- function(schema = NULL, id = NULL, parent = NULL, header = NULL,
     schema@clusters$id <- id
   }
 
-  if(!is.null(parent)){
-    schema@clusters$parent <- parent
+  if(!is.null(group)){
+    schema@clusters$group <- group
   }
 
   if(!is.null(member)){
     schema@clusters$member <- member
   }
 
-  if(!is.null(header)){
-    schema@clusters$header <- header
-  }
+  # if(!is.null(header)){
+  #   schema@clusters$header <- header
+  # }
 
   return(schema)
 }

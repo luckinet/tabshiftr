@@ -109,8 +109,8 @@ setValidity(Class = "schema", function(object){
     if(!is.list(object@clusters)){
       errors <- c(errors, "the slot 'clusters' is not a list.")
     }
-    if(!all(names(object@clusters) %in% c("row", "col", "width", "height", "id", "member", "parent", "header"))){
-      errors <- c(errors, "'names(schema$clusters)' must be a permutation of set {id,parent,header,top,left,width,height,member}")
+    if(!all(names(object@clusters) %in% c("row", "col", "width", "height", "id", "member", "group", "header"))){
+      errors <- c(errors, "'names(schema$clusters)' must be a permutation of set {id,group,header,top,left,width,height,member}")
     }
     if(!is.null(object@clusters$row)){
       if(!is.numeric(object@clusters$row)){
@@ -137,9 +137,9 @@ setValidity(Class = "schema", function(object){
         errors <- c(errors, "'schema$clusters$id' must have a character value.")
       }
     }
-    if(!is.null(object@clusters$parent)){
-      if(!is.character(object@clusters$parent)){
-        errors <- c(errors, "'schema$clusters$parent' must have a character value.")
+    if(!is.null(object@clusters$group)){
+      if(!is.character(object@clusters$group)){
+        errors <- c(errors, "'schema$clusters$group' must have a character value.")
       }
     }
     if(!is.null(object@clusters$member)){

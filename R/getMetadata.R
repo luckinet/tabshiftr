@@ -103,10 +103,10 @@
           stop("provide absolute values for the distinct variable '", varName, "'!")
         }
       } else {
-        # in case this variable is the parent ID, it doesn't have as many values
+        # in case this variable is the group ID, it doesn't have as many values
         # as there are clusters, thus, select the position via the "$member"
         # field
-        if(varName %in% clusters$parent){
+        if(varName %in% clusters$group){
           pos <- clusters$member[j]
         } else {
           pos <- j
@@ -134,7 +134,7 @@
       if(varProp$type == "id"){
         if(!is.null(varProp$row) & !distinct){
           # if it is cluster ID, don't gather/spread ...
-          if(!varName %in% c(clusters$id, clusters$parent)){
+          if(!varName %in% c(clusters$id, clusters$group)){
             gatherVars <- c(gatherVars, varName)
             if(!varProp$rel){
               gatherCols <- c(gatherCols, varProp$col - clusters$col[j] + 1)

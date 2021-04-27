@@ -7,13 +7,13 @@
 #' @param units the number of units in the output table (from 1 to 3)
 #' @param variables the variables that should be in the output table (either
 #'   "harvested" or "production")
-#' @param parents whether or not parents are in the test table.
+#' @param groups whether or not groups are in the test table.
 #' @return Either an error message of the invalid expectations, or the output of
 #'   the last successful expectation.
 #' @importFrom testthat expect_identical
 #' @importFrom checkmate expect_names expect_tibble expect_list assertChoice
 
-expect_valid_table <- function(x = NULL, units = 1, variables = NULL, parents = FALSE){
+expect_valid_table <- function(x = NULL, units = 1, variables = NULL, groups = FALSE){
 
   assertChoice(x = units, choices = c(1:3))
   assertChoice(x = variables, choices = c("harvested", "production"), null.ok = TRUE)
@@ -56,8 +56,8 @@ expect_valid_table <- function(x = NULL, units = 1, variables = NULL, parents = 
 
   } else if(units == 3){
 
-    if(parents){
-      expect_identical(object = x$territories, expected = c("parent 1", "parent 1", "parent 1", "parent 1", "parent 1", "parent 1", "parent 1", "parent 1", "parent 2", "parent 2", "parent 2", "parent 2"))
+    if(groups){
+      expect_identical(object = x$territories, expected = c("group 1", "group 1", "group 1", "group 1", "group 1", "group 1", "group 1", "group 1", "group 2", "group 2", "group 2", "group 2"))
       expect_identical(object = x$sublevel, expected = c("unit 1", "unit 1", "unit 1", "unit 1", "unit 2", "unit 2", "unit 2", "unit 2", "unit 3", "unit 3", "unit 3", "unit 3"))
     } else {
       expect_identical(object = x$territories, expected = c("unit 1", "unit 1", "unit 1", "unit 1", "unit 2", "unit 2", "unit 2", "unit 2", "unit 3", "unit 3", "unit 3", "unit 3"))
@@ -65,7 +65,7 @@ expect_valid_table <- function(x = NULL, units = 1, variables = NULL, parents = 
     expect_identical(object = x$year, expected = c("year 1", "year 1", "year 2", "year 2", "year 1", "year 1", "year 2", "year 2", "year 1", "year 1", "year 2", "year 2"))
     expect_identical(object = x$commodities, expected = c("maize", "soybean", "maize", "soybean", "maize", "soybean", "maize", "soybean", "maize", "soybean", "maize", "soybean"))
     if(is.null(variables)){
-      if(parents){
+      if(groups){
         expect_tibble(x = x, any.missing = FALSE, nrows = 12, ncols = 6)
         expect_names(x = colnames(x), permutation.of = c("territories", "sublevel", "year", "commodities", "harvested", "production") )
       } else {

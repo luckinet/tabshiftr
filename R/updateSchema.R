@@ -80,13 +80,13 @@
 
   outsideCluster <- NULL
   clusterID <- clusters$id
-  parentID <- clusters$parent
+  groupID <- clusters$group
   for(i in seq_along(variables)){
     varProp <- variables[[i]]
     varName <- names(variables)[i]
 
     ##### replace from here .... ####
-    if(!varName %in% c(clusterID, parentID)){
+    if(!varName %in% c(clusterID, groupID)){
 
       if(!varProp$rel){
         setRel <- FALSE
@@ -189,11 +189,11 @@
       if(length(varProp$row) == 1){
         varProp$row <- rep(x = varProp$row, length.out = nClusters)
       }
-      if(any(varName == parentID)){
+      if(any(varName == groupID)){
         varProp$row <- varProp$row[clusters$member]
       }
     }
-    if(any(varName == parentID)){
+    if(any(varName == groupID)){
       if(!is.null(varProp$row)){
         varProp$col <- rep(x = varProp$col, length.out = length(varProp$row))
       }

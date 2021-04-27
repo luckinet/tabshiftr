@@ -19,7 +19,7 @@
   variables <- schema@variables
   header <- schema@header
   clusterID <- clusters$id
-  parentID <- clusters$parent
+  groupID <- clusters$group
   tabDim <- dim(input)
   nrClusters <- max(lengths(clusters))
 
@@ -41,10 +41,10 @@
     clusterVar <- NULL
   }
 
-  if(!is.null(parentID)){
-    parentVar <- rep(variables[clusters$parent], nrClusters)
+  if(!is.null(groupID)){
+    groupVar <- rep(variables[clusters$group], nrClusters)
   } else {
-    parentVar <- NULL
+    groupVar <- NULL
   }
 
   # assume the header is in row 1, if not set
@@ -65,7 +65,7 @@
     clusterCols <- outCols <- clusters$col[i]:(clusters$col[i]+clusters$width[i] - 1)
     thisClust <- input[clusterRows, clusterCols]
     clustVar <- clusterVar[[i]]
-    parVar <- parentVar[[i]]
+    parVar <- groupVar[[i]]
 
     if(!is.null(clusterID)){
       # in case clusterID is in column/row without any other values, remove it
@@ -121,13 +121,13 @@
       clusterVal <- NULL
     }
 
-    if(!is.null(parentID)){
-      parentVal <- unlist(input[parVar$row[clusters$member[i]], parVar$col[clusters$member[i]]], use.names = FALSE)
+    if(!is.null(groupID)){
+      groupVal <- unlist(input[parVar$row[clusters$member[i]], parVar$col[clusters$member[i]]], use.names = FALSE)
 
       setNA$row <- c(setNA$row, parVar$row)
       setNA$col <- c(setNA$col, parVar$col)
     } else {
-      parentVal <- NULL
+      groupVal <- NULL
     }
 
     # if there is a distinct variable, determine column and rows of it and cut
@@ -210,7 +210,7 @@
                     data_cols = outCols,
                     cluster_var = clustVar,
                     cluster_val = clusterVal,
-                    parent_val = parentVal,
+                    group_val = groupVal,
                     header = tempHeader,
                     data = tempData2,
                     outside = distVal)
