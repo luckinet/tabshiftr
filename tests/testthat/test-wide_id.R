@@ -231,8 +231,8 @@ test_that("several wide identifying variables", {
     setIDVar(name = "territories", columns = 1) %>%
     setIDVar(name = "year", columns = c(2, 6), rows = 1) %>%
     setIDVar(name = "commodities", columns = c(2, 4, 6, 8), rows = 2) %>%
-    setObsVar(name = "harvested", unit = "ha", columns = find_col("harv*"), rows = 3) %>%
-    setObsVar(name = "production", unit = "t", columns = find_col("prod*"), rows = 3)
+    setObsVar(name = "harvested", unit = "ha", columns = .find("harv*"), rows = 3) %>%
+    setObsVar(name = "production", unit = "t", columns = .find("prod*"), rows = 3)
 
   input <- read_csv(paste0(system.file("test_datasets",
                                        package="tabshiftr",
@@ -247,7 +247,7 @@ test_that("several wide identifying variables", {
   schema <- setHeader(rows = c(1:3)) %>%
     setIDVar(name = "territories", columns = 1) %>%
     setIDVar(name = "year", columns = c(2, 6), rows = 1) %>%
-    setIDVar(name = "commodities", columns = find_col("soy|mai*"), rows = 2) %>%
+    setIDVar(name = "commodities", columns = .find("soy|mai*"), rows = 2) %>%
     setObsVar(name = "harvested", unit = "ha", columns = c(2, 4, 6, 8), rows = 3) %>%
     setObsVar(name = "production", unit = "t", columns = c(3, 5, 7, 9), rows = 3)
 
@@ -261,7 +261,7 @@ test_that("several wide identifying variables", {
 
 
   # ... with regular expressions for the header
-  schema <- setHeader(rows = find_row("year|soy|mai*|harv*|prod*")) %>%
+  schema <- setHeader(rows = .find("year|soy|mai*|harv*|prod*")) %>%
     setIDVar(name = "territories", columns = 1) %>%
     setIDVar(name = "year", columns = c(2, 6), rows = 1) %>%
     setIDVar(name = "commodities", columns = c(2, 4, 6, 8), rows = 2) %>%
@@ -278,12 +278,12 @@ test_that("several wide identifying variables", {
 
 
   # ... with regular expressions for everything
-  schema <- setHeader(rows = find_row("year|soy|mai*|harv*|prod*")) %>%
-    setIDVar(name = "territories", columns = find_col("unit*")) %>%
-    setIDVar(name = "year", columns = find_row("year*"), rows = find_row("year*")) %>%
-    setIDVar(name = "commodities", columns = find_col("soy|mai*"), rows = find_col("soy|mai*")) %>%
-    setObsVar(name = "harvested", unit = "ha", columns = find_col("harv*"), rows = find_row("harv*")) %>%
-    setObsVar(name = "production", unit = "t", columns = find_col("prod*"), rows = find_row("prod*"))
+  schema <- setHeader(rows = .find("year|soy|mai*|harv*|prod*")) %>%
+    setIDVar(name = "territories", columns = .find("unit*")) %>%
+    setIDVar(name = "year", columns = .find("year*"), rows = .find("year*")) %>%
+    setIDVar(name = "commodities", columns = .find("soy|mai*"), rows = .find("soy|mai*")) %>%
+    setObsVar(name = "harvested", unit = "ha", columns = .find("harv*"), rows = .find("harv*")) %>%
+    setObsVar(name = "production", unit = "t", columns = .find("prod*"), rows = .find("prod*"))
 
   input <- read_csv(paste0(system.file("test_datasets",
                                        package="tabshiftr",

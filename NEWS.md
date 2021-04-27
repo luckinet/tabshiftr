@@ -1,5 +1,8 @@
 # tabshiftr 0.2.3
 
+- generalise `find_col` and `find_row` to `.find` and handle it based on the context it's called in.
+- include the option to specify clusters that are members of irregular groups of clusters associated to a variable that shall be recorded itself, `setCluster(..., group = "grouping_variable", member = c(1, 1, 2, ...))`.
+
 # tabshiftr 0.2.2
 
 - include functions `find_col` and `find_row` to determine columns and rows \"on the fly\"

@@ -82,7 +82,7 @@ the tests of this package." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tabshiftr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.3</span>
       </span>
     </div>
 
@@ -135,7 +135,7 @@ the tests of this package." />
 the tests of this package.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>expect_valid_table</span><span class='op'>(</span>x <span class='op'>=</span> <span class='cn'>NULL</span>, units <span class='op'>=</span> <span class='fl'>1</span>, variables <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>expect_valid_table</span><span class='op'>(</span>x <span class='op'>=</span> <span class='cn'>NULL</span>, units <span class='op'>=</span> <span class='fl'>1</span>, variables <span class='op'>=</span> <span class='cn'>NULL</span>, groups <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -152,6 +152,10 @@ the tests of this package.</p>
       <th>variables</th>
       <td><p>the variables that should be in the output table (either
 "harvested" or "production")</p></td>
+    </tr>
+    <tr>
+      <th>groups</th>
+      <td><p>whether or not groups are in the test table.</p></td>
     </tr>
     </table>
 

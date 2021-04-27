@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tabshiftr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.3</span>
       </span>
     </div>
 
@@ -98,7 +98,7 @@
 <div id="the-basics" class="section level2">
 <h2 class="hasAnchor">
 <a href="#the-basics" class="anchor"></a>The basics</h2>
-<p>Data can be disorganised according to multiple dimensions. To understand those dimensions, we first need to understand the nature of data. Data "of the same kind" are collected in a <strong>variable</strong>, which is always a combination of a <strong>name</strong> and the <strong>values</strong>. In a table, names are typically in the topmost row and values are in the column below that name (<a href="#tabExample">Tab. 1</a>). Conceptually, there are two types of variables in any table:</p>
+<p>Data can be disorganised according to multiple dimensions. To understand those dimensions, we first need to understand the nature of data. Data "of the same kind" are collected in a <strong>variable</strong>, which is always a combination of a <strong>name</strong> and the <strong>values</strong>. In a table, names are typically in the topmost row and values are in the column below that name (<a href="#tabExample1">Tab. 1</a>). Conceptually, there are two types of variables in any table:</p>
 <ol style="list-style-type: decimal">
 <li>Variables that contain categorical levels that identify the units for which values have been observed (they are called <em>identifying variables</em> here).</li>
 <li>Variables that have been measured or observed and that consequently represent the target values of that measurement, be they continuous or categorical (they are called <em>observed variables</em> here).</li>
@@ -106,7 +106,7 @@
 <p>Moreover, a table is part of a <strong>series</strong> when other tables of that series contain the same variables, irrespective of how the distinct tables of that series are arranged.</p>
 <table class="table">
 <caption>
-<a name="tabExample"></a>Table 1: An example table containing one identifying and two observed variables, with the variable names in the topmost row and the values in all consecutive rows.</caption>
+<a name="tabExample1"></a>Table 1: An example table containing one identifying and two observed variables, with the variable names in the topmost row and the values in all consecutive rows.</caption>
 <colgroup>
 <col width="33%">
 <col width="33%">
@@ -114,24 +114,111 @@
 </colgroup>
 <thead><tr class="header">
 <th align="left">identifying variable</th>
-<th align="left">observed variable (continuous)</th>
 <th align="left">observed variable (categorical)</th>
+<th align="left">observed variable (continuous)</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
 <td align="left">sample 1</td>
-<td align="left">10</td>
 <td align="left">blue</td>
+<td align="left">10</td>
 </tr>
 <tr class="even">
-<td align="left">sample 2</td>
+<td align="left">sample 1</td>
+<td align="left">green</td>
 <td align="left">20</td>
-<td align="left">black</td>
 </tr>
 <tr class="odd">
-<td align="left">sample 3</td>
+<td align="left">sample 1</td>
+<td align="left">red</td>
 <td align="left">30</td>
-<td align="left">white</td>
+</tr>
+</tbody>
+</table>
+<p>Even though data in many spreadsheet are "disorganised", they are mostly not non-systematic. Especially in complex spreadsheets, one often encounters a situation where a set of variables occurs more than once with the same or very similar organisation, which we call <strong>cluster</strong> here. Data that are part of clusters are split up by another, typically categorical variable (the <strong>cluster ID</strong>), with the aim to increase the visual accessibility or direct the focus for human readers (<a href="#tabExample2">Tab. 2</a>). This may also be the case where data are split up across several files or spreadsheets of a file, where the cluster ID can be found in the file or spreasheet name or the meta-data. In that case, the cluster ID would be an <strong>implicit variable</strong> that needs to be recorded as such.</p>
+<table class="table">
+<caption>
+<a name="tabExample2"></a>Table 2: An example of a table with several clusters of comparable variables.</caption>
+<thead><tr class="header">
+<th align="left">sample</th>
+<th align="left">colour</th>
+<th align="left">intensity</th>
+<th align="left">sample</th>
+<th align="left">colour</th>
+<th align="left">intensity</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">sample 1</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">sample 2</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">blue</td>
+<td align="left">10</td>
+<td align="left"></td>
+<td align="left">blue</td>
+<td align="left">11</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">green</td>
+<td align="left">20</td>
+<td align="left"></td>
+<td align="left">green</td>
+<td align="left">24</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">red</td>
+<td align="left">30</td>
+<td align="left"></td>
+<td align="left">red</td>
+<td align="left">13</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">sample 3</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">sample 4</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">blue</td>
+<td align="left">20</td>
+<td align="left"></td>
+<td align="left">blue</td>
+<td align="left">10</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">green</td>
+<td align="left">15</td>
+<td align="left"></td>
+<td align="left">green</td>
+<td align="left">16</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">red</td>
+<td align="left">33</td>
+<td align="left"></td>
+<td align="left">red</td>
+<td align="left">21</td>
 </tr>
 </tbody>
 </table>
@@ -142,7 +229,7 @@
 <p>Several of the following dimensions of disorganisation can co-occur in one table. Examples of each of them are presented in the section <a href="#table-types">Table types</a>.</p>
 <ol style="list-style-type: decimal">
 <li>Each level of an identifying variable, or a categorical observed variable are organised into separate topologically coherent chunks (clusters) of data, instead of all variables in one cluster/table.</li>
-<li>The names of observed variables are treated as if they were the levels of an identifying variable (they are <em>listed</em>), instead of each observed variable in its own column. This is also called "long" data.</li>
+<li>The names of several observed variables are treated as if they were the levels of an identifying variable (they are <em>listed</em>), instead of each observed variable in its own column. This is also called "long" data.</li>
 <li>The levels of one or more identifying variable are spread over several columns, instead of all levels in only one column. This is also called "wide" data.</li>
 <li>Several identifying variables are stored in the same column or one identifying variable is split up into several columns.</li>
 <li>A table is organised so that one or more variables are "not in one piece" (e.g., empty rows and/or columns).</li>
@@ -158,20 +245,27 @@
 <p>To set up a schema description, the following steps should be taken:</p>
 <ol style="list-style-type: decimal">
 <li><p><strong>Variables</strong>: Clarify which are the identifying variables and which are the observed variables. Make sure not to mistake a listed observed variable as identifying variable.</p></li>
+<li><p><strong>Meta-data</strong>: Provide potentially information about the table header (<code><a href="../reference/setHeader.html">setHeader()</a></code>) and format (<code><a href="../reference/setFormat.html">setFormat()</a></code>).</p></li>
 <li>
-<p><strong>Clusters</strong>: Determine whether there are clusters and if so, find the origin (top left cell) of each cluster and provide the required information in <code><a href="../reference/setCluster.html">setCluster(top = ..., left = ...)</a></code> (<a href="#clusHor">Tab. 9</a>, <a href="#clusId">Tab. 10</a> &amp; <a href="#clusMeas">Tab. 11</a>). It is advised to treat a table that contains meta-data in the top rows as cluster, as this is often the case with implicit variables (<a href="#implicitVar">Tab. 6</a>). All variables need to be specified in each cluster (in case clusters are all organised in the same arrangement), or <code>relative = TRUE</code> can be used. Data may be organised into clusters a) whenever a set of variables occurs more than once in the same table, nested into another variable, or b) when the data are organised into separate spreadsheets or files according to one of the variables (depending on the context, these issues can also be solved differently). In both cases the variable responsible for clustering (the cluster ID) can be either an identifying variable, or a categorical observed variable:</p>
+<p><strong>Clusters</strong>: Determine the following:</p>
+<ul>
+<li>are there clusters and if so, find the origin (top left cell) of each cluster and provide the required information in <code><a href="../reference/setCluster.html">setCluster(top = ..., left = ...)</a></code> (<a href="#clusHor">Tab. 9</a>, <a href="#clusId">Tab. 10</a> &amp; <a href="#clusMeas">Tab. 11</a>).<br>
+</li>
+<li>clarify whether the cluster ID is an identifying variable or a categorical observed variable:
 <ul>
 <li>in case the cluster ID is an identifying variable, provide its name in <code><a href="../reference/setCluster.html">setCluster(id = ...)</a></code> and specify it as an identifying variable (<code><a href="../reference/setIDVar.html">setIDVar()</a></code>)</li>
 <li>in case it is a observed variable, provide simply <code>"observed"</code> in <code><a href="../reference/setCluster.html">setCluster(id = ...)</a></code>.</li>
 </ul>
 </li>
-<li><p><strong>Meta-data</strong>: Provide potentially information about the table header (<code><a href="../reference/setHeader.html">setHeader()</a></code>) and format (<code><a href="../reference/setFormat.html">setFormat()</a></code>).</p></li>
+<li>in case the data split up into several files or spreadsheets, identify the implicit variable, provide it as cluster ID and provide the value associated to the current table in <code><a href="../reference/setIDVar.html">setIDVar(..., value = ...)</a></code> (<a href="#implicitVar">Tab. 6</a>). <br><br>
+</li>
+</ul>
+</li>
 <li>
 <p><strong>Identifying variables</strong>: Determine the following:</p>
 <ul>
-<li>is the variable available at all? This is particularly important when the data are split up into tables that are in spreadsheets or files. Often the variable that splits up the data (and thus identifies the clusters) is not explicitly available in the table anymore. In such a case, provide the value in <code><a href="../reference/setIDVar.html">setIDVar(..., value = ...)</a></code> (<a href="#implicitVar">Tab. 6</a>).</li>
-<li>all columns in which the variable values sit.</li>
-<li>in case the variable is in several columns, determine additionally the row in which its values sit. In this case, the values will look like they are part of the header (<a href="#nest2">Tab. 4</a>).</li>
+<li>all columns in which the variable values can be found.</li>
+<li>in case the variable is wide (i.e., its values are in several columns), determine additionally the row in which the values can be found. In this case, the values will look like they are part of the header (<a href="#nest2">Tab. 4</a>).</li>
 <li>in case the variable must be split off of another column, provide a regular expression that results in the target subset via <code><a href="../reference/setIDVar.html">setIDVar(..., split = ...)</a></code> (<a href="#splitCol">Tab. 5</a>).</li>
 <li>in case the variable is distinct from the main table, provide the explicit (non-relative) position and set <code><a href="../reference/setIDVar.html">setIDVar(..., distinct = TRUE)</a></code> (<a href="#distVar">Tab. 12</a>). <br><br>
 </li>
@@ -180,11 +274,11 @@
 <li>
 <p><strong>Observed variable</strong>: Determine the following:</p>
 <ul>
-<li>all columns in which the values of the variable sit (<a href="#long">Tab. 7</a>).</li>
+<li>all columns in which the values of the variable can be found (<a href="#long">Tab. 7</a>).</li>
 <li>the unit and conversion factor.</li>
 <li>in case the variable is not tidy, go through the following cases one after the other:
 <ul>
-<li>in case the variable is nested in a wide identifying variable, determine in addition to the columns in which the values sit also the rows in which the <strong>variable name</strong> sits (<a href="#nest1">Tab. 3</a> &amp; <a href="#nest2">Tab. 4</a>).</li>
+<li>in case the variable is nested in a wide identifying variable, determine in addition to the columns in which the values can be found also the rows in which the <strong>variable name</strong> can be found (<a href="#nest1">Tab. 3</a> &amp; <a href="#nest2">Tab. 4</a>).</li>
 <li>in case the names of the variable are given as a value of an identifying variable (<a href="#wideLong">Tab. 8</a>), give the column name as <code>key</code>, together with the name of the respective observed variable (as it appears in the table) in <code>values</code>.</li>
 <li>in case the name of the variable is the ID of clusters, specify <code>key = "cluster"</code> and in <code>values</code> the cluster number the variable refers to (<a href="#clusMeas">Tab. 11</a>). <br><br>
 </li>

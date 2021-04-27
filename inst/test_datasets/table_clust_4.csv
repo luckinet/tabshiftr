@@ -1,5 +1,5 @@
 territory,commodities,harvested,production,year
-parent 1,,,,
+group 1,,,,
 unit 1,,,,
 ,soybean,1111,1112,year 1
 ,maize,1121,1122,year 1
@@ -10,7 +10,7 @@ unit 2,,,,
 ,maize,2121,2122,year 1
 ,soybean,2211,2212,year 2
 ,maize,2221,2222,year 2
-parent 2,,,,
+group 2,,,,
 unit 3,,,,
 ,soybean,3111,3112,year 1
 ,maize,3121,3122,year 1

@@ -200,9 +200,9 @@ test_that("vertical clusters that are aggregated per observed variable", {
   expect_valid_table(x = output, units = 2)
 })
 
-test_that("clusters that are nested into parent clusters", {
+test_that("clusters that are nested into group clusters", {
   schema <- setCluster(id = "sublevel", left = 1, top = c(3, 8, 14),
-                       parent = "territories", member = c(1, 1, 2)) %>%
+                       group = "territories", member = c(1, 1, 2)) %>%
     setHeader(rows = 1) %>%
     setIDVar(name = "territories", columns = 1, rows = c(2, 13)) %>%
     setIDVar(name = "sublevel", columns = 1, rows = c(3, 8, 14)) %>%
@@ -218,7 +218,7 @@ test_that("clusters that are nested into parent clusters", {
 
   output <- reorganise(input = input, schema = schema)
 
-  expect_valid_table(x = output, units = 3, parents = TRUE)
+  expect_valid_table(x = output, units = 3, groups = TRUE)
 
 
   # ... with regular expressions for observed variables
@@ -229,7 +229,7 @@ test_that("clusters that are nested into parent clusters", {
                     col_names = FALSE)
   output <- reorganise(input = input, schema = schema)
 
-  expect_valid_table(x = output, units = 3, parents = TRUE)
+  expect_valid_table(x = output, units = 3, groups = TRUE)
 
 
   # ... with regular expressions for identifying variables
@@ -240,6 +240,6 @@ test_that("clusters that are nested into parent clusters", {
                     col_names = FALSE)
   output <- reorganise(input = input, schema = schema)
 
-  expect_valid_table(x = output, units = 3, parents = TRUE)
+  expect_valid_table(x = output, units = 3, groups = TRUE)
 
 })

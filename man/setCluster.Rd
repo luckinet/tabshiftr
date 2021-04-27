@@ -7,13 +7,12 @@
 setCluster(
   schema = NULL,
   id = NULL,
-  parent = NULL,
-  header = NULL,
+  group = NULL,
+  member = NULL,
   left = NULL,
   top = NULL,
   width = NULL,
-  height = NULL,
-  member = NULL
+  height = NULL
 )
 }
 \arguments{
@@ -26,12 +25,13 @@ the case that the data are segregated according to a categorical variables
 of interest. In such cases, this variable needs to be registered as cluster
 ID.}
 
-\item{parent}{[\code{character(1)}]\cr When clusters themselves are
+\item{group}{[\code{character(1)}]\cr When clusters themselves are
 clustered, they are typically nested into another categorical variable,
-which needs to be registered as parent ID.}
+which needs to be registered as group ID.}
 
-\item{header}{[\code{logical(1)}]\cr Whether or not the header is included in
-the cluster definition.}
+\item{member}{[\code{integerish(.)}]\cr For each cluster, specify here to
+which group it belongs. Clusters are enumerated from left to right and
+from top to bottom.}
 
 \item{left}{[\code{integerish(.)}]\cr The horizontal cell value of the
 top-left cell of each cluster. This can also be a vector of values in case
@@ -46,10 +46,6 @@ This can also be a vector of values in case there are several clusters.}
 
 \item{height}{[\code{integerish(.)}]\cr The height of each cluster in cells.
 This can also be a vector of values in case there are several clusters.}
-
-\item{member}{[\code{integerish(.)}]\cr For each cluster, specify here to
-which parent it belongs. Clusters are enumerated from left to right and
-from top to bottom.}
 }
 \value{
 An object of class \code{\link{schema}}.
