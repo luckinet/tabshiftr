@@ -19,11 +19,12 @@
   variables <- schema@variables
   header <- schema@header
   clusterID <- clusters$id
+  parentID <- clusters$parent
   tabDim <- dim(input)
   nrClusters <- max(lengths(clusters))
 
-  if(!is.null(clusters$id)){
-    if(clusters$id == "observed"){
+  if(!is.null(clusterID)){
+    if(clusterID == "observed"){
       # in case observed variables are cluster variables, get those that contain 'key = "cluster"'
       clusterVar <- sapply(seq_along(variables), function(x){
         if(!is.null(variables[[x]]$key)){
@@ -34,10 +35,16 @@
       })
       clusterVar <- unlist(clusterVar, recursive = FALSE)
     } else {
-      clusterVar <- rep(variables[clusters$id], nrClusters)
+      clusterVar <- rep(variables[clusterID], nrClusters)
     }
   } else {
     clusterVar <- NULL
+  }
+
+  if(!is.null(parentID)){
+    parentVar <- rep(variables[clusters$parent], nrClusters)
+  } else {
+    parentVar <- NULL
   }
 
   # assume the header is in row 1, if not set
@@ -52,11 +59,13 @@
   })
 
   out <- list()
+  setNA <- list()
   for(i in 1:nrClusters){
-    clusterRows2 <- outRows <- clusters$row[i]:(clusters$row[i]+clusters$height[i] - 1)
-    clusterCols2 <- outCols <- clusters$col[i]:(clusters$col[i]+clusters$width[i] - 1)
-    thisClust <- input[clusterRows2, clusterCols2]
+    clusterRows <- outRows <- clusters$row[i]:(clusters$row[i]+clusters$height[i] - 1)
+    clusterCols <- outCols <- clusters$col[i]:(clusters$col[i]+clusters$width[i] - 1)
+    thisClust <- input[clusterRows, clusterCols]
     clustVar <- clusterVar[[i]]
+    parVar <- parentVar[[i]]
 
     if(!is.null(clusterID)){
       # in case clusterID is in column/row without any other values, remove it
@@ -69,13 +78,13 @@
           tempRow <- unlist(thisClust[clustVar$row[i],], use.names = FALSE)
           tempRow[clustVar$col[i]] <- NA
           if(all(is.na(tempRow))){
-            outRows <- clusterRows2[-clustVar$row[i]]
+            outRows <- clusterRows[-clustVar$row[i]]
           }
 
           tempCol <- unlist(thisClust[,clustVar$col[i]], use.names = FALSE)
           tempCol[clustVar$row[i]] <- NA
           if(all(is.na(tempCol))){
-            outCols <- clusterCols2[-clustVar$col[i]]
+            outCols <- clusterCols[-clustVar$col[i]]
           }
         }
       } else {
@@ -84,29 +93,41 @@
         } else {
           clusterVal <- unlist(input[clustVar$row[i], clustVar$col[i]], use.names = FALSE)
 
-          if(clustVar$row[i] %in% clusterRows2){
-            tempRow <- unlist(input[clustVar$row[i], clusterCols2], use.names = FALSE)
-            tempRow[which(clusterCols2 %in% clustVar$col[i])] <- NA
+          # setNA$row <- clustVar$row
+          # setNA$col <- clustVar$col
+
+          if(clustVar$row[i] %in% clusterRows){
+            tempRow <- unlist(input[clustVar$row[i], clusterCols], use.names = FALSE)
+            tempRow[which(clusterCols %in% clustVar$col[i])] <- NA
           } else {
             tempRow <- "something"
           }
-          if(clustVar$col[i] %in% clusterCols2){
-            tempCol <- unlist(input[clusterRows2, clustVar$col[i]], use.names = FALSE)
-            tempCol[which(clusterRows2 %in% clustVar$row[i])] <- NA
+          if(clustVar$col[i] %in% clusterCols){
+            tempCol <- unlist(input[clusterRows, clustVar$col[i]], use.names = FALSE)
+            tempCol[which(clusterRows %in% clustVar$row[i])] <- NA
           } else {
             tempCol <- "something"
           }
           if(all(is.na(tempRow))){
-            outRows <- outRows[-which(clusterCols2 %in% clustVar$col[i])]
+            outRows <- outRows[-which(clusterCols %in% clustVar$col[i])]
           }
           if(all(is.na(tempCol))){
-            outCols <- outCols[-which(clusterRows2 %in% clustVar$row[i])]
+            outCols <- outCols[-which(clusterRows %in% clustVar$row[i])]
           }
         }
 
       }
     } else {
       clusterVal <- NULL
+    }
+
+    if(!is.null(parentID)){
+      parentVal <- unlist(input[parVar$row[clusters$member[i]], parVar$col[clusters$member[i]]], use.names = FALSE)
+
+      setNA$row <- c(setNA$row, parVar$row)
+      setNA$col <- c(setNA$col, parVar$col)
+    } else {
+      parentVal <- NULL
     }
 
     # if there is a distinct variable, determine column and rows of it and cut
@@ -142,7 +163,9 @@
     }
 
     # new code
-    tempData2 <- input[outRows, outCols]
+    tempIn <- input
+    tempIn[unique(setNA$row), unique(setNA$col)] <- NA
+    tempData2 <- tempIn[outRows, outCols]
     # remove invalid rows
     removeRows <- NULL
     if(header$rel){
@@ -181,12 +204,13 @@
       select(-rn)
     names(tempHeader) <- NULL
 
-    tempOut <- list(cluster_rows = clusterRows2,
+    tempOut <- list(cluster_rows = clusterRows,
                     data_rows = outRows,
-                    cluster_cols = clusterCols2,
+                    cluster_cols = clusterCols,
                     data_cols = outCols,
                     cluster_var = clustVar,
                     cluster_val = clusterVal,
+                    parent_val = parentVal,
                     header = tempHeader,
                     data = tempData2,
                     outside = distVal)
