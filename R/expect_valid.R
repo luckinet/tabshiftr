@@ -7,12 +7,13 @@
 #' @param units the number of units in the output table (from 1 to 3)
 #' @param variables the variables that should be in the output table (either
 #'   "harvested" or "production")
+#' @param parent whether or not parents are in the test table.
 #' @return Either an error message of the invalid expectations, or the output of
 #'   the last successful expectation.
 #' @importFrom testthat expect_identical
 #' @importFrom checkmate expect_names expect_tibble expect_list assertChoice
 
-expect_valid_table <- function(x = NULL, units = 1, variables = NULL){
+expect_valid_table <- function(x = NULL, units = 1, variables = NULL, parents = FALSE){
 
   assertChoice(x = units, choices = c(1:3))
   assertChoice(x = variables, choices = c("harvested", "production"), null.ok = TRUE)
@@ -55,12 +56,22 @@ expect_valid_table <- function(x = NULL, units = 1, variables = NULL){
 
   } else if(units == 3){
 
-    expect_identical(object = x$territories, expected = c("unit 1", "unit 1", "unit 1", "unit 1", "unit 2", "unit 2", "unit 2", "unit 2", "unit 3", "unit 3", "unit 3", "unit 3"))
+    if(parents){
+      expect_identical(object = x$territories, expected = c("parent 1", "parent 1", "parent 1", "parent 1", "parent 1", "parent 1", "parent 1", "parent 1", "parent 2", "parent 2", "parent 2", "parent 2"))
+      expect_identical(object = x$sublevel, expected = c("unit 1", "unit 1", "unit 1", "unit 1", "unit 2", "unit 2", "unit 2", "unit 2", "unit 3", "unit 3", "unit 3", "unit 3"))
+    } else {
+      expect_identical(object = x$territories, expected = c("unit 1", "unit 1", "unit 1", "unit 1", "unit 2", "unit 2", "unit 2", "unit 2", "unit 3", "unit 3", "unit 3", "unit 3"))
+    }
     expect_identical(object = x$year, expected = c("year 1", "year 1", "year 2", "year 2", "year 1", "year 1", "year 2", "year 2", "year 1", "year 1", "year 2", "year 2"))
     expect_identical(object = x$commodities, expected = c("maize", "soybean", "maize", "soybean", "maize", "soybean", "maize", "soybean", "maize", "soybean", "maize", "soybean"))
     if(is.null(variables)){
-      expect_tibble(x = x, any.missing = FALSE, nrows = 12, ncols = 5)
-      expect_names(x = colnames(x), permutation.of = c("territories", "year", "commodities", "harvested", "production") )
+      if(parents){
+        expect_tibble(x = x, any.missing = FALSE, nrows = 12, ncols = 6)
+        expect_names(x = colnames(x), permutation.of = c("territories", "sublevel", "year", "commodities", "harvested", "production") )
+      } else {
+        expect_tibble(x = x, any.missing = FALSE, nrows = 12, ncols = 5)
+        expect_names(x = colnames(x), permutation.of = c("territories", "year", "commodities", "harvested", "production") )
+      }
       expect_identical(object = x$harvested, expected = c(1121, 1111, 1221, 1211, 2121, 2111, 2221, 2211, 3121, 3111, 3221, 3211))
       expect_identical(object = x$production, expected = c(1122, 1112, 1222, 1212, 2122, 2112, 2222, 2212, 3122, 3112, 3222, 3212))
     } else {
@@ -69,7 +80,5 @@ expect_valid_table <- function(x = NULL, units = 1, variables = NULL){
       if(variables == "harvested") expect_identical(object = x$harvested, expected = c(1121, 1111, 1221, 1211, 2121, 2111, 2221, 2211, 3121, 3111, 3221, 3211))
       if(variables == "production") expect_identical(object = x$production, expected = c(1122, 1112, 1222, 1212, 2122, 2112, 2222, 2212, 3122, 3112, 3222, 3212))
     }
-
-
   }
 }
