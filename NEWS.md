@@ -1,3 +1,5 @@
+# tabshiftr 1.0.0
+
 # tabshiftr 0.2.2
 
 - include functions `find_col` and `find_row` to determine columns and rows \"on the fly\"

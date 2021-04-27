@@ -1,6 +1,6 @@
 Package: tabshiftr
 Title: Reshape Disorganised Messy Data
-Version: 0.2.2
+Version: 1.0.0
 Authors@R: c(
     person("Steffen", "Ehrmann", 
            email = "steffen.science@funroll-loops.de", 
