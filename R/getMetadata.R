@@ -48,27 +48,6 @@
       varProp <- variables[[i]]
       varName <- names(variables)[i]
 
-      # test whether varProp$col is numeric and if not, find the index assuming
-      # its a regular expression
-      # if(!is.null(varProp$col)){
-      #   if(!is.numeric(varProp$col)){
-      #     grepString <- varProp$col
-      #     if(!is.null(varProp$row)){
-      #       varProp$col <- grep(x = theHeader[varProp$row,], pattern = grepString)
-      #     } else {
-      #       colnames(theHeader) <- seq_along(theHeader)
-      #       testCols <- as.character(theHeader)
-      #       varProp$col <- grep(x = testCols, pattern = grepString)
-      #       # if there is more than one element, the variable is wide and thus
-      #       # has to have a row value for the rest of the function to work
-      #       if(length(varProp$col) > 1){
-      #         testRows <- as.character(as_tibble(t(theHeader), .name_repair = "minimal"))
-      #         varProp$row <- grep(x = testRows, pattern = grepString)
-      #       }
-      #     }
-      #   }
-      # }
-
       # ... occurs per each cluster ----
       if(varProp$dist){
         distinct <- TRUE
@@ -79,8 +58,8 @@
       }
 
       # ... needs merging
-      otherRows <- unlist(varRows[-i])
-      doMerge <- ifelse(varProp$type != "id" & !varProp$row %in% otherRows, FALSE, TRUE)
+      # otherRows <- unlist(varRows[-i])
+      # doMerge <- ifelse(varProp$type != "id" & !varProp$row %in% otherRows, FALSE, TRUE)
 
       # ... is an id variable ----
       if(varProp$type == "id"){
@@ -124,14 +103,23 @@
           stop("provide absolute values for the distinct variable '", varName, "'!")
         }
       } else {
+        # in case this variable is the parent ID, it doesn't have as many values
+        # as there are clusters, thus, select the position via the "$member"
+        # field
+        if(varName %in% clusters$parent){
+          pos <- clusters$member[j]
+        } else {
+          pos <- j
+        }
+
         if(!varProp$rel){
           if(!is.null(varProp$row)){
-            if(varProp$row[j] < clustDim[1] | varProp$row[j] > clustDim[2]){
+            if(varProp$row[pos] < clustDim[1] | varProp$row[pos] > clustDim[2]){
               outsideRows <- TRUE
             }
           }
           if(!is.null(varProp$col)){
-            if(all(varProp$col[j] < clustDim[3] | varProp$col[j] > clustDim[4])){
+            if(all(varProp$col[pos] < clustDim[3] | varProp$col[pos] > clustDim[4])){
               outsideCols <- TRUE
             }
           }
@@ -146,7 +134,7 @@
       if(varProp$type == "id"){
         if(!is.null(varProp$row) & !distinct){
           # if it is cluster ID, don't gather/spread ...
-          if(!varName %in% clusters$id){
+          if(!varName %in% c(clusters$id, clusters$parent)){
             gatherVars <- c(gatherVars, varName)
             if(!varProp$rel){
               gatherCols <- c(gatherCols, varProp$col - clusters$col[j] + 1)
@@ -203,7 +191,6 @@
               dataRows[varProp$row[j]] <- FALSE
             }
             # if it is cluster ID or only in a single cell, don't merge
-            # if(!varName %in% clusters$id & length(varProp$col) != 1 & doMerge){
             if(!varName %in% clusters$id & length(varProp$col) != 1){
               mergeOrder <- c(mergeOrder, varProp$row[j])
             }
@@ -238,17 +225,6 @@
 
       # end
     }
-
-    # get the correct order of valVars
-    # if(!is.null(spreadVars)){
-    #   if((!spreadVars %in% "key" & spreadVars %in% valVars) | any(spreadVars %in% theHeader)){
-    #     theLevels <- unlist(unique(theData[,which(theHeader %in% spreadVars)]), use.names = FALSE)
-    #     levelOrder <- sapply(seq_along(valVars), function(x){
-    #       which(theLevels %in% variables[[valVars[x]]]$value)
-    #     })
-    #     valVars <- valVars[order(levelOrder)]
-    #   }
-    # }
 
     # set mergeOrder so that it starts at 1 and remove merges when a measured
     # variable is the only variable in a row
