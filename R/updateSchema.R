@@ -80,11 +80,13 @@
 
   outsideCluster <- NULL
   clusterID <- clusters$id
+  parentID <- clusters$parent
   for(i in seq_along(variables)){
     varProp <- variables[[i]]
     varName <- names(variables)[i]
 
-    if(!varName %in% clusterID){
+    ##### replace from here .... ####
+    if(!varName %in% c(clusterID, parentID)){
 
       if(!varProp$rel){
         setRel <- FALSE
@@ -131,6 +133,31 @@
     #     stop(paste0("the cluster ID '", varName, "' must not have relative values."))
     #   }
     # }
+    ##### ... to here ... ####
+
+
+    # ... with this
+    # # check whether the variable has relative values and if so, make them absolute
+    # if(varProp$rel){
+    #   # this might become problematic in case a schema requires several col/row to be set with a relative value
+    #   if(!is.null(varProp$col)){
+    #     varProp$col <- clusters$col + varProp$col - 1
+    #   }
+    #   if(!is.null(varProp$row)){
+    #     varProp$row <- clusters$row + varProp$row - 1
+    #   }
+    #   varProp$rel <- FALSE
+    # }
+    #
+    # # check whether the variable is actually distinct (i.e., outside of clusters)
+    # if(!is_quosure(varProp$col) & !varName %in% clusterID){
+    #   if(all(varProp$col < clusters$col)){
+    #     varProp$dist <- TRUE
+    #   }
+    # }
+    # if(varProp$type == "id" & !is.null(varProp$val)){
+    #   varProp$dist <- TRUE
+    # }
 
     # resolve quosures from grep-ing unkown col/rows
     if(is_quosure(varProp$row)){
@@ -150,13 +177,31 @@
 
     # make sure that all elements occur the same number of times
     if(!is.null(varProp$row)){
+
+      if(!any(header$row %in% varProp$row)){
+        if(!varName %in% clusters$id){
+          if(length(varProp$col) != 1){
+            header$row <- c(header$row, varProp$row)
+          }
+        }
+      }
+
       if(length(varProp$row) == 1){
         varProp$row <- rep(x = varProp$row, length.out = nClusters)
       }
+      if(any(varName == parentID)){
+        varProp$row <- varProp$row[clusters$member]
+      }
     }
-    if(!is.null(varProp$col)){
-      if(length(varProp$col) == 1){
-        varProp$col <- rep(x = varProp$col, length.out = nClusters)
+    if(any(varName == parentID)){
+      if(!is.null(varProp$row)){
+        varProp$col <- rep(x = varProp$col, length.out = length(varProp$row))
+      }
+    } else {
+      if(!is.null(varProp$col)){
+        if(length(varProp$col) == 1){
+          varProp$col <- rep(x = varProp$col, length.out = nClusters)
+        }
       }
     }
 
