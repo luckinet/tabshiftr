@@ -54,7 +54,7 @@ test_that("clusterID is in absolute values, while all other are relative", {
     setObsVar(name = "production", unit = "t", columns = 4, relative = TRUE)
 
   input <- read_csv(paste0(system.file("test_datasets",
-                                       package="tabshiftr",
+                                       package = "tabshiftr",
                                        mustWork = TRUE), "/table_clust_1.csv"),
                     col_names = FALSE)
   output <- reorganise(input = input, schema = schema)
@@ -64,7 +64,7 @@ test_that("clusterID is in absolute values, while all other are relative", {
   # ... with regular expressions for observed variables
 
   input <- read_csv(paste0(system.file("test_datasets",
-                                       package="tabshiftr",
+                                       package = "tabshiftr",
                                        mustWork = TRUE), "/table_clust_1.csv"),
                     col_names = FALSE)
   output <- reorganise(input = input, schema = schema)
@@ -74,7 +74,7 @@ test_that("clusterID is in absolute values, while all other are relative", {
   # ... with regular expressions for identifying variables
 
   input <- read_csv(paste0(system.file("test_datasets",
-                                       package="tabshiftr",
+                                       package = "tabshiftr",
                                        mustWork = TRUE), "/table_clust_1.csv"),
                     col_names = FALSE)
   output <- reorganise(input = input, schema = schema)
@@ -91,7 +91,7 @@ test_that("relative columns positions (all) are valid", {
     setObsVar(name = "production", unit = "t", columns = 5, relative = TRUE)
 
   input <- read_csv(paste0(system.file("test_datasets",
-                                       package="tabshiftr",
+                                       package = "tabshiftr",
                                        mustWork = TRUE), "/table_clust_1.csv"),
                     col_names = FALSE)
   output <- reorganise(input = input, schema = schema)
@@ -101,7 +101,7 @@ test_that("relative columns positions (all) are valid", {
   # ... with regular expressions for observed variables
 
   input <- read_csv(paste0(system.file("test_datasets",
-                                       package="tabshiftr",
+                                       package = "tabshiftr",
                                        mustWork = TRUE), "/table_clust_1.csv"),
                     col_names = FALSE)
   output <- reorganise(input = input, schema = schema)
@@ -111,7 +111,7 @@ test_that("relative columns positions (all) are valid", {
   # ... with regular expressions for identifying variables
 
   input <- read_csv(paste0(system.file("test_datasets",
-                                       package="tabshiftr",
+                                       package = "tabshiftr",
                                        mustWork = TRUE), "/table_clust_1.csv"),
                     col_names = FALSE)
   output <- reorganise(input = input, schema = schema)
@@ -128,7 +128,7 @@ test_that("several horizontal clusters of otherwise tidy data", {
     setObsVar(name = "production", columns = c(4, 7), unit = "t")
 
   input <- read_csv(paste0(system.file("test_datasets",
-                                       package="tabshiftr",
+                                       package = "tabshiftr",
                                        mustWork = TRUE), "/table_clust_2.csv"),
                     col_names = FALSE)
   output <- reorganise(input = input, schema = schema)
@@ -139,7 +139,7 @@ test_that("several horizontal clusters of otherwise tidy data", {
   # ... with regular expressions for observed variables
 
   input <- read_csv(paste0(system.file("test_datasets",
-                                       package="tabshiftr",
+                                       package = "tabshiftr",
                                        mustWork = TRUE), "/table_clust_2.csv"),
                     col_names = FALSE)
   output <- reorganise(input = input, schema = schema)
@@ -150,7 +150,7 @@ test_that("several horizontal clusters of otherwise tidy data", {
   # ... with regular expressions for identifying variables
 
   input <- read_csv(paste0(system.file("test_datasets",
-                                       package="tabshiftr",
+                                       package = "tabshiftr",
                                        mustWork = TRUE), "/table_clust_2.csv"),
                     col_names = FALSE)
   output <- reorganise(input = input, schema = schema)
@@ -170,7 +170,7 @@ test_that("vertical clusters that are aggregated per observed variable", {
               key = "cluster", value = 2)
 
   input <- read_csv(paste0(system.file("test_datasets",
-                                       package="tabshiftr",
+                                       package = "tabshiftr",
                                        mustWork = TRUE), "/table_clust_3.csv"),
                     col_names = FALSE)
   output <- reorganise(input = input, schema = schema)
@@ -181,7 +181,7 @@ test_that("vertical clusters that are aggregated per observed variable", {
   # ... with regular expressions for observed variables
 
   input <- read_csv(paste0(system.file("test_datasets",
-                                       package="tabshiftr",
+                                       package = "tabshiftr",
                                        mustWork = TRUE), "/table_clust_3.csv"),
                     col_names = FALSE)
   output <- reorganise(input = input, schema = schema)
@@ -192,10 +192,54 @@ test_that("vertical clusters that are aggregated per observed variable", {
   # ... with regular expressions for identifying variables
 
   input <- read_csv(paste0(system.file("test_datasets",
-                                       package="tabshiftr",
+                                       package = "tabshiftr",
                                        mustWork = TRUE), "/table_clust_3.csv"),
                     col_names = FALSE)
   output <- reorganise(input = input, schema = schema)
 
   expect_valid_table(x = output, units = 2)
+})
+
+test_that("clusters that are nested into parent clusters", {
+  schema <- setCluster(id = "sublevel", left = 1, top = c(3, 8, 14),
+                       parent = "territories", member = c(1, 1, 2)) %>%
+    setHeader(rows = 1) %>%
+    setIDVar(name = "territories", columns = 1, rows = c(2, 13)) %>%
+    setIDVar(name = "sublevel", columns = 1, rows = c(3, 8, 14)) %>%
+    setIDVar(name = "year", columns = 5) %>%
+    setIDVar(name = "commodities", columns = 2) %>%
+    setObsVar(name = "harvested", columns = 3, unit = "ha") %>%
+    setObsVar(name = "production", columns = 4, unit = "t")
+
+  input <- read_csv(paste0(system.file("test_datasets",
+                                       package = "tabshiftr",
+                                       mustWork = TRUE), "/table_clust_4.csv"),
+                    col_names = FALSE)
+
+  output <- reorganise(input = input, schema = schema)
+
+  expect_valid_table(x = output, units = 3, parents = TRUE)
+
+
+  # ... with regular expressions for observed variables
+
+  input <- read_csv(paste0(system.file("test_datasets",
+                                       package = "tabshiftr",
+                                       mustWork = TRUE), "/table_clust_4.csv"),
+                    col_names = FALSE)
+  output <- reorganise(input = input, schema = schema)
+
+  expect_valid_table(x = output, units = 3, parents = TRUE)
+
+
+  # ... with regular expressions for identifying variables
+
+  input <- read_csv(paste0(system.file("test_datasets",
+                                       package = "tabshiftr",
+                                       mustWork = TRUE), "/table_clust_4.csv"),
+                    col_names = FALSE)
+  output <- reorganise(input = input, schema = schema)
+
+  expect_valid_table(x = output, units = 3, parents = TRUE)
+
 })
