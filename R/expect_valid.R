@@ -7,7 +7,7 @@
 #' @param units the number of units in the output table (from 1 to 3)
 #' @param variables the variables that should be in the output table (either
 #'   "harvested" or "production")
-#' @param parent whether or not parents are in the test table.
+#' @param parents whether or not parents are in the test table.
 #' @return Either an error message of the invalid expectations, or the output of
 #'   the last successful expectation.
 #' @importFrom testthat expect_identical
