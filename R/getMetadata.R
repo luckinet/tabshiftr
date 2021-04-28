@@ -164,6 +164,7 @@
           }
           if(is.null(gatherVars)){
             spreadCols <- c(spreadCols, varProp$col)
+            # hier weiter, rausfinden, wie man spreadCols (als relativen wert) von varProp$col (als absolutem wert) rausfinden kann
           } else {
             spreadCols <- length(idVars) + 2
           }
