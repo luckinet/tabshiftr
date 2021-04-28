@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • tabshiftr</title>
+<title>Determine row or column on the fly — .find • tabshiftr</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,7 +46,9 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="Determine row or column on the fly — .find" />
+<meta property="og:description" content="Find the location of a variable not based on it's columns/rows, but based on
+a regular expression/name" />
 <meta property="og:image" content="http://EhrmannS.github.io/tabshiftr/logo.svg" />
 
 
@@ -66,7 +68,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -119,104 +121,41 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>Determine row or column on the fly</h1>
+    <small class="dont-index">Source: <a href='https://github.com/EhrmannS/tabshiftr/blob/master/R/findRowCol.R'><code>R/findRowCol.R</code></a></small>
+    <div class="hidden name"><code>dot-find.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    <p>Find the location of a variable not based on it's columns/rows, but based on
+a regular expression/name</p>
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
+    <pre class="usage"><span class='fu'>.find</span><span class='op'>(</span><span class='va'>pattern</span><span class='op'>)</span></pre>
 
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-make-a-schema-description" class="hasAnchor"><a href="#section-make-a-schema-description" class="anchor"></a>make a schema description</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="schema-class.html">schema-class</a></code> </p>
-        </td>
-        <td><p>The <code>schema</code> class (S4) and its methods</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="setCluster.html">setCluster()</a></code> </p>
-        </td>
-        <td><p>Set where the clusters are</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="setHeader.html">setHeader()</a></code> </p>
-        </td>
-        <td><p>Set the header of a table</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="setFormat.html">setFormat()</a></code> </p>
-        </td>
-        <td><p>Set the specific format of a table</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="setIDVar.html">setIDVar()</a></code> </p>
-        </td>
-        <td><p>Set an identifying variable</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="setObsVar.html">setObsVar()</a></code> </p>
-        </td>
-        <td><p>Set an observed variable</p></td>
-      </tr>
-    </tbody><tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-helpers" class="hasAnchor"><a href="#section-helpers" class="anchor"></a>helpers</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      
-    </tbody><tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-reorganise-tables" class="hasAnchor"><a href="#section-reorganise-tables" class="anchor"></a>reorganise tables</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="reorganise.html">reorganise()</a></code> </p>
-        </td>
-        <td><p>Reorganise a table</p></td>
-      </tr>
-    </tbody>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>pattern</th>
+      <td><p>[<code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code>]<br /> character string containing a regular
+expression to be matched in the <code>input</code> rows or columns.</p></td>
+    </tr>
     </table>
-  </div>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>the index values where <code>pattern</code> was found.</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>This functions is basically a wild-card for when columns or rows
+  are not known ad-hoc, but have to be assigned on the fly (for example when
+  tables of a series are largely the same, but some variable(s) sit in
+  different columns).</p>
+
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
       <h2 data-toc-skip>Contents</h2>

@@ -249,15 +249,16 @@
 <li>
 <p><strong>Clusters</strong>: Determine the following:</p>
 <ul>
-<li>are there clusters and if so, find the origin (top left cell) of each cluster and provide the required information in <code><a href="../reference/setCluster.html">setCluster(top = ..., left = ...)</a></code> (<a href="#clusHor">Tab. 9</a>, <a href="#clusId">Tab. 10</a> &amp; <a href="#clusMeas">Tab. 11</a>).<br>
+<li>are the data clustered at all and if so, find the origin (top left cell) of each cluster and provide the required information in <code><a href="../reference/setCluster.html">setCluster(top = ..., left = ...)</a></code> (<a href="#clusHor">Tab. 9</a>, <a href="#clusId">Tab. 10</a> &amp; <a href="#clusMeas">Tab. 11</a>).<br>
 </li>
-<li>clarify whether the cluster ID is an identifying variable or a categorical observed variable:
+<li>clarify whether data are clustered according to an identifying variable, or whether observed variables are grouped into clusters:
 <ul>
-<li>in case the cluster ID is an identifying variable, provide its name in <code><a href="../reference/setCluster.html">setCluster(id = ...)</a></code> and specify it as an identifying variable (<code><a href="../reference/setIDVar.html">setIDVar()</a></code>)</li>
-<li>in case it is a observed variable, provide simply <code>"observed"</code> in <code><a href="../reference/setCluster.html">setCluster(id = ...)</a></code>.</li>
+<li>in case data are clustered according to an identifying variable, specify that identifying variable (<code><a href="../reference/setIDVar.html">setIDVar()</a></code>) and give its name in <code><a href="../reference/setCluster.html">setCluster(id = ...)</a></code> (<a href="#clusHor">Tab. 9</a>, <a href="#clusId">Tab. 10</a>).</li>
+<li>in case the observed variables are grouped into clusters, provide simply <code>"observed"</code> in <code><a href="../reference/setCluster.html">setCluster(id = ...)</a></code> (<a href="#clusMeas">Tab. 11</a>).</li>
 </ul>
 </li>
-<li>in case the data split up into several files or spreadsheets, identify the implicit variable, provide it as cluster ID and provide the value associated to the current table in <code><a href="../reference/setIDVar.html">setIDVar(..., value = ...)</a></code> (<a href="#implicitVar">Tab. 6</a>). <br><br>
+<li>are clusters nested into a grouping variable of interest and if so, specify that variable in <code><a href="../reference/setCluster.html">setCluster(group = ...)</a></code>, give the group index to which each cluster belongs in <code>member = ...</code> and specify the group ID as an identifying variable (<code><a href="../reference/setIDVar.html">setIDVar()</a></code>) (<a href="#clustPar">Tab. 13</a>).</li>
+<li>in case the data split up into several files or spreadsheets, identify the implicit variable, provide it as cluster ID and provide the value associated to the current table in <code><a href="../reference/setIDVar.html">setIDVar(value = ...)</a></code> (<a href="#implicitVar">Tab. 6</a>). <br><br>
 </li>
 </ul>
 </li>
@@ -919,11 +920,6 @@
     <span class="fu"><a href="../reference/setObsVar.html">setObsVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"production"</span>, unit <span class="op">=</span> <span class="st">"t"</span>, columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">5</span><span class="op">)</span>,
               key <span class="op">=</span> <span class="st">"dimension"</span>, value <span class="op">=</span> <span class="st">"production"</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="fuzzy-column-names" class="section level3">
-<h3 class="hasAnchor">
-<a href="#fuzzy-column-names" class="anchor"></a>Fuzzy column names</h3>
-<p>WIP</p>
-</div>
 <div id="missplaced-columns-or-rows" class="section level3">
 <h3 class="hasAnchor">
 <a href="#missplaced-columns-or-rows" class="anchor"></a>Missplaced columns or rows</h3>
@@ -933,7 +929,7 @@
 <div id="table-contains-several-clusters" class="section level2">
 <h2 class="hasAnchor">
 <a href="#table-contains-several-clusters" class="anchor"></a>Table contains several clusters</h2>
-<p>Clusters are often of the same arrangement within one table, they can be repeated along rows (horizontally) or along columns (vertically). A table should be treated like a cluster also when the table contains not only the table, but perhaps also text that may be scattered across the document and that does not allow the table to start at the table origin in the topmost left cell.</p>
+<p>Clusters are typically of the same arrangement within one table, they can be repeated along rows (horizontally) or along columns (vertically), but also a non-systematic distribution is possible. Moreover, clusters may be nested into some grouping variable in a similar way that data are nested into clusters. A table could also be treated like a cluster when the table is not only composed of the table, but perhaps also text in the form of some table description (that may be scattered in the document and) that does not allow the table to start at the table origin in the topmost left cell.</p>
 <p>To reorganise those data into tidy form, each cluster is "cut out", rearranged individually and appended to the end of an output table by <code><a href="../reference/reorganise.html">reorganise()</a></code>.</p>
 <div id="horizontal-clusters" class="section level3">
 <h3 class="hasAnchor">
@@ -1135,7 +1131,7 @@
 <div id="clusters-of-observed-variables" class="section level3">
 <h3 class="hasAnchor">
 <a href="#clusters-of-observed-variables" class="anchor"></a>Clusters of observed variables</h3>
-<p>The previous two types of clusters are clusters of identifying variables, but it may also be the case that the observed variables are split up into distinct clusters. Here, we need to specify first of all in <code>clusters</code> <code>"id = "observed"</code> to indicate that the observed variable is the cluster ID. Next, we need to set up the observed variables so that they contain <code>"key = "cluster"</code> and in <code>value</code> the number of the cluster this variable can be found in. Moreover, we provide the column(s) and all rows that contain the values of each observed variable. This is in contrast to nested observed variables, where the rows of the variable names need to be provided.</p>
+<p>The previous two types of clusters are clusters of identifying variables, but it may also be the case that the observed variables are split up into distinct clusters. Here, we need to specify first of all <code>setClusters(..., id = "observed")</code> to indicate that the observed variable is the cluster ID. Next, we need to set up the observed variables so that they contain <code>"key = "cluster"</code> and in <code>value</code> the number of the cluster this variable can be found in. Moreover, we provide the column(s) and all rows that contain the values of each observed variable. This is in contrast to nested observed variables, where the rows of the variable names need to be provided.</p>
 <table class="table">
 <caption>
 <a name="clusMeas"></a>Table 11: Vertical clusters of the observed variables.</caption>
@@ -1439,10 +1435,159 @@
   <span class="fu"><a href="../reference/setObsVar.html">setObsVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"harvested"</span>, unit <span class="op">=</span> <span class="st">"ha"</span>, columns <span class="op">=</span> <span class="fl">2</span>, relative <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/setObsVar.html">setObsVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"production"</span>, unit <span class="op">=</span> <span class="st">"t"</span>, columns <span class="op">=</span> <span class="fl">3</span>, relative <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="fuzzy-cluster-positions" class="section level3">
+<div id="clusters-that-are-nested-into-another-variable" class="section level3">
 <h3 class="hasAnchor">
-<a href="#fuzzy-cluster-positions" class="anchor"></a>Fuzzy cluster positions</h3>
-<p>WIP</p>
+<a href="#clusters-that-are-nested-into-another-variable" class="anchor"></a>Clusters that are nested into another variable</h3>
+<p>When (some) clusters are nested in such a way that their group information is also a variable of interest, not only the cluster positions need to be specified, but also their relation to the grouping variable. Similar to the cluster ID, this group ID also needs to be specified as an identifying variable and needs to be provided as <code>group = ...</code> and the membership of each cluster to a group needs to be specified in <code>member = ...</code>. The cluster position needs to be specified just as it would be without groups.</p>
+<table class="table">
+<caption>
+<a name="clustPar"></a>Table 13: Clusters are grouped according to a variable of interes that should also be captured.</caption>
+<thead><tr class="header">
+<th align="left">X1</th>
+<th align="left">X2</th>
+<th align="left">X3</th>
+<th align="left">X4</th>
+<th align="left">X5</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">territory</td>
+<td align="left">commodities</td>
+<td align="left">harvested</td>
+<td align="left">production</td>
+<td align="left">year</td>
+</tr>
+<tr class="even">
+<td align="left">region 1</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">unit 1</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">soybean</td>
+<td align="left">1111</td>
+<td align="left">1112</td>
+<td align="left">year 1</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">maize</td>
+<td align="left">1121</td>
+<td align="left">1122</td>
+<td align="left">year 1</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">soybean</td>
+<td align="left">1211</td>
+<td align="left">1212</td>
+<td align="left">year 2</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">maize</td>
+<td align="left">1221</td>
+<td align="left">1222</td>
+<td align="left">year 2</td>
+</tr>
+<tr class="even">
+<td align="left">unit 2</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">soybean</td>
+<td align="left">2111</td>
+<td align="left">2112</td>
+<td align="left">year 1</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">maize</td>
+<td align="left">2121</td>
+<td align="left">2122</td>
+<td align="left">year 1</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">soybean</td>
+<td align="left">2211</td>
+<td align="left">2212</td>
+<td align="left">year 2</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">maize</td>
+<td align="left">2221</td>
+<td align="left">2222</td>
+<td align="left">year 2</td>
+</tr>
+<tr class="odd">
+<td align="left">region 2</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">unit 3</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">soybean</td>
+<td align="left">3111</td>
+<td align="left">3112</td>
+<td align="left">year 1</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">maize</td>
+<td align="left">3121</td>
+<td align="left">3122</td>
+<td align="left">year 1</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">soybean</td>
+<td align="left">3211</td>
+<td align="left">3212</td>
+<td align="left">year 2</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">maize</td>
+<td align="left">3221</td>
+<td align="left">3222</td>
+<td align="left">year 2</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">schema</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/setCluster.html">setCluster</a></span><span class="op">(</span>id <span class="op">=</span> <span class="st">"territories"</span>, group <span class="op">=</span> <span class="st">"regions"</span>, member <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>,
+                     left <span class="op">=</span> <span class="fl">1</span>, top <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">8</span>, <span class="fl">14</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
+    <span class="fu"><a href="../reference/setHeader.html">setHeader</a></span><span class="op">(</span>rows <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">%&gt;%</span>
+    <span class="fu"><a href="../reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"regions"</span>, columns <span class="op">=</span> <span class="fl">1</span>, rows <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">13</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
+    <span class="fu"><a href="../reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"territories"</span>, columns <span class="op">=</span> <span class="fl">1</span>, rows <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">8</span>, <span class="fl">14</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
+    <span class="fu"><a href="../reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"year"</span>, columns <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op">%&gt;%</span>
+    <span class="fu"><a href="../reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"commodities"</span>, columns <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">%&gt;%</span>
+    <span class="fu"><a href="../reference/setObsVar.html">setObsVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"harvested"</span>, columns <span class="op">=</span> <span class="fl">3</span>, unit <span class="op">=</span> <span class="st">"ha"</span><span class="op">)</span> <span class="op">%&gt;%</span>
+    <span class="fu"><a href="../reference/setObsVar.html">setObsVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"production"</span>, columns <span class="op">=</span> <span class="fl">4</span>, unit <span class="op">=</span> <span class="st">"t"</span><span class="op">)</span></code></pre></div>
 </div>
 </div>
 </div>

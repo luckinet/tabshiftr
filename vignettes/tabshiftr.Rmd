@@ -97,11 +97,12 @@ To set up a schema description, the following steps should be taken:
 
 3. **Clusters**: Determine the following:
 
-    - are there clusters and if so, find the origin (top left cell) of each cluster and provide the required information in `setCluster(top = ..., left = ...)` ([Tab. 9](#clusHor), [Tab. 10](#clusId) & [Tab. 11](#clusMeas)).  
-    - clarify whether the cluster ID is an identifying variable or a categorical observed variable:
-      * in case the cluster ID is an identifying variable, provide its name in `setCluster(id = ...)` and specify it as an identifying variable (`setIDVar()`)
-      * in case it is a observed variable, provide simply `"observed"` in `setCluster(id = ...)`.
-    - in case the data split up into several files or spreadsheets, identify the implicit variable, provide it as cluster ID and provide the value associated to the current table in `setIDVar(..., value = ...)` ([Tab. 6](#implicitVar)).
+    - are the data clustered at all and if so, find the origin (top left cell) of each cluster and provide the required information in `setCluster(top = ..., left = ...)` ([Tab. 9](#clusHor), [Tab. 10](#clusId) & [Tab. 11](#clusMeas)).  
+    - clarify whether data are clustered according to an identifying variable, or whether observed variables are grouped into clusters:
+      * in case data are clustered according to an identifying variable, specify that identifying variable (`setIDVar()`) and give its name in `setCluster(id = ...)` ([Tab. 9](#clusHor), [Tab. 10](#clusId)).
+      * in case the observed variables are grouped into clusters, provide simply `"observed"` in `setCluster(id = ...)` ([Tab. 11](#clusMeas)).
+    - are clusters nested into a grouping variable of interest and if so, specify that variable in `setCluster(group = ...)`, give the group index to which each cluster belongs in `member = ...` and specify the group ID as an identifying variable (`setIDVar()`) ([Tab. 13](#clustPar)).
+    - in case the data split up into several files or spreadsheets, identify the implicit variable, provide it as cluster ID and provide the value associated to the current table in `setIDVar(value = ...)` ([Tab. 6](#implicitVar)).
     <br><br>
 
 4. **Identifying variables**: Determine the following:
@@ -329,10 +330,6 @@ schema <- setHeader(rows = 1) %>%
               key = "dimension", value = "production")
 ```
 
-### Fuzzy column names
-
-WIP
-
 
 ### Missplaced columns or rows
 
@@ -341,8 +338,9 @@ WIP
 
 ## Table contains several clusters
 
-Clusters are often of the same arrangement within one table, they can be repeated along rows (horizontally) or along columns (vertically).
-A table should be treated like a cluster also when the table contains not only the table, but perhaps also text that may be scattered across the document and that does not allow the table to start at the table origin in the topmost left cell.
+Clusters are typically of the same arrangement within one table, they can be repeated along rows (horizontally) or along columns (vertically), but also a non-systematic distribution is possible.
+Moreover, clusters may be nested into some grouping variable in a similar way that data are nested into clusters.
+A table could also be treated like a cluster when the table is not only composed of the table, but perhaps also text in the form of some table description (that may be scattered in the document and) that does not allow the table to start at the table origin in the topmost left cell.
 
 To reorganise those data into tidy form, each cluster is \"cut out\", rearranged individually and appended to the end of an output table by `reorganise()`.
 
@@ -424,7 +422,7 @@ If also that is not the case, the row and column values for each cluster need to
 ### Clusters of observed variables
 
 The previous two types of clusters are clusters of identifying variables, but it may also be the case that the observed variables are split up into distinct clusters.
-Here, we need to specify first of all in `clusters` `"id = "observed"` to indicate that the observed variable is the cluster ID.
+Here, we need to specify first of all `setClusters(..., id = "observed")` to indicate that the observed variable is the cluster ID.
 Next, we need to set up the observed variables so that they contain `"key = "cluster"` and in `value` the number of the cluster this variable can be found in.
 Moreover, we provide the column(s) and all rows that contain the values of each observed variable.
 This is in contrast to nested observed variables, where the rows of the variable names need to be provided.
@@ -490,7 +488,6 @@ Other variables that are all arranged in the same way in each cluster can be spe
 
 Table: <a name="distVar"></a>Table 12: Several clusters where one variable is not available for each cluster, but distinct of them.
 
-
 ```{r, eval=FALSE}
 schema <- setCluster(id = "territories", top = c(1, 8, 8), left = c(1, 1, 4),
                      width = 3, height = 6) %>%
@@ -502,8 +499,45 @@ schema <- setCluster(id = "territories", top = c(1, 8, 8), left = c(1, 1, 4),
   setObsVar(name = "production", unit = "t", columns = 3, relative = TRUE)
 ```
 
-### Fuzzy cluster positions
+### Clusters that are nested into another variable
 
-WIP
+When (some) clusters are nested in such a way that their group information is also a variable of interest, not only the cluster positions need to be specified, but also their relation to the grouping variable.
+Similar to the cluster ID, this group ID also needs to be specified as an identifying variable and needs to be provided as `group = ...` and the membership of each cluster to a group needs to be specified in `member = ...`. 
+The cluster position needs to be specified just as it would be without groups.
+
+| X1 | X2 | X3 | X4 | X5 |
+| :- | :- | :- | :- | :- |
+| territory | commodities | harvested | production | year |
+| region 1 |  |  |  |  |
+| unit 1 |  |  |  |  |
+|  | soybean | 1111 | 1112 | year 1 |
+|  | maize | 1121 | 1122 | year 1 |
+|  | soybean | 1211 | 1212 | year 2 |
+|  | maize | 1221 | 1222 | year 2 |
+| unit 2 |  |  |  |  |
+|  | soybean | 2111 | 2112 | year 1 |
+|  | maize | 2121 | 2122 | year 1 |
+|  | soybean | 2211 | 2212 | year 2 |
+|  | maize | 2221 | 2222 | year 2 |
+| region 2 |  |  |  |  |
+| unit 3 |  |  |  |  |
+|  | soybean | 3111 | 3112 | year 1 |
+|  | maize | 3121 | 3122 | year 1 |
+|  | soybean | 3211 | 3212 | year 2 |
+|  | maize | 3221 | 3222 | year 2 |
+
+Table: <a name="clustPar"></a>Table 13: Clusters are grouped according to a variable of interes that should also be captured.
+
+```{r, eval=FALSE}
+schema <- setCluster(id = "territories", group = "regions", member = c(1, 1, 2),
+                     left = 1, top = c(3, 8, 14)) %>%
+    setHeader(rows = 1) %>%
+    setIDVar(name = "regions", columns = 1, rows = c(2, 13)) %>%
+    setIDVar(name = "territories", columns = 1, rows = c(3, 8, 14)) %>%
+    setIDVar(name = "year", columns = 5) %>%
+    setIDVar(name = "commodities", columns = 2) %>%
+    setObsVar(name = "harvested", columns = 3, unit = "ha") %>%
+    setObsVar(name = "production", columns = 4, unit = "t")
+```
 
 # References
