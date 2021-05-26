@@ -3,6 +3,7 @@
 export(.find)
 export(reorganise)
 export(setCluster)
+export(setFilter)
 export(setFormat)
 export(setHeader)
 export(setIDVar)
