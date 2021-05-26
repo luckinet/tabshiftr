@@ -23,13 +23,25 @@
   if(nClusters == 0) nClusters <- 1
   tabDim <- dim(input)
 
-  # set cluster start if it is NULL
+  # set cluster start if it is NULL or a qousure
   if(is.null(clusters$row)){
     clusters$row <- 1
+  } else if(is_quosure(clusters$row)){
+    term <- eval_tidy(clusters$row)
+    rows <- map_int(.x = 1:dim(input)[1], .f = function(ix){
+      grepl(x = paste(input[ix,], collapse = " "), pattern = term)
+    })
+    clusters$row <- which(rows == 1)
   }
 
   if(is.null(clusters$col)){
     clusters$col <- 1
+  } else if(is_quosure(clusters$col)){
+    term <- eval_tidy(clusters$col)
+    cols <- map_int(.x = 1:dim(input)[2], .f = function(ix){
+      grepl(x = paste(input[[ix]], collapse = " "), pattern = term)
+    })
+    clusters$col <- which(cols == 1)
   }
 
   if(is.null(clusters$width)){
@@ -213,6 +225,7 @@
              clusters = clusters,
              header = header,
              format = schema@format,
+             filter = schema@filter,
              variables = variables)
 
   return(out)
