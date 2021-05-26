@@ -95,6 +95,7 @@ schema <- setClass(Class = "schema",
                    slots = c(clusters = "list",
                              header = "list",
                              format = "list",
+                             filter = "list",
                              variables = "list"
                    )
 )
@@ -211,6 +212,30 @@ setValidity(Class = "schema", function(object){
     #     errors <- c(errors, "'schema$format$types' must have a character value.")
     #   }
     # }
+  }
+
+  if(!.hasSlot(object = object, name = "filter")){
+    errors <- c(errors, "the schema does not have a 'filter' slot.")
+  } else {
+    if(!is.list(object@filter)){
+      errors <- c(errors, "the slot 'filter' is not a list.")
+    }
+    if(length(object@filter) == 0){
+      errors <- c(errors, "the slot 'filter' does not contain any entries.")
+    }
+    if(!all(names(object@filter) %in% c("row", "col"))){
+      errors <- c(errors, "'names(schema$filter)' must be a permutation of set {row,col}")
+    }
+    if(!is.null(object@filter$row)){
+      if(!is.numeric(object@filter$row)){
+        errors <- c(errors, "'schema$filter$row' must have a numeric value.")
+      }
+    }
+    if(!is.null(object@filter$col)){
+      if(!is.numeric(object@filter$col)){
+        errors <- c(errors, "'schema$filter$col' must have a numeric value.")
+      }
+    }
   }
 
   if(!.hasSlot(object = object, name = "variables")){
