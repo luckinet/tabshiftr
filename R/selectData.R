@@ -122,7 +122,7 @@
     }
 
     if(!is.null(groupID)){
-      groupVal <- unlist(input[parVar$row[clusters$member[i]], parVar$col[clusters$member[i]]], use.names = FALSE)
+      groupVal <- unlist(input[parVar$row[i], parVar$col[i]], use.names = FALSE)
 
       setNA$row <- c(setNA$row, parVar$row)
       setNA$col <- c(setNA$col, parVar$col)
