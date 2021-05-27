@@ -110,8 +110,8 @@ setValidity(Class = "schema", function(object){
     if(!is.list(object@clusters)){
       errors <- c(errors, "the slot 'clusters' is not a list.")
     }
-    if(!all(names(object@clusters) %in% c("row", "col", "width", "height", "id", "member", "group", "header"))){
-      errors <- c(errors, "'names(schema$clusters)' must be a permutation of set {id,group,header,top,left,width,height,member}")
+    if(!all(names(object@clusters) %in% c("id", "group", "row", "col", "width", "height", "header", "member"))){
+      errors <- c(errors, "'names(schema$clusters)' must be a permutation of set {id,group,row,col,width,height,header,member}")
     }
     if(!is.null(object@clusters$row)){
       if(!is.numeric(object@clusters$row)){
