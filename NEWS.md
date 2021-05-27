@@ -1,3 +1,5 @@
+# tabshiftr 0.2.4
+
 # tabshiftr 0.2.3
 
 - generalise `find_col` and `find_row` to `.find` and handle it based on the context it's called in.
