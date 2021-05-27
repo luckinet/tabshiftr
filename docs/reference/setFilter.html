@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Set an observed variable — setObsVar • tabshiftr</title>
+<title>Set filters to mask a table — setFilter • tabshiftr</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,11 +46,9 @@
 
 
 
-<meta property="og:title" content="Set an observed variable — setObsVar" />
-<meta property="og:description" content="Observed variables are those variables that contain the (quantitative)
-observed/measured values of each unique unit (as described by the
-identifying variables). There may be several of them
-and in a tidy table they'd be recorded as separate columns." />
+<meta property="og:title" content="Set filters to mask a table — setFilter" />
+<meta property="og:description" content="This function allows to specify additional rules to (un-)select certain rows
+or columns." />
 <meta property="og:image" content="http://EhrmannS.github.io/tabshiftr/logo.svg" />
 
 
@@ -125,30 +123,17 @@ and in a tidy table they'd be recorded as separate columns." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Set an observed variable</h1>
-    <small class="dont-index">Source: <a href='https://github.com/EhrmannS/tabshiftr/blob/master/R/setObsVar.R'><code>R/setObsVar.R</code></a></small>
-    <div class="hidden name"><code>setObsVar.Rd</code></div>
+    <h1>Set filters to mask a table</h1>
+    <small class="dont-index">Source: <a href='https://github.com/EhrmannS/tabshiftr/blob/master/R/setFilter.R'><code>R/setFilter.R</code></a></small>
+    <div class="hidden name"><code>setFilter.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Observed variables are those variables that contain the (quantitative)
-observed/measured values of each unique unit (as described by the
-<code><a href='setIDVar.html'>identifying variables</a></code>). There may be several of them
-and in a tidy table they'd be recorded as separate columns.</p>
+    <p>This function allows to specify additional rules to (un-)select certain rows
+or columns.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>setObsVar</span><span class='op'>(</span>
-  schema <span class='op'>=</span> <span class='cn'>NULL</span>,
-  name <span class='op'>=</span> <span class='cn'>NULL</span>,
-  columns <span class='op'>=</span> <span class='cn'>NULL</span>,
-  rows <span class='op'>=</span> <span class='cn'>NULL</span>,
-  relative <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  distinct <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  unit <span class='op'>=</span> <span class='cn'>NULL</span>,
-  factor <span class='op'>=</span> <span class='fl'>1</span>,
-  key <span class='op'>=</span> <span class='cn'>NULL</span>,
-  value <span class='op'>=</span> <span class='cn'>NULL</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>setFilter</span><span class='op'>(</span>schema <span class='op'>=</span> <span class='cn'>NULL</span>, columns <span class='op'>=</span> <span class='cn'>NULL</span>, rows <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -160,73 +145,19 @@ already existing schema, provide that schema here (overwrites previous
 information).</p></td>
     </tr>
     <tr>
-      <th>name</th>
-      <td><p>[<code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code>]<br /> Name of the new measured variable.</p></td>
-    </tr>
-    <tr>
       <th>columns</th>
-      <td><p>[<code>integerish(.)</code>]<br /> The column(s) in which the
-<em>values</em> of the new variable are recorded.</p></td>
+      <td><p>[<code>integerish(.)</code>]<br /> the columns to ingore.</p></td>
     </tr>
     <tr>
       <th>rows</th>
-      <td><p>[<code>integerish(.)</code>]<br /> In case the variable is nested in a wide
-identifying variable, specify here additionally the row(s) in which the
-variable <em>name</em> sits</p></td>
-    </tr>
-    <tr>
-      <th>relative</th>
-      <td><p>[<code><a href='https://rdrr.io/r/base/logical.html'>logical(1)</a></code>]<br /> whether or not the values provided in
-<code>columns</code> and <code>rows</code> are relative to the cluster position(s) or
-whether they refer to the overall table.</p></td>
-    </tr>
-    <tr>
-      <th>distinct</th>
-      <td><p>[<code><a href='https://rdrr.io/r/base/logical.html'>logical(1)</a></code>]<br /> Whether or not the variable is
-distinct from a cluster. This is the case when the variable is recorded
-somewhere 'on the side' and thus not explicitly included in all clusters.</p></td>
-    </tr>
-    <tr>
-      <th>unit</th>
-      <td><p>[<code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code>]<br /> the unit of this variable.</p></td>
-    </tr>
-    <tr>
-      <th>factor</th>
-      <td><p>[<code><a href='https://rdrr.io/r/base/numeric.html'>numeric(1)</a></code>]<br /> the factor that needs to be multiplied
-with the values to convert to <code>unit</code>, defaults to 1. For instance, if
-values are recorded in acres, but shall be recorded in hectare, the factor
-would be 0.40468.</p></td>
-    </tr>
-    <tr>
-      <th>key</th>
-      <td><p>[<code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code>]<br /> If the variable is recorded (together
-with other variables) so that the variable names are listed in one column
-and the respective values are listed in another column, give here the name
-of the column that contains the variable names.</p></td>
-    </tr>
-    <tr>
-      <th>value</th>
-      <td><p>[<code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code>]<br /> If the variable is recorded (together
-with other variables) so that the variable names are listed in one column
-and the respective values are listed in another column, give here the level
-in the names column that refer to the values of this variable.</p></td>
+      <td><p>[<code>integerish(.)</code>]<br /> the rows to ignore.</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>An object of class <code><a href='schema-class.html'>schema</a></code>.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Please also take a look at the currently suggested strategy to set
-  up a <a href='schema-class.html'>schema description</a>.</p>
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p>Other functions to describe table arrangement: 
-<code><a href='setCluster.html'>setCluster</a>()</code>,
-<code><a href='setFormat.html'>setFormat</a>()</code>,
-<code><a href='setHeader.html'>setHeader</a>()</code>,
-<code><a href='setIDVar.html'>setIDVar</a>()</code></p></div>
+    <p>Currently the functionality is restricted to filtering out columns
+  and rows globally across the whole table.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
