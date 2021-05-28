@@ -8,7 +8,9 @@
 #'   the data.
 #' @importFrom checkmate assertList assertNames
 #' @importFrom stats setNames
-#' @importFrom dplyr summarise across everything
+#' @importFrom dplyr summarise across everything mutate_if select na_if
+#' @importFrom tidyr unite
+#' @importFrom rlang is_character
 
 .getMetadata <- function(data = NULL, schema = NULL){
 
@@ -57,10 +59,6 @@
         distinct <- FALSE
       }
 
-      # ... needs merging
-      # otherRows <- unlist(varRows[-i])
-      # doMerge <- ifelse(varProp$type != "id" & !varProp$row %in% otherRows, FALSE, TRUE)
-
       # ... is an id variable ----
       if(varProp$type == "id"){
         idVars <- c(idVars, varName)
@@ -69,7 +67,6 @@
         if(is.null(varProp$row) & !distinct & is.null(varProp$merge) & is.null(varProp$split)){
           tidyVars <- c(tidyVars, varName)
           tidyCols <- c(tidyCols, varProp$col[j])
-          tidyRel <- c(tidyRel, varProp$rel)
         }
       }
 
@@ -84,13 +81,11 @@
           if(length(data) == length(varProp$col)){ #this is a useless test, see 'schema_agcensus2'
             tidyVars <- c(tidyVars, varName)
             tidyCols <- c(tidyCols, varProp$col[j])
-            tidyRel <- c(tidyRel, varProp$rel)
           }
         } else if(varProp$key == "cluster") {
           if(length(unique(varProp$col)) == 1 & varProp$value == j){
             tidyVars <- c(tidyVars, varName)
             tidyCols <- c(tidyCols, unique(varProp$col))
-            tidyRel <- c(tidyRel, varProp$rel)
           }
 
         }
@@ -98,11 +93,7 @@
 
       # ... is outside of a cluster ----
       outsideRows <- outsideCols <- FALSE
-      if(distinct){
-        if(varProp$rel){
-          stop("provide absolute values for the distinct variable '", varName, "'!")
-        }
-      } else {
+      if(!distinct){
         # in case this variable is the group ID, it doesn't have as many values
         # as there are clusters, thus, select the position via the "$member"
         # field
@@ -112,16 +103,14 @@
           pos <- j
         }
 
-        if(!varProp$rel){
-          if(!is.null(varProp$row)){
-            if(varProp$row[pos] < clustDim[1] | varProp$row[pos] > clustDim[2]){
-              outsideRows <- TRUE
-            }
+        if(!is.null(varProp$row)){
+          if(varProp$row[pos] < clustDim[1] | varProp$row[pos] > clustDim[2]){
+            outsideRows <- TRUE
           }
-          if(!is.null(varProp$col)){
-            if(all(varProp$col[pos] < clustDim[3] | varProp$col[pos] > clustDim[4])){
-              outsideCols <- TRUE
-            }
+        }
+        if(!is.null(varProp$col)){
+          if(all(varProp$col[pos] < clustDim[3] | varProp$col[pos] > clustDim[4])){
+            outsideCols <- TRUE
           }
         }
       }
@@ -136,11 +125,7 @@
           # if it is cluster ID, don't gather/spread ...
           if(!varName %in% c(clusters$id, clusters$group)){
             gatherVars <- c(gatherVars, varName)
-            if(!varProp$rel){
-              gatherCols <- c(gatherCols, varProp$col - clusters$col[j] + 1)
-            } else {
-              gatherCols <- c(gatherCols, varProp$col)
-            }
+            gatherCols <- c(gatherCols, varProp$col - clusters$col[j] + 1)
           }
         }
       } else {
@@ -163,8 +148,7 @@
             spreadTarget <- c(spreadTarget, varProp$value)
           }
           if(is.null(gatherVars)){
-            spreadCols <- c(spreadCols, varProp$col)
-            # hier weiter, rausfinden, wie man spreadCols (als relativen wert) von varProp$col (als absolutem wert) rausfinden kann
+            spreadCols <- c(spreadCols, varProp$col[j] - clusters$col[j] + 1)
           } else {
             spreadCols <- length(idVars) + 2
           }
@@ -186,11 +170,7 @@
 
           # only add merge row when it hasn't been added yet
           if(!any(mergeOrder %in% varProp$row[j])){
-            if(!varProp$rel){
-              dataRows[which(tableRows %in% varProp$row[j])] <- FALSE
-            } else {
-              dataRows[varProp$row[j]] <- FALSE
-            }
+            dataRows[which(tableRows %in% varProp$row[j])] <- FALSE
             # if it is cluster ID or only in a single cell, don't merge
             if(!varName %in% clusters$id & length(varProp$col) != 1){
               mergeOrder <- c(mergeOrder, varProp$row[j])
@@ -233,19 +213,55 @@
       mergeOrder <- mergeOrder - min(mergeOrder, na.rm = TRUE) + 1
     }
 
+    # get names
+    if(!is.null(gatherVars)){
+      theNames <- suppressMessages(
+        theHeader %>%
+          t() %>%
+          as_tibble(.name_repair = "unique") %>%
+          mutate_if(is_character, list(~na_if(.,""))) %>%
+          fill(1) %>%
+          select(mergeOrder) %>%
+          unite(col = "name", sep = "-_-_", na.rm = TRUE) %>%
+          unlist())
+    } else {
+      theNames <- theHeader %>%
+        unlist()
+    }
+
+    for(k in seq_along(theNames)){
+
+      testVar <- theNames[k]
+
+      # if the recent name is not from a tidy column, remove it ...
+      if(!k %in% tidyCols){
+        next
+      }
+      isClust <- isOut <- FALSE
+      if(!is.null(clusters$id)){
+        if(testVar == clusters$id){
+          isClust <- TRUE
+        }
+      }
+      if(!is.null(outVar)){
+        if(any(testVar %in% outVar)){
+          isOut <- TRUE
+        }
+      }
+      if(!isClust & !isOut){
+        theNames[k] <- tidyVars[which(tidyCols == k)]
+      }
+    }
+    names(theNames) <- NULL
+
     temp <- list(cluster = list(cluster_rows = clustRows,
-                                cluster_cols = clustCols,
-                                outside_cluster = outVar,
-                                cluster_id = clusters$id),
-                 header = list(cols = mergeOrder,
-                               merge = header$merge),
+                                outside_cluster = outVar),
                  var_type = list(ids = idVars,
                                  vals = valVars,
-                                 factor = valFctrs),
+                                 factor = valFctrs,
+                                 names = theNames),
                  table = list(data_rows = dataRows,
                               tidy = tidyVars,
-                              tidy_cols = tidyCols,
-                              tidy_rel = tidyRel,
                               gather_into = gatherVars,
                               gather_cols = gatherCols,
                               spread_from = spreadVars,
