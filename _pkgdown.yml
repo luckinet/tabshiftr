@@ -1,7 +1,8 @@
 authors:
   Steffen Ehrmann:
     href:  https://orcid.org/0000-0002-2958-0796
-  Arne Rümmler:
+  Carsten Meyer:
+    href: https://orcid.org/0000-0003-3927-5856
 title:  tabshiftr
 url: http://EhrmannS.github.io/tabshiftr
 development:
@@ -18,7 +19,7 @@ reference:
       - setObsVar
   - title: helpers
     contents:
-      - find
+      - .find
   - title: reorganise tables
     contents:
       - reorganise
