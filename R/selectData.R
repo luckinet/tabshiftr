@@ -68,26 +68,6 @@
     parVar <- groupVar[[i]]
 
     if(!is.null(clusterID)){
-      # in case clusterID is in column/row without any other values, remove it
-      if(clustVar$rel){
-        if(clustVar$type == "observed"){
-          clusterVal <- clustVar$value
-        } else {
-          clusterVal <- unlist(thisClust[clustVar$row[i], clustVar$col[i]], use.names = FALSE)
-
-          tempRow <- unlist(thisClust[clustVar$row[i],], use.names = FALSE)
-          tempRow[clustVar$col[i]] <- NA
-          if(all(is.na(tempRow))){
-            outRows <- clusterRows[-clustVar$row[i]]
-          }
-
-          tempCol <- unlist(thisClust[,clustVar$col[i]], use.names = FALSE)
-          tempCol[clustVar$row[i]] <- NA
-          if(all(is.na(tempCol))){
-            outCols <- clusterCols[-clustVar$col[i]]
-          }
-        }
-      } else {
         if(!is.null(clustVar$value)){
           clusterVal <- clustVar$value
         } else {
@@ -115,8 +95,6 @@
             outCols <- outCols[-which(clusterRows %in% clustVar$row[i])]
           }
         }
-
-      }
     } else {
       clusterVal <- NULL
     }
