@@ -97,79 +97,27 @@
     varProp <- variables[[i]]
     varName <- names(variables)[i]
 
-    ##### replace from here .... ####
-    if(!varName %in% c(clusterID, groupID)){
+    # check whether the variable has relative values and if so, make them absolute
+    if(varProp$rel){
+      # this might become problematic in case a schema requires several col/row to be set with a relative value
+      if(!is.null(varProp$col)){
+        varProp$col <- clusters$col + varProp$col - 1
+      }
+      if(!is.null(varProp$row)){
+        varProp$row <- clusters$row + varProp$row - 1
+      }
+      varProp$rel <- FALSE
+    }
 
-      if(!varProp$rel){
-        setRel <- FALSE
-
-        if(clusType == "horizontal"){
-
-          if(!all(varProp$col < clusters$col)){
-            leftEdge <- clusters$col
-            setRel <- TRUE
-          } else {
-            varProp$dist <- TRUE
-          }
-
-        } else if(clusType == "vertical"){
-
-          if(!is.null(varProp$row)){
-            if(all(varProp$row < clusters$row)){
-              setRel <- FALSE
-            }
-          } else {
-            leftEdge <- unique(clusters$col)
-            setRel <- TRUE
-          }
-
-
-        } else if(clusType == "messy"){
-          # stop("messy clusters have not yet been fully implemented.")
-        }
-
-        if(varProp$type == "id" & !is.null(varProp$val)){
-          setRel <- FALSE
-          varProp$dist <- TRUE
-        }
-
-        if(setRel){
-          varProp$col <- varProp$col - leftEdge + 1
-          varProp$rel <- TRUE
-        }
+    # check whether the variable is actually distinct (i.e., outside of clusters)
+    if(!is_quosure(varProp$col) & !varName %in% clusterID){
+      if(all(varProp$col < clusters$col)){
+        varProp$dist <- TRUE
       }
     }
-    # else {
-    #   # make sure that the clusterID is not a relative value
-    #   if(varProp$rel){
-    #     stop(paste0("the cluster ID '", varName, "' must not have relative values."))
-    #   }
-    # }
-    ##### ... to here ... ####
-
-
-    # ... with this
-    # # check whether the variable has relative values and if so, make them absolute
-    # if(varProp$rel){
-    #   # this might become problematic in case a schema requires several col/row to be set with a relative value
-    #   if(!is.null(varProp$col)){
-    #     varProp$col <- clusters$col + varProp$col - 1
-    #   }
-    #   if(!is.null(varProp$row)){
-    #     varProp$row <- clusters$row + varProp$row - 1
-    #   }
-    #   varProp$rel <- FALSE
-    # }
-    #
-    # # check whether the variable is actually distinct (i.e., outside of clusters)
-    # if(!is_quosure(varProp$col) & !varName %in% clusterID){
-    #   if(all(varProp$col < clusters$col)){
-    #     varProp$dist <- TRUE
-    #   }
-    # }
-    # if(varProp$type == "id" & !is.null(varProp$val)){
-    #   varProp$dist <- TRUE
-    # }
+    if(varProp$type == "id" & !is.null(varProp$val)){
+      varProp$dist <- TRUE
+    }
 
     # resolve quosures from grep-ing unkown col/rows
     if(is_quosure(varProp$row)){
