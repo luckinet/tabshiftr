@@ -73,12 +73,8 @@ reorganise <- function(input = NULL, schema = NULL){
     # 5. ... rearrange the data ----
     theData <- data[[i]]
     theTable <- input[theData$data_rows, theData$data_cols]
-    theHeader <- theData$header
     theMeta <- varMeta[[i]]
-
-    # make required columnnames
-    theNames <- .getNames(header = theHeader, meta = theMeta)
-    theNames <- theNames[theData$data_cols]
+    theNames <- theMeta$var_type$names[theData$data_cols]
 
     colnames(theTable) <- theNames
 
