@@ -46,7 +46,7 @@ reorganise <- function(input = NULL, schema = NULL){
   # source('/media/se87kuhe/external1/projekte/r-dev/tabshiftr/R/updateSchema.R')
   # source('/media/se87kuhe/external1/projekte/r-dev/tabshiftr/R/selectData.R')
   # source('/media/se87kuhe/external1/projekte/r-dev/tabshiftr/R/getMetadata.R')
-  # source('/media/se87kuhe/external1/projekte/r-dev/tabshiftr/R/getNames.R')
+  # library(tidyverse); library(rlang)
 
   # check validity of arguments
   assertDataFrame(x = input)
@@ -56,9 +56,6 @@ reorganise <- function(input = NULL, schema = NULL){
 
   # 1. add missing information in schema ----
   schema <- .updateSchema(input = input, schema = schema)
-  theVariables <- schema@variables
-  theClusters <- schema@clusters
-  theFormat <- schema@format
 
   # 2. use cluster information to make list of data ----
   data <- .selectData(input = input, schema = schema)
@@ -67,6 +64,9 @@ reorganise <- function(input = NULL, schema = NULL){
   varMeta <- .getMetadata(data = data, schema = schema)
 
   # 4. go through all clusters and ... ----
+  theVariables <- schema@variables
+  theClusters <- schema@clusters
+  theFormat <- schema@format
   theValues <- list()
   for(i in seq_along(data)){
 
