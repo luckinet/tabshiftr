@@ -1,5 +1,8 @@
 # tabshiftr 0.2.4
 
+- new function `setFilter` to provide which columns/rows should be ignored by a schema.
+- handling of relative positions was changed internally to simplify the code.
+
 # tabshiftr 0.2.3
 
 - generalise `find_col` and `find_row` to `.find` and handle it based on the context it's called in.

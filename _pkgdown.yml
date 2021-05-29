@@ -13,6 +13,7 @@ reference:
     contents:
       - schema
       - setCluster
+      - setFilter
       - setHeader
       - setFormat
       - setIDVar
