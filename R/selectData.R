@@ -20,6 +20,7 @@
   header <- schema@header
   clusterID <- clusters$id
   groupID <- clusters$group
+  setNA <- schema@filter
   tabDim <- dim(input)
   nrClusters <- max(lengths(clusters))
 
@@ -59,7 +60,6 @@
   })
 
   out <- list()
-  setNA <- list()
   for(i in 1:nrClusters){
     clusterRows <- outRows <- clusters$row[i]:(clusters$row[i]+clusters$height[i] - 1)
     clusterCols <- outCols <- clusters$col[i]:(clusters$col[i]+clusters$width[i] - 1)
@@ -68,33 +68,14 @@
     parVar <- groupVar[[i]]
 
     if(!is.null(clusterID)){
-        if(!is.null(clustVar$value)){
-          clusterVal <- clustVar$value
-        } else {
-          clusterVal <- unlist(input[clustVar$row[i], clustVar$col[i]], use.names = FALSE)
+      if(!is.null(clustVar$value)){
+        clusterVal <- clustVar$value
+      } else {
+        clusterVal <- unlist(input[clustVar$row[i], clustVar$col[i]], use.names = FALSE)
 
-          # setNA$row <- clustVar$row
-          # setNA$col <- clustVar$col
-
-          if(clustVar$row[i] %in% clusterRows){
-            tempRow <- unlist(input[clustVar$row[i], clusterCols], use.names = FALSE)
-            tempRow[which(clusterCols %in% clustVar$col[i])] <- NA
-          } else {
-            tempRow <- "something"
-          }
-          if(clustVar$col[i] %in% clusterCols){
-            tempCol <- unlist(input[clusterRows, clustVar$col[i]], use.names = FALSE)
-            tempCol[which(clusterRows %in% clustVar$row[i])] <- NA
-          } else {
-            tempCol <- "something"
-          }
-          if(all(is.na(tempRow))){
-            outRows <- outRows[-which(clusterCols %in% clustVar$col[i])]
-          }
-          if(all(is.na(tempCol))){
-            outCols <- outCols[-which(clusterRows %in% clustVar$row[i])]
-          }
-        }
+        setNA$row <- c(setNA$row, clustVar$row)
+        setNA$col <- c(setNA$col, clustVar$col)
+      }
     } else {
       clusterVal <- NULL
     }
@@ -124,7 +105,7 @@
         if(!is.null(distVar$row)){
           distRow <- distVar$row
         } else {
-          distRow <- outRows
+          distRow <- outRows[-which(outRows %in% unique(setNA$row))]
         }
         distVal <- input[distRow, distCol]
       }
@@ -143,7 +124,8 @@
     # new code
     tempIn <- input
     tempIn[unique(setNA$row), unique(setNA$col)] <- NA
-    tempData2 <- tempIn[outRows, outCols]
+    tempData <- tempIn[outRows, outCols]
+
     # remove invalid rows
     removeRows <- NULL
     if(header$rel){
@@ -153,8 +135,8 @@
         removeRows <- c(removeRows, which(outRows %in% headerRows[headerRows >= clusters$row[i]]))
       }
     }
-    removeRows <- c(removeRows, which(rowSums(is.na(tempData2)) == ncol(tempData2)))
-    removeCols <- which(colSums(is.na(tempData2)) == nrow(tempData2))
+    removeRows <- c(removeRows, which(rowSums(is.na(tempData)) == ncol(tempData)))
+    removeCols <- which(colSums(is.na(tempData)) == nrow(tempData))
 
     if(length(removeRows) != 0){
       outRows <- outRows[-removeRows]
@@ -162,7 +144,7 @@
     if(length(removeCols) != 0){
       outCols <- outCols[-removeCols]
     }
-    tempData2 <- input[outRows, outCols]
+    tempData <- input[outRows, outCols]
 
     # determine header
     tempHeader <- input[headerRows, ]
@@ -190,7 +172,7 @@
                     cluster_val = clusterVal,
                     group_val = groupVal,
                     header = tempHeader,
-                    data = tempData2,
+                    data = tempData,
                     outside = distVal)
 
     out <- c(out, list(tempOut))
