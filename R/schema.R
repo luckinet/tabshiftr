@@ -223,8 +223,8 @@ setValidity(Class = "schema", function(object){
     if(length(object@filter) == 0){
       errors <- c(errors, "the slot 'filter' does not contain any entries.")
     }
-    if(!all(names(object@filter) %in% c("row", "col"))){
-      errors <- c(errors, "'names(schema$filter)' must be a permutation of set {row,col}")
+    if(!all(names(object@filter) %in% c("row", "col", "invert"))){
+      errors <- c(errors, "'names(schema$filter)' must be a permutation of set {row,col,invert}")
     }
     if(!is.null(object@filter$row)){
       if(!is.numeric(object@filter$row)){
