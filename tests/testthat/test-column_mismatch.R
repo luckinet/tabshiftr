@@ -203,3 +203,43 @@ test_that("set an id variable that is not in the table manually", {
 
   expect_valid_table(x = output, units = 1)
 })
+
+test_that("mask out a couple of rows and columns that don't contain target data", {
+  schema <- setFilter(rows = c(1:2), invert = TRUE) %>%
+    setHeader(rows = 4) %>%
+    setIDVar(name = "territories", value = "unit 1") %>%
+    setIDVar(name = "year", columns = 4, relative = TRUE) %>%
+    setIDVar(name = "commodities", columns = 1, relative = TRUE) %>%
+    setObsVar(name = "harvested", unit = "ha", columns = 2, relative = TRUE) %>%
+    setObsVar(name = "production", unit = "t", columns = 3, relative = TRUE)
+
+  input <- read_csv(paste0(system.file("test_datasets",
+                                       package="tabshiftr",
+                                       mustWork = TRUE), "/table_mismatch_5.csv"),
+                    col_names = FALSE)
+  output <- reorganise(input = input, schema = schema)
+
+  expect_valid_table(x = output, units = 1)
+
+
+  # ... with regular expressions for observed variables
+
+  input <- read_csv(paste0(system.file("test_datasets",
+                                       package="tabshiftr",
+                                       mustWork = TRUE), "/table_mismatch_5.csv"),
+                    col_names = FALSE)
+  output <- reorganise(input = input, schema = schema)
+
+  expect_valid_table(x = output, units = 1)
+
+
+  # ... with regular expressions for identifying variables
+
+  input <- read_csv(paste0(system.file("test_datasets",
+                                       package="tabshiftr",
+                                       mustWork = TRUE), "/table_mismatch_5.csv"),
+                    col_names = FALSE)
+  output <- reorganise(input = input, schema = schema)
+
+  expect_valid_table(x = output, units = 1)
+})
