@@ -1,3 +1,5 @@
+# tabshiftr 0.2.5
+
 # tabshiftr 0.2.4
 
 - new function `setFilter` to provide which columns/rows should be ignored by a schema.
