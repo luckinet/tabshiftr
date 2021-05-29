@@ -2,9 +2,9 @@
 % Please edit documentation in R/setFilter.R
 \name{setFilter}
 \alias{setFilter}
-\title{Set filters to mask a table}
+\title{Set filters for reorganising}
 \usage{
-setFilter(schema = NULL, columns = NULL, rows = NULL)
+setFilter(schema = NULL, columns = NULL, rows = NULL, invert = FALSE)
 }
 \arguments{
 \item{schema}{[\code{schema(1)}]\cr In case this information is added to an
@@ -14,12 +14,15 @@ information).}
 \item{columns}{[\code{integerish(.)}]\cr the columns to ingore.}
 
 \item{rows}{[\code{integerish(.)}]\cr the rows to ignore.}
+
+\item{invert}{[\code{logical(1)}]\cr whether or not to invert the values
+provided in \code{columns} and \code{rows}.}
 }
 \description{
-This function allows to specify additional rules to (un-)select certain rows
-or columns.
+This function allows to specify additional rules to filter certain rows or
+columns.
 }
 \details{
-Currently the functionality is restricted to filtering out columns
-  and rows globally across the whole table.
+Currently the functionality is restricted to masking out columns and
+  rows globally across the whole table.
 }
