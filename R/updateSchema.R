@@ -19,6 +19,7 @@
 
   # 1. complete cluster information ----
   clusters <- schema@clusters
+  filter <- schema@filter
   nClusters <- max(lengths(clusters))
   if(nClusters == 0) nClusters <- 1
   tabDim <- dim(input)
@@ -87,7 +88,39 @@
     header$row <- which(rows == 1)
   }
 
-  # 3. complete variables ----
+  # 3. complete filter ----
+  if(!filter$invert){
+    if(!is.null(filter$row)){
+      filter$row <- (1:tabDim[1])[-filter$row]
+    }
+    if(!is.null(filter$col)){
+      filter$col <- (1:tabDim[2])[-filter$col]
+    }
+  }
+
+  if(is_quosure(filter$row)){
+    term <- eval_tidy(filter$row)
+    rows <- map_int(.x = 1:dim(input)[1], .f = function(ix){
+      grepl(x = paste(input[ix,], collapse = " "), pattern = term)
+    })
+    filter$row <- which(rows == 1)
+  }
+  if(is.null(filter$row) & !is.null(filter$col)){
+    filter$col <- 1:tabDim[1]
+  }
+
+  if(is_quosure(filter$col)){
+    term <- eval_tidy(filter$col)
+    cols <- map_int(.x = 1:dim(input)[2], .f = function(ix){
+      grepl(x = paste(input[[ix]], collapse = " "), pattern = term)
+    })
+    filter$col <- which(cols == 1)
+  }
+  if(is.null(filter$col) & !is.null(filter$row)){
+    filter$col <- 1:tabDim[2]
+  }
+
+  # 4. complete variables ----
   variables <- schema@variables
 
   outsideCluster <- NULL
@@ -173,7 +206,7 @@
              clusters = clusters,
              header = header,
              format = schema@format,
-             filter = schema@filter,
+             filter = filter,
              variables = variables)
 
   return(out)
