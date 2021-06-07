@@ -155,30 +155,24 @@ setValidity(Class = "schema", function(object){
     }
   }
 
-  # if(!.hasSlot(object = object, name = "header")){
-  #   errors <- c(errors, "the schema does not have a 'header' slot.")
-  # } else {
-  #   if(!is.list(object@header)){
-  #     errors <- c(errors, "the slot 'header' is not a list.")
-  #   }
-  #   if(length(object@header) == 0){
-  #     errors <- c(errors, "the slot 'header' does not contain any entries.")
-  #   }
-  #   if(!all(names(object@header) %in% c("row", "rel", "merge"))){
-  #     errors <- c(errors, "'names(header)' must be a permutation of set {row,rel,merge}")
-  #   }
-  #   if(!is.null(object@header$row)){
-  #     if(!is.numeric(object@header$row) | testClass(x = object@header$row, classes = "quosure")){
-  #       errors <- c(errors, "'header$row' must have a numeric value.")
-  #     }
-  #   }
-  #   # if(!is.logical(object@header$rel)){
-  #   #   errors <- c(errors, "'header$rel' must have a logical value.")
-  #   # }
-  #   # if(!is.logical(object@header$merge)){
-  #   #   errors <- c(errors, "'header$merge' must have a logical value.")
-  #   # }
-  # }
+  if(!.hasSlot(object = object, name = "header")){
+    errors <- c(errors, "the schema does not have a 'header' slot.")
+  } else {
+    if(!is.list(object@header)){
+      errors <- c(errors, "the slot 'header' is not a list.")
+    }
+    if(length(object@header) == 0){
+      errors <- c(errors, "the slot 'header' does not contain any entries.")
+    }
+    if(!all(names(object@header) %in% c("row", "rel", "merge"))){
+      errors <- c(errors, "'names(header)' must be a permutation of set {row,rel,merge}")
+    }
+    if(!is.null(object@header$row)){
+      if(!is.numeric(object@header$row) | testClass(x = object@header$row, classes = "quosure")){
+        errors <- c(errors, "'header$row' must have a numeric value.")
+      }
+    }
+  }
 
   if(!.hasSlot(object = object, name = "format")){
     errors <- c(errors, "the schema does not have a 'format' slot.")
@@ -402,6 +396,8 @@ setMethod(f = "show",
                 ""
               } else if(is_quosure(variables[[x]]$row)){
                 eval_tidy(variables[[x]]$row)
+              } else if(is.name(variables[[x]]$row)){
+                as.character(variables[[x]]$row)
               } else {
                 temp <- unique(variables[[x]]$row)
                 # make a short sequence of 'theRows'
@@ -429,6 +425,8 @@ setMethod(f = "show",
                 ""
               } else if(is_quosure(variables[[x]]$col)){
                 eval_tidy(variables[[x]]$col)
+              } else if(is.name(variables[[x]]$col)){
+                as.character(variables[[x]]$col)
               } else {
                 temp <- unique(variables[[x]]$col)
                 # make a short sequence of 'theRows'
@@ -445,7 +443,7 @@ setMethod(f = "show",
               }
             })
             nCols <- sapply(seq_along(theCols), function(x){
-              ifelse(test = is.null(theCols[[x]]) , yes = 0, no = nchar(paste0(theCols[[x]], collapse = ", ")))
+              ifelse(test = is.null(theCols[[x]]), yes = 0, no = nchar(paste0(theCols[[x]], collapse = ", ")))
             })
             maxCols <- ifelse(any(nCols > 3), max(nCols), 3)
             if(any(nCols != 0)){
