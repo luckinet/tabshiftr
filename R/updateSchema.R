@@ -20,8 +20,6 @@
   # 1. complete cluster information ----
   clusters <- schema@clusters
   filter <- schema@filter
-  nClusters <- max(lengths(clusters))
-  if(nClusters == 0) nClusters <- 1
   tabDim <- dim(input)
 
   # set cluster start if it is NULL or a qousure
@@ -61,6 +59,9 @@
     }
   }
 
+  nClusters <- max(lengths(clusters))
+  if(nClusters == 0) nClusters <- 1
+
   # make sure that all elements occur the same number of times
   clusters$row <- rep(x = clusters$row, length.out = nClusters)
   clusters$col <- rep(x = clusters$col, length.out = nClusters)
@@ -86,6 +87,13 @@
       grepl(x = paste(input[ix,], collapse = " "), pattern = term)
     })
     header$row <- which(rows == 1)
+  } else {
+
+    if(header$rel){
+      header$row <- clusters$row + header$row - 1
+      header$rel <- FALSE
+    }
+
   }
 
   # 3. complete filter ----
@@ -100,10 +108,17 @@
 
   if(is_quosure(filter$row)){
     term <- eval_tidy(filter$row)
-    rows <- map_int(.x = 1:dim(input)[1], .f = function(ix){
-      grepl(x = paste(input[ix,], collapse = " "), pattern = term)
-    })
-    filter$row <- which(rows == 1)
+    if(is.function(term)){
+      map_int(.x = 1:dim(input)[1], .f = function(ix){
+        grepl(x = paste(input[ix,], collapse = " "), pattern = term)
+      })
+    } else {
+      rows <- map_int(.x = 1:dim(input)[1], .f = function(ix){
+        grepl(x = paste(input[ix,], collapse = " "), pattern = term)
+      })
+      filter$row <- which(rows == 1)
+    }
+
   }
   if(is.null(filter$row) & !is.null(filter$col)){
     filter$col <- 1:tabDim[1]
@@ -140,6 +155,8 @@
         varProp$row <- clusters$row + varProp$row - 1
       }
       varProp$rel <- FALSE
+    } else {
+
     }
 
     # check whether the variable is actually distinct (i.e., outside of clusters)
