@@ -46,7 +46,7 @@ reorganise <- function(input = NULL, schema = NULL){
   # source('/media/se87kuhe/external1/projekte/r-dev/tabshiftr/R/updateSchema.R')
   # source('/media/se87kuhe/external1/projekte/r-dev/tabshiftr/R/selectData.R')
   # source('/media/se87kuhe/external1/projekte/r-dev/tabshiftr/R/getMetadata.R')
-  # library(tidyverse); library(rlang)
+  # library(tidyverse); library(rlang); library(checkmate)
 
   # check validity of arguments
   assertDataFrame(x = input)
