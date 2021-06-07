@@ -1,6 +1,10 @@
 # tabshiftr 0.2.6
 
+- properly enable use of functions in `.find` via several bug-fixes
+
 # tabshiftr 0.2.5
+
+- internal updates/bug-fixes
 
 # tabshiftr 0.2.4
 
