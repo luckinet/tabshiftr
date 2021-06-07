@@ -4,7 +4,7 @@
 \alias{setHeader}
 \title{Set the header of a table}
 \usage{
-setHeader(schema = NULL, rows = NULL, relative = FALSE, merge = FALSE)
+setHeader(schema = NULL, rows = NULL, relative = FALSE)
 }
 \arguments{
 \item{schema}{[\code{schema(1)}]\cr In case this information is added to an
@@ -17,9 +17,6 @@ information are stored.}
 \item{relative}{[\code{logical(1)}]\cr Whether or not the values in
 \code{rows} are relative to the cluster positions or whether they refer to
 the overall table.}
-
-\item{merge}{[\code{logical(1)}]\cr When there is more than one row, this
-determines whether or not those rows should be merged.}
 }
 \value{
 An object of class \code{\link{schema}}.
