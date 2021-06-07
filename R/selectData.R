@@ -114,13 +114,6 @@
       distVal <- NULL
     }
 
-    # adapt values if header is relative
-    if(header$rel){
-      headerRows <- clusters$row[i]+header$row-1
-    } else {
-      headerRows <- header$row
-    }
-
     # new code
     tempIn <- input
     tempIn[unique(setNA$row), unique(setNA$col)] <- NA
@@ -129,10 +122,10 @@
     # remove invalid rows
     removeRows <- NULL
     if(header$rel){
-      removeRows <- headerRows - clusters$row[i] + 1
+      removeRows <- header$row - clusters$row[i] + 1
     } else {
-      if(any(headerRows >= clusters$row[i])){
-        removeRows <- c(removeRows, which(outRows %in% headerRows[headerRows >= clusters$row[i]]))
+      if(any(header$row >= clusters$row[i])){
+        removeRows <- c(removeRows, which(outRows %in% header$row[header$row >= clusters$row[i]]))
       }
     }
     removeRows <- c(removeRows, which(rowSums(is.na(tempData)) == ncol(tempData)))
@@ -147,7 +140,7 @@
     tempData <- input[outRows, outCols]
 
     # determine header
-    tempHeader <- input[headerRows, ]
+    tempHeader <- input[header$row, ]
 
     # fill NA to the right side of wide identifying variables (this will replace
     # the NA with the value to the left of that NA)
