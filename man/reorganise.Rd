@@ -32,11 +32,11 @@ ds <- system.file("test_datasets", package = "tabshiftr")
 schema <- setCluster(id = "territories", top = c(1, 8, 8), left = c(1, 1, 4),
                      width = 3, height = 6) \%>\%
   setHeader(rows = 1, rel = TRUE) \%>\%
-  setIDVar(name = "territories", col = 1, row = 2, rel = TRUE) \%>\%
-  setIDVar(name = "year", col = 4, row = c(3:6), dist = TRUE) \%>\%
-  setIDVar(name = "commodities", col = 1, rel = TRUE) \%>\%
-  setObsVar(name = "harvested", unit = "ha", col = 2, rel = TRUE) \%>\%
-  setObsVar(name = "production", unit = "t", col = 3, rel = TRUE)
+  setIDVar(name = "territories", columns = 1, row = 2, rel = TRUE) \%>\%
+  setIDVar(name = "year", columns = 4, row = c(3:6), dist = TRUE) \%>\%
+  setIDVar(name = "commodities", columns = 1, rel = TRUE) \%>\%
+  setObsVar(name = "harvested", unit = "ha", columns = 2, rel = TRUE) \%>\%
+  setObsVar(name = "production", unit = "t", columns = 3, rel = TRUE)
 
 # get the tidy output
 reorganise(input, schema)
