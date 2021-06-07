@@ -9,15 +9,23 @@
 #'   tables of a series are largely the same, but some variable(s) sit in
 #'   different columns).
 #' @return the index values where \code{pattern} was found.
-#' @importFrom checkmate assertDataFrame assertCharacter
+#' @importFrom checkmate testCharacter testFunction assert
 #' @importFrom purrr map_chr
 #' @importFrom rlang enquo
 #' @export
 
 .find <- function(pattern){
 
-  assertCharacter(x = pattern, min.len = 1, any.missing = FALSE)
+  isPat <- testCharacter(x = pattern, min.len = 1, any.missing = FALSE)
+  isFun <- testFunction(x = pattern)
+  assert(isPat, isFun)
 
-  return(enquo(pattern))
+  if(isFun){
+    out <- substitute(pattern)
+  } else {
+    out <- enquo(pattern)
+  }
+
+  return(out)
 
 }
