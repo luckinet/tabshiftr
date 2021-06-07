@@ -13,8 +13,6 @@
 #' @param relative [\code{logical(1)}]\cr Whether or not the values in
 #'   \code{rows} are relative to the cluster positions or whether they refer to
 #'   the overall table.
-#' @param merge [\code{logical(1)}]\cr When there is more than one row, this
-#'   determines whether or not those rows should be merged.
 #' @details Please also take a look at the currently suggested strategy to set
 #'   up a \link[=schema]{schema description}.
 #' @return An object of class \code{\link{schema}}.
@@ -23,8 +21,7 @@
 #'   testIntegerish testClass
 #' @export
 
-setHeader <- function(schema = NULL, rows = NULL, relative = FALSE,
-                      merge = FALSE){
+setHeader <- function(schema = NULL, rows = NULL, relative = FALSE){
 
   # assertions ----
   assertClass(x = schema, classes = "schema", null.ok = TRUE)
@@ -32,7 +29,6 @@ setHeader <- function(schema = NULL, rows = NULL, relative = FALSE,
   rowQuo <- testClass(x = rows, classes = "quosure")
   assert(rowInt, rowQuo)
   assertLogical(x = relative, any.missing = FALSE, len = 1)
-  assertLogical(x = merge, any.missing = FALSE, len = 1)
 
   if(is.null(schema)){
     schema <- schema_default
@@ -52,9 +48,6 @@ setHeader <- function(schema = NULL, rows = NULL, relative = FALSE,
   }
   if(!is.null(relative)){
     schema@header$rel <- relative
-  }
-  if(!is.null(merge)){
-    schema@header$merge <- merge
   }
 
   return(schema)
