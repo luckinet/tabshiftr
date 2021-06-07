@@ -19,7 +19,6 @@
 
   variables <- schema@variables
   clusters <- schema@clusters
-  header <- schema@header
 
   out <- list()
   for(j in seq_along(data)){
