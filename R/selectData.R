@@ -129,14 +129,14 @@
       }
     }
     removeRows <- c(removeRows, which(rowSums(is.na(tempData)) == ncol(tempData)))
-    removeCols <- which(colSums(is.na(tempData)) == nrow(tempData))
+    # removeCols <- which(colSums(is.na(tempData)) == nrow(tempData))
 
     if(length(removeRows) != 0){
       outRows <- outRows[-removeRows]
     }
-    if(length(removeCols) != 0){
-      outCols <- outCols[-removeCols]
-    }
+    # if(length(removeCols) != 0){
+    #   outCols <- outCols[-removeCols]
+    # }
     tempData <- input[outRows, outCols]
 
     # determine header
