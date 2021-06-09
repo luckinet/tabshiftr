@@ -171,7 +171,7 @@
           if(!any(mergeOrder %in% varProp$row[j])){
             dataRows[which(tableRows %in% varProp$row[j])] <- FALSE
             # if it is cluster ID or only in a single cell, don't merge
-            if(!varName %in% clusters$id & length(varProp$col) != 1){
+            if(!varName %in% clusters$id & !varName %in% clusters$group & length(varProp$col) != 1){
               mergeOrder <- c(mergeOrder, varProp$row[j])
             }
           }
