@@ -29,7 +29,7 @@
 #' @importFrom rlang enquo
 #' @export
 
-find <- function(by){
+.find <- function(by){
 
   isPat <- testCharacter(x = by, min.len = 1, any.missing = FALSE)
   isFun <- testFunction(x = by)
