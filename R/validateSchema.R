@@ -72,24 +72,8 @@ validateSchema <- function(schema = NULL, input = NULL){
   clusters$width <- rep(x = clusters$width, length.out = nClusters)
   clusters$height <- rep(x = clusters$height, length.out = nClusters)
 
-  # 2. complete header ----
-  header <- schema@header
-  if(is_quosure(header$row)){
-    term <- eval_tidy(header$row)
-    rows <- map_int(.x = 1:dim(input)[1], .f = function(ix){
-      grepl(x = paste(input[ix,], collapse = " "), pattern = term)
-    })
-    header$row <- which(rows == 1)
-  } else {
 
-    if(header$rel){
-      header$row <- clusters$row + header$row - 1
-      header$rel <- FALSE
-    }
-
-  }
-
-  # 3. complete filter ----
+  # 2. complete filter ----
   if(!filter$invert){
     if(!is.null(filter$row)){
       filter$row <- (1:tabDim[1])[-filter$row]
@@ -111,7 +95,7 @@ validateSchema <- function(schema = NULL, input = NULL){
   }
   topAfterFilter <- min(which(!1:dim(input)[1] %in% filter$row))
 
-  # 4. complete variables ----
+  # 3. complete variables ----
   outsideCluster <- NULL
   clusterID <- clusters$id
   groupID <- clusters$group
@@ -190,7 +174,6 @@ validateSchema <- function(schema = NULL, input = NULL){
       }
 
       varProp$col <- which(cols == 1)
-
     }
 
     # figure our which rows to filter out
@@ -219,14 +202,6 @@ validateSchema <- function(schema = NULL, input = NULL){
     # make sure that all elements occur the same number of times
     if(!is.null(varProp$row)){
 
-      if(!any(header$row %in% varProp$row)){
-        if(!varName %in% clusters$id){
-          if(length(varProp$col) != 1){
-            header$row <- c(header$row, varProp$row)
-          }
-        }
-      }
-
       if(length(varProp$row) == 1){
         varProp$row <- rep(x = varProp$row, length.out = nClusters)
       }
@@ -250,29 +225,12 @@ validateSchema <- function(schema = NULL, input = NULL){
     names(variables)[i] <- varName
   }
 
-  # remove empty rows
+  # 4. remove empty rows ----
   emptyRows <- which(rowSums(is.na(input)) == ncol(input))
-
-  # topAfterFilter <- min(which(!1:dim(input)[1] %in% filter$row))
-  # headerRows <- map(.x = seq_along(variables), .f = function(ix){
-  #   theVar <- variables[[ix]]
-  #   if(!theVar$dist){
-  #     if(theVar$type == "observed"){
-  #       if(theVar$row < topAfterFilter){
-  #         theVar$row <- topAfterFilter
-  #       }
-  #       clusters$row + theVar$row - 1
-  #     } else {
-  #       theVar$row
-  #     }
-  #   }
-  # })
-  # headerRows <- unlist(headerRows)
   filter$row <- sort(unique(c(filter$row, emptyRows)))
 
   out <- new(Class = "schema",
              clusters = clusters,
-             header = header,
              format = schema@format,
              filter = filter,
              variables = variables)

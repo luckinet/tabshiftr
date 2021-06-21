@@ -69,7 +69,7 @@ variables.}
 
   \item in case the variable is in several columns, determine additionally
   the row in which its values sit. In this case, the values will look like
-  they are part of the header.
+  they are part of a header.
 
   \item in case the variable must be split off of another column, provide a
   regular expression that results in the target subset via

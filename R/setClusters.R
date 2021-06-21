@@ -89,9 +89,5 @@ setCluster <- function(schema = NULL, id = NULL, group = NULL, member = NULL,
     schema@clusters$member <- member
   }
 
-  # if(!is.null(header)){
-  #   schema@clusters$header <- header
-  # }
-
   return(schema)
 }

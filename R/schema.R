@@ -4,8 +4,6 @@
 #' in a table of data.
 #' @slot cluster [\code{list(1)}]\cr description of
 #'   \code{\link[=setCluster]{clusters}} in the table.
-#' @slot header [\code{list(1)}]\cr description of the
-#'   \code{\link[=setHeader]{header}}.
 #' @slot format [\code{list(1)}]\cr description of the table
 #'   \code{\link[=setFormat]{format}}
 #' @slot variables [\code{named list(.)}]\cr description of
@@ -41,8 +39,8 @@
 #'   \item in case it is a observed variable, provide simply
 #'   \code{\link[=setCluster]{setCluster}(..., id = "observed")}. }
 #'
-#'   \item \emph{Meta-data}: Provide potentially information about the table
-#'   header (\code{\link{setHeader}}) and format (\code{\link{setFormat}}).
+#'   \item \emph{Meta-data}: Provide potentially information about the format
+#'   (\code{\link{setFormat}}).
 #'
 #'   \item \emph{Identifying variables}: Determine the following: \itemize{
 #'
@@ -56,7 +54,7 @@
 #'
 #'   \item in case the variable is in several columns, determine additionally
 #'   the row in which its values sit. In this case, the values will look like
-#'   they are part of the header.
+#'   they are part of a header.
 #'
 #'   \item in case the variable must be split off of another column, provide a
 #'   regular expression that results in the target subset via
@@ -93,7 +91,6 @@
 
 schema <- setClass(Class = "schema",
                    slots = c(clusters = "list",
-                             header = "list",
                              format = "list",
                              filter = "list",
                              variables = "list"
@@ -110,8 +107,8 @@ setValidity(Class = "schema", function(object){
     if(!is.list(object@clusters)){
       errors <- c(errors, "the slot 'clusters' is not a list.")
     }
-    if(!all(names(object@clusters) %in% c("id", "group", "row", "col", "width", "height", "header", "member"))){
-      errors <- c(errors, "'names(schema$clusters)' must be a permutation of set {id,group,row,col,width,height,header,member}")
+    if(!all(names(object@clusters) %in% c("id", "group", "row", "col", "width", "height", "member"))){
+      errors <- c(errors, "'names(schema$clusters)' must be a permutation of set {id,group,row,col,width,height,member}")
     }
     if(!is.null(object@clusters$row)){
       if(!is.numeric(object@clusters$row)){
@@ -146,30 +143,6 @@ setValidity(Class = "schema", function(object){
     if(!is.null(object@clusters$member)){
       if(!is.numeric(object@clusters$member)){
         errors <- c(errors, "'schema$clusters$member' must have a numeric value.")
-      }
-    }
-    if(!is.null(object@clusters$header)){
-      if(!is.numeric(object@clusters$header)){
-        errors <- c(errors, "'schema$clusters$header' must have a numeric value.")
-      }
-    }
-  }
-
-  if(!.hasSlot(object = object, name = "header")){
-    errors <- c(errors, "the schema does not have a 'header' slot.")
-  } else {
-    if(!is.list(object@header)){
-      errors <- c(errors, "the slot 'header' is not a list.")
-    }
-    if(length(object@header) == 0){
-      errors <- c(errors, "the slot 'header' does not contain any entries.")
-    }
-    if(!all(names(object@header) %in% c("row", "rel", "merge"))){
-      errors <- c(errors, "'names(header)' must be a permutation of set {row,rel,merge}")
-    }
-    if(!is.null(object@header$row)){
-      if(!is.numeric(object@header$row) | testClass(x = object@header$row, classes = "quosure")){
-        errors <- c(errors, "'header$row' must have a numeric value.")
       }
     }
   }
@@ -285,11 +258,11 @@ setValidity(Class = "schema", function(object){
         if(!all(names(theVariable) %in% c("type", "unit", "factor", "row", "col", "rel", "dist", "key", "value"))){
           errors <- c(errors, paste0("'names(", theName, ")' must be a permutation of set {type,unit,factor,row,col,rel,dist,key,value}"))
         }
-        if(!is.null(theVariable$unit)){
-          if(!is.character(theVariable$unit)){
-            errors <- c(errors, paste0("'", theName, "$unit' must have a character value."))
-          }
-        }
+        # if(!is.null(theVariable$unit)){
+        #   if(!is.character(theVariable$unit)){
+        #     errors <- c(errors, paste0("'", theName, "$unit' must have a character value."))
+        #   }
+        # }
         if(!is.null(theVariable$factor)){
           if(!is.numeric(theVariable$factor)){
             errors <- c(errors, paste0("'", theName, "$factor' must have a numeric value."))
@@ -311,11 +284,11 @@ setValidity(Class = "schema", function(object){
         if(!is.logical(theVariable$dist)){
           errors <- c(errors, paste0("'", theName, "$dist' must either be 'TRUE' or 'FALSE'."))
         }
-        if(!is.null(theVariable$key)){
-          if(!is.character(theVariable$key)){
-            errors <- c(errors, paste0("'", theName, "$key' must have a character value."))
-          }
-        }
+        # if(!is.null(theVariable$key)){
+        #   if(!is.character(theVariable$key)){
+        #     errors <- c(errors, paste0("'", theName, "$key' must have a character value."))
+        #   }
+        # }
         if(!is.null(theVariable$value)){
           if(theVariable$key == "cluster"){
             if(!rlang::is_integerish(theVariable$value)){
@@ -345,7 +318,7 @@ setValidity(Class = "schema", function(object){
 #' @param object [\code{schema}]\cr the schema to print.
 #' @importFrom crayon yellow
 #' @importFrom stringr str_split
-#' @importFrom rlang eval_tidy is_quosure
+#' @importFrom rlang eval_tidy is_quosure prim_name
 
 setMethod(f = "show",
           signature = "schema",
@@ -372,8 +345,9 @@ setMethod(f = "show",
               } else {
                 top <- clusters$row
               }
-              clusterSpecs <- paste0("\n    origin: ", paste(top, left, collapse = ", ", sep = "|"), "  (row|col)",
-                                     ifelse(!is.null(clusters$id), paste0("\n    id    : ", clusters$id), ""))
+              clusterSpecs <- paste0("\n    origin : ", paste(top, left, collapse = ", ", sep = "|"), "  (row|col)",
+                                     ifelse(!is.null(clusters$group), paste0("\n    groups : ", clusters$group), ""),
+                                     ifelse(!is.null(clusters$id), paste0("\n    id     : ", clusters$id), ""))
             }
             cat(paste0("  ", nClusters, " ", nClustName, clusterSpecs, "\n\n"))
 
@@ -395,9 +369,7 @@ setMethod(f = "show",
               if(is.null(variables[[x]]$row)){
                 ""
               } else if(is_quosure(variables[[x]]$row)){
-                eval_tidy(variables[[x]]$row)
-              } else if(is.name(variables[[x]]$row)){
-                as.character(variables[[x]]$row)
+                prim_name(eval_tidy(variables[[x]]$row))
               } else {
                 temp <- unique(variables[[x]]$row)
                 # make a short sequence of 'theRows'
@@ -424,9 +396,7 @@ setMethod(f = "show",
               if(is.null(variables[[x]]$col)){
                 ""
               } else if(is_quosure(variables[[x]]$col)){
-                eval_tidy(variables[[x]]$col)
-              } else if(is.name(variables[[x]]$col)){
-                as.character(variables[[x]]$col)
+                prim_name(eval_tidy(variables[[x]]$col))
               } else {
                 temp <- unique(variables[[x]]$col)
                 # make a short sequence of 'theRows'
