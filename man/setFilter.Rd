@@ -2,16 +2,14 @@
 % Please edit documentation in R/setFilter.R
 \name{setFilter}
 \alias{setFilter}
-\title{Set filters for reorganising}
+\title{Set filters}
 \usage{
-setFilter(schema = NULL, columns = NULL, rows = NULL, invert = FALSE)
+setFilter(schema = NULL, rows = NULL, invert = FALSE)
 }
 \arguments{
 \item{schema}{[\code{schema(1)}]\cr In case this information is added to an
 already existing schema, provide that schema here (overwrites previous
 information).}
-
-\item{columns}{[\code{integerish(.)}]\cr the columns to ingore.}
 
 \item{rows}{[\code{integerish(.)}]\cr the rows to ignore.}
 
@@ -19,8 +17,7 @@ information).}
 provided in \code{columns} and \code{rows}.}
 }
 \description{
-This function allows to specify additional rules to filter certain rows or
-columns.
+This function allows to specify additional rules to filter certain rows
 }
 \details{
 Currently the functionality is restricted to masking out columns and

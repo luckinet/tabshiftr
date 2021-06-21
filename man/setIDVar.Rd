@@ -65,7 +65,6 @@ Please also take a look at the currently suggested strategy to set
 Other functions to describe table arrangement: 
 \code{\link{setCluster}()},
 \code{\link{setFormat}()},
-\code{\link{setHeader}()},
 \code{\link{setObsVar}()}
 }
 \concept{functions to describe table arrangement}

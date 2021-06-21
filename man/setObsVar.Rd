@@ -8,7 +8,7 @@ setObsVar(
   schema = NULL,
   name = NULL,
   columns = NULL,
-  rows = NULL,
+  top = NULL,
   relative = FALSE,
   distinct = FALSE,
   unit = NULL,
@@ -27,9 +27,9 @@ information).}
 \item{columns}{[\code{integerish(.)}]\cr The column(s) in which the
 \emph{values} of the new variable are recorded.}
 
-\item{rows}{[\code{integerish(.)}]\cr In case the variable is nested in a wide
-identifying variable, specify here additionally the row(s) in which the
-variable \emph{name} sits}
+\item{top}{[\code{integerish(.)}]\cr In case the variable is nested in a wide
+identifying variable, specify here additionally the topmost row in which
+the variable \emph{name} sits}
 
 \item{relative}{[\code{logical(1)}]\cr whether or not the values provided in
 \code{columns} and \code{rows} are relative to the cluster position(s) or
@@ -73,7 +73,6 @@ Please also take a look at the currently suggested strategy to set
 Other functions to describe table arrangement: 
 \code{\link{setCluster}()},
 \code{\link{setFormat}()},
-\code{\link{setHeader}()},
 \code{\link{setIDVar}()}
 }
 \concept{functions to describe table arrangement}

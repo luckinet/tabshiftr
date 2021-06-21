@@ -15,9 +15,6 @@ in a table of data.
 \item{\code{cluster}}{[\code{list(1)}]\cr description of
 \code{\link[=setCluster]{clusters}} in the table.}
 
-\item{\code{header}}{[\code{list(1)}]\cr description of the
-\code{\link[=setHeader]{header}}.}
-
 \item{\code{format}}{[\code{list(1)}]\cr description of the table
 \code{\link[=setFormat]{format}}}
 
@@ -57,8 +54,8 @@ variables.}
   \item in case it is a observed variable, provide simply
   \code{\link[=setCluster]{setCluster}(..., id = "observed")}. }
 
-  \item \emph{Meta-data}: Provide potentially information about the table
-  header (\code{\link{setHeader}}) and format (\code{\link{setFormat}}).
+  \item \emph{Meta-data}: Provide potentially information about the format
+  (\code{\link{setFormat}}).
 
   \item \emph{Identifying variables}: Determine the following: \itemize{
 
