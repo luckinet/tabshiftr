@@ -79,7 +79,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tabshiftr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -125,6 +125,20 @@
       <small>Source: <a href='https://github.com/EhrmannS/tabshiftr/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="tabshiftr-030---getters-update" class="section level1">
+<h1 class="page-header" data-toc-text="0.3.0">
+<a href="#tabshiftr-030---getters-update" class="anchor"></a>tabshiftr 0.3.0 - getters update<small> Unreleased </small>
+</h1>
+<ul>
+<li>introduction of getters that fulfill two functions: 1) check up on the schema one is currently building, 2) internal use to streamline the code-base</li>
+<li>less cryptic naming of the example files that they can be understood without much explanation</li>
+<li>complete revisit of the code-base</li>
+<li>removal of the function <code>setHeader()</code>, as these information are now automatically extracted from the functions</li>
+<li>renaming of the argument <code>row =</code> in <code><a href="../reference/setObsVar.html">setObsVar()</a></code> to <code>top =</code>, because this is represents a clearer meaning of what this argument describes</li>
+<li>
+<code><a href="../reference/.find.html">.find()</a></code> now also allows functions that evaluate to TRUE/FALSE</li>
+</ul>
+</div>
     <div id="tabshiftr-026" class="section level1">
 <h1 class="page-header" data-toc-text="0.2.6">
 <a href="#tabshiftr-026" class="anchor"></a>tabshiftr 0.2.6<small> Unreleased </small>
@@ -176,9 +190,9 @@
 <li>automatically remove rows and columns that contain merely NA values.</li>
 </ul>
 </div>
-    <div id="tabshiftr-020" class="section level1">
+    <div id="tabshiftr-020---setters-update" class="section level1">
 <h1 class="page-header" data-toc-text="0.2.0">
-<a href="#tabshiftr-020" class="anchor"></a>tabshiftr 0.2.0<small> Unreleased </small>
+<a href="#tabshiftr-020---setters-update" class="anchor"></a>tabshiftr 0.2.0 - setters update<small> Unreleased </small>
 </h1>
 <ul>
 <li>include functions <code>setCluster</code>, <code>setHeader</code>,<code>setFormat</code>, <code>setIDVar</code> and <code>setObsVar</code> for easier schema setup.</li>

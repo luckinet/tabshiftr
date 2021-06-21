@@ -17,7 +17,7 @@
 #'
 #' # put together schema description (see vignette)
 #' schema <- setCluster(id = "territories",
-#'   left = c(1, 1, 4), top = c(1, 8, 8)) %>%
+#'                      left = c(1, 1, 4), top = c(1, 8, 8)) %>%
 #'   setIDVar(name = "territories", columns = c(1, 1, 4), rows = c(2, 9, 9)) %>%
 #'   setIDVar(name = "year", columns = 4, rows = c(3:6), distinct = TRUE) %>%
 #'   setIDVar(name = "commodities", columns = c(1, 1, 4)) %>%
