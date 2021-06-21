@@ -402,22 +402,6 @@ schema <- setCluster(id = "territories", top = c(3, 8), left = 2) %>%
   setObsVar(name = "production", columns = 5, unit = "t")
 ```
 
-### Messy clusters
-
-In case several clusters are neither aligned along a row nor a column, and are all of differing size, the respective information need to be provided at the same index of the respective property.
-For example, three clusters, where the first cluster starts at (1,1) and is 3 by 4 cells in size, where the second clusters starts at (5,2) and is 5 by 5 cells in size, and so on, needs to be specified as below.
-
-```{r, eval=FALSE}
-schema <- setCluster(top = c(1, 5, 1), left = c(1, 2, 5), 
-                     width = c(3, 5, 2), height = c(4, 5, 3), id = ...) %>% 
-  setHeader(rows = 1) %>% 
-  setIDVar(name = "territories", columns = 1, relative = TRUE) %>% 
-  ...
-```
-
-Additionally, given that at least the tables within each cluster are all arranged in the same way, the contained variables can be specified so that their row and column indices are given relative to the cluster position (`relative = TRUE`).
-If also that is not the case, the row and column values for each cluster need to be provided for the respective variables in the same way as for cluster positions.
-
 
 ### Clusters of observed variables
 
@@ -463,41 +447,6 @@ schema <- setCluster(id = "observed", left = 2, top = c(3, 12), height = 8) %>%
             key = "cluster", value = 2)
 ```
 
-### Variables that are distinct from a cluster
-
-When not all identifying variables can be provided relative to the cluster origin, for example because they are missing for some clusters, it makes more sense to define such a variable as a distinct variable.
-This is done by providing `row` and `col` as absolute values and setting `distinct = TRUE`.
-Other variables that are all arranged in the same way in each cluster can be specified so that their row and column indices are given relative to the cluster position (`relative = TRUE`).
-
-
-| X1 | X2 | X3 | X4 | X5 | X6 | X7 |
-| :- | :- | :- | :- | :- | :- | :- |
-| commodities | harvested | production  |  |  |  |
-| unit 1 |  |  |  |  |  |  |
-| soybean | 1111 | 1112 | year 1 |  |  |  |
-| maize | 1121 | 1122 | year 1 |  |  |  |
-| soybean | 1211 | 1212 | year 2 |  |  |  |
-| maize | 1221 | 1222 | year 2 |  |  |  |
-|  |  |  |  |  |  |  |
-| commodities | harvested | production | commodities | harvested | production |  |
-| unit 2 |  |  | unit 3 |  |  |  |
-| soybean | 2111 | 2112 | soybean | 3111 | 3112 | year 1 |
-| maize | 2121 | 2122 | maize | 3121 | 3122 | year 1 |
-| soybean | 2211 | 2212 | soybean | 3211 | 3212 | year 2 |
-| maize | 2221 | 2222 | maize | 3221 | 3222 | year 2 |
-
-Table: <a name="distVar"></a>Table 12: Several clusters where one variable is not available for each cluster, but distinct of them.
-
-```{r, eval=FALSE}
-schema <- setCluster(id = "territories", top = c(1, 8, 8), left = c(1, 1, 4),
-                     width = 3, height = 6) %>%
-  setHeader(rows = 1, relative = TRUE) %>%
-  setIDVar(name = "territories", columns = 1, row = 2, relative = TRUE) %>%
-  setIDVar(name = "year", columns = 4, row = c(3:6), distinct = TRUE) %>%
-  setIDVar(name = "commodities", columns = 1, relative = TRUE) %>%
-  setObsVar(name = "harvested", unit = "ha", columns = 2, relative = TRUE) %>%
-  setObsVar(name = "production", unit = "t", columns = 3, relative = TRUE)
-```
 
 ### Clusters that are nested into another variable
 
@@ -539,5 +488,62 @@ schema <- setCluster(id = "territories", group = "regions", member = c(1, 1, 2),
     setObsVar(name = "harvested", columns = 3, unit = "ha") %>%
     setObsVar(name = "production", columns = 4, unit = "t")
 ```
+
+
+### Variables that are distinct from a cluster
+
+When not all identifying variables can be provided relative to the cluster origin, for example because they are missing for some clusters, it makes more sense to define such a variable as a distinct variable.
+This is done by providing `row` and `col` as absolute values and setting `distinct = TRUE`.
+Other variables that are all arranged in the same way in each cluster can be specified so that their row and column indices are given relative to the cluster position (`relative = TRUE`).
+
+
+| X1 | X2 | X3 | X4 | X5 | X6 | X7 |
+| :- | :- | :- | :- | :- | :- | :- |
+| commodities | harvested | production  |  |  |  |
+| unit 1 |  |  |  |  |  |  |
+| soybean | 1111 | 1112 | year 1 |  |  |  |
+| maize | 1121 | 1122 | year 1 |  |  |  |
+| soybean | 1211 | 1212 | year 2 |  |  |  |
+| maize | 1221 | 1222 | year 2 |  |  |  |
+|  |  |  |  |  |  |  |
+| commodities | harvested | production | commodities | harvested | production |  |
+| unit 2 |  |  | unit 3 |  |  |  |
+| soybean | 2111 | 2112 | soybean | 3111 | 3112 | year 1 |
+| maize | 2121 | 2122 | maize | 3121 | 3122 | year 1 |
+| soybean | 2211 | 2212 | soybean | 3211 | 3212 | year 2 |
+| maize | 2221 | 2222 | maize | 3221 | 3222 | year 2 |
+
+Table: <a name="distVar"></a>Table 12: Several clusters where one variable is not available for each cluster, but distinct of them.
+
+```{r, eval=FALSE}
+schema <- setCluster(id = "territories", top = c(1, 8, 8), left = c(1, 1, 4),
+                     width = 3, height = 6) %>%
+  setHeader(rows = 1, relative = TRUE) %>%
+  setIDVar(name = "territories", columns = 1, row = 2, relative = TRUE) %>%
+  setIDVar(name = "year", columns = 4, row = c(3:6), distinct = TRUE) %>%
+  setIDVar(name = "commodities", columns = 1, relative = TRUE) %>%
+  setObsVar(name = "harvested", unit = "ha", columns = 2, relative = TRUE) %>%
+  setObsVar(name = "production", unit = "t", columns = 3, relative = TRUE)
+```
+
+
+### Messy clusters
+
+In case several clusters are neither aligned along a row nor a column, and are all of differing size, the respective information need to be provided at the same index of the respective property.
+For example, three clusters, where the first cluster starts at (1,1) and is 3 by 4 cells in size, where the second clusters starts at (5,2) and is 5 by 5 cells in size, and so on, needs to be specified as below.
+
+```{r, eval=FALSE}
+schema <- setCluster(top = c(1, 5, 1), left = c(1, 2, 5), 
+                     width = c(3, 5, 2), height = c(4, 5, 3), id = ...) %>% 
+  setHeader(rows = 1) %>% 
+  setIDVar(name = "territories", columns = 1, relative = TRUE) %>% 
+  ...
+```
+
+Additionally, given that at least the tables within each cluster are all arranged in the same way, the contained variables can be specified so that their row and column indices are given relative to the cluster position (`relative = TRUE`).
+If also that is not the case, the row and column values for each cluster need to be provided for the respective variables in the same way as for cluster positions.
+
+
+
 
 # References

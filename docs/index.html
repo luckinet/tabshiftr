@@ -43,7 +43,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">tabshiftr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.6</span>
       </span>
     </div>
 
@@ -260,7 +260,7 @@
 <p>Next, we recognise that each cluster has variable names in the first row, so we set those as header. We decide to describe the positions in terms of values that are relative to the cluster positions, because that allows us to end up with a more concise schema description.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">schema</span> <span class="op">&lt;-</span> <span class="va">schema</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="reference/setHeader.html">setHeader</a></span><span class="op">(</span>rows <span class="op">=</span> <span class="fl">1</span>, relative <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+  <span class="fu">setHeader</span><span class="op">(</span>rows <span class="op">=</span> <span class="fl">1</span>, relative <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p>Each cluster contains the identifying variable <code>commodities</code> in the first column and the two observed variables <code>harvested</code> and <code>production</code> in the second and third column respectively. Moreover, the identifying variable <code>year</code> has values but no explicit name and is distinct from clusters (i.e., it doesn’t appear in each cluster). It thus has to be described with a position that is not relative to clusters, but to the spreadsheet. Before describing those variables though, we have to make sure that <code>territories</code> (the cluster ID) is set.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">schema</span> <span class="op">&lt;-</span> <span class="va">schema</span> <span class="op">%&gt;%</span> 

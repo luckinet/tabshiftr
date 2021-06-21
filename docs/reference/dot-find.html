@@ -48,7 +48,7 @@
 
 <meta property="og:title" content="Determine row or column on the fly — .find" />
 <meta property="og:description" content="Find the location of a variable not based on it's columns/rows, but based on
-a regular expression/name" />
+a regular expression or function" />
 <meta property="og:image" content="http://EhrmannS.github.io/tabshiftr/logo.svg" />
 
 
@@ -81,7 +81,7 @@ a regular expression/name" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tabshiftr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.6</span>
       </span>
     </div>
 
@@ -124,36 +124,50 @@ a regular expression/name" />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Determine row or column on the fly</h1>
-    <small class="dont-index">Source: <a href='https://github.com/EhrmannS/tabshiftr/blob/master/R/findRowCol.R'><code>R/findRowCol.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/EhrmannS/tabshiftr/blob/master/R/find.R'><code>R/find.R</code></a></small>
     <div class="hidden name"><code>dot-find.Rd</code></div>
     </div>
 
     <div class="ref-description">
     <p>Find the location of a variable not based on it's columns/rows, but based on
-a regular expression/name</p>
+a regular expression or function</p>
     </div>
 
-    <pre class="usage"><span class='fu'>.find</span><span class='op'>(</span><span class='va'>pattern</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>.find</span><span class='op'>(</span><span class='va'>by</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>pattern</th>
+      <th>by</th>
       <td><p>[<code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code>]<br /> character string containing a regular
-expression to be matched in the <code>input</code> rows or columns.</p></td>
+expression or function to identify columns or rows in the input table on
+the fly.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>the index values where <code>pattern</code> was found.</p>
+    <p>the index values where the target was found.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>This functions is basically a wild-card for when columns or rows
-  are not known ad-hoc, but have to be assigned on the fly (for example when
-  tables of a series are largely the same, but some variable(s) sit in
-  different columns).</p>
+    <p>This functions is basically a wild-card for when columns or rows are
+  not known ad-hoc, but have to be assigned on the fly. This can be very
+  helpful when several tables contain the same variables, but the arrangement
+  may be slightly different.</p>
+    <h2 class="hasAnchor" id="how-does-this-work"><a class="anchor" href="#how-does-this-work"></a>How does this work</h2>
+
+    <p>The first step in using any schema is validating
+  it via the function <code><a href='validateSchema.html'>validateSchema</a></code>. This happens by default
+  in <code><a href='reorganise.html'>reorganise</a></code>, but can also be done manually, for example
+  when debugging complicated schema descriptions.</p>
+<p>In case that function encounters a schema that wants to find columns or
+  rows via a regular expression, it combines all cells of columns and all
+  cells of rows into one character string and matches he regular expression
+  on those. Columns/rows that have a match are returned as the respective
+  column/row value.</p>
+<p>In case it encounters a schema that wants to find columns or rows via a
+  function,</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

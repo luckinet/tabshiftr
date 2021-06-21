@@ -81,7 +81,7 @@ in a table of data." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tabshiftr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.6</span>
       </span>
     </div>
 
@@ -143,9 +143,6 @@ in a table of data.</p>
 <dt><code>cluster</code></dt><dd><p>[<code><a href='https://rdrr.io/r/base/list.html'>list(1)</a></code>]<br /> description of
 <code><a href='setCluster.html'>clusters</a></code> in the table.</p></dd>
 
-<dt><code>header</code></dt><dd><p>[<code><a href='https://rdrr.io/r/base/list.html'>list(1)</a></code>]<br /> description of the
-<code><a href='setHeader.html'>header</a></code>.</p></dd>
-
 <dt><code>format</code></dt><dd><p>[<code><a href='https://rdrr.io/r/base/list.html'>list(1)</a></code>]<br /> description of the table
 <code><a href='setFormat.html'>format</a></code></p></dd>
 
@@ -183,8 +180,8 @@ variables.</p></dd>
 <li><p>in case it is a observed variable, provide simply
   <code><a href='setCluster.html'>setCluster</a>(..., id = "observed")</code>.</p></li>
 </ul></li>
-<li><p><em>Meta-data</em>: Provide potentially information about the table
-  header (<code><a href='setHeader.html'>setHeader</a></code>) and format (<code><a href='setFormat.html'>setFormat</a></code>).</p></li>
+<li><p><em>Meta-data</em>: Provide potentially information about the format
+  (<code><a href='setFormat.html'>setFormat</a></code>).</p></li>
 <li><p><em>Identifying variables</em>: Determine the following:</p><ul>
 <li><p>is the variable available at all? This is particularly important when
   the data are split up into tables that are in spreadsheets or files. Often
@@ -194,7 +191,7 @@ variables.</p></dd>
 <li><p>all columns in which the variable values sit.</p></li>
 <li><p>in case the variable is in several columns, determine additionally
   the row in which its values sit. In this case, the values will look like
-  they are part of the header.</p></li>
+  they are part of a header.</p></li>
 <li><p>in case the variable must be split off of another column, provide a
   regular expression that results in the target subset via
   <code><a href='setIDVar.html'>setIDVar</a>(..., split = ...)</code>.</p></li>

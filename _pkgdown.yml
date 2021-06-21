@@ -9,18 +9,23 @@ development:
   mode: release
 
 reference:
-  - title: make a schema description
+  - title: build a schema description
     contents:
       - schema
       - setCluster
       - setFilter
-      - setHeader
       - setFormat
       - setIDVar
       - setObsVar
-  - title: helpers
+  - title: validate the schema description
     contents:
-      - .find
+      - validateSchema
+      - getData
+      - getClusterVar
+      - getGroupVar
+      - getIDVars
+      - getObsVars
+      - find
   - title: reorganise tables
     contents:
       - reorganise

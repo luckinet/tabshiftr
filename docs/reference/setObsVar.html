@@ -83,7 +83,7 @@ and in a tidy table they'd be recorded as separate columns." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tabshiftr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.6</span>
       </span>
     </div>
 
@@ -141,7 +141,7 @@ and in a tidy table they'd be recorded as separate columns.</p>
   schema <span class='op'>=</span> <span class='cn'>NULL</span>,
   name <span class='op'>=</span> <span class='cn'>NULL</span>,
   columns <span class='op'>=</span> <span class='cn'>NULL</span>,
-  rows <span class='op'>=</span> <span class='cn'>NULL</span>,
+  top <span class='op'>=</span> <span class='cn'>NULL</span>,
   relative <span class='op'>=</span> <span class='cn'>FALSE</span>,
   distinct <span class='op'>=</span> <span class='cn'>FALSE</span>,
   unit <span class='op'>=</span> <span class='cn'>NULL</span>,
@@ -169,10 +169,10 @@ information).</p></td>
 <em>values</em> of the new variable are recorded.</p></td>
     </tr>
     <tr>
-      <th>rows</th>
+      <th>top</th>
       <td><p>[<code>integerish(.)</code>]<br /> In case the variable is nested in a wide
-identifying variable, specify here additionally the row(s) in which the
-variable <em>name</em> sits</p></td>
+identifying variable, specify here additionally the topmost row in which
+the variable <em>name</em> sits</p></td>
     </tr>
     <tr>
       <th>relative</th>
@@ -225,7 +225,6 @@ in the names column that refer to the values of this variable.</p></td>
     <div class='dont-index'><p>Other functions to describe table arrangement: 
 <code><a href='setCluster.html'>setCluster</a>()</code>,
 <code><a href='setFormat.html'>setFormat</a>()</code>,
-<code><a href='setHeader.html'>setHeader</a>()</code>,
 <code><a href='setIDVar.html'>setIDVar</a>()</code></p></div>
 
   </div>
