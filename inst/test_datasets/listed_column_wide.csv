@@ -1,0 +1,10 @@
+territories,period,,dimension,other_observed,soybean,maize,empty_col
+unit 1,year 1,,harvested,xyz,1111,1121,
+unit 1,year 1,,production,xyz,1112,1122,
+unit 1,year 2,,harvested,xyz,1211,1221,
+unit 1,year 2,,production,xyz,1212,1222,
+,,,,,,,
+unit 2,year 1,,harvested,xyz,2111,2121,
+unit 2,year 1,,production,xyz,2112,2122,
+unit 2,year 2,,harvested,xyz,2211,2221,
+unit 2,year 2,,production,xyz,2212,2222,

@@ -1,0 +1,6 @@
+commodities,period,harvested,production,other_observed,commodities,period,harvested,production,empty_col
+unit 1,,,,,unit 2,,,,
+soybean,year 1,1111,1112,xyz,soybean,year 1,2111,2112,
+maize,year 1,1121,1122,xyz,maize,year 1,2121,2122,
+soybean,year 2,1211,1212,xyz,soybean,year 2,2211,2212,
+maize,year 2,1221,1222,xyz,maize,year 2,2221,2222,
