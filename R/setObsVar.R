@@ -10,9 +10,9 @@
 #' @param name [\code{character(1)}]\cr Name of the new measured variable.
 #' @param columns [\code{integerish(.)}]\cr The column(s) in which the
 #'   \emph{values} of the new variable are recorded.
-#' @param rows [\code{integerish(.)}]\cr In case the variable is nested in a wide
-#'   identifying variable, specify here additionally the row(s) in which the
-#'   variable \emph{name} sits
+#' @param top [\code{integerish(.)}]\cr In case the variable is nested in a wide
+#'   identifying variable, specify here additionally the topmost row in which
+#'   the variable \emph{name} sits
 #' @param unit [\code{character(1)}]\cr the unit of this variable.
 #' @param factor [\code{numeric(1)}]\cr the factor that needs to be multiplied
 #'   with the values to convert to \code{unit}, defaults to 1. For instance, if
@@ -40,7 +40,7 @@
 #'   assertCharacter assertNumeric testIntegerish testCharacter assert
 #' @export
 
-setObsVar <- function(schema = NULL, name = NULL, columns = NULL, rows = NULL,
+setObsVar <- function(schema = NULL, name = NULL, columns = NULL, top = NULL,
                       relative = FALSE, distinct = FALSE, unit = NULL,
                       factor = 1, key = NULL, value = NULL){
 
@@ -49,17 +49,15 @@ setObsVar <- function(schema = NULL, name = NULL, columns = NULL, rows = NULL,
   assertCharacter(x = name, len = 1, any.missing = FALSE)
   colInt <- testIntegerish(x = columns, lower = 1, min.len = 1, null.ok = TRUE)
   colQuo <- testClass(x = columns, classes = "quosure")
-  colFun <- testClass(x = columns, classes = "name")
-  assert(colInt, colQuo, colFun)
-  rowInt <- testIntegerish(x = rows, lower = 1, min.len = 1, null.ok = TRUE)
-  rowQuo <- testClass(x = rows, classes = "quosure")
-  rowFun <- testClass(x = rows, classes = "name")
-  assert(rowInt, rowQuo, rowFun)
+  assert(colInt, colQuo)
+  rowInt <- testIntegerish(x = top, lower = 1, min.len = 1, null.ok = TRUE)
+  rowQuo <- testClass(x = top, classes = "quosure")
+  assert(rowInt, rowQuo)
   assertLogical(x = relative, any.missing = FALSE, len = 1)
   assertLogical(x = distinct, any.missing = FALSE, len = 1)
-  assertCharacter(x = unit, len = 1, any.missing = FALSE)
+  assertCharacter(x = unit, len = 1, any.missing = FALSE, null.ok = TRUE)
   assertNumeric(x = factor, len = 1, any.missing = FALSE)
-  assertCharacter(x = key, len = 1, any.missing = FALSE, null.ok = TRUE)
+  # assertCharacter(x = key, len = 1, any.missing = FALSE, null.ok = TRUE)
   # assertCharacter(x = value, len = 1, any.missing = FALSE, null.ok = TRUE)
 
   if(is.null(schema)){
@@ -67,6 +65,10 @@ setObsVar <- function(schema = NULL, name = NULL, columns = NULL, rows = NULL,
   }
   nClusters <- max(lengths(schema@clusters))
   if(nClusters == 0) nClusters <- 1
+
+  # if(is.null(top)){
+  #   top <- -1
+  # }
 
   # error management ----
 
@@ -77,7 +79,7 @@ setObsVar <- function(schema = NULL, name = NULL, columns = NULL, rows = NULL,
   # update schema ----
   temp <- list(type = "observed",
                col = columns,
-               row = rows,
+               row = top,
                rel = relative,
                dist = distinct,
                unit = unit,
