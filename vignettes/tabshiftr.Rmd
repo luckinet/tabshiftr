@@ -31,7 +31,7 @@ library(tabshiftr)
 library(knitr)
 ```
 
-# Introduction
+# Rationale
 
 Tables as places where data tables are recorded can be pretty messy.
 The 'tidy' paradigm in R proposes that data are organised so that variables are recorded in columns, observations in rows and that there is only one value per cell [@Wickham2014].
@@ -41,7 +41,7 @@ The `tidyr` package is one of the most popular tools to bring data into a tidy f
 However, up until today it is limited to tables that are already organised into topologically coherent (rectangular) chunks.
 In `tabshiftr` we try to describe and work with a further dimension of messiness, where data are available as so-called *disorganised (messy) data*, data that are not yet arranged into rectangular form.
 
-## The basics
+# The basics
 
 Data can be disorganised according to multiple dimensions.
 To understand those dimensions, we first need to understand the nature of data.
@@ -78,22 +78,22 @@ Even though data in many spreadsheet are \"disorganised\", they are mostly not n
 
 Table: <a name="tabExample2"></a>Table 2: An example of a table with several clusters of comparable variables.
 
-## Dimensions of disorganisation
+<!-- ## Dimensions of disorganisation -->
 
-Several of the following dimensions of disorganisation can co-occur in one table.
-Examples of each of them are presented in the section [Table types](#table-types).
+<!-- Several of the following dimensions of disorganisation can co-occur in one table. -->
+<!-- Examples of each of them are presented in the section [Table types](#table-types). -->
 
-1) Each level of an identifying variable, or a categorical observed variable are organised into separate topologically coherent chunks (clusters) of data, instead of all variables in one cluster/table.
-2) The names of several observed variables are treated as if they were the levels of an identifying variable (they are *listed*), instead of each observed variable in its own column. This is also called \"long\" data.
-3) The levels of one or more identifying variable are spread over several columns, instead of all levels in only one column. This is also called \"wide\" data.
-4) Several identifying variables are stored in the same column or one identifying variable is split up into several columns.
-5) A table is organised so that one or more variables are \"not in one piece\" (e.g., empty rows and/or columns).
-6) One or more variables are merely implicitly available (e.g., as table or file name or in a \"meta-data header\")
-7) Tables that are part of the same series (i.e., that contain the same variables), contain variables in different columns in each table.
-8) Some columns of a particular chunk are missplaced vertically or some rows are missplaced horizontally so that variables and observations don't match across the whole table (not yet explicitly solved here).
+<!-- 1) Each level of an identifying variable, or a categorical observed variable are organised into separate topologically coherent chunks (clusters) of data, instead of all variables in one cluster/table. -->
+<!-- 2) The names of several observed variables are treated as if they were the levels of an identifying variable (they are *listed*), instead of each observed variable in its own column. This is also called \"long\" data. -->
+<!-- 3) The levels of one or more identifying variable are spread over several columns, instead of all levels in only one column. This is also called \"wide\" data. -->
+<!-- 4) Several identifying variables are stored in the same column or one identifying variable is split up into several columns. -->
+<!-- 5) A table is organised so that one or more variables are \"not in one piece\" (e.g., empty rows and/or columns). -->
+<!-- 6) One or more variables are merely implicitly available (e.g., as table or file name or in a \"meta-data header\") -->
+<!-- 7) Tables that are part of the same series (i.e., that contain the same variables), contain variables in different columns in each table. -->
+<!-- 8) Some columns of a particular chunk are missplaced vertically or some rows are missplaced horizontally so that variables and observations don't match across the whole table (not yet explicitly solved here). -->
 
 
-## Schema descriptions
+# How to make a schema description
 
 The approach of `tabshiftr` is based on capturing the arrangement of a table in a so-called  [schema](https://en.wikipedia.org/wiki/Database_schema) description.
 Typically there is an input and an output schema, describing the arrangement of the input and output tables, respectively.
@@ -103,9 +103,9 @@ The input schema description, however,  needs to be provided by the user.
 
 To set up a schema description, the following steps should be taken:
 
-1. **Variables**: Clarify which are the identifying variables and which are the observed variables. Make sure not to mistake a listed observed variable as identifying variable. 
+1. **Variables**: Clarify which are the identifying variables and which are the observed variables. Make sure not to mistake a listed observed variable as an identifying variable. 
 
-2. **Meta-data**: Provide potentially information about the table header (`setHeader()`) and format (`setFormat()`).
+2. **Meta-data**: Provide potentially information about the table format (`setFormat()`).
 
 3. **Clusters**: Determine the following:
 

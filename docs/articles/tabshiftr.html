@@ -90,14 +90,15 @@
 
     
     
-<div id="introduction" class="section level1">
+<div id="rationale" class="section level1">
 <h1 class="hasAnchor">
-<a href="#introduction" class="anchor"></a>Introduction</h1>
+<a href="#rationale" class="anchor"></a>Rationale</h1>
 <p>Tables as places where data tables are recorded can be pretty messy. The ‘tidy’ paradigm in R proposes that data are organised so that variables are recorded in columns, observations in rows and that there is only one value per cell <span class="citation">(Wickham <a href="#ref-Wickham2014" role="doc-biblioref">2014</a>)</span>. This, however, is only one interpretation of how data should be organised and especially when scraping data from multiple heterogeneous sources, one frequently encounters messy data that don’t follow this paradigm.</p>
 <p>The <code>tidyr</code> package is one of the most popular tools to bring data into a tidy format. However, up until today it is limited to tables that are already organised into topologically coherent (rectangular) chunks. In <code>tabshiftr</code> we try to describe and work with a further dimension of messiness, where data are available as so-called <em>disorganised (messy) data</em>, data that are not yet arranged into rectangular form.</p>
-<div id="the-basics" class="section level2">
-<h2 class="hasAnchor">
-<a href="#the-basics" class="anchor"></a>The basics</h2>
+</div>
+<div id="the-basics" class="section level1">
+<h1 class="hasAnchor">
+<a href="#the-basics" class="anchor"></a>The basics</h1>
 <p>Data can be disorganised according to multiple dimensions. To understand those dimensions, we first need to understand the nature of data. Data "of the same kind" are collected in a <strong>variable</strong>, which is always a combination of a <strong>name</strong> and the <strong>values</strong>. In a table, names are typically in the topmost row and values are in the column below that name (<a href="#tabExample1">Tab. 1</a>). Conceptually, there are two types of variables in any table:</p>
 <ol style="list-style-type: decimal">
 <li>Variables that contain categorical levels that identify the units for which values have been observed (they are called <em>identifying variables</em> here).</li>
@@ -222,30 +223,16 @@
 </tr>
 </tbody>
 </table>
+<!-- ## Dimensions of disorganisation --><!-- Several of the following dimensions of disorganisation can co-occur in one table. --><!-- Examples of each of them are presented in the section [Table types](#table-types). --><!-- 1) Each level of an identifying variable, or a categorical observed variable are organised into separate topologically coherent chunks (clusters) of data, instead of all variables in one cluster/table. --><!-- 2) The names of several observed variables are treated as if they were the levels of an identifying variable (they are *listed*), instead of each observed variable in its own column. This is also called \"long\" data. --><!-- 3) The levels of one or more identifying variable are spread over several columns, instead of all levels in only one column. This is also called \"wide\" data. --><!-- 4) Several identifying variables are stored in the same column or one identifying variable is split up into several columns. --><!-- 5) A table is organised so that one or more variables are \"not in one piece\" (e.g., empty rows and/or columns). --><!-- 6) One or more variables are merely implicitly available (e.g., as table or file name or in a \"meta-data header\") --><!-- 7) Tables that are part of the same series (i.e., that contain the same variables), contain variables in different columns in each table. --><!-- 8) Some columns of a particular chunk are missplaced vertically or some rows are missplaced horizontally so that variables and observations don't match across the whole table (not yet explicitly solved here). -->
 </div>
-<div id="dimensions-of-disorganisation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#dimensions-of-disorganisation" class="anchor"></a>Dimensions of disorganisation</h2>
-<p>Several of the following dimensions of disorganisation can co-occur in one table. Examples of each of them are presented in the section <a href="#table-types">Table types</a>.</p>
-<ol style="list-style-type: decimal">
-<li>Each level of an identifying variable, or a categorical observed variable are organised into separate topologically coherent chunks (clusters) of data, instead of all variables in one cluster/table.</li>
-<li>The names of several observed variables are treated as if they were the levels of an identifying variable (they are <em>listed</em>), instead of each observed variable in its own column. This is also called "long" data.</li>
-<li>The levels of one or more identifying variable are spread over several columns, instead of all levels in only one column. This is also called "wide" data.</li>
-<li>Several identifying variables are stored in the same column or one identifying variable is split up into several columns.</li>
-<li>A table is organised so that one or more variables are "not in one piece" (e.g., empty rows and/or columns).</li>
-<li>One or more variables are merely implicitly available (e.g., as table or file name or in a "meta-data header")</li>
-<li>Tables that are part of the same series (i.e., that contain the same variables), contain variables in different columns in each table.</li>
-<li>Some columns of a particular chunk are missplaced vertically or some rows are missplaced horizontally so that variables and observations don’t match across the whole table (not yet explicitly solved here).</li>
-</ol>
-</div>
-<div id="schema-descriptions" class="section level2">
-<h2 class="hasAnchor">
-<a href="#schema-descriptions" class="anchor"></a>Schema descriptions</h2>
+<div id="how-to-make-a-schema-description" class="section level1">
+<h1 class="hasAnchor">
+<a href="#how-to-make-a-schema-description" class="anchor"></a>How to make a schema description</h1>
 <p>The approach of <code>tabshiftr</code> is based on capturing the arrangement of a table in a so-called <a href="https://en.wikipedia.org/wiki/Database_schema">schema</a> description. Typically there is an input and an output schema, describing the arrangement of the input and output tables, respectively. The advantage of this procedure is that input and output tables exist explicitly and the schema maps the transformation of the data. As we want to end up with tidy tables, the output schema is pre-determined by a tidy table of the included variables. The input schema description, however, needs to be provided by the user.</p>
 <p>To set up a schema description, the following steps should be taken:</p>
 <ol style="list-style-type: decimal">
-<li><p><strong>Variables</strong>: Clarify which are the identifying variables and which are the observed variables. Make sure not to mistake a listed observed variable as identifying variable.</p></li>
-<li><p><strong>Meta-data</strong>: Provide potentially information about the table header (<code>setHeader()</code>) and format (<code><a href="../reference/setFormat.html">setFormat()</a></code>).</p></li>
+<li><p><strong>Variables</strong>: Clarify which are the identifying variables and which are the observed variables. Make sure not to mistake a listed observed variable as an identifying variable.</p></li>
+<li><p><strong>Meta-data</strong>: Provide potentially information about the table format (<code><a href="../reference/setFormat.html">setFormat()</a></code>).</p></li>
 <li>
 <p><strong>Clusters</strong>: Determine the following:</p>
 <ul>
@@ -288,7 +275,6 @@
 </ul>
 </li>
 </ol>
-</div>
 </div>
 <div id="table-types" class="section level1">
 <h1 class="hasAnchor">

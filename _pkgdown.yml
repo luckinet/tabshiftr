@@ -25,7 +25,7 @@ reference:
       - getGroupVar
       - getIDVars
       - getObsVars
-      - find
+      - .find
   - title: reorganise tables
     contents:
       - reorganise
