@@ -9,3 +9,9 @@
 #'   when more variables are contained in a table.
 #'
 "schema_default"
+
+#' List of table types
+#'
+#' @format The object of class \code{list} contains 19 different types of tables
+#'   that are used throughout the unit-tests and examples/vignette.
+"tabs2shift"
