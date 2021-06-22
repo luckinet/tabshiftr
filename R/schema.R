@@ -479,13 +479,21 @@ setMethod(f = "show",
             theRels <- sapply(seq_along(variables), function(x){
               str_sub(as.character(variables[[x]]$rel), 1, 1)
             })
-            included <- c(included, TRUE)
+            if(all(theRels == "F")){
+              included <- c(included, FALSE)
+            } else {
+              included <- c(included, TRUE)
+            }
 
             # whether variables are distinct
             theDist <- sapply(seq_along(variables), function(x){
               str_sub(as.character(variables[[x]]$dist), 1, 1)
             })
-            included <- c(included, TRUE)
+            if(all(theDist == "F")){
+              included <- c(included, FALSE)
+            } else {
+              included <- c(included, TRUE)
+            }
 
             for(i in 1:(length(variables)+1)){
 
@@ -519,13 +527,21 @@ setMethod(f = "show",
                 } else {
                   head6 <- line6 <- ""
                 }
-                head7 <- paste0("rel   ")
-                head8 <- paste0("dist")
+                if(included[7]){
+                  head7 <- paste0("rel   ")
+                  line7 <- paste0(c(rep("-", 5), " "), collapse = "")
+                } else {
+                  head7 <- line7 <- ""
+                }
+                if(included[8]){
+                  head8 <-paste0("dist")
+                  line8 <- paste0(c(rep("-", 6), " "), collapse = "")
+                } else {
+                  head8 <- line8 <- ""
+                }
 
                 cat(paste0(head1, head2, head3, head4, head5, head6, head7, head8), "\n")
-                cat(" ", paste0(line1, line2, line3, line4, line5, line6,
-                               paste0(c(rep("-", 5), " "), collapse = ""),
-                               paste0(c(rep("-", 6), " "), collapse = "")), "\n")
+                cat(" ", paste0(line1, line2, line3, line4, line5, line6, line7, line8), "\n")
 
               } else {
 
@@ -556,8 +572,16 @@ setMethod(f = "show",
                 } else {
                   var6 <- ""
                 }
-                var7 <- paste0(theRels[[i-1]], "     ")
-                var8 <- paste0(theDist[[i-1]], "  ")
+                if(included[7]){
+                  var7 <- paste0(theRels[[i-1]], "     ")
+                } else {
+                  var7 <- ""
+                }
+                if(included[8]){
+                  var8 <- paste0(theDist[[i-1]], "  ")
+                } else {
+                  var8 <- ""
+                }
 
                 cat(paste0(var1, var2, var3, var4, var5, var6, var7, var8, "\n"))
 
