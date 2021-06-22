@@ -19,6 +19,18 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+options(knitr.kable.NA = '.')
+library(tabshiftr)
+library(knitr)
+```
+
 # Introduction
 
 Tables as places where data tables are recorded can be pretty messy.
@@ -125,107 +137,72 @@ To set up a schema description, the following steps should be taken:
 
 # Table types
 
+In this section we look at some examples of disorganised data, discuss the dimension along which they are disorganised and show which schema description should be used to reorganise them.
 
-In this section we look at some examples of disorganised data, discuss the dimension along which they are disorganised and show which schema description can be used to reorganise them.
-This is certainly not an exhaustive list of possible table arrangements, but it covers certain basic building blocks of the most common operations and should be extensible enough to capture many mutations of the presented tables.
+To work with `tabshiftr`, tables need to be read in while treating any header rows *as data*, i.e., by not setting the first row as header, because in disorganised tables it's often not only the first row that is part of the header. 
+Moreover, each column should be treated as a character data type, because some columns might contain data with both numeric and character cells.
+`reorganise()` takes care of reformatting the data into the most permissive data type that does not introduce `NA`s where there should be data, i.e, if a variable can be numeric, it is formatted as numeric column.
 
-Ideally, we read in tables while treating any header rows *as data*, i.e., by not setting the first row as header. This makes sense, because in disorganised tables it's often not only the first row that is part of the header. 
+```{r, eval=F}
+input <- read_csv(...,
+                  col_names = FALSE,
+                  col_types = cols(.default = "c"))
+```
 
+All of the following examples contain an `other_observed`, an `empty_col` column and an empty row, which serve the purpose of dummy information or formating that could be found in any table and should not disturb the process of reorganising.
+You can run all the examples by simply loading the schema and calling `reorganise(input = tabs2shift$..., schema = schema)` with the respective table that is plotted for this example.
 
 ## Table contains one cluster
 
-### Separated *observed variables*
+### Tidy table
 
-In case the observed variables are arranged into individual columns ([Tab. 2](#tab1)), we have tidy data [@Wickham2014], which are already in the target arrangement.
-The variables in a tidy table may however, still need different names, units and transformation factors.
+In case the observed variables are arranged into individual columns ([Tab. 3](#tabTidy)), we have tidy data [@Wickham2014], which are largely already in the target arrangement.
+The tidy table may however, still contain unneeded data, need different names, or transformation factors for the values.
 
-| X1 | X2 | X3 | X4 | X5 |
-| :- | :- | :- | :- | :- |
-| territories | period | commodities | harvested | production |
-| unit 1 | year 1 | soybean | 1111 | 1112 |
-| unit 1 | year 1 | maize | 1121 | 1122 |
-| unit 1 | year 2 | soybean | 1211 | 1212 |
-| unit 1 | year 2 | maize | 1221 | 1222 |
-| unit 2 | year 1 | soybean | 2111 | 2112 |
-| unit 2 | year 1 | maize | 2121 | 2122 |
-| unit 2 | year 2 | soybean | 2211 | 2212 |
-| unit 2 | year 2 | maize | 2221 | 2222 |
+```{r}
+kable(tabs2shift$tidy)
+```
 
-Table: <a name="tab1"></a>Table 2: A tidy table.
+Table: <a name="tabTidy"></a>Table 3: A largely tidy table.
 
-```{r, eval=FALSE}
-schema <- setHeader(rows = 1) %>%
+
+```{r}
+schema <-
   setIDVar(name = "territories", columns = 1) %>%
   setIDVar(name = "year", columns = 2) %>%
   setIDVar(name = "commodities", columns = 3) %>%
-  setObsVar(name = "harvested", unit = "ha", columns = 4) %>%
-  setObsVar(name = "production", unit = "t", columns = 5)
-```
+  setObsVar(name = "harvested", columns = 5) %>%
+  setObsVar(name = "production", columns = 6, factor = 0.1)
 
-In case identifying variables are factors with a small number of levels, those levels may falsely be used as names of (several) other variables, where they would be next to each other and thus \"wide\".
-The other variables (both identifying and observed variables) would then be \"nested\" in those wide identifying variables.
-In those cases we have to record the columns **and the row** in which the values of the identifying variable (which appear to be names) are found.
-Beware that in those cases you also need to adapt the header specification, so that this row is excluded from the respective nested variable.
-
-| X1 | X2 | X3 | X4 | X5 | X6 |	
-| :- | :- | :- | :- | :- | :- |
-| territories | period | soybean |  | maize |  |	
-|  |  | harvested | production | harvested | production |
-| unit 1 | year 1 | 1111 | 1112 | 1121 | 1122 |
-| unit 1 | year 2 | 1211 | 1212 | 1221 | 1222 |
-| unit 2 | year 1 | 2111 | 2112 | 2112 | 2122 |
-| unit 2 | year 2 | 2211 | 2212 | 2121 | 2222 |
-
-Table: <a name="nest1"></a>Table 3: The values variables are nested within the identifying variable `commodities`.
-
-```{r, eval=FALSE}
-schema <- setHeader(rows = c(1, 2)) %>%
-  setIDVar(name = "territories", columns = 1) %>%
-  setIDVar(name = "year", columns = 2) %>%
-  setIDVar(name = "commodities", columns = c(3, 5), row = 1) %>%
-  setObsVar(name = "harvested", unit = "ha", columns = c(3, 5), row = 2) %>%
-  setObsVar(name = "production", unit = "t", columns = c(4, 6), row = 2)
-```
-
-In case several variables are nested within other variables, we have to specify for all nested or nesting variables in which rows their values sit and adapt the header.
-
-| X1 | X2 | X3 | X4 | X5 | X6 | X7 | X8 | X9 |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| territories | year 1 |  |  |  | year 2 |  |  |  |
-|  | soybean |  | maize |  | soybean |  | maize |  |
-|  | harvested | production | harvested | production | harvested | production | harvested | production |
-| unit 1 | 1111 | 1112 | 1121 | 1122 | 1211 | 1212 | 1221 | 1222 |
-| unit 2 | 2111 | 2211 | 2121 | 2221 | 2112 | 2212 | 2122 | 2222 |
-
-Table: <a name="nest2"></a>Table 4: The identifying variable `commodities` is nested in the identifying variable `period`. The target variable is spread across those nested columns.
-
-```{r, eval=FALSE}
-schema <- setHeader(rows = c(1:3)) %>%
-  setIDVar(name = "territories", columns = 1) %>%
-  setIDVar(name = "year", columns = c(2, 6), row = 1) %>%
-  setIDVar(name = "commodities", columns = c(2, 4, 6, 8), row = 2) %>%
-  setObsVar(name = "harvested", unit = "ha", columns = c(2, 4, 6, 8), row = 3) %>%
-  setObsVar(name = "production", unit = "t", columns = c(3, 5, 7, 9), row = 3)
+reorganise(input = tabs2shift$tidy, schema = schema)
 ```
 
 
-### Several variables in one column
+### Mismatch of columns and variables
 
-Sometimes it may be the case that several variables are stored in the same column, for example when a territorial unit is given together with the year of observation (e.g. `unit1, year1`).
-In those cases, the resulting variables in the output schema need to be specified so that they point to that same column but extract information via a regular expression (find more information [here](https://edrub.in/CheatSheets/cheatSheetStringr.pdf)).
+Sometimes it may be the case that number variables is not the same as there are columns because either one variable is spread over several column, or one column contains several variables.
+
+In the former case, columns need to be merged ([Tab. 4](#splitCol)) and in the latter case, columns need to be split via [regular expressions](https://edrub.in/CheatSheets/cheatSheetStringr.pdf) ([Tab. 5](#mergeCol)).
 For example, `.+?(?=_)` gives everything up until the first `_` and `(?<=\\_).*` everything after the `_ `.
 
-| X1 | X2 | X3 | X4 |
-| :- | :- | :- | :- |
-| territories | unit | harvested | production |
-| unit 1 | year 1_soybean | 1111 | 1112 |
-| unit 1 | year 1_maize | 1121 | 1122 |
-| unit 1 | year 2_soybean | 1211 | 1212 |
-| unit 1 | year 2_maize | 1221 | 1222 |
-| unit 2 | year 1_soybean | 2111 | 2112 |
-| unit 2 | year 1_maize | 2121 | 2122 |
-| unit 2 | year 2_soybean | 2211 | 2212 |
-| unit 2 | year 2_maize | 2221 | 2222 |
+```{r}
+kable(input <- tabs2shift$split_column)
+```
+
+Table: <a name="mergeCol"></a>Table 4: The variables `year` is split up into two columns.
+
+```{r, eval=FALSE}
+schema <-
+  setIDVar(name = "territories", columns = 1) %>%
+  setIDVar(name = "year", columns = c(2, 4), merge = " ") %>%
+  setIDVar(name = "commodities", columns = 5) %>%
+  setObsVar(name = "harvested", columns = 6) %>%
+  setObsVar(name = "production", columns = 7)
+```
+
+```{r}
+kable(tabs2shift$merged_column)
+```
 
 Table: <a name="splitCol"></a>Table 5: The variables `year` and `commodities` are stored in the same column.
 
@@ -238,96 +215,127 @@ schema <- setHeader(rows = 1) %>%
   setObsVar(name = "production", unit = "t", columns = 4)
 ```
 
+
 ### Implicit variables
 
-When data are split up into clusters, the identifying variable is often recorded not in the table as an explicit variable, but is only provided in the file or table name.
-In those cases, we have to register the variable nevertheless, and provide the value of that variable in `value = ` of the identifying variable.
+When data are split up into clusters that are stored in separate files or spreadsheets, the cluster ID is often recorded not in the table as an explicit variable, but is only provided in the file or table name.
+In those cases, we have to register the this cluster ID as an identifying variable nevertheless, to output a consistent table.
 
-| X1 | X2 | X3 | X4 |
-| :- | :- | :- | :- |
-| some metadata, which does not tell us that this is in fact unit 1 |  |  |  |  
-| commodities | harvested | production | period |
-| soybean | 1111 | 1112 | year 1 |
-| maize | 1121 | 1122 | year 1 |
-| soybean | 1211 | 1212 | year 2 |
-| maize | 1221 | 1222 | year 2 |
+```{r}
+kable(input <- tabs2shift$implicit_variable)
+```
 
 Table: <a name="implicitVar"></a>Table 6: The information about which territory we are dealing with is missing or implied by some meta-data.
 
 ```{r, eval=FALSE}
-schema <- setCluster(id = "territories", top = 2, left = 1) %>%
-  setHeader(rows = 1, relative = TRUE) %>%
+schema <- setCluster(id = "territories",
+                     left = 1, top = 4) %>%
   setIDVar(name = "territories", value = "unit 1") %>%
-  setIDVar(name = "year", columns = 4, relative = TRUE) %>%
-  setIDVar(name = "commodities", columns = 1, relative = TRUE) %>%
-  setObsVar(name = "harvested", unit = "ha", columns = 2, relative = TRUE) %>%
-  setObsVar(name = "production", unit = "t", columns = 3, relative = TRUE)
+  setIDVar(name = "year", columns = 4) %>%
+  setIDVar(name = "commodities", columns = 1) %>%
+  setObsVar(name = "harvested", columns = 2) %>%
+  setObsVar(name = "production", columns = 3)
 ```
+
+
+### Wide variables
+
+
+In case identifying variables are factors with a small number of levels, those levels may falsely be used as names of other variables, where they would be next to each other and thus \"wide\" ([Tab. 7](#one_wide_id)).
+Those other variables (both identifying and observed variables) would then be \"nested\" in the wide identifying variables.
+In those cases we have to record for the identifying variable(s) the columns **and the row** in which the values of the identifying variable are found. For the observed variable(s) we need to record also the columns and the topmost row of that variable, i.e., the row in which the name of the nested observed variable is found.
+
+```{r}
+kable(input <- tabs2shift$one_wide_id)
+```
+
+Table: <a name="one_wide_id"></a>Table 7: The observed variables are nested within the identifying variable `commodities`.
+
+```{r, eval=FALSE}
+schema <-
+  setIDVar(name = "territories", columns = 1) %>%
+  setIDVar(name = "year", columns = 3) %>%
+  setIDVar(name = "commodities", columns = c(4, 6), rows = 1) %>%
+  setObsVar(name = "harvested", columns = c(4, 6), top = 2) %>%
+  setObsVar(name = "production", columns = c(5, 7), top = 2)
+```
+
+The same is also true in case the identifying variables are actually nested within the observed variables, i.e., the names of the observed variables are on top of the names of the id variables ([Tab. 8](#wide_obs)). However, if an observed variables is in the topmost row, `top = 1` can be omitted.
+
+```{r}
+kable(input <- tabs2shift$wide_obs)
+```
+
+Table: <a name="wide_obs"></a>Table 8: The identifying variable `commodities` is nested within the observed variables.
+
+
+```{r, eval=FALSE}
+schema <-
+  setIDVar(name = "territories", columns = 1) %>%
+  setIDVar(name = "year", columns = 2) %>%
+  setIDVar(name = "commodities", columns = c(3:6), rows = 2) %>%
+  setObsVar(name = "harvested", columns = c(3, 4)) %>%
+  setObsVar(name = "production", columns = c(5, 6))
+```
+
+
+In case several variables are nested within other variables, we have to specify for all nested or nesting variables in which rows their values sit and adapt the header.
+
+```{r}
+kable(input <- tabs2shift$two_wide_id)
+```
+
+Table: <a name="wide_obs"></a>Table 9: The observed variables are nested within the identifying variable `year` and `commodities`.
+
+
+```{r, eval=FALSE}
+schema <-
+  setIDVar(name = "territories", columns = 1) %>%
+  setIDVar(name = "year", columns = c(2, 6), rows = 1) %>%
+  setIDVar(name = "commodities", columns = c(2, 4, 6, 8), rows = 2) %>%
+  setObsVar(name = "harvested", columns = c(2, 4, 6, 8), top = 3) %>%
+  setObsVar(name = "production", columns = c(3, 5, 7, 9), top = 3)
+```
+
 
 ### Listed *observed variables*
 
-Some tables contain a column where the names of observed variables (`harvested` and `production`) are treated as if they were the values of an identifying variable (`dimension`), while the values are presented in only one column (`values`) ([Tab. 7](#long)).
+Some tables contain a column where the names of observed variables (`harvested` and `production`) are treated as if they were the values of an identifying variable (`dimension`), while the values are presented in only one column (`values`) ([Tab. 10](#long)).
 To end up with tidy data in those cases, we need to extract the values associated with the observed variables.
 Thus, we define the observed variables and specify the `key = ` in which the variable names sit, and the `value = ` the variable name has, to extract that variable.
 
-| X1 | X2 | X3 | X4 | X5 |
-| :- | :- | :- | :- | :- |
-| territories | period | commodities | dimension | values |
-| unit 1 | year 1 | soybean | harvested | 1111 |
-| unit 1 | year 1 | maize | harvested | 1121 |
-| unit 1 | year 1 | soybean | production | 1112 |
-| unit 1 | year 1 | maize | production | 1122 |
-| unit 1 | year 2 | soybean | harvested | 1211 |
-| unit 1 | year 2 | maize | harvested | 1221 |
-| unit 1 | year 2 | soybean | production | 1212 |
-| unit 1 | year 2 | maize | production | 1222 |
-| unit 2 | year 1 | soybean | harvested | 2111 |
-| unit 2 | year 1 | maize | harvested | 2121 |
-| unit 2 | year 1 | soybean | production | 2112 |
-| unit 2 | year 1 | maize | production | 2122 |
-| unit 2 | year 2 | soybean | harvested | 2211 |
-| unit 2 | year 2 | maize | harvested | 2221 |
-| unit 2 | year 2 | soybean | production | 2212 |
-| unit 2 | year 2 | maize | production | 2222 |
+```{r}
+kable(input <- tabs2shift$listed_column)
+```
 
-Table: <a name="long"></a>Table 7: The variable names of the observed variable are treated as if they were the values of the identifying variable `dimension`.
+Table: <a name="long"></a>Table 10: The variable names of the observed variable are treated as if they were the values of the identifying variable `dimension`.
+
 
 ```{r, eval=FALSE}
-schema <- setHeader(rows = 1) %>%
+schema <-
   setIDVar(name = "territories", columns = 1) %>%
   setIDVar(name = "year", columns = 2) %>%
   setIDVar(name = "commodities", columns = 3) %>%
-  setObsVar(name = "harvested", unit = "ha", columns = 5,
-            key = "dimension", value = "harvested") %>%
-  setObsVar(name = "production", unit = "t", columns = 5,
-            key = "dimension", value = "production")
+  setObsVar(name = "harvested", columns = 7, key = 6, value = "harvested") %>%
+  setObsVar(name = "production", columns = 7, key = 6, value = "production")
 ```
 
 Moreover, (several) identifying variables may be wide additionally and we have to proceed as mentioned above, by providing the columns and the rows of the variable values (which appear to be names).
 
-| X1 | X2 | X3 | X4 | X5 |
-| :- | :- | :- | :- | :- |
-| territories | period | dimension | soybean | maize |
-| unit 1 | year 1 | harvested | 1111 | 1121 |
-| unit 1 | year 1 | production | 1112 | 1122 |
-| unit 1 | year 2 | harvested | 1211 | 1221 |
-| unit 1 | year 2 | production | 1212 | 1222 |
-| unit 2 | year 1 | harvested | 2111 | 2121 |
-| unit 2 | year 1 | production | 2112 | 2122 |
-| unit 2 | year 2 | harvested | 2211 | 2221 |
-| unit 2 | year 2 | production | 2212 | 2222 |
+```{r}
+kable(input <- tabs2shift$listed_column_wide)
+```
 
-Table: <a name="wideLong"></a>Table 8: The identifying variable `commodities` is treated as if it were the observed variables while the variable names of the observed variable are treated as if they were the values of the identifying variable `dimension`.
+Table: <a name="wideLong"></a>Table 11: The identifying variable `commodities` is treated as if it were the observed variables while the variable names of the observed variable are treated as if they were the values of the identifying variable `dimension`.
+
 
 ```{r, eval=FALSE}
-schema <- setHeader(rows = 1) %>%
-    setIDVar(name = "territories", columns = 1) %>%
-    setIDVar(name = "year", columns = 2) %>%
-    setIDVar(name = "commodities", columns = c(4, 5), row = 1) %>%
-    setObsVar(name = "harvested", unit = "ha", columns = c(4, 5),
-              key = "dimension", value = "harvested") %>%
-    setObsVar(name = "production", unit = "t", columns = c(4, 5),
-              key = "dimension", value = "production")
+schema <-
+  setIDVar(name = "territories", columns = 1) %>%
+  setIDVar(name = "year", columns = 2) %>%
+  setIDVar(name = "commodities", columns = c(6, 7), rows = 1) %>%
+  setObsVar(name = "harvested", columns = c(6, 7), key = 4, value = "harvested") %>%
+  setObsVar(name = "production", columns = c(6, 7), key = 4, value = "production")
 ```
 
 

@@ -113,11 +113,10 @@
 <a href="#examples" class="anchor"></a>Examples</h2>
 <p>A disorganised table may look like the following table:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://readr.tidyverse.org">readr</a></span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/EhrmannS/tabshiftr">tabshiftr</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://yihui.org/knitr/">knitr</a></span><span class="op">)</span>
 
-<span class="va">input</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html">read_csv</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"test_datasets"</span>, package <span class="op">=</span> <span class="st">"tabshiftr"</span><span class="op">)</span>, <span class="st">"/table_mismatch_3.csv"</span><span class="op">)</span>,
-                  col_names <span class="op">=</span> <span class="cn">FALSE</span>, col_types <span class="op">=</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/cols.html">cols</a></span><span class="op">(</span>.default <span class="op">=</span> <span class="st">"c"</span><span class="op">)</span><span class="op">)</span>
+<span class="va">input</span> <span class="op">&lt;-</span> <span class="va">tabs2shift</span><span class="op">$</span><span class="va">clusters_messy</span>
 <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span><span class="va">input</span><span class="op">)</span></code></pre></div>
 <table class="table">
 <thead><tr class="header">
@@ -252,17 +251,10 @@
 <p>If we were to transform this data into tidy data by merely using the functions in <code>tidyr</code> (or the extended <code>tidyverse</code> in general), we’d potentially end up with a massive algorithm, especially for such complicated table arrangements. For other tables that may or may not be as complicated, we’d have to set up yet more algorithms and while a pipeline of tidy functions is relatively easy to set up, it would still become very laborious to repeat this for the dozens of potential table arrangements. In <code>tabshiftr</code> we solve that by describing the schema of the input table and providing this schema description to the <code><a href="reference/reorganise.html">reorganise()</a></code> function. This requires us to use a vastly smaller set of code and makes it thus a lot more efficient to bring multiple heterogeneous data into an interoperable format.</p>
 <p>A schema description can be started with any of the <code>set*</code> functions in this package and for the example table, we start the schema description by setting the clusters. This table contains two chunks of data at the rows 1 to 6 and 8 to 13 with a height of 6 cells and they are further organised into three similar groups (so-called <em>clusters</em>) with a width of 3 cells. In the second row of each cluster is another variable that is unique for each cluster and thus presumable the cluster identifier, we call it <code>territories</code>.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://magrittr.tidyverse.org">magrittr</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/EhrmannS/tabshiftr">tabshiftr</a></span><span class="op">)</span>
-
-<span class="va">schema</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/setCluster.html">setCluster</a></span><span class="op">(</span>id <span class="op">=</span> <span class="st">"territories"</span>, top <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">8</span>, <span class="fl">8</span><span class="op">)</span>, left <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">4</span><span class="op">)</span>, 
+<code class="sourceCode R"><span class="va">schema</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/setCluster.html">setCluster</a></span><span class="op">(</span>id <span class="op">=</span> <span class="st">"territories"</span>, top <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">8</span>, <span class="fl">8</span><span class="op">)</span>, left <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">4</span><span class="op">)</span>, 
                      width <span class="op">=</span> <span class="fl">3</span>, height <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></code></pre></div>
-<p>Next, we recognise that each cluster has variable names in the first row, so we set those as header. We decide to describe the positions in terms of values that are relative to the cluster positions, because that allows us to end up with a more concise schema description.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">schema</span> <span class="op">&lt;-</span> <span class="va">schema</span> <span class="op">%&gt;%</span> 
-  <span class="fu">setHeader</span><span class="op">(</span>rows <span class="op">=</span> <span class="fl">1</span>, relative <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p>Each cluster contains the identifying variable <code>commodities</code> in the first column and the two observed variables <code>harvested</code> and <code>production</code> in the second and third column respectively. Moreover, the identifying variable <code>year</code> has values but no explicit name and is distinct from clusters (i.e., it doesn’t appear in each cluster). It thus has to be described with a position that is not relative to clusters, but to the spreadsheet. Before describing those variables though, we have to make sure that <code>territories</code> (the cluster ID) is set.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">schema</span> <span class="op">&lt;-</span> <span class="va">schema</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"territories"</span>, columns <span class="op">=</span> <span class="fl">1</span>, row <span class="op">=</span> <span class="fl">2</span>, relative <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"year"</span>, columns <span class="op">=</span> <span class="fl">4</span>, row <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">3</span><span class="op">:</span><span class="fl">6</span><span class="op">)</span>, distinct <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">%&gt;%</span> 
@@ -270,11 +262,11 @@
   <span class="fu"><a href="reference/setObsVar.html">setObsVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"harvested"</span>, unit <span class="op">=</span> <span class="st">"ha"</span>, columns <span class="op">=</span> <span class="fl">2</span>, relative <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="reference/setObsVar.html">setObsVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"production"</span>, unit <span class="op">=</span> <span class="st">"t"</span>, columns <span class="op">=</span> <span class="fl">3</span>, relative <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p>Input tables may contain many more data/variables than what we are interested in (for example if there were some metadata or another distinct variable in the empty cells in columns 5-7), but the schema description contains only those variables that shall be in the output table. Eventually, we end up with the following schema description.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">schema</span>
 <span class="co">#&gt;   3 clusters</span>
-<span class="co">#&gt;     origin: 1|1, 8|1, 8|4  (row|col)</span>
-<span class="co">#&gt;     id    : territories</span>
+<span class="co">#&gt;     origin : 1|1, 8|1, 8|4  (row|col)</span>
+<span class="co">#&gt;     id     : territories</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt;    variable      type       row   col   rel   dist </span>
 <span class="co">#&gt;   ------------- ---------- ----- ----- ----- ------  </span>
@@ -284,7 +276,7 @@
 <span class="co">#&gt;    harvested     observed         2     T     F  </span>
 <span class="co">#&gt;    production    observed         3     T     F</span></code></pre></div>
 <p>Finally, the input table is reorganised simply by calling <code><a href="reference/reorganise.html">reorganise()</a></code>.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">output</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/reorganise.html">reorganise</a></span><span class="op">(</span>input <span class="op">=</span> <span class="va">input</span>, schema <span class="op">=</span> <span class="va">schema</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span><span class="va">output</span><span class="op">)</span></code></pre></div>
 <table class="table">

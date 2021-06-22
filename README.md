@@ -59,11 +59,10 @@ devtools::install_github("EhrmannS/tabshiftr")
 A disorganised table may look like the following table:
 
 ``` r
-library(readr)
+library(tabshiftr)
 library(knitr)
 
-input <- read_csv(file = paste0(system.file("test_datasets", package = "tabshiftr"), "/table_mismatch_3.csv"),
-                  col_names = FALSE, col_types = cols(.default = "c"))
+input <- tabs2shift$clusters_messy
 kable(input)
 ```
 
@@ -106,21 +105,8 @@ is unique for each cluster and thus presumable the cluster identifier,
 we call it `territories`.
 
 ``` r
-library(magrittr)
-library(tabshiftr)
-
 schema <- setCluster(id = "territories", top = c(1, 8, 8), left = c(1, 1, 4), 
                      width = 3, height = 6)
-```
-
-Next, we recognise that each cluster has variable names in the first
-row, so we set those as header. We decide to describe the positions in
-terms of values that are relative to the cluster positions, because that
-allows us to end up with a more concise schema description.
-
-``` r
-schema <- schema %>% 
-  setHeader(rows = 1, relative = TRUE)
 ```
 
 Each cluster contains the identifying variable `commodities` in the
@@ -150,8 +136,8 @@ table. Eventually, we end up with the following schema description.
 ``` r
 schema
 #>   3 clusters
-#>     origin: 1|1, 8|1, 8|4  (row|col)
-#>     id    : territories
+#>     origin : 1|1, 8|1, 8|4  (row|col)
+#>     id     : territories
 #> 
 #>    variable      type       row   col   rel   dist 
 #>   ------------- ---------- ----- ----- ----- ------  

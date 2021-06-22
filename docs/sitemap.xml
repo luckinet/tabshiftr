@@ -31,6 +31,9 @@
     <loc>http://EhrmannS.github.io/tabshiftr/reference/getObsVars.html</loc>
   </url>
   <url>
+    <loc>http://EhrmannS.github.io/tabshiftr/reference/pipe.html</loc>
+  </url>
+  <url>
     <loc>http://EhrmannS.github.io/tabshiftr/reference/reorganise.html</loc>
   </url>
   <url>
@@ -56,6 +59,9 @@
   </url>
   <url>
     <loc>http://EhrmannS.github.io/tabshiftr/reference/show-schema-method.html</loc>
+  </url>
+  <url>
+    <loc>http://EhrmannS.github.io/tabshiftr/reference/tabs2shift.html</loc>
   </url>
   <url>
     <loc>http://EhrmannS.github.io/tabshiftr/reference/validateSchema.html</loc>
