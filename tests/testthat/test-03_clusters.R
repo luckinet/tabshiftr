@@ -1,16 +1,11 @@
 library(tabshiftr)
 library(testthat)
-library(readr)
-library(magrittr)
 library(checkmate)
 context("clusters")
 
 test_that("regular vertical clusters of otherwise tidy data", {
 
-  input <- read_csv(paste0(system.file("test_datasets",
-                                       package = "tabshiftr",
-                                       mustWork = TRUE), "/vertical_clusters.csv"),
-                    col_names = FALSE)
+  input <- tabs2shift$clusters_vertical
 
   schema <- setCluster(id = "territories",
                        left = 1, top = c(3, 9)) %>%
@@ -26,10 +21,7 @@ test_that("regular vertical clusters of otherwise tidy data", {
 
 test_that("regular horizontal clusters of otherwise tidy data", {
 
-  input <- read_csv(paste0(system.file("test_datasets",
-                                       package = "tabshiftr",
-                                       mustWork = TRUE), "/horizontal_clusters.csv"),
-                    col_names = FALSE)
+  input <- tabs2shift$clusters_horizontal
 
   schema <- setCluster(id = "territories",
                        left = c(1, 6), top = 2) %>%
@@ -45,10 +37,7 @@ test_that("regular horizontal clusters of otherwise tidy data", {
 
 test_that("clusters that are aggregated per observed variable", {
 
-  input <- read_csv(paste0(system.file("test_datasets",
-                                       package = "tabshiftr",
-                                       mustWork = TRUE), "/clusters_observed.csv"),
-                    col_names = FALSE)
+  input <- tabs2shift$clusters_observed
 
   schema <- setCluster(id = "observed",
                        left = 1, top = c(2, 12)) %>%
@@ -64,10 +53,7 @@ test_that("clusters that are aggregated per observed variable", {
 
 test_that("clusters that are nested into groups", {
 
-  input <- read_csv(paste0(system.file("test_datasets",
-                                       package = "tabshiftr",
-                                       mustWork = TRUE), "/nested_clusters.csv"),
-                    col_names = FALSE)
+  input <- tabs2shift$clusters_nested
 
   schema <- setCluster(id = "sublevel",
                        group = "territories", member = c(1, 1, 2),

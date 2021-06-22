@@ -1,7 +1,5 @@
 library(tabshiftr)
 library(testthat)
-library(readr)
-library(magrittr)
 library(checkmate)
 context("validateSchema")
 
@@ -9,10 +7,7 @@ context("validateSchema")
 test_that("relative positions in clusters", {
 
   # vertical clusters
-  input <- read_csv(paste0(system.file("test_datasets",
-                                       package = "tabshiftr",
-                                       mustWork = TRUE), "/vertical_clusters.csv"),
-                    col_names = FALSE)
+  input <- tabs2shift$clusters_vertical
 
   schema <- setCluster(id = "territories",
                        left = 1, top = c(3, 9)) %>%
@@ -26,10 +21,7 @@ test_that("relative positions in clusters", {
 
 
   # horizontal cluster
-  input <- read_csv(paste0(system.file("test_datasets",
-                                       package = "tabshiftr",
-                                       mustWork = TRUE), "/horizontal_clusters.csv"),
-                    col_names = FALSE)
+  input <- tabs2shift$clusters_horizontal
 
   schema <- setCluster(id = "territories",
                        left = c(1, 6), top = 2) %>%
@@ -43,10 +35,7 @@ test_that("relative positions in clusters", {
 
 
   # several clusters
-  input <- read_csv(paste0(system.file("test_datasets",
-                                       package = "tabshiftr",
-                                       mustWork = TRUE), "/distinct_variable.csv"),
-                    col_names = FALSE)
+  input <- tabs2shift$clusters_messy
 
   schema <- setCluster(id = "territories",
                        left = c(1, 1, 4), top = c(1, 8, 8)) %>%

@@ -1,17 +1,12 @@
 library(tabshiftr)
 library(testthat)
-library(readr)
-library(magrittr)
 library(checkmate)
 context("wide_id")
 
 
 test_that("one wide identifying variable into long form", {
 
-  input <- read_csv(paste0(system.file("test_datasets",
-                                       package = "tabshiftr",
-                                       mustWork = TRUE), "/one_wide_variable_1.csv"),
-                    col_names = FALSE)
+  input <- tabs2shift$one_wide_id_alt
 
   schema <-
     setIDVar(name = "territories", columns = 1) %>%
@@ -27,10 +22,7 @@ test_that("one wide identifying variable into long form", {
 
 test_that("wide variable in first row of header", {
 
-  input <- read_csv(paste0(system.file("test_datasets",
-                                       package = "tabshiftr",
-                                       mustWork = TRUE), "/one_wide_variable_2.csv"),
-                    col_names = FALSE)
+  input <- tabs2shift$one_wide_id
 
   schema <-
     setIDVar(name = "territories", columns = 1) %>%
@@ -46,10 +38,7 @@ test_that("wide variable in first row of header", {
 
 test_that("wide variable in second row of header", {
 
-  input <- read_csv(paste0(system.file("test_datasets",
-                                       package = "tabshiftr",
-                                       mustWork = TRUE), "/one_wide_variable_3.csv"),
-                    col_names = FALSE)
+  input <- tabs2shift$wide_obs
 
   schema <-
     setIDVar(name = "territories", columns = 1) %>%
@@ -65,10 +54,7 @@ test_that("wide variable in second row of header", {
 
 test_that("wide variable in second rows of header, values spearated", {
 
-  input <- read_csv(paste0(system.file("test_datasets",
-                                       package = "tabshiftr",
-                                       mustWork = TRUE), "/one_wide_variable_4.csv"),
-                    col_names = FALSE)
+  input <- tabs2shift$wide_obs_alt
 
   schema <-
     setIDVar(name = "territories", columns = 1) %>%
@@ -84,10 +70,7 @@ test_that("wide variable in second rows of header, values spearated", {
 
 test_that("vertical clusters per observed variable with a wide identifying variable", {
 
-  input <- read_csv(paste0(system.file("test_datasets",
-                                       package = "tabshiftr",
-                                       mustWork = TRUE), "/clust_one_wide_variable.csv"),
-                    col_names = FALSE)
+  input <- tabs2shift$cluster_one_wide
 
   schema <- setCluster(id = "observed",
                        left = 2, top = c(2, 8)) %>%
@@ -106,10 +89,7 @@ test_that("vertical clusters per observed variable with a wide identifying varia
 
 test_that("vertical clusters per observed variable with two nested wide identifying variables", {
 
-  input <- read_csv(paste0(system.file("test_datasets",
-                                       package = "tabshiftr",
-                                       mustWork = TRUE), "/clust_two_wide_variable.csv"),
-                    col_names = FALSE)
+  input <- tabs2shift$clusters_two_wide
 
   schema <- setCluster(id = "observed",
                        left = 1, top = c(4, 8)) %>%
@@ -128,10 +108,7 @@ test_that("vertical clusters per observed variable with two nested wide identify
 
 test_that("several wide identifying variables", {
 
-  input <- read_csv(paste0(system.file("test_datasets",
-                                       package = "tabshiftr",
-                                       mustWork = TRUE), "/two_wide_variables.csv"),
-                    col_names = FALSE)
+  input <- tabs2shift$two_wide_id
 
   schema <-
     setIDVar(name = "territories", columns = 1) %>%

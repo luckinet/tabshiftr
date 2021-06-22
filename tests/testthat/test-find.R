@@ -1,17 +1,12 @@
 library(tabshiftr)
 library(testthat)
-library(readr)
-library(magrittr)
 library(checkmate)
 context(".find")
 
 
 test_that(".find columns based on regular expressions", {
 
-  input <- read_csv(paste0(system.file("test_datasets",
-                                       package = "tabshiftr",
-                                       mustWork = TRUE), "/two_wide_variables.csv"),
-                    col_names = FALSE)
+  input <- tabs2shift$two_wide_id
 
   schema <-
     setIDVar(name = "territories", columns = .find("unit*")) %>%

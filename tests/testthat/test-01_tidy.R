@@ -1,17 +1,12 @@
 library(tabshiftr)
 library(testthat)
-library(readr)
-library(magrittr)
 library(checkmate)
 context("tidy")
 
 
 test_that("already tidy table", {
 
-  input <- read_csv(paste0(system.file("test_datasets",
-                                       package = "tabshiftr",
-                                       mustWork = TRUE), "/tidy_table.csv"),
-                    col_names = FALSE)
+  input <- tabs2shift$tidy
 
   schema <-
     setIDVar(name = "territories", columns = 1) %>%

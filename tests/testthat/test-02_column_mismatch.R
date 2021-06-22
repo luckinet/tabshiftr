@@ -1,17 +1,12 @@
 library(tabshiftr)
 library(testthat)
-library(readr)
-library(magrittr)
 library(checkmate)
 context("mismatch")
 
 
 test_that("split a columns that contains several variables in one column", {
 
-  input <- read_csv(paste0(system.file("test_datasets",
-                                       package = "tabshiftr",
-                                       mustWork = TRUE), "/merged_column.csv"),
-                    col_names = FALSE)
+  input <- tabs2shift$merged_column
 
   schema <-
     setIDVar(name = "territories", columns = 1) %>%
@@ -27,10 +22,7 @@ test_that("split a columns that contains several variables in one column", {
 
 test_that("recognise an identifying variable that is actually a merge of two columns", {
 
-  input <- read_csv(paste0(system.file("test_datasets",
-                                       package = "tabshiftr",
-                                       mustWork = TRUE), "/split_column.csv"),
-                    col_names = FALSE)
+  input <- tabs2shift$split_column
 
   schema <-
     setIDVar(name = "territories", columns = 1) %>%
@@ -45,10 +37,7 @@ test_that("recognise an identifying variable that is actually a merge of two col
 
 test_that("recognise a distinct variable that is not available for every cluster", {
 
-  input <- read_csv(paste0(system.file("test_datasets",
-                                       package = "tabshiftr",
-                                       mustWork = TRUE), "/distinct_variable.csv"),
-                    col_names = FALSE)
+  input <- tabs2shift$clusters_messy
 
   schema <- setCluster(id = "territories",
                        left = c(1, 1, 4), top = c(1, 8, 8)) %>%
@@ -64,10 +53,7 @@ test_that("recognise a distinct variable that is not available for every cluster
 
 test_that("set an id variable from the cluster id", {
 
-  input <- read_csv(paste0(system.file("test_datasets",
-                                       package = "tabshiftr",
-                                       mustWork = TRUE), "/implicit_variable.csv"),
-                    col_names = FALSE)
+  input <- tabs2shift$implicit_variable
 
   schema <- setCluster(id = "territories",
                        left = 1, top = 4) %>%
@@ -83,10 +69,7 @@ test_that("set an id variable from the cluster id", {
 
 test_that("mask out a couple of rows and columns that don't contain target data", {
 
-  input <- read_csv(paste0(system.file("test_datasets",
-                                       package = "tabshiftr",
-                                       mustWork = TRUE), "/implicit_variable.csv"),
-                    col_names = FALSE)
+  input <- tabs2shift$implicit_variable
 
   schema <- setFilter(rows = c(1:3), invert = TRUE) %>%
     setIDVar(name = "territories", value = "unit 1") %>%

@@ -1,17 +1,12 @@
 library(tabshiftr)
 library(testthat)
-library(readr)
-library(magrittr)
 library(checkmate)
 context("listed")
 
 
 test_that("listed observed variable", {
 
-  input <- read_csv(paste0(system.file("test_datasets",
-                                       package = "tabshiftr",
-                                       mustWork = TRUE), "/listed_column.csv"),
-                    col_names = FALSE)
+  input <- tabs2shift$listed_column
 
   schema <-
     setIDVar(name = "territories", columns = 1) %>%
@@ -29,10 +24,7 @@ test_that("listed observed variable", {
 
 test_that("bring one wide identifying variable into long form and unlist observed variable", {
 
-  input <- read_csv(paste0(system.file("test_datasets",
-                                       package = "tabshiftr",
-                                       mustWork = TRUE), "/listed_column_wide.csv"),
-                    col_names = FALSE)
+  input <- tabs2shift$listed_column_wide
 
   schema <-
     setIDVar(name = "territories", columns = 1) %>%
@@ -50,10 +42,7 @@ test_that("bring one wide identifying variable into long form and unlist observe
 
 test_that("bring one wide identifying variable into long form and select only a subset of the long variable", {
 
-  input <- read_csv(paste0(system.file("test_datasets",
-                                       package = "tabshiftr",
-                                       mustWork = TRUE), "/listed_column_wide.csv"),
-                    col_names = FALSE)
+  input <- tabs2shift$listed_column_wide
 
   schema <-
     setIDVar(name = "territories", columns = 1) %>%
@@ -69,10 +58,7 @@ test_that("bring one wide identifying variable into long form and select only a 
 
 test_that("several wide identifying variable into long form and unlist observed variable", {
 
-  input <- read_csv(paste0(system.file("test_datasets",
-                                       package = "tabshiftr",
-                                       mustWork = TRUE), "/listed_column_two_wide.csv"),
-                    col_names = FALSE)
+  input <- tabs2shift$listed_column_two_wide
 
   schema <-
     setIDVar(name = "territories", columns = 1) %>%
