@@ -1,12 +1,40 @@
-#' Check schema description for consistency
+#' Check and update schema descriptions
 #'
-#' This function takes an input table and a respective input schema. It
-#' evaluates all \code{\link{find}} specifications in the scope of the input
-#' table and ensures that the schema is fomally consistent.
-#' @param input an input for which to check a schema description.
-#' @param schema the schema description.
-#' @return An updated schema description that is formally consistent and has all
-#'   .find specs resolved into absolute positions.
+#' This function takes a raw schema description and updates values that were
+#' only given as wildcard or implied values. It is automatically called by
+#' \code{reorganise}, but can also be used in concert with the getters to debug
+#' a schema.
+#' @param input [\code{data.frame(1)}]\cr an input for which to check a schema
+#'   description.
+#' @param schema [\code{symbol(1)}]\cr the schema description.
+#' @details The core idea of a schema description is that it can be written in a
+#'   very generic way, as long as it describes sufficiently where in a table
+#'   what variable can be found. A very generic way can be via using the
+#'   function \code{\link{.find}} to identify the initially unknown
+#'   cell-locations of a variable on-the-fly, for example when it is merely
+#'   known that a variable must be in the table, but not where it is.
+#'
+#'   \code{validateSchema} matches a schema with an input table and inserts the
+#'   accordingly evaluated positions (of clusters, filters and variables),
+#'   adapts some of the meta-data and ensures formal consistency of the schema.
+#' @return An updated schema description
+#' @examples
+#' # build a schema for an already tidy table
+#' (tidyTab <- tabs2shift$tidy)
+#'
+#' schema <-
+#'   setIDVar(name = "territories", col = 1) %>%
+#'   setIDVar(name = "year", col = 2) %>%
+#'   setIDVar(name = "commodities", col = 3) %>%
+#'   setObsVar(name = "harvested", col = 5) %>%
+#'   setObsVar(name = "production", col = 6)
+#'
+#' # before ...
+#' schema
+#'
+#' # ... after
+#' validateSchema(schema = schema, input = tidyTab)
+#'
 #' @importFrom checkmate assertNames assertClass
 #' @importFrom rlang is_quosure
 #' @importFrom dplyr mutate across
@@ -97,6 +125,7 @@ validateSchema <- function(schema = NULL, input = NULL){
 
   # 3. complete variables ----
   outsideCluster <- NULL
+  selectRows <- selectRows <- NULL
   clusterID <- clusters$id
   groupID <- clusters$group
   for(i in seq_along(variables)){
@@ -177,7 +206,7 @@ validateSchema <- function(schema = NULL, input = NULL){
     }
 
     # figure our which rows to filter out
-    if(!varProp$dist){
+    if(!varProp$dist & !varName %in% c(groupID, clusterID)){
       if(varProp$type == "observed"){
         if(is.null(varProp$row)){
           varProp$row <- clusters$row
@@ -186,6 +215,7 @@ validateSchema <- function(schema = NULL, input = NULL){
           varProp$row[which(varProp$row < topAfterFilter)] <- topAfterFilter
         }
       }
+      # build selectRows and assign it to filter$row
       filter$row <- sort(unique(c(filter$row, varProp$row)))
     }
 
@@ -199,7 +229,10 @@ validateSchema <- function(schema = NULL, input = NULL){
       varProp$dist <- TRUE
     }
 
-    # make sure that all elements occur the same number of times
+    # identify all selected columns ----
+    selectRows <- unique(c(selectRows, varProp$col))
+
+    # make sure that all elements occur the same number of times ----
     if(!is.null(varProp$row)){
 
       if(length(varProp$row) == 1){
@@ -221,12 +254,22 @@ validateSchema <- function(schema = NULL, input = NULL){
       }
     }
 
+    # make sure that cluster or group IDs are set to NA ----
+    # that their rows can be recognised as removable, in case there is nothing
+    # else in that row
+    if(any(varName %in% c(clusterID, groupID))){
+      for(j in seq_along(varProp$col)){
+        input[varProp$row[j], varProp$col[j]] <- NA
+      }
+    }
+
     variables[[i]] <- varProp
     names(variables)[i] <- varName
   }
 
   # 4. remove empty rows ----
-  emptyRows <- which(rowSums(is.na(input)) == ncol(input))
+  testRows <- input[,selectRows]
+  emptyRows <- which(rowSums(is.na(testRows)) == ncol(testRows))
   filter$row <- sort(unique(c(filter$row, emptyRows)))
 
   out <- new(Class = "schema",
