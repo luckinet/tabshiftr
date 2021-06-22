@@ -17,26 +17,34 @@ A (tidy) table which is the result of reorganising \code{input} based
 }
 \description{
 This function takes a disorganised messy table and rearranges columns and
-rows into a tidy table.
+rows into a tidy table based on a schema description.
 }
 \examples{
-library(readr)
-library(magrittr)
+# a rather disorganised table with messy clusters and a distinct variable
+(input <- tabs2shift$clusters_messy)
 
-# read in a disorganised messy dataset (without column names)
-ds <- system.file("test_datasets", package = "tabshiftr")
-(input <- read_csv(file = paste0(ds, "/distinct_variable.csv"),
-                   col_names = FALSE, col_types = cols(.default = "c")))
+# put together schema description by ...
+# ... identifying cluster positions
+schema <- setCluster(id = "territories", left = c(1, 1, 4), top = c(1, 8, 8))
 
-# put together schema description (see vignette)
-schema <- setCluster(id = "territories",
-                     left = c(1, 1, 4), top = c(1, 8, 8)) \%>\%
-  setIDVar(name = "territories", columns = c(1, 1, 4), rows = c(2, 9, 9)) \%>\%
-  setIDVar(name = "year", columns = 4, rows = c(3:6), distinct = TRUE) \%>\%
-  setIDVar(name = "commodities", columns = c(1, 1, 4)) \%>\%
-  setObsVar(name = "harvested", columns = c(2, 2, 5)) \%>\%
-  setObsVar(name = "production", columns = c(3, 3, 6))
+# ... specifying the cluster ID as id variable (obligatory)
+schema <- schema \%>\%
+    setIDVar(name = "territories", columns = c(1, 1, 4), rows = c(2, 9, 9))
+
+# ... specifying the distinct variable (explicit position)
+schema <- schema \%>\%
+    setIDVar(name = "year", columns = 4, rows = c(3:6), distinct = TRUE)
+
+# ... specifying a tidy variable (by giving the column values)
+schema <- schema \%>\%
+    setIDVar(name = "commodities", columns = c(1, 1, 4))
+
+# ... identifying the (tidy) observed variables
+schema <- schema \%>\%
+    setObsVar(name = "harvested", columns = c(2, 2, 5)) \%>\%
+    setObsVar(name = "production", columns = c(3, 3, 6))
 
 # get the tidy output
 reorganise(input, schema)
+
 }

@@ -2,21 +2,52 @@
 % Please edit documentation in R/validateSchema.R
 \name{validateSchema}
 \alias{validateSchema}
-\title{Check schema description for consistency}
+\title{Check and update schema descriptions}
 \usage{
 validateSchema(schema = NULL, input = NULL)
 }
 \arguments{
-\item{schema}{the schema description.}
+\item{schema}{[\code{symbol(1)}]\cr the schema description.}
 
-\item{input}{an input for which to check a schema description.}
+\item{input}{[\code{data.frame(1)}]\cr an input for which to check a schema
+description.}
 }
 \value{
-An updated schema description that is formally consistent and has all
-  .find specs resolved into absolute positions.
+An updated schema description
 }
 \description{
-This function takes an input table and a respective input schema. It
-evaluates all \code{\link{find}} specifications in the scope of the input
-table and ensures that the schema is fomally consistent.
+This function takes a raw schema description and updates values that were
+only given as wildcard or implied values. It is automatically called by
+\code{reorganise}, but can also be used in concert with the getters to debug
+a schema.
+}
+\details{
+The core idea of a schema description is that it can be written in a
+  very generic way, as long as it describes sufficiently where in a table
+  what variable can be found. A very generic way can be via using the
+  function \code{\link{.find}} to identify the initially unknown
+  cell-locations of a variable on-the-fly, for example when it is merely
+  known that a variable must be in the table, but not where it is.
+
+  \code{validateSchema} matches a schema with an input table and inserts the
+  accordingly evaluated positions (of clusters, filters and variables),
+  adapts some of the meta-data and ensures formal consistency of the schema.
+}
+\examples{
+# build a schema for an already tidy table
+(tidyTab <- tabs2shift$tidy)
+
+schema <-
+  setIDVar(name = "territories", col = 1) \%>\%
+  setIDVar(name = "year", col = 2) \%>\%
+  setIDVar(name = "commodities", col = 3) \%>\%
+  setObsVar(name = "harvested", col = 5) \%>\%
+  setObsVar(name = "production", col = 6)
+
+# before ...
+schema
+
+# ... after
+validateSchema(schema = schema, input = tidyTab)
+
 }
