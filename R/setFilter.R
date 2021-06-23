@@ -12,7 +12,7 @@
 #' @importFrom checkmate assertClass testIntegerish testClass
 #' @export
 
-setFilter <- function(schema = NULL, rows = NULL, col = NULL, invert = FALSE){
+setFilter <- function(schema = NULL, rows = NULL, invert = FALSE){
 
   # assertions ----
   assertClass(x = schema, classes = "schema", null.ok = TRUE)
