@@ -5,7 +5,7 @@
 \alias{tabs2shift}
 \title{List of table types}
 \format{
-The object of class \code{list} contains 19 different types of tables
+The object of class \code{list} contains 20 different types of tables
   that are used throughout the unit-tests and examples/vignette.
 }
 \usage{

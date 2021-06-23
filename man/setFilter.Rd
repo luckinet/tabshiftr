@@ -4,7 +4,7 @@
 \alias{setFilter}
 \title{Set filters}
 \usage{
-setFilter(schema = NULL, rows = NULL, invert = FALSE)
+setFilter(schema = NULL, rows = NULL, col = NULL, invert = FALSE)
 }
 \arguments{
 \item{schema}{[\code{schema(1)}]\cr In case this information is added to an
