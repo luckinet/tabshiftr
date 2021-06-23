@@ -41,16 +41,13 @@ setCluster <- function(schema = NULL, id = NULL, group = NULL, member = NULL,
   assertCharacter(x = id, len = 1, any.missing = FALSE)
   assertCharacter(x = group, len = 1, any.missing = FALSE, null.ok = TRUE)
   colInt <- testIntegerish(x = left, lower = 1, min.len = 1, null.ok = TRUE)
-  colQuo <- testClass(x = left, classes = "quosure")
-  colFun <- testClass(x = left, classes = "name")
-  assert(colInt, colQuo, colFun)
+  colList <- testList(x = left, len = 2)
+  assert(colInt, colList)
   rowInt <- testIntegerish(x = top, lower = 1, min.len = 1, null.ok = TRUE)
-  rowQuo <- testClass(x = top, classes = "quosure")
-  rowFun <- testClass(x = top, classes = "name")
-  assert(rowInt, rowQuo, rowFun)
+  rowList <- testList(x = top, len = 2)
+  assert(rowInt, rowList)
   assertIntegerish(x = width, null.ok = TRUE)
   assertIntegerish(x = height, null.ok = TRUE)
-  # assertIntegerish(x = header, null.ok = TRUE)
   assertIntegerish(x = member, null.ok = TRUE)
 
   if(is.null(schema)){
@@ -88,6 +85,9 @@ setCluster <- function(schema = NULL, id = NULL, group = NULL, member = NULL,
   if(!is.null(member)){
     schema@clusters$member <- member
   }
+
+  # need a test that ensures header is included in the cluster
+
 
   return(schema)
 }

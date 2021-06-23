@@ -30,8 +30,8 @@
 #'   up a \link[=schema]{schema description}.
 #' @return An object of class \code{\link{schema}}.
 #' @family functions to describe table arrangement
-#' @importFrom checkmate assertClass assertCharacter assertIntegerish
-#'   assertLogical
+#' @importFrom checkmate assertClass assertCharacter assertLogical
+#'   testIntegerish testList
 #' @export
 
 setIDVar <- function(schema = NULL, name = NULL, value = NULL, columns = NULL,
@@ -42,13 +42,11 @@ setIDVar <- function(schema = NULL, name = NULL, value = NULL, columns = NULL,
   assertClass(x = schema, classes = "schema", null.ok = TRUE)
   assertCharacter(x = name, len = 1, any.missing = FALSE)
   colInt <- testIntegerish(x = columns, lower = 1, min.len = 1, null.ok = TRUE)
-  colQuo <- testClass(x = columns, classes = "quosure")
-  colFun <- testClass(x = columns, classes = "name")
-  assert(colInt, colQuo, colFun)
+  colList <- testList(x = columns, len = 2)
+  assert(colInt, colList)
   rowInt <- testIntegerish(x = rows, lower = 1, min.len = 1, null.ok = TRUE)
-  rowQuo <- testClass(x = rows, classes = "quosure")
-  rowFun <- testClass(x = rows, classes = "name")
-  assert(rowInt, rowQuo, rowFun)
+  rowList <- testList(x = rows, len = 2)
+  assert(rowInt, rowList)
   assertCharacter(x = value, len = 1, any.missing = FALSE, null.ok = TRUE)
   assertCharacter(x = split, len = 1, any.missing = FALSE, null.ok = TRUE)
   assertCharacter(x = merge, len = 1, any.missing = FALSE, null.ok = TRUE)

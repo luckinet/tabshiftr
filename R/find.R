@@ -5,6 +5,9 @@
 #' @param by [\code{character(1)}]\cr character string containing a regular
 #'   expression or function to identify columns or rows in the input table on
 #'   the fly.
+#' @param col [\code{integerish(1)}]\cr optionally, in case \code{by} should not
+#'   be applied to the whole table, this is the column in which to apply
+#'   \code{by}.
 #' @details This functions is basically a wild-card for when columns or rows are
 #'   not known ad-hoc, but have to be assigned on the fly. This can be very
 #'   helpful when several tables contain the same variables, but the arrangement
@@ -29,13 +32,15 @@
 #' @importFrom rlang enquo
 #' @export
 
-.find <- function(by){
+.find <- function(by, col = NULL){
 
   isPat <- testCharacter(x = by, min.len = 1, any.missing = FALSE)
   isFun <- testFunction(x = by)
   assert(isPat, isFun)
 
-  out <- enquo(by)
+  temp <- enquo(by)
+
+  out <- list(by = temp, col = col)
 
   return(out)
 

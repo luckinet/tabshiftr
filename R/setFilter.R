@@ -12,13 +12,13 @@
 #' @importFrom checkmate assertClass testIntegerish testClass
 #' @export
 
-setFilter <- function(schema = NULL, rows = NULL, invert = FALSE){
+setFilter <- function(schema = NULL, rows = NULL, col = NULL, invert = FALSE){
 
   # assertions ----
   assertClass(x = schema, classes = "schema", null.ok = TRUE)
   rowInt <- testIntegerish(x = rows, lower = 1, min.len = 1, null.ok = TRUE)
-  rowQuo <- testClass(x = rows, classes = "quosure")
-  assert(rowInt, rowQuo)
+  rowList <- testList(x = rows, len = 2)
+  assert(rowInt, rowList)
 
   if(is.null(schema)){
     schema <- schema_default
@@ -29,6 +29,8 @@ setFilter <- function(schema = NULL, rows = NULL, invert = FALSE){
   }
 
   schema@filter$invert <- invert
+
+  # need a test that ensures header rows are not filtered out
 
   return(schema)
 
