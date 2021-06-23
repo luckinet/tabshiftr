@@ -57,22 +57,14 @@ validateSchema <- function(schema = NULL, input = NULL){
   # set cluster start if it is NULL or a qousure
   if(is.null(clusters$row)){
     clusters$row <- 1
-  } else if(is_quosure(clusters$row)){
-    term <- eval_tidy(clusters$row)
-    rows <- map_int(.x = 1:dim(input)[1], .f = function(ix){
-      grepl(x = paste(input[ix,], collapse = " "), pattern = term)
-    })
-    clusters$row <- which(rows == 1)
+  } else if(is.list(clusters$row)){
+    clusters$row <- .eval_find(input = input, row = clusters$row)
   }
 
   if(is.null(clusters$col)){
     clusters$col <- 1
-  } else if(is_quosure(clusters$col)){
-    term <- eval_tidy(clusters$col)
-    cols <- map_int(.x = 1:dim(input)[2], .f = function(ix){
-      grepl(x = paste(input[[ix]], collapse = " "), pattern = term)
-    })
-    clusters$col <- which(cols == 1)
+  } else if(is.list(clusters$col)){
+    clusters$col <- .eval_find(input = input, col = clusters$col)
   }
 
   if(is.null(clusters$width)){
@@ -102,25 +94,17 @@ validateSchema <- function(schema = NULL, input = NULL){
 
 
   # 2. complete filter ----
+  # evaluate quosure
+  if(is.list(filter$row)){
+    filter$row <- .eval_find(input = input, row = filter$row)
+  }
+
   if(!filter$invert){
     if(!is.null(filter$row)){
       filter$row <- (1:tabDim[1])[-filter$row]
     }
   }
 
-  if(is_quosure(filter$row)){
-    term <- eval_tidy(filter$row)
-    if(is.function(term)){
-      map_int(.x = 1:dim(input)[1], .f = function(ix){
-        grepl(x = paste(input[ix,], collapse = " "), pattern = term)
-      })
-    } else {
-      rows <- map_int(.x = 1:dim(input)[1], .f = function(ix){
-        grepl(x = paste(input[ix,], collapse = " "), pattern = term)
-      })
-      filter$row <- which(rows == 1)
-    }
-  }
   topAfterFilter <- min(which(!1:dim(input)[1] %in% filter$row))
 
   # 3. complete variables ----
@@ -146,63 +130,12 @@ validateSchema <- function(schema = NULL, input = NULL){
     }
 
     # resolve quosures from grep-ing unkown col/rows ----
-    if(is_quosure(varProp$row)){
-      term <- eval_tidy(varProp$row)
-
-      if(is.function(term)){
-
-        if(!is.null(varProp$col)){
-          subset <- input[,unique(varProp$col)]
-        } else {
-          subset <- input
-        }
-
-        # make a subset table that contains numbers when possible
-        subset <- subset %>%
-          mutate(across(everything(), function(x) replace_na(x, 0))) %>%
-          mutate(across(.cols = where(function(x) suppressWarnings(!anyNA(as.numeric(x)))), .fns = as.numeric))
-
-        rows <- map_lgl(.x = 1:dim(input)[1], .f = function(ix){
-          map(subset[x,], term)[[1]]
-        })
-
-      } else {
-        rows <- map_int(.x = 1:dim(input)[1], .f = function(ix){
-          grepl(x = paste(input[ix,], collapse = " "), pattern = term)
-        })
-      }
-
-      varProp$row <- which(rows == 1)
+    if(is.list(varProp$row)){
+      varProp$row <- .eval_find(input = input, row = varProp$row)
     }
 
-    if(is_quosure(varProp$col)){
-
-      term <- eval_tidy(varProp$col)
-
-      if(is.function(term)){
-
-        if(!is.null(varProp$row)){
-          subset <- input[unique(varProp$row),]
-        } else {
-          subset <- input
-        }
-
-        # make a subset table that contains numbers when possible
-        subset <- subset %>%
-          mutate(across(everything(), function(x) replace_na(x, 0))) %>%
-          mutate(across(.cols = where(function(x) suppressWarnings(!anyNA(as.numeric(x)))), .fns = as.numeric))
-
-        cols <- map_lgl(.x = 1:dim(input)[2], .f = function(ix){
-          map(subset[[ix]], term)[[1]]
-        })
-
-      } else {
-        cols <- map_int(.x = 1:dim(input)[2], .f = function(ix){
-          grepl(x = paste(input[[ix]], collapse = " "), pattern = term)
-        })
-      }
-
-      varProp$col <- which(cols == 1)
+    if(is.list(varProp$col)){
+      varProp$col <- .eval_find(input = input, col = varProp$col)
     }
 
     # figure our which rows to filter out
@@ -271,6 +204,7 @@ validateSchema <- function(schema = NULL, input = NULL){
   testRows <- input[,selectRows]
   emptyRows <- which(rowSums(is.na(testRows)) == ncol(testRows))
   filter$row <- sort(unique(c(filter$row, emptyRows)))
+
 
   out <- new(Class = "schema",
              clusters = clusters,
