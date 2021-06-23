@@ -6,6 +6,8 @@
 - removal of the function `setHeader()`, as these information are now automatically extracted from the functions
 - renaming of the argument `row = ` in `setObsVar()` to `top = `, because this is represents a clearer meaning of what this argument describes
 - `.find()` now also allows functions that evaluate to TRUE/FALSE
+- add a column specifier to `.find()`.
+
 
 
 # tabshiftr 0.2.6

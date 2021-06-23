@@ -81,7 +81,7 @@ a regular expression or function" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tabshiftr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.1</span>
       </span>
     </div>
 
@@ -133,7 +133,7 @@ a regular expression or function" />
 a regular expression or function</p>
     </div>
 
-    <pre class="usage"><span class='fu'>.find</span><span class='op'>(</span><span class='va'>by</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>.find</span><span class='op'>(</span><span class='va'>by</span>, col <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -143,6 +143,12 @@ a regular expression or function</p>
       <td><p>[<code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code>]<br /> character string containing a regular
 expression or function to identify columns or rows in the input table on
 the fly.</p></td>
+    </tr>
+    <tr>
+      <th>col</th>
+      <td><p>[<code>integerish(1)</code>]<br /> optionally, in case <code>by</code> should not
+be applied to the whole table, this is the column in which to apply
+<code>by</code>.</p></td>
     </tr>
     </table>
 
