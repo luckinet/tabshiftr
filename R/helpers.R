@@ -241,6 +241,97 @@
 
 }
 
+#' Evaluate .find constructs
+#'
+#' @param input [\code{character(1)}]\cr table to reorganise.
+#' @param col [\code{list(2)}]\cr the output of the respective .find construct
+#'   used to match in columns.
+#' @param row [\code{list(2)}]\cr the output of the respective .find construct
+#'   used to match in rows.
+#' @return the columns or rows where the evaluated position
+#' @importFrom checkmate assertNumeric
+#' @importFrom rlang eval_tidy
+#' @importFrom purrr map_int map_lgl
+#' @importFrom tibble rownames_to_column
+#' @importFrom tidyr pivot_longer pivot_wider
+#' @importFrom dplyr select mutate across
+#' @importFrom stringr str_count
+
+.eval_find <- function(input = NULL, col = NULL, row = NULL){
+
+
+  # in case to look for columns
+  if(!is.null(col)){
+    term <- eval_tidy(col$by)
+
+    if(is.function(term)){
+
+      # this should probably be written so that header rows are excluded so that
+      # the columns can have their corret data type against which the functions
+      # can test
+
+      # if(!is.null(varProp$row)){
+      #   subset <- input[unique(varProp$row),]
+      # } else {
+      #   subset <- input
+      # }
+      #
+      # # make a subset table that contains numbers when possible
+      # subset <- subset %>%
+      #   mutate(across(everything(), function(x) replace_na(x, 0))) %>%
+      #   mutate(across(.cols = where(function(x) suppressWarnings(!anyNA(as.numeric(x)))), .fns = as.numeric))
+      #
+      # cols <- map_lgl(.x = 1:dim(input)[2], .f = function(ix){
+      #   map(subset[[ix]], term)[[1]]
+      # })
+
+
+    } else {
+      cols <- map_int(.x = 1:dim(input)[2], .f = function(ix){
+        str_count(string = paste(input[[ix]], collapse = " "), pattern = term)
+      })
+    }
+    out <- rep(seq_along(cols), cols)
+
+  }
+
+  # in case to look for rows
+  if(!is.null(row)){
+    term <- eval_tidy(row$by)
+
+    if(is.function(term)){
+
+      if(!is.null(row$col)){
+        assertNumeric(x = row$col, len = 1, any.missing = FALSE)
+        subset <- input[,unique(row$col)]
+      } else {
+        subset <- input
+      }
+
+      # make a subset table that contains numbers when possible
+      subset <- subset %>%
+        rownames_to_column() %>%
+        pivot_longer(-rowname, 'variable', 'value') %>%
+        pivot_wider(variable, rowname) %>%
+        select(-variable) %>%
+        mutate(across(.cols = where(function(x) suppressWarnings(!anyNA(as.numeric(x)))), .fns = as.numeric))
+
+      rows <- map_int(.x = 1:dim(subset)[2], .f = function(ix){
+        map(subset[,ix], term)[[1]]
+      })
+    } else {
+      rows <- map_int(.x = 1:dim(input)[1], .f = function(ix){
+        str_count(string = paste(input[ix,], collapse = " "), pattern = term)
+      })
+    }
+    out <- rep(seq_along(rows), rows)
+
+  }
+
+  return(out)
+
+}
+
 
 #' Test for a valid table
 #'
