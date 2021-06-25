@@ -19,6 +19,7 @@ reference:
       - setObsVar
   - title: validate the schema description
     contents:
+      - tabs2shift
       - validateSchema
       - getData
       - getClusterVar

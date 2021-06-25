@@ -38,8 +38,14 @@ The 'tidy' paradigm in R proposes that data are organised so that variables are 
 This, however, is only one interpretation of how data should be organised and especially when scraping data from multiple heterogeneous sources, one frequently encounters messy data that don't follow this paradigm.
 
 The `tidyr` package is one of the most popular tools to bring data into a tidy format. 
-However, up until today it is limited to tables that are already organised into topologically coherent (rectangular) chunks.
+However, up until today it is limited to tables that are already organised into topologically coherent (rectangular) chunks and any messiness beyond that requires dedicated scripts for reorganisation.
 In `tabshiftr` we try to describe and work with a further dimension of messiness, where data are available as so-called *disorganised (messy) data*, data that are not yet arranged into rectangular form.
+
+The approach of `tabshiftr` is based on describing the arrangement of such tables in a so-called [schema](https://en.wikipedia.org/wiki/Database_schema) description, which is then the basis for automatic reorganisation via the function `reorganise()`.
+Typically there is an input and an output schema, describing the arrangement of the input and output tables, respectively.
+The advantage of this procedure is that input and output tables exist explicitly and the schema maps the transformation of the data.
+As we want to end up with tidy tables, the output schema is pre-determined by a tidy table of the included variables and the input [schema needs to be put together](#makeSchema) by you, the user.
+
 
 # The basics
 
@@ -62,7 +68,7 @@ Moreover, a table is part of a **series** when other tables of that series conta
 
 Table: <a name="tabExample1"></a>Table 1: An example table containing one identifying and two observed variables, with the variable names in the topmost row and the values in all consecutive rows.
 
-Even though data in many spreadsheet are \"disorganised\", they are mostly not non-systematic. Especially in complex spreadsheets, one often encounters a situation where a set of variables occurs more than once with the same or very similar organisation, which we call **cluster** here. Data that are part of clusters are split up by another, typically categorical variable (the **cluster ID**), with the aim to increase the visual accessibility or direct the focus for human readers ([Tab. 2](#tabExample2)). This may also be the case where data are split up across several files or spreadsheets of a file, where the cluster ID can be found in the file or spreasheet name or the meta-data. In that case, the cluster ID would be an **implicit variable** that needs to be recorded as such.
+Even though data in many spreadsheet are \"disorganised\", they are mostly not non-systematic. Especially in complex spreadsheets, one often encounters a situation where a set of variables occurs more than once with the same or very similar organisation, which we call **cluster** here. Data that are part of clusters are split up by another, typically categorical variable (the **cluster ID**), with the aim to increase the visual accessibility or direct the focus for human readers ([Tab. 2](#tabExample2)). This may also be the case where data are split up across several files or spreadsheets of a file, where the cluster ID can be found in the file or spreasheet name or the meta-data. In that case, the cluster ID would be an **implicit variable**.
 
 | sample | colour | intensity | sample | colour | intensity |
 | :- | :- | :- | :- | :- | :- |
@@ -94,48 +100,99 @@ Table: <a name="tabExample2"></a>Table 2: An example of a table with several clu
 
 
 # How to make a schema description
+<a name="makeSchema"></a>
 
-The approach of `tabshiftr` is based on capturing the arrangement of a table in a so-called  [schema](https://en.wikipedia.org/wiki/Database_schema) description.
-Typically there is an input and an output schema, describing the arrangement of the input and output tables, respectively.
-The advantage of this procedure is that input and output tables exist explicitly and the schema maps the transformation of the data.
-As we want to end up with tidy tables, the output schema is pre-determined by a tidy table of the included variables.
-The input schema description, however,  needs to be provided by the user.
+To set up a schema description, go through the following questions step by step and provide the respective answer in the respective function.
+Linked tables in the [next section](#tablesTypes) can serve as examples to compare against.
 
-To set up a schema description, the following steps should be taken:
+1. **Variables**: Clarify which are the identifying variables and which are the observed variables. Make sure not to mistake a listed observed variable ([Tab. 10](#long)) as an identifying variable.
 
-1. **Variables**: Clarify which are the identifying variables and which are the observed variables. Make sure not to mistake a listed observed variable as an identifying variable. 
+2. **Meta-data**: Provide potentially information about the table format in `setFormat()`.
 
-2. **Meta-data**: Provide potentially information about the table format (`setFormat()`).
+3. **Clusters**: provide (optionally) in `setCluster()`
 
-3. **Clusters**: Determine the following:
-
-    - are the data clustered at all and if so, find the origin (top left cell) of each cluster and provide the required information in `setCluster(top = ..., left = ...)` ([Tab. 9](#clusHor), [Tab. 10](#clusId) & [Tab. 11](#clusMeas)).  
-    - clarify whether data are clustered according to an identifying variable, or whether observed variables are grouped into clusters:
-      * in case data are clustered according to an identifying variable, specify that identifying variable (`setIDVar()`) and give its name in `setCluster(id = ...)` ([Tab. 9](#clusHor), [Tab. 10](#clusId)).
-      * in case the observed variables are grouped into clusters, provide simply `"observed"` in `setCluster(id = ...)` ([Tab. 11](#clusMeas)).
-    - are clusters nested into a grouping variable of interest and if so, specify that variable in `setCluster(group = ...)`, give the group index to which each cluster belongs in `member = ...` and specify the group ID as an identifying variable (`setIDVar()`) ([Tab. 13](#clustPar)).
-    - in case the data split up into several files or spreadsheets, identify the implicit variable, provide it as cluster ID and provide the value associated to the current table in `setIDVar(value = ...)` ([Tab. 6](#implicitVar)).
+    - are data clustered into several files or spreadsheets and is the information used to separate the data (i.e., the spreadsheet name) a variable of interest ([Tab. 6](#implicitVar)) or are the data clustered within one spreadsheet ([Tab. 12](#clusHor), [Tab. 13](#clusId), [Tab. 14](#clusMeas) & [Tab. 15](#clustNest))?
+    - are data clustered according to an identifying variable ([Tab. 12](#clusHor), [Tab. 13](#clusId)), or are observed variables grouped into clusters ([Tab. 14](#clusMeas))?
+    - are clusters nested into a grouping variable of interest ([Tab. 15](#clustNest))?
     <br><br>
 
-4. **Identifying variables**: Determine the following:
+4. **Identifying variables**: provide in `setIDVar()`
 
-    - all columns in which the variable values can be found.
-    - in case the variable is wide (i.e., its values are in several columns), determine additionally the row in which the values can be found. In this case, the values will look like they are part of the header ([Tab. 4](#nest2)).
-    - in case the variable must be split off of another column, provide a regular expression that results in the target subset via `setIDVar(..., split = ...)` ([Tab. 5](#splitCol)).
-    - in case the variable is distinct from the main table, provide the explicit (non-relative) position and set `setIDVar(..., distinct = TRUE)` ([Tab. 12](#distVar)).
+    - in which column(s) is the variable?
+    - is the variable a result of merging several columns ([Tab. 4](#mergeCol)) or must it be split off of another column ([Tab. 5](#splitCol))?
+    - is the variable wide (i.e., its values are in several columns) ([Tab. 7](#one_wide_id), [Tab. 8](#wide_obs) & [Tab. 9](#two_wide_id))? In this case, the values will look like it's are part of the header.
+    - is the variable distinct from the main table ([Tab. 16](#distVar))?
     <br><br>
     
-5. **Observed variable**: Determine the following:
+5. **Observed variable**: provide in `setObsVar()`
 
-    - all columns in which the values of the variable can be found ([Tab. 7](#long)).
-    - the unit and conversion factor.
-    - in case the variable is not tidy, go through the following cases one after the other:
-        * in case the variable is nested in a wide identifying variable, determine in addition to the columns in which the values can be found also the rows in which the **variable name** can be found ([Tab. 3](#nest1) & [Tab. 4](#nest2)).
-        * in case the names of the variable are given as a value of an identifying variable ([Tab. 8](#wideLong)), give the column name as `key`, together with the name of the respective observed variable (as it appears in the table) in `values`.
-        * in case the name of the variable is the ID of clusters, specify `key = "cluster"` and in `values` the cluster number the variable refers to ([Tab. 11](#clusMeas)).
+    - in which column(s) is the variable?
+    - is the variable wide and nested in a wide identifying variable (i.e., the name of the observed variable is below the name of the identifying variable) ([Tab. 7](#one_wide_id) & [Tab. 9](#two_wide_id))?
+    - is the variable listed (i.e., the names of the variable are given as a value of an identifying variable) ([Tab. 10](#long))?
     <br><br>
 
+As an example, we show here how to build a schema description for a table that has a wide identifying variable and a listed observed variable
+
+```{r}
+kable(input <- tabs2shift$listed_column_wide)
+```
+
+In this case we don't need to set clusters and can start immediately with setting the id variable `territories`, which is in the first column and otherwise tidy. Any of the setters start by default with an empty schema, in case none is provided to them from a previous setter
+
+```{r}
+schema <- setIDVar(name = "territories", columns = 1)
+```
+
+Since version 0.3.0, `tabshiftr` comes with getters that allow to debug the current schema description. To do this, however, the schema first needs to be validated. This is in order to make sure that all the generic meta-data are evaluated with the respective input. After that, a getter can be used to extract the respective information, for example the reorganised id variables with `getIDVars()`.
+
+```{r}
+validateSchema(schema = schema, input = input) %>% 
+  getIDVars(input = input)
+```
+
+After seeing that our specification results in a meaningful output, we can continue setting the other variables `years` (tidy and in column 2) and `commodities` (spread over two columns and the values are in the first row).
+
+```{r}
+schema <- schema %>% 
+  setIDVar(name = "year", columns = 2) %>%
+  setIDVar(name = "commodities", columns = c(6, 7), rows = 1)
+```
+
+Validating and checking for id variables again results in the following
+
+```{r}
+validateSchema(schema = schema, input = input) %>% 
+  getIDVars(input = input)
+```
+
+The id variable `commodities` is visibly wide (more than one column) and its' values are not repeated four times (as for the other id variables) but only once.
+Hence, this is an expected tentative output and the id variables have been specified correctly.
+
+Next, we set the listed observed variables, which means that the column names of the observed variables are treated as if they were the values of an identifying variable (in column 4), while the values are in the columns 6 and 7 and need to be filtered by the respective variable name in column 4.
+
+```{r}
+schema <- schema %>% 
+  setObsVar(name = "harvested", columns = c(6, 7), key = 4, value = "harvested") %>%
+  setObsVar(name = "production", columns = c(6, 7), key = 4, value = "production")
+```
+
+We then get the following observed variables, which is also an expected tentative output.
+
+```{r}
+validateSchema(schema = schema, input = input) %>% 
+  getObsVars(input = input)
+```
+
+The `reorganise()` function carries out the steps of validating, extracting the variables, pivoting the tentative output and putting the final table together automatically, so it merely requires the finalised `schema` and the `input` table.
+
+```{r}
+schema # has a pretty print function
+
+reorganise(input = input, schema = schema)
+```
+
 # Table types
+<a name="tablesTypes"></a>
 
 In this section we look at some examples of disorganised data, discuss the dimension along which they are disorganised and show which schema description should be used to reorganise them.
 
@@ -144,7 +201,7 @@ Moreover, each column should be treated as a character data type, because some c
 `reorganise()` takes care of reformatting the data into the most permissive data type that does not introduce `NA`s where there should be data, i.e, if a variable can be numeric, it is formatted as numeric column.
 
 ```{r, eval=F}
-input <- read_csv(...,
+input <- read_csv(file = ...,
                   col_names = FALSE,
                   col_types = cols(.default = "c"))
 ```
@@ -180,7 +237,7 @@ reorganise(input = tabs2shift$tidy, schema = schema)
 
 ### Mismatch of columns and variables
 
-Sometimes it may be the case that number variables is not the same as there are columns because either one variable is spread over several column, or one column contains several variables.
+Sometimes it may be the case that the number variables is not the same as there are columns because either one variable is spread over several column, or one column contains several variables.
 
 In the former case, columns need to be merged ([Tab. 4](#splitCol)) and in the latter case, columns need to be split via [regular expressions](https://edrub.in/CheatSheets/cheatSheetStringr.pdf) ([Tab. 5](#mergeCol)).
 For example, `.+?(?=_)` gives everything up until the first `_` and `(?<=\\_).*` everything after the `_ `.
@@ -207,12 +264,12 @@ kable(tabs2shift$merged_column)
 Table: <a name="splitCol"></a>Table 5: The variables `year` and `commodities` are stored in the same column.
 
 ```{r, eval=FALSE}
-schema <- setHeader(rows = 1) %>%
+schema <-
   setIDVar(name = "territories", columns = 1) %>%
   setIDVar(name = "year", columns = 2, split = ".+?(?=_)") %>%
   setIDVar(name = "commodities", columns = 2, split = "(?<=\\_).*") %>%
-  setObsVar(name = "harvested", unit = "ha", columns = 3) %>%
-  setObsVar(name = "production", unit = "t", columns = 4)
+  setObsVar(name = "harvested", columns = 4) %>%
+  setObsVar(name = "production", columns = 5)
 ```
 
 
@@ -243,7 +300,7 @@ schema <- setCluster(id = "territories",
 
 In case identifying variables are factors with a small number of levels, those levels may falsely be used as names of other variables, where they would be next to each other and thus \"wide\" ([Tab. 7](#one_wide_id)).
 Those other variables (both identifying and observed variables) would then be \"nested\" in the wide identifying variables.
-In those cases we have to record for the identifying variable(s) the columns **and the row** in which the values of the identifying variable are found. For the observed variable(s) we need to record also the columns and the topmost row of that variable, i.e., the row in which the name of the nested observed variable is found.
+In those cases we have to record for the identifying variable(s) the columns and the row in which the **values of the identifying variable** are found (they will look like they are part of the header). For the observed variable(s) we need to record also the columns and the topmost row of that variable, i.e., the row in which the name of the nested observed variable is found.
 
 ```{r}
 kable(input <- tabs2shift$one_wide_id)
@@ -279,13 +336,13 @@ schema <-
 ```
 
 
-In case several variables are nested within other variables, we have to specify for all nested or nesting variables in which rows their values sit and adapt the header.
+In case several variables are nested within other variables, we have to specify for all nested or nesting variables in which respective rows their values sit.
 
 ```{r}
 kable(input <- tabs2shift$two_wide_id)
 ```
 
-Table: <a name="wide_obs"></a>Table 9: The observed variables are nested within the identifying variable `year` and `commodities`.
+Table: <a name="two_wide_id"></a>Table 9: The observed variables are nested within the identifying variable `year` and `commodities`.
 
 
 ```{r, eval=FALSE}
@@ -350,151 +407,97 @@ Clusters are typically of the same arrangement within one table, they can be rep
 Moreover, clusters may be nested into some grouping variable in a similar way that data are nested into clusters.
 A table could also be treated like a cluster when the table is not only composed of the table, but perhaps also text in the form of some table description (that may be scattered in the document and) that does not allow the table to start at the table origin in the topmost left cell.
 
-To reorganise those data into tidy form, each cluster is \"cut out\", rearranged individually and appended to the end of an output table by `reorganise()`.
-
 ### Horizontal clusters
 
-In case clusters are sitting right next to each other in the same origin row ([Tab. 9](#clusHor)), it is sufficient to provide the topmost row and all leftmost columns at which a new cluster starts.
-In case there is some arbitrary horizontal space between clusters, also the width (of each cluster) needs to be provided.
+In case clusters are sitting right next to each other in the same origin row ([Tab. 12](#clusHor)), it is sufficient to provide the topmost row and all leftmost columns at which a new cluster starts.
 
+```{r}
+kable(input <- tabs2shift$clusters_horizontal)
+```
 
-| X1 | X2 | X3 | X4 | X5 | X6 | X7 |
-| :- | :- | :- | :- | :- | :- | :- |
-| period | commodities | harvested | production | commodities | harvested | production |
-|  | unit 1 |  |  | unit 2 |  |  |
-| year 1 | soybean | 1111 | 1112 | soybean | 2111 | 2112 |
-| year 1 | maize | 1121 | 1122 | maize | 2121 | 2122 |
-| year 2 | soybean | 1211 | 1212 | soybean | 2211 | 2212 |
-| year 2 | maize | 1221 | 1222 | maize | 2221 | 2222 |
+Table: <a name="clusHor"></a>Table 12: Horizontal clusters of the identifying variable `period`.
 
-Table: <a name="clusHor"></a>Table 9: Horizontal clusters of the identifying variable `period`.
 
 ```{r, eval=FALSE}
-schema <- setCluster(id = "territories", left = c(2, 5), top = 2) %>%
-  setHeader(rows = 1) %>%
-  setIDVar(name = "territories", columns = c(2, 5), row = 2) %>%
-  setIDVar(name = "year", columns = 1) %>%
-  setIDVar(name = "commodities", columns = c(2, 5)) %>%
-  setObsVar(name = "harvested", columns = c(3, 6), unit = "ha") %>%
-  setObsVar(name = "production", columns = c(4, 7), unit = "t")
+schema <- setCluster(id = "territories",
+                     left = c(1, 6), top = 2) %>%
+  setIDVar(name = "territories", columns = c(1, 6), rows = 2) %>%
+  setIDVar(name = "year", columns = c(2, 7)) %>%
+  setIDVar(name = "commodities", columns = c(1, 6)) %>%
+  setObsVar(name = "harvested", columns = c(3, 8)) %>%
+  setObsVar(name = "production", columns = c(4, 9))
 ```
 
 
 ### Vertical clusters
 
-For vertically arranged clusters ([Tab. 10](#clusId)), just like for the horizontal case, the respective rows, columns (and heights) need to be provided.
+For vertically arranged clusters ([Tab. 13](#clusId)), just like for the horizontal case, the respective rows and columns need to be provided.
 
-| X1 | X2 | X3 | X4 | X5 |
-| :- | :- | :- | :- | :- |
-| territories | period | commodities | harvested | production |
-| unit 1 |  |  |  |  |     
-|  | year 1 | soybean | 1111 | 1112 |
-|  | year 1 | maize | 1121 | 1122 |
-|  | year 2 | soybean | 1211 | 1212 |
-|  | year 2 | maize | 1221 | 1222 |
-| unit 2 |  |  |  |  |
-|  | year 1 | soybean | 2111 | 2112 |
-|  | year 1 | maize | 2121 | 2122 |
-|  | year 2 | soybean | 2211 | 2212 |
-|  | year 2 | maize | 2221 | 2222 |
+```{r}
+kable(input <- tabs2shift$clusters_vertical)
+```
 
-Table: <a name="clusId"></a>Table 10: Vertical clusters of the identifying variable `period`.
+Table: <a name="clusId"></a>Table 13: Vertical clusters of the identifying variable `period`.
+
 
 ```{r, eval=FALSE}
-schema <- setCluster(id = "territories", top = c(3, 8), left = 2) %>%
-  setHeader(rows = 1) %>%
-  setIDVar(name = "territories", columns = 1, row = c(2, 7)) %>%
+schema <- setCluster(id = "territories",
+                     left = 1, top = c(3, 9)) %>%
+  setIDVar(name = "territories", columns = 1, rows = c(3, 9)) %>%
   setIDVar(name = "year", columns = 2) %>%
-  setIDVar(name = "commodities", columns = 3) %>%
-  setObsVar(name = "harvested", columns = 4, unit = "ha") %>%
-  setObsVar(name = "production", columns = 5, unit = "t")
+  setIDVar(name = "commodities", columns = 5) %>%
+  setObsVar(name = "harvested", columns = 6) %>%
+  setObsVar(name = "production", columns = 7)
 ```
 
 
 ### Clusters of observed variables
 
 The previous two types of clusters are clusters of identifying variables, but it may also be the case that the observed variables are split up into distinct clusters.
-Here, we need to specify first of all `setClusters(..., id = "observed")` to indicate that the observed variable is the cluster ID.
+Here, we need to specify first of all `setClusters(..., id = "observed")` to indicate that clusters are observed variables.
 Next, we need to set up the observed variables so that they contain `"key = "cluster"` and in `value` the number of the cluster this variable can be found in.
-Moreover, we provide the column(s) and all rows that contain the values of each observed variable.
-This is in contrast to nested observed variables, where the rows of the variable names need to be provided.
 
-| X1 | X2 | X3 | X4 | X5 |
-| :- | :- | :- | :- | :- |
-|  | territories | period | commodities | values |
-| harvested |  |  |  |  |
-|  | unit 1 | year 1 | soybean | 1111 |
-|  | unit 1 | year 1 | maize | 1121 |
-|  | unit 1 | year 2 | soybean | 1211 |
-|  | unit 1 | year 2 | maize | 1221 |
-|  | unit 2 | year 1 | soybean | 2111 |
-|  | unit 2 | year 1 | maize | 2121 |
-|  | unit 2 | year 2 | soybean | 2211 |
-|  | unit 2 | year 2 | maize | 2221 |
-| production |  |  |  |  |
-|  | unit 1 | year 1 | soybean | 1112 |
-|  | unit 1 | year 1 | maize | 1122 |
-|  | unit 1 | year 2 | soybean | 1212 |   
-|  | unit 1 | year 2 | maize | 1222 |
-|  | unit 2 | year 1 | soybean | 2112 |
-|  | unit 2 | year 1 | maize | 2122 |
-|  | unit 2 | year 2 | soybean | 2212 |
-|  | unit 2 | year 2 | maize | 2222 |
+```{r}
+kable(input <- tabs2shift$clusters_observed)
+```
 
-Table: <a name="clusMeas"></a>Table 11: Vertical clusters of the observed variables.
+Table: <a name="clusMeas"></a>Table 14: Vertical clusters of the observed variables.
+
 
 ```{r, eval=FALSE}
-schema <- setCluster(id = "observed", left = 2, top = c(3, 12), height = 8) %>%
-  setHeader(rows = 1) %>%
+schema <- setCluster(id = "observed",
+                     left = 1, top = c(2, 12)) %>%
   setIDVar(name = "territories", columns = 2) %>%
   setIDVar(name = "year", columns = 3) %>%
-  setIDVar(name = "commodities", columns = 4) %>%
-  setObsVar(name = "harvested", columns = 5, unit = "ha",
-            key = "cluster", value = 1) %>%
-  setObsVar(name = "production", columns = 5, unit = "t",
-            key = "cluster", value = 2)
+  setIDVar(name = "commodities", columns = 5) %>%
+  setObsVar(name = "harvested", columns = 7, key = "cluster", value = 1) %>%
+  setObsVar(name = "production", columns = 7, key = "cluster", value = 2)
 ```
 
 
 ### Clusters that are nested into another variable
 
-When (some) clusters are nested in such a way that their group information is also a variable of interest, not only the cluster positions need to be specified, but also their relation to the grouping variable.
+When (some) clusters are nested into a (grouping) variable of interest, not only the cluster positions need to be specified, but also their relation to the grouping variable.
 Similar to the cluster ID, this group ID also needs to be specified as an identifying variable and needs to be provided as `group = ...` and the membership of each cluster to a group needs to be specified in `member = ...`. 
 The cluster position needs to be specified just as it would be without groups.
 
-| X1 | X2 | X3 | X4 | X5 |
-| :- | :- | :- | :- | :- |
-| territory | commodities | harvested | production | year |
-| region 1 |  |  |  |  |
-| unit 1 |  |  |  |  |
-|  | soybean | 1111 | 1112 | year 1 |
-|  | maize | 1121 | 1122 | year 1 |
-|  | soybean | 1211 | 1212 | year 2 |
-|  | maize | 1221 | 1222 | year 2 |
-| unit 2 |  |  |  |  |
-|  | soybean | 2111 | 2112 | year 1 |
-|  | maize | 2121 | 2122 | year 1 |
-|  | soybean | 2211 | 2212 | year 2 |
-|  | maize | 2221 | 2222 | year 2 |
-| region 2 |  |  |  |  |
-| unit 3 |  |  |  |  |
-|  | soybean | 3111 | 3112 | year 1 |
-|  | maize | 3121 | 3122 | year 1 |
-|  | soybean | 3211 | 3212 | year 2 |
-|  | maize | 3221 | 3222 | year 2 |
+```{r}
+kable(input <- tabs2shift$clusters_nested)
+```
 
-Table: <a name="clustPar"></a>Table 13: Clusters are grouped according to a variable of interes that should also be captured.
+Table: <a name="clustNest"></a>Table 15: Clusters are grouped according to a variable of interes that should also be captured.
+
 
 ```{r, eval=FALSE}
-schema <- setCluster(id = "territories", group = "regions", member = c(1, 1, 2),
-                     left = 1, top = c(3, 8, 14)) %>%
-    setHeader(rows = 1) %>%
-    setIDVar(name = "regions", columns = 1, rows = c(2, 13)) %>%
-    setIDVar(name = "territories", columns = 1, rows = c(3, 8, 14)) %>%
-    setIDVar(name = "year", columns = 5) %>%
-    setIDVar(name = "commodities", columns = 2) %>%
-    setObsVar(name = "harvested", columns = 3, unit = "ha") %>%
-    setObsVar(name = "production", columns = 4, unit = "t")
+schema <- setCluster(id = "sublevel",
+                     group = "territories", member = c(1, 1, 2),
+                     left = 1, top = c(3, 8, 15)) %>%
+  setIDVar(name = "territories", columns = 1, rows = c(2, 14)) %>%
+  setIDVar(name = "sublevel", columns = 1, rows = c(3, 8, 15)) %>%
+  setIDVar(name = "year", columns = 7) %>%
+  setIDVar(name = "commodities", columns = 2) %>%
+  setObsVar(name = "harvested", columns = 5) %>%
+  setObsVar(name = "production", columns = 6)
 ```
 
 
@@ -502,36 +505,31 @@ schema <- setCluster(id = "territories", group = "regions", member = c(1, 1, 2),
 
 When not all identifying variables can be provided relative to the cluster origin, for example because they are missing for some clusters, it makes more sense to define such a variable as a distinct variable.
 This is done by providing `row` and `col` as absolute values and setting `distinct = TRUE`.
-Other variables that are all arranged in the same way in each cluster can be specified so that their row and column indices are given relative to the cluster position (`relative = TRUE`).
+Other variables that are all arranged in the same way in each cluster can be specified so that their row and column indices are given relative to the cluster position (`relative = TRUE`), as shown in the alternative shema below.
 
+```{r}
+kable(input <- tabs2shift$clusters_messy)
+```
 
-| X1 | X2 | X3 | X4 | X5 | X6 | X7 |
-| :- | :- | :- | :- | :- | :- | :- |
-| commodities | harvested | production  |  |  |  |
-| unit 1 |  |  |  |  |  |  |
-| soybean | 1111 | 1112 | year 1 |  |  |  |
-| maize | 1121 | 1122 | year 1 |  |  |  |
-| soybean | 1211 | 1212 | year 2 |  |  |  |
-| maize | 1221 | 1222 | year 2 |  |  |  |
-|  |  |  |  |  |  |  |
-| commodities | harvested | production | commodities | harvested | production |  |
-| unit 2 |  |  | unit 3 |  |  |  |
-| soybean | 2111 | 2112 | soybean | 3111 | 3112 | year 1 |
-| maize | 2121 | 2122 | maize | 3121 | 3122 | year 1 |
-| soybean | 2211 | 2212 | soybean | 3211 | 3212 | year 2 |
-| maize | 2221 | 2222 | maize | 3221 | 3222 | year 2 |
+Table: <a name="distVar"></a>Table 16: Several clusters where one variable is not available for each cluster, but distinct of them.
 
-Table: <a name="distVar"></a>Table 12: Several clusters where one variable is not available for each cluster, but distinct of them.
 
 ```{r, eval=FALSE}
-schema <- setCluster(id = "territories", top = c(1, 8, 8), left = c(1, 1, 4),
-                     width = 3, height = 6) %>%
-  setHeader(rows = 1, relative = TRUE) %>%
-  setIDVar(name = "territories", columns = 1, row = 2, relative = TRUE) %>%
-  setIDVar(name = "year", columns = 4, row = c(3:6), distinct = TRUE) %>%
+schema <- setCluster(id = "territories",
+                     left = c(1, 1, 4), top = c(1, 8, 8)) %>%
+  setIDVar(name = "territories", columns = c(1, 1, 4), rows = c(2, 9, 9)) %>%
+  setIDVar(name = "year", columns = 4, rows = c(3:6), distinct = TRUE) %>%
+  setIDVar(name = "commodities", columns = c(1, 1, 4)) %>%
+  setObsVar(name = "harvested", columns = c(2, 2, 5)) %>%
+  setObsVar(name = "production", columns = c(3, 3, 6))
+
+schema_alt <- setCluster(id = "territories",
+                         left = c(1, 1, 4), top = c(1, 8, 8)) %>%
+  setIDVar(name = "territories", columns = 1, rows = 2, relative = TRUE) %>%
+  setIDVar(name = "year", columns = 4, rows = c(3:6), distinct = TRUE) %>%
   setIDVar(name = "commodities", columns = 1, relative = TRUE) %>%
-  setObsVar(name = "harvested", unit = "ha", columns = 2, relative = TRUE) %>%
-  setObsVar(name = "production", unit = "t", columns = 3, relative = TRUE)
+  setObsVar(name = "harvested", columns = 2, relative = TRUE) %>%
+  setObsVar(name = "production", columns = 3, relative = TRUE)
 ```
 
 
@@ -541,9 +539,10 @@ In case several clusters are neither aligned along a row nor a column, and are a
 For example, three clusters, where the first cluster starts at (1,1) and is 3 by 4 cells in size, where the second clusters starts at (5,2) and is 5 by 5 cells in size, and so on, needs to be specified as below.
 
 ```{r, eval=FALSE}
-schema <- setCluster(top = c(1, 5, 1), left = c(1, 2, 5), 
-                     width = c(3, 5, 2), height = c(4, 5, 3), id = ...) %>% 
-  setHeader(rows = 1) %>% 
+schema <- setCluster(id = ...,
+                     left = c(1, 2, 5), top = c(1, 5, 1),  
+                     width = c(3, 5, 2), height = c(4, 5, 3), 
+                     ...) %>% 
   setIDVar(name = "territories", columns = 1, relative = TRUE) %>% 
   ...
 ```

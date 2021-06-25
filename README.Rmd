@@ -57,6 +57,7 @@ A disorganised table may look like the following table:
 library(tabshiftr)
 library(knitr)
 
+# a rather disorganised table with messy clusters and a distinct variable
 input <- tabs2shift$clusters_messy
 kable(input)
 ```
@@ -66,51 +67,63 @@ For other tables that may or may not be as complicated, we'd have to set up yet 
 In `tabshiftr` we solve that by describing the schema of the input table and providing this schema description to the `reorganise()` function.
 This requires us to use a vastly smaller set of code and makes it thus a lot more efficient to bring multiple heterogeneous data into an interoperable format.
 
-A schema description can be started with any of the `set*` functions in this package and for the example table, we start the schema description by setting the clusters.
-This table contains two chunks of data at the rows 1 to 6 and 8 to 13 with a height of 6 cells and they are further organised into three similar groups (so-called *clusters*) with a width of 3 cells.
-In the second row of each cluster is another variable that is unique for each cluster and thus presumable the cluster identifier, we call it `territories`.
-
 ```{r}
-schema <- setCluster(id = "territories", top = c(1, 8, 8), left = c(1, 1, 4), 
-                     width = 3, height = 6)
+# put together schema description by ...
+# ... identifying cluster positions
+schema <- setCluster(id = "territories", left = c(1, 1, 4), top = c(1, 8, 8))
+
+# ... specifying the cluster ID as id variable (obligatory for when we deal with clusters)
+schema <- schema %>%
+   setIDVar(name = "territories", columns = c(1, 1, 4), rows = c(2, 9, 9))
+
+# ... specifying a distinct variable (explicit position)
+schema <- schema %>%
+   setIDVar(name = "year", columns = 4, rows = c(3:6), distinct = TRUE)
+
+# ... specifying a tidy variable (by giving the column values)
+schema <- schema %>%
+   setIDVar(name = "commodities", columns = c(1, 1, 4))
+
+# ... identifying the (tidy) observed variables
+schema <- schema %>%
+   setObsVar(name = "harvested", columns = c(2, 2, 5)) %>%
+   setObsVar(name = "production", columns = c(3, 3, 6))
+
+# to potentially debug the schema description, first validate the schema ...
+schema_valid <- validateSchema(schema = schema, input = input)
+
+# ... and extract parts of it per cluster (also check out the other getters in
+# this package)
+getIDVars(schema = schema_valid, input = input)
+getObsVars(schema = schema_valid, input = input)
+
+# alternatively, if the clusters are regular, relative values starting from the
+# cluster origin could be set
+schema_alt <- setCluster(id = "territories",
+                         left = c(1, 1, 4), top = c(1, 8, 8)) %>%
+  setIDVar(name = "territories", columns = 1, rows = 2, relative = TRUE) %>%
+  setIDVar(name = "year", columns = 4, rows = c(3:6), distinct = TRUE) %>%
+  setIDVar(name = "commodities", columns = 1, relative = TRUE) %>%
+  setObsVar(name = "harvested", columns = 2, relative = TRUE) %>%
+  setObsVar(name = "production", columns = 3, relative = TRUE)
 ```
 
-Each cluster contains the identifying variable `commodities` in the first column and the two observed variables `harvested` and `production` in the second and third column respectively.
-Moreover, the identifying variable `year` has values but no explicit name and is distinct from clusters (i.e., it doesn't appear in each cluster).
-It thus has to be described with a position that is not relative to clusters, but to the spreadsheet.
-Before describing those variables though, we have to make sure that `territories` (the cluster ID) is set.
+The `reorganise()` function carries out the steps of validating, extracting the variables, pivoting the tentative output and putting the final table together automatically, so it merely requires the finalised `schema` and the `input` table.
 
 ```{r}
-schema <- schema %>% 
-  setIDVar(name = "territories", columns = 1, row = 2, relative = TRUE) %>% 
-  setIDVar(name = "year", columns = 4, row = c(3:6), distinct = TRUE) %>% 
-  setIDVar(name = "commodities", columns = 1, relative = TRUE) %>% 
-  setObsVar(name = "harvested", unit = "ha", columns = 2, relative = TRUE) %>% 
-  setObsVar(name = "production", unit = "t", columns = 3, relative = TRUE)
-```
+schema # has a pretty print function
 
-Input tables may contain many more data/variables than what we are interested in (for example if there were some metadata or another distinct variable in the empty cells in columns 5-7), but the schema description contains only those variables that shall be in the output table.
-Eventually, we end up with the following schema description.
-
-```{r}
-schema
-```
-
-Finally, the input table is reorganised simply by calling `reorganise()`.
-
-```{r}
 output <- reorganise(input = input, schema = schema)
 kable(output)
 ```
 
+
 # Contributions
 
-* tabshiftr is still in development. So far it reliably reorganises 20 different types of tables, all of which are combinations of the dimensions of disorganisation outlined in the vignette.
-We suspect that there are further table arrangements, but they are not clear at this stage, issues submitted by users and contributors should be helpful.
+* tabshiftr is still in development. So far it reliably reorganises 20 different types of tables, but additional dimensions of disorganisation might show themselves. If you encounter a table that can't be reorganised with the current infrastructure, we'd be more than happy to collaborate on advancing `tabshiftr`.
 * Informative error management is work in process.
-* Moreover, the resulting schema descriptions can be useful for data archiving or database building and tabshiftr should at some point support that those schemas can be exported into data-formats that are used by downstream applications (xml, json, ...), following proper (ISO) standards.
+* Moreover, the resulting schema descriptions can be useful for data archiving or database building and `tabshiftr` should at some point support that those schemas can be exported into data-formats that are used by downstream applications (xml, json, ...), following proper (ISO) standards. In case you have experience with those standards and would like to collab on it, please get in touch!
 
-Contributions to those points and discussions on where tabshiftr should go are highly welcome!
 
 # Acknowledgement
 

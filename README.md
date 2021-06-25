@@ -62,6 +62,7 @@ A disorganised table may look like the following table:
 library(tabshiftr)
 library(knitr)
 
+# a rather disorganised table with messy clusters and a distinct variable
 input <- tabs2shift$clusters_messy
 kable(input)
 ```
@@ -95,63 +96,180 @@ the input table and providing this schema description to the
 code and makes it thus a lot more efficient to bring multiple
 heterogeneous data into an interoperable format.
 
-A schema description can be started with any of the `set*` functions in
-this package and for the example table, we start the schema description
-by setting the clusters. This table contains two chunks of data at the
-rows 1 to 6 and 8 to 13 with a height of 6 cells and they are further
-organised into three similar groups (so-called *clusters*) with a width
-of 3 cells. In the second row of each cluster is another variable that
-is unique for each cluster and thus presumable the cluster identifier,
-we call it `territories`.
-
 ``` r
-schema <- setCluster(id = "territories", top = c(1, 8, 8), left = c(1, 1, 4), 
-                     width = 3, height = 6)
+# put together schema description by ...
+# ... identifying cluster positions
+schema <- setCluster(id = "territories", left = c(1, 1, 4), top = c(1, 8, 8))
+
+# ... specifying the cluster ID as id variable (obligatory for when we deal with clusters)
+schema <- schema %>%
+   setIDVar(name = "territories", columns = c(1, 1, 4), rows = c(2, 9, 9))
+
+# ... specifying a distinct variable (explicit position)
+schema <- schema %>%
+   setIDVar(name = "year", columns = 4, rows = c(3:6), distinct = TRUE)
+
+# ... specifying a tidy variable (by giving the column values)
+schema <- schema %>%
+   setIDVar(name = "commodities", columns = c(1, 1, 4))
+
+# ... identifying the (tidy) observed variables
+schema <- schema %>%
+   setObsVar(name = "harvested", columns = c(2, 2, 5)) %>%
+   setObsVar(name = "production", columns = c(3, 3, 6))
+
+# to potentially debug the schema description, first validate the schema ...
+schema_valid <- validateSchema(schema = schema, input = input)
+
+# ... and extract parts of it
+getIDVars(schema = schema_valid, input = input)
+#> [[1]]
+#> [[1]]$year
+#> # A tibble: 4 x 1
+#>   X4    
+#>   <chr> 
+#> 1 year 1
+#> 2 year 1
+#> 3 year 2
+#> 4 year 2
+#> 
+#> [[1]]$commodities
+#> # A tibble: 4 x 1
+#>   X1     
+#>   <chr>  
+#> 1 soybean
+#> 2 maize  
+#> 3 soybean
+#> 4 maize  
+#> 
+#> 
+#> [[2]]
+#> [[2]]$year
+#> # A tibble: 4 x 1
+#>   X4    
+#>   <chr> 
+#> 1 year 1
+#> 2 year 1
+#> 3 year 2
+#> 4 year 2
+#> 
+#> [[2]]$commodities
+#> # A tibble: 4 x 1
+#>   X1     
+#>   <chr>  
+#> 1 soybean
+#> 2 maize  
+#> 3 soybean
+#> 4 maize  
+#> 
+#> 
+#> [[3]]
+#> [[3]]$year
+#> # A tibble: 4 x 1
+#>   X4    
+#>   <chr> 
+#> 1 year 1
+#> 2 year 1
+#> 3 year 2
+#> 4 year 2
+#> 
+#> [[3]]$commodities
+#> # A tibble: 4 x 1
+#>   X4     
+#>   <chr>  
+#> 1 soybean
+#> 2 maize  
+#> 3 soybean
+#> 4 maize
+getObsVars(schema = schema_valid, input = input)
+#> [[1]]
+#> [[1]]$harvested
+#> # A tibble: 4 x 1
+#>   X2   
+#>   <chr>
+#> 1 1111 
+#> 2 1121 
+#> 3 1211 
+#> 4 1221 
+#> 
+#> [[1]]$production
+#> # A tibble: 4 x 1
+#>   X3   
+#>   <chr>
+#> 1 1112 
+#> 2 1122 
+#> 3 1212 
+#> 4 1222 
+#> 
+#> 
+#> [[2]]
+#> [[2]]$harvested
+#> # A tibble: 4 x 1
+#>   X2   
+#>   <chr>
+#> 1 2111 
+#> 2 2121 
+#> 3 2211 
+#> 4 2221 
+#> 
+#> [[2]]$production
+#> # A tibble: 4 x 1
+#>   X3   
+#>   <chr>
+#> 1 2112 
+#> 2 2122 
+#> 3 2212 
+#> 4 2222 
+#> 
+#> 
+#> [[3]]
+#> [[3]]$harvested
+#> # A tibble: 4 x 1
+#>   X5   
+#>   <chr>
+#> 1 3111 
+#> 2 3121 
+#> 3 3211 
+#> 4 3221 
+#> 
+#> [[3]]$production
+#> # A tibble: 4 x 1
+#>   X6   
+#>   <chr>
+#> 1 3112 
+#> 2 3122 
+#> 3 3212 
+#> 4 3222
+
+# alternatively, relative values starting from the cluster origin could be set
+schema_alt <- setCluster(id = "territories",
+                         left = c(1, 1, 4), top = c(1, 8, 8)) %>%
+  setIDVar(name = "territories", columns = 1, rows = 2, relative = TRUE) %>%
+  setIDVar(name = "year", columns = 4, rows = c(3:6), distinct = TRUE) %>%
+  setIDVar(name = "commodities", columns = 1, relative = TRUE) %>%
+  setObsVar(name = "harvested", columns = 2, relative = TRUE) %>%
+  setObsVar(name = "production", columns = 3, relative = TRUE)
 ```
 
-Each cluster contains the identifying variable `commodities` in the
-first column and the two observed variables `harvested` and `production`
-in the second and third column respectively. Moreover, the identifying
-variable `year` has values but no explicit name and is distinct from
-clusters (i.e., it doesn’t appear in each cluster). It thus has to be
-described with a position that is not relative to clusters, but to the
-spreadsheet. Before describing those variables though, we have to make
-sure that `territories` (the cluster ID) is set.
+The `reorganise()` function carries out the steps of validating,
+extracting the variables, pivoting the tentative output and putting the
+final table together automatically, so it merely requires the finalised
+`schema` and the `input` table.
 
 ``` r
-schema <- schema %>% 
-  setIDVar(name = "territories", columns = 1, row = 2, relative = TRUE) %>% 
-  setIDVar(name = "year", columns = 4, row = c(3:6), distinct = TRUE) %>% 
-  setIDVar(name = "commodities", columns = 1, relative = TRUE) %>% 
-  setObsVar(name = "harvested", unit = "ha", columns = 2, relative = TRUE) %>% 
-  setObsVar(name = "production", unit = "t", columns = 3, relative = TRUE)
-```
-
-Input tables may contain many more data/variables than what we are
-interested in (for example if there were some metadata or another
-distinct variable in the empty cells in columns 5-7), but the schema
-description contains only those variables that shall be in the output
-table. Eventually, we end up with the following schema description.
-
-``` r
-schema
+schema # has a pretty print function
 #>   3 clusters
 #>     origin : 1|1, 8|1, 8|4  (row|col)
 #>     id     : territories
 #> 
-#>    variable      type       row   col   rel   dist 
-#>   ------------- ---------- ----- ----- ----- ------  
-#>    territories   id         2     1     T     F  
-#>    year          id         3:6   4     F     T  
-#>    commodities   id               1     T     F  
-#>    harvested     observed         2     T     F  
-#>    production    observed         3     T     F
-```
+#>    variable      type       row    col    dist 
+#>   ------------- ---------- ------ ------ ------  
+#>    territories   id         2, 9   1, 4   F  
+#>    year          id         3:6    4      T  
+#>    commodities   id                1, 4   F  
+#>    harvested     observed          2, 5   F  
+#>    production    observed          3, 6   F
 
-Finally, the input table is reorganised simply by calling
-`reorganise()`.
-
-``` r
 output <- reorganise(input = input, schema = schema)
 kable(output)
 ```
@@ -174,20 +292,17 @@ kable(output)
 # Contributions
 
   - tabshiftr is still in development. So far it reliably reorganises 20
-    different types of tables, all of which are combinations of the
-    dimensions of disorganisation outlined in the vignette. We suspect
-    that there are further table arrangements, but they are not clear at
-    this stage, issues submitted by users and contributors should be
-    helpful.
+    different types of tables, but additional dimensions of
+    disorganisation might show themselves. If you encounter a table that
+    can’t be reorganised with the current infrastructure, we’d be more
+    than happy to collaborate on advancing `tabshiftr`.
   - Informative error management is work in process.
   - Moreover, the resulting schema descriptions can be useful for data
-    archiving or database building and tabshiftr should at some point
+    archiving or database building and `tabshiftr` should at some point
     support that those schemas can be exported into data-formats that
     are used by downstream applications (xml, json, …), following proper
-    (ISO) standards.
-
-Contributions to those points and discussions on where tabshiftr should
-go are highly welcome\!
+    (ISO) standards. In case you have experience with those standards
+    and would like to collab on it, please get in touch\!
 
 # Acknowledgement
 
