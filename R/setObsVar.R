@@ -35,6 +35,8 @@
 #' @details Please also take a look at the currently suggested strategy to set
 #'   up a \link[=schema]{schema description}.
 #' @return An object of class \code{\link{schema}}.
+#' @examples
+#' # please check the vignette for examples
 #' @family functions to describe table arrangement
 #' @importFrom checkmate assertClass assertIntegerish assertLogical
 #'   assertCharacter assertNumeric testIntegerish testCharacter assert

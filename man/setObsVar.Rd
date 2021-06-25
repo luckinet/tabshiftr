@@ -69,9 +69,13 @@ and in a tidy table they'd be recorded as separate columns.
 Please also take a look at the currently suggested strategy to set
   up a \link[=schema]{schema description}.
 }
+\examples{
+# please check the vignette for examples
+}
 \seealso{
 Other functions to describe table arrangement: 
 \code{\link{setCluster}()},
+\code{\link{setFilter}()},
 \code{\link{setFormat}()},
 \code{\link{setIDVar}()}
 }

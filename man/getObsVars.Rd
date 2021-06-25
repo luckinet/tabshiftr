@@ -4,15 +4,34 @@
 \alias{getObsVars}
 \title{Extract observed variables}
 \usage{
-getObsVars(input = NULL, schema = NULL)
+getObsVars(schema = NULL, input = NULL)
 }
 \arguments{
-\item{input}{[\code{character(1)}]\cr table to reorganise.}
-
 \item{schema}{[\code{character(1)}]\cr the schema description of
 \code{input}.}
+
+\item{input}{[\code{character(1)}]\cr table to reorganise.}
+}
+\value{
+list of the length of number of clusters with values of the observed
+  variables per cluster
 }
 \description{
 This function extracts the observed variables from a table by applying a
 schema description to it.
+}
+\examples{
+input <- tabs2shift$clusters_nested
+schema <- setCluster(id = "sublevel",
+                     group = "territories", member = c(1, 1, 2),
+                     left = 1, top = c(3, 8, 15)) \%>\%
+  setIDVar(name = "territories", columns = 1, rows = c(2, 14)) \%>\%
+  setIDVar(name = "sublevel", columns = 1, rows = c(3, 8, 15)) \%>\%
+  setIDVar(name = "year", columns = 7) \%>\%
+  setIDVar(name = "commodities", columns = 2) \%>\%
+  setObsVar(name = "harvested", columns = 5) \%>\%
+  setObsVar(name = "production", columns = 6)
+
+validateSchema(schema = schema, input = input) \%>\%
+   getObsVars(input = input)
 }

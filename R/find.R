@@ -18,15 +18,38 @@
 #'   when debugging complicated schema descriptions.
 #'
 #'   In case that function encounters a schema that wants to find columns or
-#'   rows via a regular expression, it combines all cells of columns and all
-#'   cells of rows into one character string and matches he regular expression
-#'   on those. Columns/rows that have a match are returned as the respective
-#'   column/row value.
-#'
-#'   In case it encounters a schema that wants to find columns or rows via a
-#'   function,
-#'
+#'   rows on the fly via \code{.find}, it combines all cells of columns and all
+#'   cells of rows into one character string and matches the regular expression
+#'   or function on those. Columns/rows that have a match are returned as the
+#'   respective column/row value.
 #' @return the index values where the target was found.
+#' @examples
+#' # use regular expressions to find cell positions
+#' (input <- tabs2shift$clusters_messy)
+#'
+#' schema <- setCluster(id = "territories",
+#'                      left = .find("comm*"), top = .find("comm*")) %>%
+#'   setIDVar(name = "territories", columns = c(1, 1, 4), rows = c(2, 9, 9)) %>%
+#'   setIDVar(name = "year", columns = 4, rows = c(3:6), distinct = TRUE) %>%
+#'   setIDVar(name = "commodities", columns = c(1, 1, 4)) %>%
+#'   setObsVar(name = "harvested", columns = c(2, 2, 5)) %>%
+#'   setObsVar(name = "production", columns = c(3, 3, 6))
+#'
+#' schema
+#' validateSchema(schema = schema, input = input)
+#'
+#' # use a function to find rows
+#' (input <- tabs2shift$messy_rows)
+#'
+#' schema <-
+#'   setFilter(rows = .find(by = is.numeric, col = 1), invert = TRUE) %>%
+#'   setIDVar(name = "territories", columns = 1) %>%
+#'   setIDVar(name = "year", columns = 2) %>%
+#'   setIDVar(name = "commodities", columns = 3) %>%
+#'   setObsVar(name = "harvested", columns = 5) %>%
+#'   setObsVar(name = "production", columns = 6)
+#'
+#' reorganise(schema = schema, input = input)
 #' @importFrom checkmate testCharacter testFunction assert
 #' @importFrom purrr map_chr
 #' @importFrom rlang enquo

@@ -7,8 +7,10 @@
 #' @param rows [\code{integerish(.)}]\cr the rows to ignore.
 #' @param invert [\code{logical(1)}]\cr whether or not to invert the values
 #'   provided in \code{columns} and \code{rows}.
-#' @details Currently the functionality is restricted to masking out columns and
-#'   rows globally across the whole table.
+#' @return An object of class \code{\link{schema}}.
+#' @examples
+#' # please check the vignette for examples
+#' @family functions to describe table arrangement
 #' @importFrom checkmate assertClass testIntegerish testClass
 #' @export
 

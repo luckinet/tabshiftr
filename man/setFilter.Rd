@@ -16,10 +16,20 @@ information).}
 \item{invert}{[\code{logical(1)}]\cr whether or not to invert the values
 provided in \code{columns} and \code{rows}.}
 }
+\value{
+An object of class \code{\link{schema}}.
+}
 \description{
 This function allows to specify additional rules to filter certain rows
 }
-\details{
-Currently the functionality is restricted to masking out columns and
-  rows globally across the whole table.
+\examples{
+# please check the vignette for examples
 }
+\seealso{
+Other functions to describe table arrangement: 
+\code{\link{setCluster}()},
+\code{\link{setFormat}()},
+\code{\link{setIDVar}()},
+\code{\link{setObsVar}()}
+}
+\concept{functions to describe table arrangement}
