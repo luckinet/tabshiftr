@@ -63,7 +63,7 @@
 
 #' Match variables
 #'
-#' This function matches id and observed variables and reshapes them accoringly
+#' This function matches id and observed variables and reshapes them accordingly
 #' @param ids list of id variables
 #' @param obs list of observed variables
 #' @return a symmetric list of variables (all with the same dimensions)

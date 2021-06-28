@@ -96,7 +96,7 @@ Table: <a name="tabExample2"></a>Table 2: An example of a table with several clu
 <!-- 5) A table is organised so that one or more variables are \"not in one piece\" (e.g., empty rows and/or columns). -->
 <!-- 6) One or more variables are merely implicitly available (e.g., as table or file name or in a \"meta-data header\") -->
 <!-- 7) Tables that are part of the same series (i.e., that contain the same variables), contain variables in different columns in each table. -->
-<!-- 8) Some columns of a particular chunk are missplaced vertically or some rows are missplaced horizontally so that variables and observations don't match across the whole table (not yet explicitly solved here). -->
+<!-- 8) Some columns of a particular chunk are misplaced vertically or some rows are misplaced horizontally so that variables and observations don't match across the whole table (not yet explicitly solved here). -->
 
 
 # How to make a schema description
@@ -396,7 +396,7 @@ schema <-
 ```
 
 
-### Missplaced columns or rows
+### Misplaced columns or rows
 
 WIP
 
@@ -485,7 +485,7 @@ The cluster position needs to be specified just as it would be without groups.
 kable(input <- tabs2shift$clusters_nested)
 ```
 
-Table: <a name="clustNest"></a>Table 15: Clusters are grouped according to a variable of interes that should also be captured.
+Table: <a name="clustNest"></a>Table 15: Clusters are grouped according to a variable of interest that should also be captured.
 
 
 ```{r, eval=FALSE}
