@@ -316,7 +316,7 @@ schema <-
   setObsVar(name = "production", columns = c(5, 7), top = 2)
 ```
 
-The same is also true in case the identifying variables are actually nested within the observed variables, i.e., the names of the observed variables are on top of the names of the id variables ([Tab. 8](#wide_obs)). However, if an observed variables is in the topmost row, `top = 1` can be omitted.
+The same is also true in case the identifying variables are actually nested within the observed variables, i.e., the names of the observed variables are on top of the names of the id variables ([Tab. 8](#wide_obs)). However, if an observed variables is in the topmost row (and there are no clusters), `top = 1` can be omitted.
 
 ```{r}
 kable(input <- tabs2shift$wide_obs)
