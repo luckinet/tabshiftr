@@ -321,7 +321,16 @@
       })
     } else {
       rows <- map_int(.x = 1:dim(input)[1], .f = function(ix){
-        str_count(string = paste(input[ix,], collapse = " "), pattern = term)
+        if(!is.null(row$col)){
+          if(!is.na(input[ix,row$col])){
+            lookup <- unlist(input[ix,row$col], use.names = FALSE)
+          } else {
+            lookup <- ""
+          }
+        } else {
+          lookup <-input[ix,]
+        }
+        str_count(string = paste(lookup, collapse = " "), pattern = term)
       })
     }
     out <- rep(seq_along(rows), rows)
