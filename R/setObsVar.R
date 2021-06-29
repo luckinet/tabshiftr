@@ -68,10 +68,6 @@ setObsVar <- function(schema = NULL, name = NULL, columns = NULL, top = NULL,
   nClusters <- max(lengths(schema@clusters))
   if(nClusters == 0) nClusters <- 1
 
-  # if(is.null(top)){
-  #   top <- -1
-  # }
-
   # error management ----
 
   # ensure that 'value' is actually a value of th provided column in 'key'
