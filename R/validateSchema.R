@@ -109,9 +109,20 @@ validateSchema <- function(schema = NULL, input = NULL){
 
   # 3. complete variables ----
   outsideCluster <- NULL
-  selectRows <- selectRows <- NULL
+  selectRows <- selectCols <- NULL
   clusterID <- clusters$id
   groupID <- clusters$group
+
+  # first, evaluate whether any variable other than clusterID or groupID has a 'row' set
+  headerRows <- map(.x = seq_along(variables), .f = function(ix){
+    tempName <- names(variables)[ix]
+    if(!tempName %in% c(groupID, clusterID)){
+      temp <- variables[[ix]]
+      temp$row
+    }
+  })
+  headerRows <- unlist(headerRows, use.names = FALSE)
+
   for(i in seq_along(variables)){
 
     varProp <- variables[[i]]
@@ -132,6 +143,9 @@ validateSchema <- function(schema = NULL, input = NULL){
     # resolve quosures from grep-ing unkown col/rows ----
     if(is.list(varProp$row)){
       varProp$row <- .eval_find(input = input, row = varProp$row)
+
+      # ignore header rows
+      varProp$row <- varProp$row[!varProp$row %in% headerRows]
     }
 
     if(is.list(varProp$col)){
@@ -144,11 +158,13 @@ validateSchema <- function(schema = NULL, input = NULL){
         if(is.null(varProp$row)){
           varProp$row <- clusters$row
         }
+
         if(any(varProp$row < topAfterFilter)){
           varProp$row[which(varProp$row < topAfterFilter)] <- topAfterFilter
         }
       }
-      # build selectRows and assign it to filter$row
+
+      # build selectCols and assign it to filter$row
       filter$row <- sort(unique(c(filter$row, varProp$row)))
     }
 
@@ -163,7 +179,7 @@ validateSchema <- function(schema = NULL, input = NULL){
     }
 
     # identify all selected columns ----
-    selectRows <- unique(c(selectRows, varProp$col))
+    selectCols <- unique(c(selectCols, varProp$col))
 
     # make sure that all elements occur the same number of times ----
     if(!is.null(varProp$row)){
@@ -201,7 +217,7 @@ validateSchema <- function(schema = NULL, input = NULL){
   }
 
   # 4. remove empty rows ----
-  testRows <- input[,selectRows]
+  testRows <- input[,selectCols]
   emptyRows <- which(rowSums(is.na(testRows)) == ncol(testRows))
   filter$row <- sort(unique(c(filter$row, emptyRows)))
 
