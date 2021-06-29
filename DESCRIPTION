@@ -51,7 +51,7 @@ Imports:
     purrr,
     stringr
 RoxygenNote: 7.1.1
-Suggests: 
+Suggests:   
     knitr,
     rmarkdown,
     bookdown,

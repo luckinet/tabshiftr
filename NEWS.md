@@ -9,7 +9,6 @@
 - add a column specifier to `.find()`.
 
 
-
 # tabshiftr 0.2.6
 
 - properly enable use of functions in `.find` via several bug-fixes

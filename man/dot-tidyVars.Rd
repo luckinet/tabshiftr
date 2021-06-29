@@ -15,5 +15,5 @@
 a symmetric list of variables (all with the same dimensions)
 }
 \description{
-This function matches id and observed variables and reshapes them accoringly
+This function matches id and observed variables and reshapes them accordingly
 }

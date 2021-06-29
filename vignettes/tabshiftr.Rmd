@@ -33,7 +33,7 @@ library(knitr)
 
 # Rationale
 
-Tables as places where data tables are recorded can be pretty messy.
+Tables as places where data are recorded can be pretty messy.
 The 'tidy' paradigm in R proposes that data are organised so that variables are recorded in columns, observations in rows and that there is only one value per cell [@Wickham2014].
 This, however, is only one interpretation of how data should be organised and especially when scraping data from multiple heterogeneous sources, one frequently encounters messy data that don't follow this paradigm.
 
@@ -109,7 +109,7 @@ Linked tables in the [next section](#tablesTypes) can serve as examples to compa
 
 2. **Meta-data**: Provide potentially information about the table format in `setFormat()`.
 
-3. **Clusters**: provide (optionally) in `setCluster()`
+3. **Clusters**: In case there are clusters, provide in `setCluster()`
 
     - are data clustered into several files or spreadsheets and is the information used to separate the data (i.e., the spreadsheet name) a variable of interest ([Tab. 6](#implicitVar)) or are the data clustered within one spreadsheet ([Tab. 12](#clusHor), [Tab. 13](#clusId), [Tab. 14](#clusMeas) & [Tab. 15](#clustNest))?
     - are data clustered according to an identifying variable ([Tab. 12](#clusHor), [Tab. 13](#clusId)), or are observed variables grouped into clusters ([Tab. 14](#clusMeas))?
@@ -120,7 +120,7 @@ Linked tables in the [next section](#tablesTypes) can serve as examples to compa
 
     - in which column(s) is the variable?
     - is the variable a result of merging several columns ([Tab. 4](#mergeCol)) or must it be split off of another column ([Tab. 5](#splitCol))?
-    - is the variable wide (i.e., its values are in several columns) ([Tab. 7](#one_wide_id), [Tab. 8](#wide_obs) & [Tab. 9](#two_wide_id))? In this case, the values will look like it's are part of the header.
+    - is the variable wide (i.e., its values are in several columns) ([Tab. 7](#one_wide_id), [Tab. 8](#wide_obs) & [Tab. 9](#two_wide_id))? In this case, the values will look like they are part of the header.
     - is the variable distinct from the main table ([Tab. 16](#distVar))?
     <br><br>
     
@@ -131,26 +131,26 @@ Linked tables in the [next section](#tablesTypes) can serve as examples to compa
     - is the variable listed (i.e., the names of the variable are given as a value of an identifying variable) ([Tab. 10](#long))?
     <br><br>
 
-As an example, we show here how to build a schema description for a table that has a wide identifying variable and a listed observed variable
+As an example, we show here how to build a schema description for a table that has a wide identifying variable and a listed observed variable. This table contains additionally some dummy information one would typically encounter in tables, such as `empty_col`s and rows and data that are not immediately of interest (`other_observed`).
 
 ```{r}
 kable(input <- tabs2shift$listed_column_wide)
 ```
 
-In this case we don't need to set clusters and can start immediately with setting the id variable `territories`, which is in the first column and otherwise tidy. Any of the setters start by default with an empty schema, in case none is provided to them from a previous setter
+In this case we don't need to set clusters and can start immediately with setting the first id variable `territories`, which is in the first column and otherwise tidy. The order by which we set the variables determines where they ocurr in the output table. Any of the setters start by default with an empty schema, in case none is provided to them from a previous setter, thus none needs to be provided at the beginning of a schema.
 
 ```{r}
 schema <- setIDVar(name = "territories", columns = 1)
 ```
 
-Since version 0.3.0, `tabshiftr` comes with getters that allow to debug the current schema description. To do this, however, the schema first needs to be validated. This is in order to make sure that all the generic meta-data are evaluated with the respective input. After that, a getter can be used to extract the respective information, for example the reorganised id variables with `getIDVars()`.
+Since version 0.3.0, `tabshiftr` comes with getters that allow to debug the current schema description. To do this, however, the schema first needs to be validated. This is in order to make sure that all the generic information are evaluated with the respective input. After that, a getter can be used to extract the respective information, for example the reorganised id variables with `getIDVars()`.
 
 ```{r}
 validateSchema(schema = schema, input = input) %>% 
   getIDVars(input = input)
 ```
 
-After seeing that our specification results in a meaningful output, we can continue setting the other variables `years` (tidy and in column 2) and `commodities` (spread over two columns and the values are in the first row).
+After seeing that our specification results in a meaningful output, we can continue setting the other id variables `years` (tidy and in column 2) and `commodities` (spread over two columns and the values are in the first row). Note, how we pipe the previous schema into the next setter. This results in the next variable being added to that schema.
 
 ```{r}
 schema <- schema %>% 
@@ -165,10 +165,10 @@ validateSchema(schema = schema, input = input) %>%
   getIDVars(input = input)
 ```
 
-The id variable `commodities` is visibly wide (more than one column) and its' values are not repeated four times (as for the other id variables) but only once.
-Hence, this is an expected tentative output and the id variables have been specified correctly.
+The id variable `commodities` is clearly wide (more than one column) and its' values are not repeated four times, as it should be, judging by the combination of the other variables.
+However, this is an expected tentative output that will be handled in a later step and the id variables have been specified correctly.
 
-Next, we set the listed observed variables, which means that the column names of the observed variables are treated as if they were the values of an identifying variable (in column 4), while the values are in the columns 6 and 7 and need to be filtered by the respective variable name in column 4.
+Next, we set the listed observed variables. *Listed* means that the column names of the observed variables are treated as if they were the values of an identifying variable (in column 4), while the values are in the columns 6 and 7. Moreover, the values need to be filtered by `value` (in the key in column 4).
 
 ```{r}
 schema <- schema %>% 
@@ -276,7 +276,7 @@ schema <-
 ### Implicit variables
 
 When data are split up into clusters that are stored in separate files or spreadsheets, the cluster ID is often recorded not in the table as an explicit variable, but is only provided in the file or table name.
-In those cases, we have to register the this cluster ID as an identifying variable nevertheless, to output a consistent table.
+In those cases, we have to register this cluster ID as an identifying variable nevertheless, to output a consistent table.
 
 ```{r}
 kable(input <- tabs2shift$implicit_variable)
@@ -297,8 +297,7 @@ schema <- setCluster(id = "territories",
 
 ### Wide variables
 
-
-In case identifying variables are factors with a small number of levels, those levels may falsely be used as names of other variables, where they would be next to each other and thus \"wide\" ([Tab. 7](#one_wide_id)).
+In case identifying variables are factors with a small number of levels, those levels may be falsely used as names of other variables, where they would be next to each other and thus \"wide\" ([Tab. 7](#one_wide_id)).
 Those other variables (both identifying and observed variables) would then be \"nested\" in the wide identifying variables.
 In those cases we have to record for the identifying variable(s) the columns and the row in which the **values of the identifying variable** are found (they will look like they are part of the header). For the observed variable(s) we need to record also the columns and the topmost row of that variable, i.e., the row in which the name of the nested observed variable is found.
 

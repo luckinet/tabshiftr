@@ -30,7 +30,7 @@ In the R environment the *tidy* paradigm is a first step towards interoperabilit
 Tables can be tidied (i.e., brought into a tidy arrangement) via packages such as `tidyr`, however, all functions that deal with reshaping tables to date require data that are already organised into topologically coherent, rectangular tables.
 This is often violated in practice, especially in data that are scraped off of the internet.
 
-`tabshiftr` fills this gap in the toolchain towards more interoperable data via `schema` descriptions and a `reorganise()` function that is largely based on `tidyr`.
+`tabshiftr` fills this gap in the toolchain towards more interoperable data via `schema` descriptions that are built with setters and debugged with getters and a `reorganise()` function that ties everything together.
 
 ## Installation
 
