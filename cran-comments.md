@@ -1,3 +1,7 @@
+30.06.2021
+
+changing 'https://www.tidyverse.org/lifecycle/#maturing' to 'https://lifecycle.r-lib.org/articles/stages.html'
+
 11.05.2020
 
 - fix crucial typo in DESCRIPTION
