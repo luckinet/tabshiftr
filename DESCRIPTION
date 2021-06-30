@@ -1,28 +1,34 @@
 Package: tabshiftr
 Title: Reshape Disorganised Messy Data
 Version: 0.3.0
-Authors@R: c(
-    person("Steffen", "Ehrmann", 
-           email = "steffen.science@funroll-loops.de", 
-           role = c("aut", "cre"), 
-           comment = c(ORCID = "0000-0002-2958-0796")),
-    person("Carsten", "Meyer", 
-           email = "carsten.meyer@idiv.de", 
-           role = c("aut"), 
-           comment = c(ORCID = "0000-0003-3927-5856")),
-    person("Abdualmaged", "Alhemiary", 
-           role = c("ctb")),
-    person("Amelie", "Haas", 
-           role = c("ctb")),
-    person("Annika", "Ertel", 
-           role = c("ctb")),
-    person("Arne", "Rümmler", 
-           email = "arne.ruemmler@tu-dresden.de", 
-           role = c("ctb"),
-           comment = c(ORCID = "0000-0001-8637-9071")),
-    person("Caroline", "Busse", 
-           role = c("ctb"))
-    )
+Authors@R: 
+    c(person(given = "Steffen",
+             family = "Ehrmann",
+             role = c("aut", "cre"),
+             email = "steffen@funroll-loops.de",
+             comment = c(ORCID = "0000-0002-2958-0796")),
+      person(given = "Carsten",
+             family = "Meyer",
+             role = "aut",
+             email = "carsten.meyer@idiv.de",
+             comment = c(ORCID = "0000-0003-3927-5856")),
+      person(given = "Abdualmaged",
+             family = "Alhemiary",
+             role = "ctb"),
+      person(given = "Amelie",
+             family = "Haas",
+             role = "ctb"),
+      person(given = "Annika",
+             family = "Ertel",
+             role = "ctb"),
+      person(given = "Arne",
+             family = "Rümmler",
+             role = "ctb",
+             email = "arne.ruemmler@tu-dresden.de",
+             comment = c(ORCID = "0000-0001-8637-9071")),
+      person(given = "Caroline",
+             family = "Busse",
+             role = "ctb"))
 Description: Helps the user to build and register schema descriptions of 
     disorganised (messy) tables. Disorganised tables are tables that are 
     not in a topologically coherent form, where packages such as 'tidyr' could 
@@ -51,7 +57,7 @@ Imports:
     purrr,
     stringr
 RoxygenNote: 7.1.1
-Suggests:   
+Suggests: 
     knitr,
     rmarkdown,
     bookdown,
