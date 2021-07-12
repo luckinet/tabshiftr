@@ -6,7 +6,10 @@
 #'   expression or function to identify columns or rows in the input table on
 #'   the fly.
 #' @param col [\code{integerish(1)}]\cr optionally, in case \code{by} should not
-#'   be applied to the whole table, this is the column in which to apply
+#'   be applied to the whole table, this is the column(s) in which to apply
+#'   \code{by}.
+#' @param row [\code{integerish(1)}]\cr optionally, in case \code{by} should not
+#'   be applied to the whole table, this is the row(s) in which to apply
 #'   \code{by}.
 #' @details This functions is basically a wild-card for when columns or rows are
 #'   not known ad-hoc, but have to be assigned on the fly. This can be very
@@ -55,7 +58,7 @@
 #' @importFrom rlang enquo
 #' @export
 
-.find <- function(by, col = NULL){
+.find <- function(by, col = NULL, row = NULL){
 
   isPat <- testCharacter(x = by, min.len = 1, any.missing = FALSE)
   isFun <- testFunction(x = by)
@@ -63,7 +66,7 @@
 
   temp <- enquo(by)
 
-  out <- list(by = temp, col = col)
+  out <- list(by = temp, col = col, row = row)
 
   return(out)
 

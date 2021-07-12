@@ -149,7 +149,7 @@ validateSchema <- function(schema = NULL, input = NULL){
     }
 
     if(is.list(varProp$col)){
-      varProp$col <- .eval_find(input = input, col = varProp$col)
+      varProp$col <- .eval_find(input = input, col = varProp$col, row = varProp$row)
     }
 
     # figure our which rows to filter out

@@ -262,78 +262,77 @@
 
   # in case to look for columns
   if(!is.null(col)){
-    term <- eval_tidy(col$by)
+    if(is.list(col)){
+      term <- eval_tidy(col$by)
 
-    if(is.function(term)){
+      if(is.function(term)){
 
-      # this should probably be written so that header rows are excluded so that
-      # the columns can have their corret data type against which the functions
-      # can test
+        if(!is.null(col$row)){
+          assertNumeric(x = col$row, len = 1, any.missing = FALSE)
+          subset <- input[unique(col$row),]
+        } else {
+          subset <- input
+        }
 
-      # if(!is.null(varProp$row)){
-      #   subset <- input[unique(varProp$row),]
-      # } else {
-      #   subset <- input
-      # }
-      #
-      # # make a subset table that contains numbers when possible
-      # subset <- subset %>%
-      #   mutate(across(everything(), function(x) replace_na(x, 0))) %>%
-      #   mutate(across(.cols = where(function(x) suppressWarnings(!anyNA(as.numeric(x)))), .fns = as.numeric))
-      #
-      # cols <- map_lgl(.x = 1:dim(input)[2], .f = function(ix){
-      #   map(subset[[ix]], term)[[1]]
-      # })
+        # make a subset table that contains numbers when possible
+        subset <- subset %>%
+          mutate(across(.cols = where(function(x) suppressWarnings(!anyNA(as.numeric(x)))), .fns = as.numeric))
 
+        cols <- map_int(.x = 1:dim(input)[2], .f = function(ix){
+          map(subset[,ix], term)[[1]] & !is.na(subset[,ix])[[1]]
+        })
 
-    } else {
-      cols <- map_int(.x = 1:dim(input)[2], .f = function(ix){
-        str_count(string = paste(input[[ix]], collapse = " "), pattern = term)
-      })
+      } else {
+        cols <- map_int(.x = 1:dim(input)[2], .f = function(ix){
+          str_count(string = paste(input[[ix]], collapse = " "), pattern = term)
+        })
+      }
+      out <- rep(seq_along(cols), cols)
     }
-    out <- rep(seq_along(cols), cols)
 
   }
 
   # in case to look for rows
   if(!is.null(row)){
-    term <- eval_tidy(row$by)
+    if(is.list(row)){
+      term <- eval_tidy(row$by)
 
-    if(is.function(term)){
+      if(is.function(term)){
 
-      if(!is.null(row$col)){
-        assertNumeric(x = row$col, len = 1, any.missing = FALSE)
-        subset <- input[,unique(row$col)]
-      } else {
-        subset <- input
-      }
-
-      # make a subset table that contains numbers when possible
-      subset <- subset %>%
-        rownames_to_column() %>%
-        pivot_longer(-rowname, 'variable', 'value') %>%
-        pivot_wider(variable, rowname) %>%
-        select(-variable) %>%
-        mutate(across(.cols = where(function(x) suppressWarnings(!anyNA(as.numeric(x)))), .fns = as.numeric))
-
-      rows <- map_int(.x = 1:dim(subset)[2], .f = function(ix){
-        map(subset[,ix], term)[[1]]
-      })
-    } else {
-      rows <- map_int(.x = 1:dim(input)[1], .f = function(ix){
         if(!is.null(row$col)){
-          if(!is.na(input[ix,row$col])){
-            lookup <- unlist(input[ix,row$col], use.names = FALSE)
-          } else {
-            lookup <- ""
-          }
+          assertNumeric(x = row$col, len = 1, any.missing = FALSE)
+          subset <- input[,unique(row$col)]
         } else {
-          lookup <-input[ix,]
+          subset <- input
         }
-        str_count(string = paste(lookup, collapse = " "), pattern = term)
-      })
+
+        # make a subset table that contains numbers when possible
+        subset <- subset %>%
+          rownames_to_column() %>%
+          pivot_longer(-rowname, 'variable', 'value') %>%
+          pivot_wider(variable, rowname) %>%
+          select(-variable) %>%
+          mutate(across(.cols = where(function(x) suppressWarnings(!anyNA(as.numeric(x)))), .fns = as.numeric))
+
+        rows <- map_int(.x = 1:dim(subset)[2], .f = function(ix){
+          map(subset[,ix], term)[[1]]
+        })
+      } else {
+        rows <- map_int(.x = 1:dim(input)[1], .f = function(ix){
+          if(!is.null(row$col)){
+            if(!is.na(input[ix,row$col])){
+              lookup <- unlist(input[ix,row$col], use.names = FALSE)
+            } else {
+              lookup <- ""
+            }
+          } else {
+            lookup <-input[ix,]
+          }
+          str_count(string = paste(lookup, collapse = " "), pattern = term)
+        })
+      }
+      out <- rep(seq_along(rows), rows)
     }
-    out <- rep(seq_along(rows), rows)
 
   }
 

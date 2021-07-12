@@ -19,7 +19,7 @@ setFilter <- function(schema = NULL, rows = NULL, invert = FALSE){
   # assertions ----
   assertClass(x = schema, classes = "schema", null.ok = TRUE)
   rowInt <- testIntegerish(x = rows, lower = 1, min.len = 1, null.ok = TRUE)
-  rowList <- testList(x = rows, len = 2)
+  rowList <- testList(x = rows, len = 3)
   assert(rowInt, rowList)
 
   if(is.null(schema)){
