@@ -4,7 +4,7 @@
 \alias{.find}
 \title{Determine row or column on the fly}
 \usage{
-.find(by, col = NULL)
+.find(by, col = NULL, row = NULL)
 }
 \arguments{
 \item{by}{[\code{character(1)}]\cr character string containing a regular
@@ -12,7 +12,11 @@ expression or function to identify columns or rows in the input table on
 the fly.}
 
 \item{col}{[\code{integerish(1)}]\cr optionally, in case \code{by} should not
-be applied to the whole table, this is the column in which to apply
+be applied to the whole table, this is the column(s) in which to apply
+\code{by}.}
+
+\item{row}{[\code{integerish(1)}]\cr optionally, in case \code{by} should not
+be applied to the whole table, this is the row(s) in which to apply
 \code{by}.}
 }
 \value{
