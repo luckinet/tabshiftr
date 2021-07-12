@@ -19,6 +19,22 @@ test_that(".find columns and rows based on regular expressions", {
 
 })
 
+test_that(".find columns and rows in listed and wide table", {
+
+  input <- tabs2shift$listed_column_two_wide
+
+  schema <-
+    setIDVar(name = "territories", columns = .find("unit*")) %>%
+    setIDVar(name = "year", columns = .find(is.character, row = 2), rows = .find("year*")) %>%
+    setIDVar(name = "commodities", columns = .find("soy|mai*"), rows = .find("soy|mai*")) %>%
+    setObsVar(name = "harvested", columns = .find(is.character, row = 3),
+              key = 3, value = "harvested") %>%
+    setObsVar(name = "production", columns = .find(is.character, row = 3),
+              key = 3, value = "production")
+
+  .expect_valid_table(x = reorganise(input = input, schema = schema), units = 2)
+
+})
 
 test_that(".find cluster positions based on regular expressions", {
 
@@ -35,7 +51,6 @@ test_that(".find cluster positions based on regular expressions", {
   .expect_valid_table(x = reorganise(input = input, schema = schema), units = 3)
 
 })
-
 
 test_that(".find filter rows based on a function", {
 
