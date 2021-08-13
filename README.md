@@ -4,10 +4,7 @@
 # tabshiftr <a href='https://ehrmanns.github.io/tabshiftr/'><img src='man/figures/logo.svg' align="right" height="200" /></a>
 
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/tabshiftr)](https://cran.r-project.org/package=tabshiftr)
-[![Travis-CI Build
-Status](https://travis-ci.org/EhrmannS/tabshiftr.svg?branch=master)](https://travis-ci.org/EhrmannS/tabshiftr)
-[![AppVeyor build
-status](https://ci.appveyor.com/api/projects/status/github/EhrmannS/tabshiftr?branch=master&svg=true)](https://ci.appveyor.com/project/EhrmannS/tabshiftr)
+[![R-CMD-check](https://github.com/EhrmannS/geometr/workflows/R-CMD-check/badge.svg)](https://github.com/EhrmannS/geometr/actions)
 [![Coverage
 Status](https://img.shields.io/codecov/c/github/EhrmannS/tabshiftr/master.svg)](https://codecov.io/github/EhrmannS/tabshiftr?branch=master)
 [![](http://cranlogs.r-pkg.org/badges/grand-total/tabshiftr)](https://cran.r-project.org/package=tabshiftr)
@@ -28,8 +25,9 @@ coherent, rectangular tables. This is often violated in practice,
 especially in data that are scraped off of the internet.
 
 `tabshiftr` fills this gap in the toolchain towards more interoperable
-data via `schema` descriptions and a `reorganise()` function that is
-largely based on `tidyr`.
+data via `schema` descriptions that are built with setters and debugged
+with getters and a `reorganise()` function that ties everything
+together.
 
 ## Installation
 
@@ -121,11 +119,12 @@ schema <- schema %>%
 # to potentially debug the schema description, first validate the schema ...
 schema_valid <- validateSchema(schema = schema, input = input)
 
-# ... and extract parts of it
+# ... and extract parts of it per cluster (also check out the other getters in
+# this package)
 getIDVars(schema = schema_valid, input = input)
 #> [[1]]
 #> [[1]]$year
-#> # A tibble: 4 x 1
+#> # A tibble: 4 × 1
 #>   X4    
 #>   <chr> 
 #> 1 year 1
@@ -134,7 +133,7 @@ getIDVars(schema = schema_valid, input = input)
 #> 4 year 2
 #> 
 #> [[1]]$commodities
-#> # A tibble: 4 x 1
+#> # A tibble: 4 × 1
 #>   X1     
 #>   <chr>  
 #> 1 soybean
@@ -145,7 +144,7 @@ getIDVars(schema = schema_valid, input = input)
 #> 
 #> [[2]]
 #> [[2]]$year
-#> # A tibble: 4 x 1
+#> # A tibble: 4 × 1
 #>   X4    
 #>   <chr> 
 #> 1 year 1
@@ -154,7 +153,7 @@ getIDVars(schema = schema_valid, input = input)
 #> 4 year 2
 #> 
 #> [[2]]$commodities
-#> # A tibble: 4 x 1
+#> # A tibble: 4 × 1
 #>   X1     
 #>   <chr>  
 #> 1 soybean
@@ -165,7 +164,7 @@ getIDVars(schema = schema_valid, input = input)
 #> 
 #> [[3]]
 #> [[3]]$year
-#> # A tibble: 4 x 1
+#> # A tibble: 4 × 1
 #>   X4    
 #>   <chr> 
 #> 1 year 1
@@ -174,7 +173,7 @@ getIDVars(schema = schema_valid, input = input)
 #> 4 year 2
 #> 
 #> [[3]]$commodities
-#> # A tibble: 4 x 1
+#> # A tibble: 4 × 1
 #>   X4     
 #>   <chr>  
 #> 1 soybean
@@ -184,7 +183,7 @@ getIDVars(schema = schema_valid, input = input)
 getObsVars(schema = schema_valid, input = input)
 #> [[1]]
 #> [[1]]$harvested
-#> # A tibble: 4 x 1
+#> # A tibble: 4 × 1
 #>   X2   
 #>   <chr>
 #> 1 1111 
@@ -193,7 +192,7 @@ getObsVars(schema = schema_valid, input = input)
 #> 4 1221 
 #> 
 #> [[1]]$production
-#> # A tibble: 4 x 1
+#> # A tibble: 4 × 1
 #>   X3   
 #>   <chr>
 #> 1 1112 
@@ -204,7 +203,7 @@ getObsVars(schema = schema_valid, input = input)
 #> 
 #> [[2]]
 #> [[2]]$harvested
-#> # A tibble: 4 x 1
+#> # A tibble: 4 × 1
 #>   X2   
 #>   <chr>
 #> 1 2111 
@@ -213,7 +212,7 @@ getObsVars(schema = schema_valid, input = input)
 #> 4 2221 
 #> 
 #> [[2]]$production
-#> # A tibble: 4 x 1
+#> # A tibble: 4 × 1
 #>   X3   
 #>   <chr>
 #> 1 2112 
@@ -224,7 +223,7 @@ getObsVars(schema = schema_valid, input = input)
 #> 
 #> [[3]]
 #> [[3]]$harvested
-#> # A tibble: 4 x 1
+#> # A tibble: 4 × 1
 #>   X5   
 #>   <chr>
 #> 1 3111 
@@ -233,7 +232,7 @@ getObsVars(schema = schema_valid, input = input)
 #> 4 3221 
 #> 
 #> [[3]]$production
-#> # A tibble: 4 x 1
+#> # A tibble: 4 × 1
 #>   X6   
 #>   <chr>
 #> 1 3112 
@@ -241,7 +240,8 @@ getObsVars(schema = schema_valid, input = input)
 #> 3 3212 
 #> 4 3222
 
-# alternatively, relative values starting from the cluster origin could be set
+# alternatively, if the clusters are regular, relative values starting from the
+# cluster origin could be set
 schema_alt <- setCluster(id = "territories",
                          left = c(1, 1, 4), top = c(1, 8, 8)) %>%
   setIDVar(name = "territories", columns = 1, rows = 2, relative = TRUE) %>%
@@ -302,10 +302,10 @@ kable(output)
     support that those schemas can be exported into data-formats that
     are used by downstream applications (xml, json, …), following proper
     (ISO) standards. In case you have experience with those standards
-    and would like to collab on it, please get in touch\!
+    and would like to collaborate on it, please get in touch\!
 
 # Acknowledgement
 
 This work was supported by funding to Carsten Meyer through the Flexpool
 mechanism of the German Centre for Integrative Biodiversity Research
-(Div) (FZT-118, DFG).
+(iDiv) (FZT-118, DFG).
