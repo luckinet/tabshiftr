@@ -4,7 +4,7 @@
 # tabshiftr <a href='https://ehrmanns.github.io/tabshiftr/'><img src='man/figures/logo.svg' align="right" height="200" /></a>
 
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/tabshiftr)](https://cran.r-project.org/package=tabshiftr)
-[![R-CMD-check](https://github.com/EhrmannS/geometr/workflows/R-CMD-check/badge.svg)](https://github.com/EhrmannS/geometr/actions)
+[![R-CMD-check](https://github.com/EhrmannS/tabshiftr/workflows/R-CMD-check/badge.svg)](https://github.com/EhrmannS/tabshiftr/actions)
 [![Coverage
 Status](https://img.shields.io/codecov/c/github/EhrmannS/tabshiftr/master.svg)](https://codecov.io/github/EhrmannS/tabshiftr?branch=master)
 [![](http://cranlogs.r-pkg.org/badges/grand-total/tabshiftr)](https://cran.r-project.org/package=tabshiftr)
