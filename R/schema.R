@@ -324,6 +324,7 @@ setMethod(f = "show",
           signature = "schema",
           definition = function(object){
             clusters <- object@clusters
+            filter <- object@filter
             variables <- object@variables
 
             nClusters <- ifelse(length(clusters$row) == 0, 1, length(clusters$row))
@@ -351,6 +352,18 @@ setMethod(f = "show",
             }
             cat(paste0("  ", nClusters, " ", nClustName, clusterSpecs, "\n\n"))
 
+            # make and print filter info ----
+            if(is.null(filter$col) & is.null(filter$row)){
+              filterSpecs <- paste0("")
+            } else {
+
+              filterType <- ifelse(filter$invert, "include", "exclude")
+              filterSpecs <- paste0("  filter (", filterType, ")",
+                                    ifelse(!is.null(filter$col), paste0("\n    col: [", paste0(filter$col, collapse = ", "), "]"), ""),
+                                    ifelse(!is.null(filter$row), paste0("\n    row: [", paste0(filter$row, collapse = ", "), "]"), ""), "\n\n")
+            }
+            cat(filterSpecs)
+
             # make and print variable info ----
             included <- c(TRUE, TRUE)
             theNames <- sapply(seq_along(variables), function(x){
@@ -366,26 +379,62 @@ setMethod(f = "show",
 
             # rows
             theRows <- sapply(seq_along(variables), function(x){
-              if(is.null(variables[[x]]$row)){
-                ""
-              } else if(is_quosure(variables[[x]]$row)){
-                prim_name(eval_tidy(variables[[x]]$row))
-              } else {
-                temp <- unique(variables[[x]]$row)
-                # make a short sequence of 'theRows'
-                dists <- temp - c(temp[1]-1, temp)[-(length(temp)+1)]
-                if(all(dists == 1) & length(temp) > 1){
-                  paste0(min(temp), ":", max(temp))
+              if(variables[[x]]$type == "id"){
+                if(is.null(variables[[x]]$row)){
+                  ""
+                } else if(is_quosure(variables[[x]]$row)){
+                  prim_name(eval_tidy(variables[[x]]$row))
                 } else {
-                  temp
+                  temp <- unique(variables[[x]]$row)
+                  # make a short sequence of 'theRows'
+                  dists <- temp - c(temp[1]-1, temp)[-(length(temp)+1)]
+                  if(all(dists == 1) & length(temp) > 1){
+                    paste0(min(temp), ":", max(temp))
+                  } else {
+                    temp
+                  }
                 }
+              } else {
+                ""
               }
+
             })
             nRow <- sapply(seq_along(theRows), function(x){
               ifelse(test = is.null(theRows[[x]]) , yes = 0, no = nchar(paste0(theRows[[x]], collapse = ", ")))
             })
             maxRows <- ifelse(any(nRow > 3), max(nRow), 3)
             if(any(nRow != 0)){
+              included <- c(included, TRUE)
+            } else {
+              included <- c(included, FALSE)
+            }
+
+            theTops <- sapply(seq_along(variables), function(x){
+              if(variables[[x]]$type == "observed"){
+                if(is.null(variables[[x]]$row)){
+                  ""
+                } else if(is_quosure(variables[[x]]$row)){
+                  prim_name(eval_tidy(variables[[x]]$row))
+                } else {
+                  temp <- unique(variables[[x]]$row)
+                  # make a short sequence of 'theRows'
+                  dists <- temp - c(temp[1]-1, temp)[-(length(temp)+1)]
+                  if(all(dists == 1) & length(temp) > 1){
+                    paste0(min(temp), ":", max(temp))
+                  } else {
+                    temp
+                  }
+                }
+              } else {
+                ""
+              }
+
+            })
+            nTop <- sapply(seq_along(theTops), function(x){
+              ifelse(test = is.null(theTops[[x]]) , yes = 0, no = nchar(paste0(theTops[[x]], collapse = ", ")))
+            })
+            maxTops <- ifelse(any(nTop > 3), max(nTop), 3)
+            if(any(nTop != 0)){
               included <- c(included, TRUE)
             } else {
               included <- c(included, FALSE)
@@ -510,38 +559,44 @@ setMethod(f = "show",
                   head3 <- line3 <- ""
                 }
                 if(included[4]){
+                  head41 <- paste0("top", paste0(rep(" ", times = maxTops), collapse = ""))
+                  line41 <- paste0(c(rep("-", maxTops+2), " "), collapse = "")
+                } else {
+                  head41 <- line41 <- ""
+                }
+                if(included[5]){
                   head4 <- paste0("col", paste0(rep(" ", times = maxCols), collapse = ""))
                   line4 <- paste0(c(rep("-", maxCols+2), " "), collapse = "")
                 } else {
                   head4 <- line4 <- ""
                 }
-                if(included[5]){
+                if(included[6]){
                   head5 <- paste0("key", paste0(rep(" ", times = maxKeys), collapse = ""))
                   line5 <- paste0(c(rep("-", maxKeys+2), " "), collapse = "")
                 } else {
                   head5 <- line5 <- ""
                 }
-                if(included[6]){
+                if(included[7]){
                   head6 <- paste0("value", paste0(rep(" ", times = maxVals-2), collapse = ""))
                   line6 <- paste0(c(rep("-", maxVals+2), " "), collapse = "")
                 } else {
                   head6 <- line6 <- ""
                 }
-                if(included[7]){
+                if(included[8]){
                   head7 <- paste0("rel   ")
                   line7 <- paste0(c(rep("-", 5), " "), collapse = "")
                 } else {
                   head7 <- line7 <- ""
                 }
-                if(included[8]){
+                if(included[9]){
                   head8 <-paste0("dist")
                   line8 <- paste0(c(rep("-", 6), " "), collapse = "")
                 } else {
                   head8 <- line8 <- ""
                 }
 
-                cat(paste0(head1, head2, head3, head4, head5, head6, head7, head8), "\n")
-                cat(" ", paste0(line1, line2, line3, line4, line5, line6, line7, line8), "\n")
+                cat(paste0(head1, head2, head3, head41, head4, head5, head6, head7, head8), "\n")
+                cat(" ", paste0(line1, line2, line3, line41, line4, line5, line6, line7, line8), "\n")
 
               } else {
 
@@ -554,36 +609,42 @@ setMethod(f = "show",
                 } else {
                   var3 <- ""
                 }
+                if(included[5]){
+                  var41 <- paste0(paste0(theTops[[i-1]], collapse = ", "),
+                                  paste0(rep(" ", times = maxCols+3-nTop[[i-1]]), collapse = ""))
+                } else {
+                  var41 <- ""
+                }
                 if(included[4]){
                   var4 <- paste0(paste0(theCols[[i-1]], collapse = ", "),
                                  paste0(rep(" ", times = maxCols+3-nCols[[i-1]]), collapse = ""))
                 } else {
                   var4 <- ""
                 }
-                if(included[5]){
+                if(included[6]){
                   var5 <- paste0(theKeys[[i-1]],
                                  paste0(rep(" ", times = maxKeys+3-nKeys[[i-1]]), collapse = ""))
                 } else {
                   var5 <- ""
                 }
-                if(included[6]){
+                if(included[7]){
                   var6 <- paste0(theValues[[i-1]],
                                  paste0(rep(" ", times = maxVals+3-nVals[[i-1]]), collapse = ""))
                 } else {
                   var6 <- ""
                 }
-                if(included[7]){
+                if(included[8]){
                   var7 <- paste0(theRels[[i-1]], "     ")
                 } else {
                   var7 <- ""
                 }
-                if(included[8]){
+                if(included[9]){
                   var8 <- paste0(theDist[[i-1]], "  ")
                 } else {
                   var8 <- ""
                 }
 
-                cat(paste0(var1, var2, var3, var4, var5, var6, var7, var8, "\n"))
+                cat(paste0(var1, var2, var3, var41, var4, var5, var6, var7, var8, "\n"))
 
               }
 
