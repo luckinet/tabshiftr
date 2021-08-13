@@ -213,22 +213,25 @@ be applied to the whole table, this is the row(s) in which to apply
 #&gt; 
 #&gt;    variable      type       row    col    dist 
 #&gt;   ------------- ---------- ------ ------ ------  
-#&gt;    <span style='color: #BBBB00;'>territories</span>   id         2, 9   1, 4   F  
-#&gt;    <span style='color: #BBBB00;'>year</span>          id         3:6    4      T  
-#&gt;    <span style='color: #BBBB00;'>commodities</span>   id                1, 4   F  
-#&gt;    <span style='color: #BBBB00;'>harvested</span>     observed          2, 5   F  
-#&gt;    <span style='color: #BBBB00;'>production</span>    observed          3, 6   F  </div><div class='input'><span class='fu'><a href='validateSchema.html'>validateSchema</a></span><span class='op'>(</span>schema <span class='op'>=</span> <span class='va'>schema</span>, input <span class='op'>=</span> <span class='va'>input</span><span class='op'>)</span>
+#&gt;    <span style='color: #BBBB00;'>territories</span>   id         2, 9          F  
+#&gt;    <span style='color: #BBBB00;'>year</span>          id         3:6           T  
+#&gt;    <span style='color: #BBBB00;'>commodities</span>   id                       F  
+#&gt;    <span style='color: #BBBB00;'>harvested</span>     observed                 F  
+#&gt;    <span style='color: #BBBB00;'>production</span>    observed                 F  </div><div class='input'><span class='fu'><a href='validateSchema.html'>validateSchema</a></span><span class='op'>(</span>schema <span class='op'>=</span> <span class='va'>schema</span>, input <span class='op'>=</span> <span class='va'>input</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;   3 clusters
 #&gt;     origin : 1|1, 8|1, 8|4  (row|col)
 #&gt;     id     : territories
 #&gt; 
-#&gt;    variable      type       row    col    dist 
-#&gt;   ------------- ---------- ------ ------ ------  
-#&gt;    <span style='color: #BBBB00;'>territories</span>   id         2, 9   1, 4   F  
-#&gt;    <span style='color: #BBBB00;'>year</span>          id         3:6    4      T  
-#&gt;    <span style='color: #BBBB00;'>commodities</span>   id                1, 4   F  
-#&gt;    <span style='color: #BBBB00;'>harvested</span>     observed   1, 8   2, 5   F  
-#&gt;    <span style='color: #BBBB00;'>production</span>    observed   1, 8   3, 6   F  </div><div class='input'>
+#&gt;   filter (exclude)
+#&gt;     row: [1, 2, 7, 8, 9]
+#&gt; 
+#&gt;    variable      type       row    top    col    dist 
+#&gt;   ------------- ---------- ------ ------ ------ ------  
+#&gt;    <span style='color: #BBBB00;'>territories</span>   id         2, 9          1, 4   F  
+#&gt;    <span style='color: #BBBB00;'>year</span>          id         3:6           4      T  
+#&gt;    <span style='color: #BBBB00;'>commodities</span>   id                       1, 4   F  
+#&gt;    <span style='color: #BBBB00;'>harvested</span>     observed          1, 8   2, 5   F  
+#&gt;    <span style='color: #BBBB00;'>production</span>    observed          1, 8   3, 6   F  </div><div class='input'>
 <span class='co'># use a function to find rows</span>
 <span class='op'>(</span><span class='va'>input</span> <span class='op'>&lt;-</span> <span class='va'>tabs2shift</span><span class='op'>$</span><span class='va'>messy_rows</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 16 × 7</span>
