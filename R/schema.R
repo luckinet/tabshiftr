@@ -609,13 +609,13 @@ setMethod(f = "show",
                 } else {
                   var3 <- ""
                 }
-                if(included[5]){
+                if(included[4]){
                   var41 <- paste0(paste0(theTops[[i-1]], collapse = ", "),
                                   paste0(rep(" ", times = maxCols+3-nTop[[i-1]]), collapse = ""))
                 } else {
                   var41 <- ""
                 }
-                if(included[4]){
+                if(included[5]){
                   var4 <- paste0(paste0(theCols[[i-1]], collapse = ", "),
                                  paste0(rep(" ", times = maxCols+3-nCols[[i-1]]), collapse = ""))
                 } else {

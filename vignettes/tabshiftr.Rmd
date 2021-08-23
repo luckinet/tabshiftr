@@ -35,7 +35,7 @@ library(knitr)
 
 Tables as places where data are recorded can be pretty messy.
 The 'tidy' paradigm in R proposes that data are organised so that variables are recorded in columns, observations in rows and that there is only one value per cell [@Wickham2014].
-This, however, is only one interpretation of how data should be organised and especially when scraping data from multiple heterogeneous sources, one frequently encounters messy data that don't follow this paradigm.
+This, however, is only one interpretation of how data should be organised [@Broman] and especially when scraping data off the internet, one frequently encounters spreadsheets that don't follow this paradigm.
 
 The `tidyr` package is one of the most popular tools to bring data into a tidy format. 
 However, up until today it is limited to tables that are already organised into topologically coherent (rectangular) chunks and any messiness beyond that requires dedicated scripts for reorganisation.
@@ -102,6 +102,8 @@ Table: <a name="tabExample2"></a>Table 2: An example of a table with several clu
 # How to make a schema description
 <a name="makeSchema"></a>
 
+## Decision tree
+
 To set up a schema description, go through the following questions step by step and provide the respective answer in the respective function.
 Linked tables in the [next section](#tablesTypes) can serve as examples to compare against.
 
@@ -130,6 +132,23 @@ Linked tables in the [next section](#tablesTypes) can serve as examples to compa
     - is the variable wide and nested in a wide identifying variable (i.e., the name of the observed variable is below the name of the identifying variable) ([Tab. 7](#one_wide_id) & [Tab. 9](#two_wide_id))?
     - is the variable listed (i.e., the names of the variable are given as a value of an identifying variable) ([Tab. 10](#long))?
     <br><br>
+
+
+## Additional remarks
+
+- To work with `tabshiftr`, tables need to be read in while treating any header rows *as data*, i.e., by not setting the first row as header, because in disorganised tables it's often not only the first row that is part of the header.
+- Each column should be treated as a character data type, because some columns might contain data with both numeric and character cells.
+- `reorganise()` takes care of reformatting the data-types into the most permissive data type that does not introduce `NA`s where there should be data, i.e, if a variable can be numeric, it is formatted as numeric column.
+- When setting up a schema description, some generalisations are hard to wrap your mind around. Try imagining that once you have set a variable, it's values are "removed" from the table. For instance, once clusters are set for [Tab. 6](#implicitVar), imagine that the meta-data header isn't part of the table anymore, resulting in a much simpler table. Or for [Tab. 16](#distVar), once territories are set, imagine that the respective `unit1/2/3` values disappear to see that the respective column is actually a tidy column of commodities.
+
+```{r, eval=F}
+input <- read_csv(file = ...,
+                  col_names = FALSE,
+                  col_types = cols(.default = "c"))
+```
+
+
+## An example 
 
 As an example, we show here how to build a schema description for a table that has a wide identifying variable and a listed observed variable. This table contains additionally some dummy information one would typically encounter in tables, such as `empty_col`s and rows and data that are not immediately of interest (`other_observed`).
 
@@ -168,7 +187,7 @@ validateSchema(schema = schema, input = input) %>%
 The id variable `commodities` is clearly wide (more than one column) and its' values are not repeated four times, as it should be, judging by the combination of the other variables.
 However, this is an expected tentative output that will be handled in a later step and the id variables have been specified correctly.
 
-Next, we set the listed observed variables. *Listed* means that the column names of the observed variables are treated as if they were the values of an identifying variable (in column 4), while the values are in the columns 6 and 7. Moreover, the values need to be filtered by `value` (in the key in column 4).
+Next, we set the listed observed variables. *Listed* means that the column names of the observed variables are treated as if they were the values of an identifying variable (in column 4), while the values are in the columns 6 and 7. In this case, the values need to be filtered by `value` (i.e., the values of that variable are found in columns 6 and 7, where column 4 contains `value`).
 
 ```{r}
 schema <- schema %>% 
@@ -183,7 +202,9 @@ validateSchema(schema = schema, input = input) %>%
   getObsVars(input = input)
 ```
 
-The `reorganise()` function carries out the steps of validating, extracting the variables, pivoting the tentative output and putting the final table together automatically, so it merely requires the finalised `schema` and the `input` table.
+From both, the output of `getIDVars` and `getObsVars` we can calculate how many and which combinations of data exist (e.g., the two columns in the observed variables correspond to the two values of the identifying variable `commodities`) and that they still need to be pivoted to be in a tidy arrangement.
+
+The `reorganise()` function carries out the steps of validating, extracting the variables, pivoting the tentative output and putting the final table together automatically, so it merely requires the finalised (non-validated) `schema` and the `input` table.
 
 ```{r}
 schema # has a pretty print function
@@ -195,16 +216,6 @@ reorganise(input = input, schema = schema)
 <a name="tablesTypes"></a>
 
 In this section we look at some examples of disorganised data, discuss the dimension along which they are disorganised and show which schema description should be used to reorganise them.
-
-To work with `tabshiftr`, tables need to be read in while treating any header rows *as data*, i.e., by not setting the first row as header, because in disorganised tables it's often not only the first row that is part of the header. 
-Moreover, each column should be treated as a character data type, because some columns might contain data with both numeric and character cells.
-`reorganise()` takes care of reformatting the data into the most permissive data type that does not introduce `NA`s where there should be data, i.e, if a variable can be numeric, it is formatted as numeric column.
-
-```{r, eval=F}
-input <- read_csv(file = ...,
-                  col_names = FALSE,
-                  col_types = cols(.default = "c"))
-```
 
 All of the following examples contain an `other_observed`, an `empty_col` column and an empty row, which serve the purpose of dummy information or formating that could be found in any table and should not disturb the process of reorganising.
 You can run all the examples by simply loading the schema and calling `reorganise(input = tabs2shift$..., schema = schema)` with the respective table that is plotted for this example.
@@ -237,7 +248,7 @@ reorganise(input = tabs2shift$tidy, schema = schema)
 
 ### Mismatch of columns and variables
 
-Sometimes it may be the case that the number variables is not the same as there are columns because either one variable is spread over several column, or one column contains several variables.
+Sometimes it may be the case that the number of variables is not the same as there are columns because either one variable is spread over several column, or one column contains several variables.
 
 In the former case, columns need to be merged ([Tab. 4](#splitCol)) and in the latter case, columns need to be split via [regular expressions](https://edrub.in/CheatSheets/cheatSheetStringr.pdf) ([Tab. 5](#mergeCol)).
 For example, `.+?(?=_)` gives everything up until the first `_` and `(?<=\\_).*` everything after the `_ `.
