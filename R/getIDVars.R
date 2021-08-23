@@ -21,7 +21,7 @@
 #'
 #' validateSchema(schema = schema, input = input) %>%
 #'    getIDVars(input = input)
-#' @importFrom purrr map set_names
+#' @importFrom purrr map set_names map_dfc
 #' @importFrom dplyr row_number
 #' @importFrom tidyr extract unite
 #' @export
@@ -103,10 +103,22 @@ getIDVars <- function(schema = NULL, input = NULL){
 
           }
 
+          # split ...
           if(!is.null(tempVar$split)){
-            temp <- temp %>%
-              extract(col = 1, into = names(temp), regex = paste0("(", tempVar$split, ")"))
+            # need to distinguish between one and several columns
+            if(dim(temp)[2] == 1){
+              temp <- temp %>%
+                extract(col = 1, into = names(temp), regex = paste0("(", tempVar$split, ")"))
+            } else {
+              temp <- map_dfc(.x = seq_along(temp), .f = function(iy){
+                temp %>%
+                  select(all_of(iy)) %>%
+                  extract(col = 1, into = names(temp)[iy], regex = paste0("(", tempVar$split, ")"))
+              })
+            }
           }
+
+          # ... or merge the variable
           if(!is.null(tempVar$merge)){
             newName <- paste0(names(temp), collapse = tempVar$merge)
             temp <- temp %>%
