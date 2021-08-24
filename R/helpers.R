@@ -162,11 +162,6 @@
           names(bla[[1]]) <- names(ids[ix])
           return(bla)
         }
-        # if(!names(ids[ix]) %in% names(wideColnames)){
-        #   if(all(dim(ids[[ix]]) == c(1, 1))){
-        #     bla <- set_names(x = list(tibble(!!names(ids[ix]) := rep(ids[[ix]][[1]], tempDim[1]))), nm = names(ids[ix]))
-        #   }
-        # }
       })
       equalID <- unlist(equalID, recursive = FALSE)
       temp <- bind_cols(temp, equalID, .name_repair = "minimal")

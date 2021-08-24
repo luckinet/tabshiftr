@@ -85,7 +85,6 @@ getObsVars <- function(schema = NULL, input = NULL){
             }
             theFilter <- which(clusterRows %in% filter$row)
           } else if(is.numeric(tempVar$key)){
-            clusterRows <- which(input[[tempVar$key]] %in% tempVar$value)
             temp <- input[clusterRows, tempVar$col]
             theFilter <- NULL
           }
