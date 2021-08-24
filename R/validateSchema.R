@@ -155,7 +155,7 @@ validateSchema <- function(schema = NULL, input = NULL){
     # figure our which rows to filter out
     if(!varProp$dist & !varName %in% c(groupID, clusterID)){
       if(varProp$type == "observed"){
-        if(is.null(varProp$row)){
+        if(is.null(varProp$row) & is.null(varProp$key)){
           varProp$row <- clusters$row
         }
 
@@ -168,12 +168,6 @@ validateSchema <- function(schema = NULL, input = NULL){
       filter$row <- sort(unique(c(filter$row, varProp$row)))
     }
 
-    # check whether the variable is actually distinct (i.e., outside of clusters) ----
-    if(!varName %in% c(clusterID, groupID)){
-      if(all(varProp$col < clusters$col)){
-        varProp$dist <- TRUE
-      }
-    }
     if(varProp$type == "id" & !is.null(varProp$val)){
       varProp$dist <- TRUE
     }
