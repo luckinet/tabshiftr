@@ -88,9 +88,21 @@ reorganise <- function(input = NULL, schema = NULL){
     assertIntegerish(x = length(nrRows), lower = 1, upper = 1, any.missing = FALSE)
 
     # if a cluster or group ID has been set, prepend these to the tidy variables ...
+    mergeClust <- FALSE
     if(!is.null(clusterVar)){
       if(is.list(clusterVar)){
-        temp <- tibble(X = rep(clusterVar[[i]][[1]], nrRows))
+
+        # if there is only one item per clusterVar, replicate it, otherwise attach values
+        dims <- unlist(map(.x = seq_along(clusterVar), .f = function(ix){
+          dim(clusterVar[[ix]])
+        }), use.names = FALSE)
+
+        if(all(dims == 1)){
+          temp <- tibble(X = rep(clusterVar[[i]][[1]], nrRows))
+        } else {
+          temp <- tibble(X = unlist(clusterVar, use.names = FALSE))
+          mergeClust <- TRUE
+        }
         tidyVars <- c(set_names(x = list(temp), nm = names(clusterVar)[i]), tidyVars)
       }
     }
@@ -108,7 +120,7 @@ reorganise <- function(input = NULL, schema = NULL){
 
   }
 
-  if(any(clusterVar == "observed")){
+  if(any(clusterVar == "observed") | mergeClust){
     out <- suppressMessages(reduce(theValues, left_join))
   } else {
     out <- bind_rows(theValues)
