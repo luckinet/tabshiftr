@@ -69,7 +69,7 @@ getIDVars <- function(schema = NULL, input = NULL){
         if(listedObs){
           if(!is.null(tempVar$row)){
             tempVar$row <- rep(x = tempVar$row, length.out = nClusters)
-          } else {
+          } else if(!is.null(tempVar$col)){
             tempVar$col <- rep(x = tempVar$col, length.out = nClusters)
           }
           clusterRows <- filterRows[[ix]]
