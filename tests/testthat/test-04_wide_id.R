@@ -36,6 +36,24 @@ test_that("wide variable in first row of header", {
 })
 
 
+test_that("wide variable (that needs to be split) in first row of header", {
+
+  input <- tabs2shift$one_wide_id
+  input$X4[1] <- "soybean_something"
+  input$X6[1] <- "maize_something"
+
+  schema <-
+    setIDVar(name = "territories", columns = 1) %>%
+    setIDVar(name = "year", columns = 3) %>%
+    setIDVar(name = "commodities", columns = c(4, 6), rows = 1, split = ".+?(?=_)") %>%
+    setObsVar(name = "harvested", columns = c(4, 6), top = 2) %>%
+    setObsVar(name = "production", columns = c(5, 7), top = 2)
+
+  .expect_valid_table(x = reorganise(input = input, schema = schema), units = 2)
+
+})
+
+
 test_that("wide variable in second row of header", {
 
   input <- tabs2shift$wide_obs
