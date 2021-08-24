@@ -30,6 +30,8 @@ getClusterVar <- function(schema = NULL, input = NULL){
   nClusters <- max(lengths(clusters))
 
   variables <- schema@variables
+  filter <- schema@filter
+
   listedObs <- map(.x = seq_along(variables), .f = function(ix){
     theVar <- variables[[ix]]
     if(theVar$type == "observed"){
@@ -53,7 +55,20 @@ getClusterVar <- function(schema = NULL, input = NULL){
 
         # ... and return it as a list
         out <- map(.x = 1:nClusters, .f = function(ix){
-          input[theVar$row[ix], theVar$col[ix]]
+          if(!is.null(theVar$row[ix])){
+            theRows <- theVar$row[ix]
+          } else {
+            theRows <- c(clusters$row[ix]:(clusters$height[ix]+clusters$row[ix]-1))
+            theRows <- theRows[!theRows %in% filter$row]
+          }
+          if(!is.null(theVar$col[ix])){
+            theCols <- theVar$col[ix]
+          } else {
+            thecol <- c(clusters$col[ix]:(clusters$width[ix]+clusters$col[ix]-1))
+            theCols <- theCols[!theCols %in% filter$col]
+          }
+          input[theRows, theCols]
+          # input[theVar$row[ix], theVar$col[ix]]
         })
         names(out) <- rep(clusters$id, nClusters)
 
