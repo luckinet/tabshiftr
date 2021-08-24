@@ -162,6 +162,11 @@
           names(bla[[1]]) <- names(ids[ix])
           return(bla)
         }
+        # if(!names(ids[ix]) %in% names(wideColnames)){
+        #   if(all(dim(ids[[ix]]) == c(1, 1))){
+        #     bla <- set_names(x = list(tibble(!!names(ids[ix]) := rep(ids[[ix]][[1]], tempDim[1]))), nm = names(ids[ix]))
+        #   }
+        # }
       })
       equalID <- unlist(equalID, recursive = FALSE)
       temp <- bind_cols(temp, equalID, .name_repair = "minimal")
@@ -363,12 +368,20 @@
 
   if(units == 1){
 
+    if(groups){
+      expect_identical(object = x$region, expected = c("group 1", "group 1", "group 1", "group 1"))
+    }
     expect_identical(object = x$territories, expected = c("unit 1", "unit 1", "unit 1", "unit 1"))
     expect_identical(object = x$year, expected = c("year 1", "year 1", "year 2", "year 2"))
     expect_identical(object = x$commodities, expected = c("maize", "soybean", "maize", "soybean"))
     if(is.null(variables)){
-      expect_tibble(x = x, any.missing = FALSE, nrows = 4, ncols = 5)
-      expect_names(x = colnames(x), permutation.of =c("territories", "year", "commodities", "harvested", "production") )
+      if(groups){
+        expect_tibble(x = x, any.missing = FALSE, nrows = 4, ncols = 6)
+        expect_names(x = colnames(x), permutation.of = c("region", "territories", "year", "commodities", "harvested", "production") )
+      } else {
+        expect_tibble(x = x, any.missing = FALSE, nrows = 4, ncols = 5)
+        expect_names(x = colnames(x), permutation.of =c("territories", "year", "commodities", "harvested", "production") )
+      }
       expect_identical(object = x$harvested, expected = c(1121, 1111, 1221, 1211))
       expect_identical(object = x$production, expected = c(1122, 1112, 1222, 1212))
     } else {
@@ -377,7 +390,6 @@
       if(variables == "harvested") expect_identical(object = x$harvested, expected = c(1121, 1111, 1221, 1211))
       if(variables == "production") expect_identical(object = x$production, expected = c(1122, 1112, 1222, 1212))
     }
-
 
   } else if(units == 2){
 
@@ -400,8 +412,8 @@
   } else if(units == 3){
 
     if(groups){
-      expect_identical(object = x$territories, expected = c("group 1", "group 1", "group 1", "group 1", "group 1", "group 1", "group 1", "group 1", "group 2", "group 2", "group 2", "group 2"))
-      expect_identical(object = x$sublevel, expected = c("unit 1", "unit 1", "unit 1", "unit 1", "unit 2", "unit 2", "unit 2", "unit 2", "unit 3", "unit 3", "unit 3", "unit 3"))
+      expect_identical(object = x$region, expected = c("group 1", "group 1", "group 1", "group 1", "group 1", "group 1", "group 1", "group 1", "group 2", "group 2", "group 2", "group 2"))
+      expect_identical(object = x$territories, expected = c("unit 1", "unit 1", "unit 1", "unit 1", "unit 2", "unit 2", "unit 2", "unit 2", "unit 3", "unit 3", "unit 3", "unit 3"))
     } else {
       expect_identical(object = x$territories, expected = c("unit 1", "unit 1", "unit 1", "unit 1", "unit 2", "unit 2", "unit 2", "unit 2", "unit 3", "unit 3", "unit 3", "unit 3"))
     }
@@ -410,7 +422,7 @@
     if(is.null(variables)){
       if(groups){
         expect_tibble(x = x, any.missing = FALSE, nrows = 12, ncols = 6)
-        expect_names(x = colnames(x), permutation.of = c("territories", "sublevel", "year", "commodities", "harvested", "production") )
+        expect_names(x = colnames(x), permutation.of = c("region", "territories", "year", "commodities", "harvested", "production") )
       } else {
         expect_tibble(x = x, any.missing = FALSE, nrows = 12, ncols = 5)
         expect_names(x = colnames(x), permutation.of = c("territories", "year", "commodities", "harvested", "production") )
