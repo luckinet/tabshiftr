@@ -22,6 +22,26 @@ test_that("listed observed variable", {
 })
 
 
+test_that("listed observed variable and one implicit variable", {
+
+  input <- tabs2shift$listed_column
+  input <- input[,-1]
+  input <- input[c(1:9),]
+
+  schema <-
+    setIDVar(name = "territories", value = "unit 1") %>%
+    setIDVar(name = "year", columns = 1) %>%
+    setIDVar(name = "commodities", columns = 2) %>%
+    setObsVar(name = "harvested", columns = 6,
+              key = 5, value = "harvested") %>%
+    setObsVar(name = "production", columns = 6,
+              key = 5, value = "production")
+
+  .expect_valid_table(x = reorganise(input = input, schema = schema), units = 1)
+
+})
+
+
 test_that("bring one wide identifying variable into long form and unlist observed variable", {
 
   input <- tabs2shift$listed_column_wide
