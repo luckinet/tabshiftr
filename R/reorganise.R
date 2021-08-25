@@ -79,37 +79,9 @@ reorganise <- function(input = NULL, schema = NULL){
   for(i in 1:nClusters){
 
     # match all of the readily available variables ...
-    tidyVars <- .tidyVars(ids = idVars[[i]], obs = obsVars[[i]])
-
-    nrRows <- map(.x = seq_along(tidyVars), .f = function(ix){
-      dim(tidyVars[[ix]])[1]
-    })
-    nrRows <- unique(unlist(nrRows))
-    assertIntegerish(x = length(nrRows), lower = 1, upper = 1, any.missing = FALSE)
-
-    # if a cluster or group ID has been set, prepend these to the tidy variables ...
-    mergeClust <- FALSE
-    if(!is.null(clusterVar)){
-      if(is.list(clusterVar)){
-
-        # if there is only one item per clusterVar, replicate it, otherwise attach values
-        dims <- unlist(map(.x = seq_along(clusterVar), .f = function(ix){
-          dim(clusterVar[[ix]])
-        }), use.names = FALSE)
-
-        if(all(dims == 1)){
-          temp <- tibble(X = rep(clusterVar[[i]][[1]], nrRows))
-        } else {
-          temp <- tibble(X = unlist(clusterVar, use.names = FALSE))
-          mergeClust <- TRUE
-        }
-        tidyVars <- c(set_names(x = list(temp), nm = names(clusterVar)[i]), tidyVars)
-      }
-    }
-    if(!is.null(groupVar)){
-      temp <- tibble(X0 = rep(groupVar[[i]][[1]], nrRows))
-      tidyVars <- c(set_names(x = list(temp), nm = names(groupVar)[i]), tidyVars)
-    }
+    # ids = idVars[[i]]; obs = obsVars[[i]]; clust = clusterVar[i]; grp = groupVar[i]
+    tidyVars <- .tidyVars(ids = idVars[[i]], obs = obsVars[[i]],
+                          clust = clusterVar[i], grp = groupVar[i])
 
     # put together the table
     theTable <- bind_cols(tidyVars, .name_repair = "minimal")
@@ -120,14 +92,21 @@ reorganise <- function(input = NULL, schema = NULL){
 
   }
 
-  if(any(clusterVar == "observed") | mergeClust){
+  clustNames <- map(.x = seq_along(theValues), .f = function(ix){
+    names(theValues[[ix]])
+  })
+
+  differentNames <- isFALSE(reduce(.x = clustNames, .f = function(x,y) if (identical(x,y)) x else FALSE))
+
+  if(differentNames){
     out <- suppressMessages(reduce(theValues, left_join))
   } else {
     out <- bind_rows(theValues)
   }
 
   out <- out %>%
-    .updateFormat(schema = schema)
+    .updateFormat(schema = schema) %>%
+    select(names(schema@variables))
 
   return(out)
 }
