@@ -48,3 +48,4 @@ test_that("relative positions in clusters", {
   .expect_valid_table(x = reorganise(input = input, schema = schema), units = 3)
 
 })
+

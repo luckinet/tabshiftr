@@ -19,6 +19,19 @@ test_that("listed observed variable", {
 
   .expect_valid_table(x = reorganise(input = input, schema = schema), units = 2)
 
+  # different names for listed observed variables
+  schema <-
+    setIDVar(name = "territories", columns = 1) %>%
+    setIDVar(name = "year", columns = 2) %>%
+    setIDVar(name = "commodities", columns = 3) %>%
+    setObsVar(name = "HARV", columns = 7,
+              key = 6, value = "harvested") %>%
+    setObsVar(name = "PROD", columns = 7,
+              key = 6, value = "production")
+
+  out <- reorganise(input = input, schema = schema)
+  expect_equal(names(out), c("territories", "year", "commodities", "HARV", "PROD"))
+
 })
 
 
@@ -92,3 +105,4 @@ test_that("several wide identifying variable into long form and unlist observed 
   .expect_valid_table(x = reorganise(input = input, schema = schema), units = 2)
 
 })
+
