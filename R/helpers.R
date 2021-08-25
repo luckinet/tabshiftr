@@ -66,6 +66,8 @@
 #' This function matches id and observed variables and reshapes them accordingly
 #' @param ids list of id variables
 #' @param obs list of observed variables
+#' @param clust list of cluster variables
+#' @param grp list of group variables
 #' @return a symmetric list of variables (all with the same dimensions)
 #' @importFrom checkmate assertSetEqual
 #' @importFrom purrr reduce map_int map set_names
@@ -74,7 +76,7 @@
 #' @importFrom tidyselect all_of everything
 #' @importFrom rlang `:=`
 
-.tidyVars <- function(ids = NULL, obs = NULL){
+.tidyVars <- function(ids = NULL, obs = NULL, clust = NULL, grp = NULL){
 
   outIDs <- ids
   outObs <- obs
@@ -92,6 +94,7 @@
   widthObs <- map_int(.x = seq_along(obs), .f = function(ix){
     dim(obs[[ix]])[[2]]
   })
+
   if(!all(1 == widthObs)){
     # if yes, ...
 
@@ -140,71 +143,123 @@
         }
       }
 
-      wideColnames <- wideColnames %>% select(all_of(names(wideID)), everything())
+      if(varName == "listed"){
 
-      # find the correct name by joining via the column names
-      # targetWide <- which(widthIDs %in% tempDim[2])
-      tempColnames <- temp %>% pivot_longer(cols = everything(), names_to = "name", values_to = varName)
-      wideNames <- left_join(tempColnames, wideColnames, by = "name") %>%
-        select(-all_of(varName)) %>%
-        distinct() %>%
-        unite(col = "new", !name, sep = "-_-_", na.rm = TRUE) %>%
-        pivot_wider(names_from = "name") %>%
-        unlist(use.names = FALSE)
+        obsNames <- unique(outObs$listed$key)
+        idNames <- names(ids)
 
-      assertSetEqual(x = length(wideNames), y = tempDim[2])
-      names(temp) <- wideNames
+        equalID <- map(.x = seq_along(outIDs), .f = function(ix){
+          if(tempDim[1] == dim(ids[[ix]])[1]){
+            set_names(outIDs[[ix]], idNames[ix])
+          } else if(all(dim(ids[[ix]]) == c(1, 1))){
+            set_names(list(tibble(!!names(ids[ix]) := rep(ids[[ix]][[1]], tempDim[1]))), names(ids[ix]))
+          }
+        })
 
-      # ... all id variables that have the same length
-      equalID <- map(.x = seq_along(ids), .f = function(ix){
-        if(tempDim[1] == dim(ids[[ix]])[1]){
-          bla <- ids[ix]
-          names(bla[[1]]) <- names(ids[ix])
-          return(bla)
+        if(length(wideID) > 1){
+          wideNames <- wideColnames %>%
+            select(all_of(names(wideID)), everything()) %>%
+            unite(col = "new", !name, sep = "-_-_", na.rm = TRUE) %>%
+            pivot_wider(names_from = "name") %>%
+            unlist(use.names = FALSE)
+          wideName <- paste0(names(wideID), collapse = "-_-_")
+        } else {
+          wideNames <- unlist(wideID, use.names = FALSE)
+          wideName <- names(wideID)
         }
-      })
-      equalID <- unlist(equalID, recursive = FALSE)
-      temp <- bind_cols(temp, equalID, .name_repair = "minimal")
 
-      # and pivot those into longer form
-      temp <- pivot_longer(data = temp,
-                           cols = all_of(wideNames),
-                           names_to = paste0(names(wideID), collapse = "-_-_"),
-                           values_to = varName) %>%
-        separate(col = paste0(names(wideID), collapse = "-_-_"), into = names(wideID), sep = "-_-_")
+        tempObs <- outObs
+        if(!is.null(wideID)){
+          names(tempObs$listed) <- c("key", wideNames)
+          newObs <- bind_cols(c(equalID, tempObs), .name_repair = "minimal") %>%
+            pivot_longer(cols = all_of(wideNames), names_to = wideName)
+          valueNames <- "value"
+        } else {
+          newObs <- bind_cols(c(equalID, tempObs), .name_repair = "minimal")
+          valueNames <- names(newObs)[!names(newObs) %in% c(idNames, "key")]
+        }
 
-      if(i != 1){
-        newObs <- suppressMessages(temp %>%
-                                     left_join(newObs))
+        newObs <- newObs %>%
+          pivot_wider(names_from = "key",
+                      values_from = all_of(valueNames))
+
+        if(length(wideID) > 1){
+          newObs <- newObs %>%
+            separate(col = wideName,
+                     into = names(wideID),
+                     sep = "-_-_")
+        }
+
+        targetRows <- dim(newObs)[1]
+
       } else {
-        newObs <- temp
+
+        obsNames <- names(obs)
+        idNames <- names(ids)
+
+        wideColnames <- wideColnames %>% select(all_of(names(wideID)), everything())
+
+        # find the correct name by joining via the column names
+        # targetWide <- which(widthIDs %in% tempDim[2])
+        tempColnames <- temp %>% pivot_longer(cols = everything(), names_to = "name", values_to = varName)
+        wideNames <- left_join(tempColnames, wideColnames, by = "name") %>%
+          select(-all_of(varName)) %>%
+          distinct() %>%
+          unite(col = "new", !name, sep = "-_-_", na.rm = TRUE) %>%
+          pivot_wider(names_from = "name") %>%
+          unlist(use.names = FALSE)
+
+        assertSetEqual(x = length(wideNames), y = tempDim[2])
+        names(temp) <- wideNames
+
+        # ... all id variables that have the same length
+        equalID <- map(.x = seq_along(ids), .f = function(ix){
+          if(tempDim[1] == dim(ids[[ix]])[1]){
+            bla <- ids[ix]
+            names(bla[[1]]) <- names(ids[ix])
+            return(bla)
+          } else if(all(dim(ids[[ix]]) == c(1, 1))){
+            set_names(list(tibble(!!names(ids[ix]) := rep(ids[[ix]][[1]], tempDim[1]))), names(ids[ix]))
+          }
+        })
+        equalID <- unlist(equalID, recursive = FALSE)
+        temp <- bind_cols(temp, equalID, .name_repair = "minimal")
+
+        # and pivot those into longer form
+        temp <- pivot_longer(data = temp,
+                             cols = all_of(wideNames),
+                             names_to = paste0(names(wideID), collapse = "-_-_"),
+                             values_to = varName) %>%
+          separate(col = paste0(names(wideID), collapse = "-_-_"), into = names(wideID), sep = "-_-_")
+
+        if(i != 1){
+          newObs <- suppressMessages(temp %>%
+                                       left_join(newObs))
+        } else {
+          newObs <- temp
+        }
       }
+
     }
 
     # sort the resulting tibble into the previous lists 'ids' and 'obs'
-    idNames <- names(ids)
-    outIDs <- map(.x = seq_along(ids), .f = function(ix) {
-      newObs[names(ids)[ix]]
+    outIDs <- map(.x = seq_along(idNames), .f = function(ix) {
+      newObs[idNames[ix]]
     })
     names(outIDs) <- idNames
 
-    obsNames <- names(obs)
-    outObs <- map(.x = seq_along(obs), .f = function(ix) {
-      newObs[names(obs)[ix]]
+    outObs <- map(.x = seq_along(obsNames), .f = function(ix) {
+      newObs[obsNames[ix]]
     })
     names(outObs) <- obsNames
 
   }
 
-  # obsNames <- map(.x = seq_along(obs), .f = function(ix){
-  #   names(obs[[ix]])
-  # })
-  # obsNames <- unique(unlist(obsNames))
-
   # take care of variables that are too wide
   widthsIDs <- map_int(.x = seq_along(outIDs), .f = function(ix){
     dim(outIDs[[ix]])[[2]]
   })
+
   if(!all(1 == widthsIDs)){
 
     wideIDs <- ids[which(widthsIDs != 1)]
@@ -222,9 +277,6 @@
   lengthIDs <- map_int(.x = seq_along(outIDs), .f = function(ix){
     dim(outIDs[[ix]])[[1]]
   })
-  # lengthObs <- map_int(.x = seq_along(obs), .f = function(ix){
-  #   dim(obs[[ix]])[[1]]
-  # })
 
   if(any(lengthIDs != targetRows)){
 
@@ -237,7 +289,39 @@
     }
   }
 
-  return(c(outIDs, outObs))
+  outGrp <- NULL
+  if(!is.null(grp)){
+    dims <- dim(grp[[1]])
+
+    nrRows <- targetRows * length(unique(unlist(grp)))
+
+    if(all(dims == 1)){
+      temp <- tibble(X = rep(unlist(grp, use.names = FALSE), nrRows))
+    } else {
+      temp <- tibble(X = unlist(grp, use.names = FALSE))
+    }
+    outGrp <-  set_names(x = list(temp), nm = names(grp))
+
+  }
+
+  outClust <- NULL
+  if(!is.null(clust)){
+    if(is.list(clust)){
+      dims <- dim(clust[[1]])
+
+      nrRows <- targetRows * length(unique(unlist(clust)))
+
+      if(all(dims == 1)){
+        temp <- tibble(X = rep(unlist(clust, use.names = FALSE), nrRows))
+      } else {
+        temp <- tibble(X = unlist(clust, use.names = FALSE))
+      }
+      outClust <-  set_names(x = list(temp), nm = names(clust))
+
+    }
+  }
+
+  return(c(outGrp, outClust, outIDs, outObs))
 
 }
 
@@ -388,12 +472,23 @@
 
   } else if(units == 2){
 
-    expect_identical(object = x$territories, expected = c("unit 1", "unit 1", "unit 1", "unit 1", "unit 2", "unit 2", "unit 2", "unit 2"))
+    if(groups){
+      expect_identical(object = x$region, expected = c("group 1", "group 1", "group 1", "group 1", "group 1", "group 1", "group 1", "group 1"))
+      expect_identical(object = x$territories, expected = c("unit 1", "unit 1", "unit 1", "unit 1", "unit 2", "unit 2", "unit 2", "unit 2"))
+    } else {
+      expect_identical(object = x$territories, expected = c("unit 1", "unit 1", "unit 1", "unit 1", "unit 2", "unit 2", "unit 2", "unit 2"))
+    }
     expect_identical(object = x$year, expected = c("year 1", "year 1", "year 2", "year 2", "year 1", "year 1", "year 2", "year 2"))
     expect_identical(object = x$commodities, expected = c("maize", "soybean", "maize", "soybean", "maize", "soybean", "maize", "soybean"))
     if(is.null(variables)){
-      expect_tibble(x = x, any.missing = FALSE, nrows = 8, ncols = 5)
-      expect_names(x = colnames(x), permutation.of =c("territories", "year", "commodities", "harvested", "production") )
+      if(groups){
+        expect_tibble(x = x, any.missing = FALSE, nrows = 8, ncols = 6)
+        expect_names(x = colnames(x), permutation.of = c("region", "territories", "year", "commodities", "harvested", "production") )
+      } else {
+        expect_tibble(x = x, any.missing = FALSE, nrows = 8, ncols = 5)
+        expect_names(x = colnames(x), permutation.of =c("territories", "year", "commodities", "harvested", "production") )
+      }
+
       expect_identical(object = x$harvested, expected = c(1121, 1111, 1221, 1211, 2121, 2111, 2221, 2211))
       expect_identical(object = x$production, expected = c(1122, 1112, 1222, 1212, 2122, 2112, 2222, 2212))
     } else {
