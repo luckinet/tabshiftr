@@ -4,12 +4,16 @@
 \alias{.tidyVars}
 \title{Match variables}
 \usage{
-.tidyVars(ids = NULL, obs = NULL)
+.tidyVars(ids = NULL, obs = NULL, clust = NULL, grp = NULL)
 }
 \arguments{
 \item{ids}{list of id variables}
 
 \item{obs}{list of observed variables}
+
+\item{clust}{list of cluster variables}
+
+\item{grp}{list of group variables}
 }
 \value{
 a symmetric list of variables (all with the same dimensions)

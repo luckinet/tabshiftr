@@ -11,7 +11,7 @@ setFilter(schema = NULL, rows = NULL, invert = FALSE)
 already existing schema, provide that schema here (overwrites previous
 information).}
 
-\item{rows}{[\code{integerish(.)}]\cr the rows to ignore.}
+\item{rows}{[\code{integerish(.)}]\cr rows that are mentioned here are kept.}
 
 \item{invert}{[\code{logical(1)}]\cr whether or not to invert the values
 provided in \code{columns} and \code{rows}.}
