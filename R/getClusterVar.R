@@ -50,7 +50,7 @@ getClusterVar <- function(schema = NULL, input = NULL){
 
       if(!is.null(theVar$value)){
         temp <- tibble(X0 = theVar$value)
-        out <- set_names(x = list(temp), nm = clusters$id)
+        out <- rep(set_names(x = list(temp), nm = clusters$id), nClusters)
       } else {
 
         # ... and return it as a list
@@ -68,15 +68,11 @@ getClusterVar <- function(schema = NULL, input = NULL){
             theCols <- theCols[!theCols %in% filter$col]
           }
           input[theRows, theCols]
-          # input[theVar$row[ix], theVar$col[ix]]
         })
         names(out) <- rep(clusters$id, nClusters)
 
       }
     }
-
-  } else if(listedObs){
-    out <- "observed"
   } else {
     out <- NULL
   }

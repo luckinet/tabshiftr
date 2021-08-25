@@ -42,23 +42,6 @@ getIDVars <- function(schema = NULL, input = NULL){
   })
   idVars <- unlist(idVars, recursive = FALSE)
 
-  # if there are listed observed variables, act as if they were clusters
-  filterRows <- map(.x = seq_along(variables), .f = function(ix){
-    theVar <- variables[[ix]]
-    if(theVar$type == "observed"){
-      if(is.numeric(theVar$key)){
-        which(input[[theVar$key]] %in% theVar$value)
-      }
-    }
-  })
-  if(any(lengths(filterRows) != 0)){
-    listedObs <- TRUE
-    filterRows <- filterRows[lengths(filterRows) != 0]
-    nClusters <- length(filterRows)
-  } else {
-    listedObs <- FALSE
-  }
-
   if(length(idVars) != 0){
 
     out <- map(.x = 1:nClusters, .f = function(ix){
@@ -66,16 +49,7 @@ getIDVars <- function(schema = NULL, input = NULL){
       for(i in 1:length(idVars)){
 
         tempVar <- idVars[[i]]
-        if(listedObs){
-          if(!is.null(tempVar$row)){
-            tempVar$row <- rep(x = tempVar$row, length.out = nClusters)
-          } else if(!is.null(tempVar$col)){
-            tempVar$col <- rep(x = tempVar$col, length.out = nClusters)
-          }
-          clusterRows <- filterRows[[ix]]
-        } else {
-          clusterRows <- clusters$row[ix]:(clusters$row[ix]+clusters$height[ix] - 1)
-        }
+        varRow <- clusters$row[ix]:(clusters$row[ix]+clusters$height[ix] - 1)
 
         if(!is.null(tempVar$value)){
           temp <- tibble(X = tempVar$value)
@@ -94,11 +68,11 @@ getIDVars <- function(schema = NULL, input = NULL){
           } else {
 
             if(!is.null(tempVar$merge)){
-              temp <- input[clusterRows, tempVar$col]
+              temp <- input[varRow, tempVar$col]
               theFilter <- filter$row
             } else {
-              temp <- input[clusterRows, tempVar$col[ix]]
-              theFilter <- which(clusterRows %in% filter$row)
+              temp <- input[varRow, tempVar$col[ix]]
+              theFilter <- which(varRow %in% filter$row)
             }
 
           }
