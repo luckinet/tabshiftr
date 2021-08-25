@@ -475,25 +475,18 @@
 <code class="sourceCode R"><span class="fu"><a href="../reference/validateSchema.html">validateSchema</a></span><span class="op">(</span>schema <span class="op">=</span> <span class="va">schema</span>, input <span class="op">=</span> <span class="va">input</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="../reference/getObsVars.html">getObsVars</a></span><span class="op">(</span>input <span class="op">=</span> <span class="va">input</span><span class="op">)</span>
 <span class="co">#&gt; [[1]]</span>
-<span class="co">#&gt; [[1]]$harvested</span>
-<span class="co">#&gt; # A tibble: 4 × 2</span>
-<span class="co">#&gt;   X6    X7   </span>
-<span class="co">#&gt;   &lt;chr&gt; &lt;chr&gt;</span>
-<span class="co">#&gt; 1 1111  1121 </span>
-<span class="co">#&gt; 2 1211  1221 </span>
-<span class="co">#&gt; 3 2111  2121 </span>
-<span class="co">#&gt; 4 2211  2221 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; [[2]]</span>
-<span class="co">#&gt; [[2]]$production</span>
-<span class="co">#&gt; # A tibble: 4 × 2</span>
-<span class="co">#&gt;   X6    X7   </span>
-<span class="co">#&gt;   &lt;chr&gt; &lt;chr&gt;</span>
-<span class="co">#&gt; 1 1112  1122 </span>
-<span class="co">#&gt; 2 1212  1222 </span>
-<span class="co">#&gt; 3 2112  2122 </span>
-<span class="co">#&gt; 4 2212  2222</span></code></pre></div>
+<span class="co">#&gt; [[1]]$listed</span>
+<span class="co">#&gt; # A tibble: 8 × 3</span>
+<span class="co">#&gt;   key        X6    X7   </span>
+<span class="co">#&gt;   &lt;chr&gt;      &lt;chr&gt; &lt;chr&gt;</span>
+<span class="co">#&gt; 1 harvested  1111  1121 </span>
+<span class="co">#&gt; 2 production 1112  1122 </span>
+<span class="co">#&gt; 3 harvested  1211  1221 </span>
+<span class="co">#&gt; 4 production 1212  1222 </span>
+<span class="co">#&gt; 5 harvested  2111  2121 </span>
+<span class="co">#&gt; 6 production 2112  2122 </span>
+<span class="co">#&gt; 7 harvested  2211  2221 </span>
+<span class="co">#&gt; 8 production 2212  2222</span></code></pre></div>
 <p>From both, the output of <code>getIDVars</code> and <code>getObsVars</code> we can calculate how many and which combinations of data exist (e.g., the two columns in the observed variables correspond to the two values of the identifying variable <code>commodities</code>) and that they still need to be pivoted to be in a tidy arrangement.</p>
 <p>The <code><a href="../reference/reorganise.html">reorganise()</a></code> function carries out the steps of validating, extracting the variables, pivoting the tentative output and putting the final table together automatically, so it merely requires the finalised (non-validated) <code>schema</code> and the <code>input</code> table.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
