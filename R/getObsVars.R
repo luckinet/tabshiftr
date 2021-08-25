@@ -41,78 +41,93 @@ getObsVars <- function(schema = NULL, input = NULL){
   obsVars <- unlist(obsVars, recursive = FALSE)
 
   # if there are listed observed variables, act as if they were clusters
-  filterRows <- map(.x = seq_along(variables), .f = function(ix){
+  listedObs <- map(.x = seq_along(variables), .f = function(ix){
     theVar <- variables[[ix]]
     if(theVar$type == "observed"){
       if(is.numeric(theVar$key)){
-        which(input[[theVar$key]] %in% theVar$value)
+        c(theVar$key, theVar$col)
       }
     }
   })
-  if(any(lengths(filterRows) != 0)){
-    listedObs <- TRUE
-    filterRows <- filterRows[lengths(filterRows) != 0]
-    nClusters <- length(filterRows)
-  } else {
-    listedObs <- FALSE
-  }
+  listedObs <- listedObs[lengths(listedObs) != 0]
 
   if(length(obsVars) != 0){
 
     out <- map(.x = 1:nClusters, .f = function(ix){
       vars <- NULL
-      for(i in 1:length(obsVars)){
+      if(length(listedObs) != 0){
 
-        tempVar <- obsVars[[i]]
-        if(listedObs){
-          if(i != ix){
-            next
-          }
-          clusterRows <- filterRows[[ix]]
-        } else {
-          clusterRows <- clusters$row[ix]:(clusters$row[ix]+clusters$height[ix] - 1)
+        listedCols <- reduce(.x = listedObs, .f = function(x,y) if (identical(x,y)) x else FALSE)
+        varRows <- clusters$row[ix]:(clusters$row[ix]+clusters$height[ix] - 1)
+        if(isFALSE(listedCols)){
+          stop("implement case where not all observed variables are listed.")
         }
-
-        if(!is.null(tempVar$key)){
-          if(tempVar$key == "cluster"){
-            if(tempVar$value != ix){
-              next
-            }
-            if(length(unique(tempVar$col)) == 1){
-              temp <- input[clusterRows, tempVar$col[ix]]
-            } else {
-              temp <- input[clusterRows, tempVar$col]
-            }
-            theFilter <- which(clusterRows %in% filter$row)
-          } else if(is.numeric(tempVar$key)){
-            temp <- input[clusterRows, tempVar$col]
-            theFilter <- NULL
-          }
-        } else {
-
-          if(!is.null(tempVar$row[ix])){
-            if(nClusters != 1){
-              temp <- input[clusterRows, tempVar$col[ix]]
-              theFilter <- which(clusterRows %in% filter$row)
-            } else {
-              temp <- input[clusterRows, tempVar$col]
-              theFilter <- which(clusterRows %in% filter$row)
-            }
-          } else {
-            temp <- input[clusterRows, tempVar$col[ix]]
-            theFilter <- which(clusterRows %in% filter$row)
-          }
-
-        }
+        temp <- input[varRows, listedCols]
+        names(temp)[1] <- "key"
+        theFilter <- which(varRows %in% filter$row)
 
         if(!is.null(theFilter)){
           temp <- temp %>%
             filter(!row_number() %in% theFilter)
         }
 
-        vars <- c(vars, set_names(x = list(temp), nm = names(obsVars)[i]))
+        # replace keys with their variable name
+        old <- map_chr(.x = seq_along(obsVars), .f = function(iy){
+          obsVars[[iy]]$value
+        })
+        new <- names(obsVars)
+        temp$key[temp$key %in% old] <- new[match(temp$key, old, nomatch = 0)]
 
+        vars <- c(vars, set_names(x = list(temp), nm = "listed"))
+
+      } else {
+        for(i in 1:length(obsVars)){
+
+          tempVar <- obsVars[[i]]
+          varRows <- clusters$row[ix]:(clusters$row[ix]+clusters$height[ix] - 1)
+
+          if(!is.null(tempVar$key)){
+            if(tempVar$key == "cluster"){
+              if(tempVar$value != ix){
+                next
+              }
+              if(length(unique(tempVar$col)) == 1){
+                temp <- input[varRows, tempVar$col[ix]]
+              } else {
+                temp <- input[varRows, tempVar$col]
+              }
+              theFilter <- which(varRows %in% filter$row)
+            } else if(is.numeric(tempVar$key)){
+              temp <- input[varRows, tempVar$col]
+              theFilter <- NULL
+            }
+          } else {
+
+            if(!is.null(tempVar$row[ix])){
+              if(nClusters != 1){
+                temp <- input[varRows, tempVar$col[ix]]
+                theFilter <- which(varRows %in% filter$row)
+              } else {
+                temp <- input[varRows, tempVar$col]
+                theFilter <- which(varRows %in% filter$row)
+              }
+            } else {
+              temp <- input[varRows, tempVar$col[ix]]
+              theFilter <- which(varRows %in% filter$row)
+            }
+
+          }
+
+          if(!is.null(theFilter)){
+            temp <- temp %>%
+              filter(!row_number() %in% theFilter)
+          }
+
+          vars <- c(vars, set_names(x = list(temp), nm = names(obsVars)[i]))
+
+        }
       }
+
       return(vars)
 
     })
