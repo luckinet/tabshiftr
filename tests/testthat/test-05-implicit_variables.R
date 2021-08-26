@@ -66,3 +66,4 @@ test_that("mask out a couple of rows and columns that don't contain target data"
   .expect_valid_table(x = reorganise(input = input, schema = schema), units = 1)
 
 })
+

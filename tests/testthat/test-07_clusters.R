@@ -67,14 +67,7 @@ test_that("regular vertical clusters with a listed observed variable and an impl
     setObsVar(name = "production", columns = c(6, 7),
               key = 4, value = "production")
 
-  # schema_cacoa_reg_96_18 <-
-  #   setCluster(id = "territories",
-  #              left = 1, top = c(6, 11, 16)) %>%
-  #   setIDVar(name = "territories", columns = 1, rows = 1, relative = T) %>%
-  #   setIDVar(name = "year", columns = c(2:24), rows = 4) %>%
-  #   setIDVar(name = "commodities", value = "cocoa") %>%
-  #   setObsVar(name = "production", columns = c(2:24),
-  #             key = 1, value = "Sub-Total")
+
 
   .expect_valid_table(x = reorganise(input = input, schema = schema), units = 2, groups = TRUE)
 
