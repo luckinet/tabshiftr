@@ -1,3 +1,8 @@
+# tabshiftr 0.3.1
+
+- various minor bugfixes
+- minor reorganisation of the internal workings
+
 # tabshiftr 0.3.0 - getters update
 
 - introduction of getters that fulfill two functions: 1) check up on the schema one is currently building, 2) internal use to streamline the code-base

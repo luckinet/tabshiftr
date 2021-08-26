@@ -198,7 +198,6 @@
         wideColnames <- wideColnames %>% select(all_of(names(wideID)), everything())
 
         # find the correct name by joining via the column names
-        # targetWide <- which(widthIDs %in% tempDim[2])
         tempColnames <- temp %>% pivot_longer(cols = everything(), names_to = "name", values_to = varName)
         wideNames <- left_join(tempColnames, wideColnames, by = "name") %>%
           select(-all_of(varName)) %>%
