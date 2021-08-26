@@ -84,7 +84,7 @@
   uniqueIDs <- map(.x = seq_along(ids), .f = function(ix){
     unique(unlist(ids[[ix]]))
   })
-  targetRows <- reduce(lengths(uniqueIDs), `*`)
+  # targetRows <- reduce(lengths(uniqueIDs), `*`)
 
   idCols <- map(.x = seq_along(ids), .f = function(ix){
     names(ids[[ix]])
@@ -190,8 +190,6 @@
                      sep = "-_-_")
         }
 
-        targetRows <- dim(newObs)[1]
-
       } else {
 
         obsNames <- names(obs)
@@ -242,6 +240,8 @@
 
     }
 
+    targetRows <- dim(newObs)[1]
+
     # sort the resulting tibble into the previous lists 'ids' and 'obs'
     outIDs <- map(.x = seq_along(idNames), .f = function(ix) {
       newObs[idNames[ix]]
@@ -253,6 +253,11 @@
     })
     names(outObs) <- obsNames
 
+  } else {
+    targetRows <- unique(map_int(.x = seq_along(outObs), .f = function(ix){
+      dim(outObs[[ix]])[1]
+    }))
+    assertIntegerish(x = targetRows, len = 1)
   }
 
   # take care of variables that are too wide
