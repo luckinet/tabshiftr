@@ -397,8 +397,8 @@
         # make a subset table that contains numbers when possible
         subset <- subset %>%
           rownames_to_column() %>%
-          pivot_longer(-rowname, 'variable', 'value') %>%
-          pivot_wider(variable, rowname) %>%
+          pivot_longer(cols = -rowname, names_to = 'variable', values_to = 'value') %>%
+          pivot_wider(id_cols = variable, names_from = rowname, values_from = value) %>%
           select(-variable) %>%
           mutate(across(.cols = where(function(x) suppressWarnings(!anyNA(as.numeric(x)))), .fns = as.numeric))
 
