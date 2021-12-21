@@ -160,7 +160,7 @@
           wideNames <- wideColnames %>%
             select(all_of(names(wideID)), everything()) %>%
             unite(col = "new", !name, sep = "-_-_", na.rm = TRUE) %>%
-            pivot_wider(names_from = "name") %>%
+            pivot_wider(names_from = "name", values_from = "new") %>%
             unlist(use.names = FALSE)
           wideName <- paste0(names(wideID), collapse = "-_-_")
         } else {
@@ -203,7 +203,7 @@
           select(-all_of(varName)) %>%
           distinct() %>%
           unite(col = "new", !name, sep = "-_-_", na.rm = TRUE) %>%
-          pivot_wider(names_from = "name") %>%
+          pivot_wider(names_from = "name", values_from = "new") %>%
           unlist(use.names = FALSE)
 
         assertSetEqual(x = length(wideNames), y = tempDim[2])
