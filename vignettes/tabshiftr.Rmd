@@ -63,12 +63,12 @@ Moreover, a table is part of a **series** when other tables of that series conta
 | identifying variable | observed variable (categorical) | observed variable (continuous) |
 | :- | :- | :- |
 | sample 1 | blue | 10 |
-| sample 1 | green | 20 |
-| sample 1 | red | 30 |
+| sample 2 | green | 20 |
+| sample 3 | red | 30 |
 
 Table: <a name="tabExample1"></a>Table 1: An example table containing one identifying and two observed variables, with the variable names in the topmost row and the values in all consecutive rows.
 
-Even though data in many spreadsheet are \"disorganised\", they are mostly not non-systematic. Especially in complex spreadsheets, one often encounters a situation where a set of variables occurs more than once with the same or very similar organisation, which we call **cluster** here. Data that are part of clusters are split up by another, typically categorical variable (the **cluster ID**), with the aim to increase the visual accessibility or direct the focus for human readers ([Tab. 2](#tabExample2)). This may also be the case where data are split up across several files or spreadsheets of a file, where the cluster ID can be found in the file or spreasheet name or the meta-data. In that case, the cluster ID would be an **implicit variable**.
+Even though data in many spreadsheet are \"disorganised\", they are mostly not non-systematic. Especially in complex spreadsheets, one often encounters a situation where a set of variables occurs more than once with the same or very similar arrangement, which we call **cluster** here. Data that are part of clusters are split along one of the, typically categorical, variables (the **cluster ID**), with the aim to increase the visual accessibility or direct the focus for human readers ([Tab. 2](#tabExample2)). This may also be the case where data are split up into several files or spreadsheets of a file, where the cluster ID can be found in the file or spreasheet name or the meta-data. In many cases, the cluster ID is an **implicit variable**, a variable that is not immediately recogniseable as such.
 
 | sample | colour | intensity | sample | colour | intensity |
 | :- | :- | :- | :- | :- | :- |
@@ -109,7 +109,7 @@ Linked tables in the [next section](#tablesTypes) can serve as examples to compa
 
 1. **Variables**: Clarify which are the identifying variables and which are the observed variables. Make sure not to mistake a listed observed variable ([Tab. 10](#long)) as an identifying variable.
 
-2. **Meta-data**: Provide potentially information about the table format in `setFormat()`.
+2. **Format**: Provide potentially information about the table format in `setFormat()`.
 
 3. **Clusters**: In case there are clusters, provide in `setCluster()`
 
@@ -138,8 +138,6 @@ Linked tables in the [next section](#tablesTypes) can serve as examples to compa
 
 - To work with `tabshiftr`, tables need to be read in while treating any header rows *as data*, i.e., by not setting the first row as header, because in disorganised tables it's often not only the first row that is part of the header.
 - Each column should be treated as a character data type, because some columns might contain data with both numeric and character cells.
-- `reorganise()` takes care of reformatting the data-types into the most permissive data type that does not introduce `NA`s where there should be data, i.e, if a variable can be numeric, it is formatted as numeric column.
-- When setting up a schema description, some generalisations are hard to wrap your mind around. Try imagining that once you have set a variable, it's values are "removed" from the table. For instance, once clusters are set for [Tab. 6](#implicitVar), imagine that the meta-data header isn't part of the table anymore, resulting in a much simpler table. Or for [Tab. 16](#distVar), once territories are set, imagine that the respective `unit1/2/3` values disappear to see that the respective column is actually a tidy column of commodities.
 
 ```{r, eval=F}
 input <- read_csv(file = ...,
@@ -147,6 +145,8 @@ input <- read_csv(file = ...,
                   col_types = cols(.default = "c"))
 ```
 
+- `reorganise()` takes care of reformatting the data-types into the most permissive data type that does not introduce `NA`s where there should be data, i.e, if a variable can be numeric, it is formatted as numeric column.
+- When setting up a schema description, some generalisations are hard to wrap your mind around. Try imagining that once you have set a variable, it's values are "removed" from the table. For instance, once clusters are set for [Tab. 6](#implicitVar), imagine that the meta-data header isn't part of the table anymore, resulting in a much simpler table. Or for [Tab. 16](#distVar), once territories are set, imagine that the respective `unit1/2/3` values disappear to see that the respective column is actually a tidy column of commodities.
 
 ## An example 
 
