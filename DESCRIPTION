@@ -28,7 +28,11 @@ Authors@R:
              comment = c(ORCID = "0000-0001-8637-9071")),
       person(given = "Caroline",
              family = "Busse",
-             role = "ctb"))
+             role = "ctb"),
+      person(given = "Tsvetelina",
+             family = "Tomova",
+             role = "ctb",
+             email = "tsvetelina.tomova@gmail.com"))
 Description: Helps the user to build and register schema descriptions of 
     disorganised (messy) tables. Disorganised tables are tables that are 
     not in a topologically coherent form, where packages such as 'tidyr' could 
@@ -56,7 +60,7 @@ Imports:
     methods,
     purrr,
     stringr
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Suggests: 
     knitr,
     rmarkdown,
