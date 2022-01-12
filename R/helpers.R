@@ -72,7 +72,7 @@
 #' @importFrom checkmate assertSetEqual
 #' @importFrom purrr reduce map_int map set_names
 #' @importFrom tidyr pivot_longer pivot_wider fill separate
-#' @importFrom dplyr distinct select bind_cols
+#' @importFrom dplyr distinct select bind_cols if_any
 #' @importFrom tidyselect all_of everything
 #' @importFrom rlang `:=`
 
@@ -179,9 +179,21 @@
           valueNames <- names(newObs)[!names(newObs) %in% c(idNames, "key")]
         }
 
+        dupObs <- newObs %>%
+          pivot_wider(names_from = "key",
+                      values_from = all_of(valueNames),
+                      values_fn = length) %>%
+          mutate(row = row_number()) %>%
+          filter(if_any(all_of(obsNames), ~ . != 1))
+
+        if(dim(dupObs)[1] != 0){
+          warning("rows(", paste0(dupObs$row, collapse = ", "), ") are duplicated.")
+        }
+
         newObs <- newObs %>%
           pivot_wider(names_from = "key",
-                      values_from = all_of(valueNames))
+                      values_from = all_of(valueNames),
+                      values_fn = list)
 
         if(length(wideID) > 1){
           newObs <- newObs %>%
@@ -336,7 +348,7 @@
 #'   used to match in columns.
 #' @param row [\code{list(2)}]\cr the output of the respective .find construct
 #'   used to match in rows.
-#' @return the columns or rows where the evaluated position
+#' @return the columns or rows of the evaluated position
 #' @importFrom checkmate assertNumeric
 #' @importFrom rlang eval_tidy
 #' @importFrom purrr map_int map_lgl
@@ -346,7 +358,6 @@
 #' @importFrom stringr str_count
 
 .eval_find <- function(input = NULL, col = NULL, row = NULL){
-
 
   # in case to look for columns
   if(!is.null(col)){
