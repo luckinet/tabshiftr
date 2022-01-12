@@ -39,7 +39,7 @@
 #'   mutate arrange bind_cols rename arrange_at filter mutate_if left_join
 #'   mutate_all
 #' @importFrom tibble tibble
-#' @importFrom tidyr pivot_longer pivot_wider
+#' @importFrom tidyr pivot_longer pivot_wider unnest
 #' @importFrom magrittr %>%
 #' @importFrom rlang set_names
 #' @importFrom purrr reduce map map_int
@@ -105,6 +105,7 @@ reorganise <- function(input = NULL, schema = NULL){
   }
 
   out <- out %>%
+    unnest(cols = c(names(schema@variables))) %>%
     .updateFormat(schema = schema) %>%
     select(names(schema@variables))
 
