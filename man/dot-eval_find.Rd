@@ -16,7 +16,7 @@ used to match in columns.}
 used to match in rows.}
 }
 \value{
-the columns or rows where the evaluated position
+the columns or rows of the evaluated position
 }
 \description{
 Evaluate .find constructs
