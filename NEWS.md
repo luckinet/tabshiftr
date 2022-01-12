@@ -1,3 +1,9 @@
+# tabshiftr 0.3.2
+
+- be more precise in using tidyr
+- revising some text here and there
+- other minor fixes
+
 # tabshiftr 0.3.1
 
 - various minor bugfixes
