@@ -152,7 +152,7 @@ validateSchema <- function(schema = NULL, input = NULL){
       varProp$col <- .eval_find(input = input, col = varProp$col, row = varProp$row)
     }
 
-    # figure our which rows to filter out
+    # figure out which rows to filter out
     if(!varProp$dist & !varName %in% c(groupID, clusterID)){
       if(varProp$type == "observed"){
         if(is.null(varProp$row)){
