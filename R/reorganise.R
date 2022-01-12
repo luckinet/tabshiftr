@@ -78,7 +78,7 @@ reorganise <- function(input = NULL, schema = NULL){
   theValues <- list()
   for(i in 1:nClusters){
 
-    # match all of the readily available variables ...
+    # match all of the readily available variables
     # ids = idVars[[i]]; obs = obsVars[[i]]; clust = clusterVar[i]; grp = groupVar[i]
     tidyVars <- .tidyVars(ids = idVars[[i]], obs = obsVars[[i]],
                           clust = clusterVar[i], grp = groupVar[i])

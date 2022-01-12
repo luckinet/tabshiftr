@@ -35,7 +35,7 @@ getIDVars <- function(schema = NULL, input = NULL){
   filter <- schema@filter
 
   idVars <- map(.x = seq_along(variables), .f = function(ix){
-    # unselect those id variables that are also cluster id or group
+    # unselect those id variables that are also cluster or group id
     if(variables[[ix]]$type == "id" & !names(variables)[ix] %in% c(clusters$id, clusters$group)){
       variables[ix]
     }
