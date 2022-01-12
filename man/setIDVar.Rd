@@ -34,7 +34,8 @@ columns, specify here additionally the row in which the names are recorded.}
 
 \item{split}{[\code{character(1)}]\cr In case the variable is part of a
 compound value, this should be a regular expression that splits the
-respective value off of that compound value.}
+respective value off of that compound value. See
+\code{\link[tidyr]{extract}} on how to set up the regular expression.}
 
 \item{merge}{[\code{character(1)}]\cr In case a variable is made up of
 several columns, this should be the character string that would connect the

@@ -46,10 +46,11 @@ with the values to convert to \code{unit}, defaults to 1. For instance, if
 values are recorded in acres, but shall be recorded in hectare, the factor
 would be 0.40468.}
 
-\item{key}{[\code{character(1)}]\cr If the variable is recorded (together
+\item{key}{[\code{integerish(1)}]\cr If the variable is recorded (together
 with other variables) so that the variable names are listed in one column
-and the respective values are listed in another column, give here the name
-of the column that contains the variable names.}
+and the respective values are listed in another column, give here the
+number of the column that contains the variable names. Can alternatively be
+"cluster", in case observed variables are the cluster ID.}
 
 \item{value}{[\code{character(1)}]\cr If the variable is recorded (together
 with other variables) so that the variable names are listed in one column
