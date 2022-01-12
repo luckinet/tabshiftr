@@ -18,10 +18,11 @@
 #'   with the values to convert to \code{unit}, defaults to 1. For instance, if
 #'   values are recorded in acres, but shall be recorded in hectare, the factor
 #'   would be 0.40468.
-#' @param key [\code{character(1)}]\cr If the variable is recorded (together
+#' @param key [\code{integerish(1)}]\cr If the variable is recorded (together
 #'   with other variables) so that the variable names are listed in one column
-#'   and the respective values are listed in another column, give here the name
-#'   of the column that contains the variable names.
+#'   and the respective values are listed in another column, give here the
+#'   number of the column that contains the variable names. Can alternatively be
+#'   "cluster", in case observed variables are the cluster ID.
 #' @param value [\code{character(1)}]\cr If the variable is recorded (together
 #'   with other variables) so that the variable names are listed in one column
 #'   and the respective values are listed in another column, give here the level
@@ -38,7 +39,7 @@
 #' @examples
 #' # please check the vignette for examples
 #' @family functions to describe table arrangement
-#' @importFrom checkmate assertClass assertIntegerish assertLogical
+#' @importFrom checkmate assertClass assertIntegerish assertLogical assertSubset
 #'   assertCharacter assertNumeric testIntegerish testCharacter assert
 #' @export
 
@@ -59,8 +60,9 @@ setObsVar <- function(schema = NULL, name = NULL, columns = NULL, top = NULL,
   assertLogical(x = distinct, any.missing = FALSE, len = 1)
   assertCharacter(x = unit, len = 1, any.missing = FALSE, null.ok = TRUE)
   assertNumeric(x = factor, len = 1, any.missing = FALSE)
-  # assertCharacter(x = key, len = 1, any.missing = FALSE, null.ok = TRUE)
-  # assertCharacter(x = value, len = 1, any.missing = FALSE, null.ok = TRUE)
+  if(is.character(key)){
+    assertSubset(x = key, choices = "cluster", empty.ok = FALSE)
+  }
 
   if(is.null(schema)){
     schema <- schema_default
