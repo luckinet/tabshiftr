@@ -20,16 +20,22 @@ reference:
   - title: validate the schema description
     contents:
       - tabs2shift
-      - validateSchema
-      - getData
       - getClusterVar
+      - getData
       - getGroupVar
       - getIDVars
       - getObsVars
+      - validateSchema
       - .find
   - title: reorganise tables
     contents:
       - reorganise
+  - title: other helpers
+    contents:
+      - .eval_find
+      - .expect_valid_table
+      - .tidyVers
+      - .updateFormat
 
 navbar:
   left:
