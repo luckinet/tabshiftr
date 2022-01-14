@@ -34,7 +34,7 @@ reference:
     contents:
       - .eval_find
       - .expect_valid_table
-      - .tidyVers
+      - .tidyVars
       - .updateFormat
 
 navbar:
