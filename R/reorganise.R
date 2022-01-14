@@ -40,7 +40,6 @@
 #'   mutate_all
 #' @importFrom tibble tibble
 #' @importFrom tidyr pivot_longer pivot_wider unnest
-#' @importFrom magrittr %>%
 #' @importFrom rlang set_names
 #' @importFrom purrr reduce map map_int
 #' @export
