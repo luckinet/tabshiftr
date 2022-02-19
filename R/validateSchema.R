@@ -48,11 +48,21 @@ validateSchema <- function(schema = NULL, input = NULL){
   assertDataFrame(x = input)
   assertClass(x = schema, classes = "schema")
 
-  # 1. complete cluster information ----
-  clusters <- schema@clusters
   filter <- schema@filter
   tabDim <- dim(input)
   variables <- schema@variables
+  if(filter$invert){
+    headInTemp <- TRUE
+  } else {
+    if(!is.null(names(filter$row))){
+      headInTemp <- FALSE
+    } else {
+      headInTemp <- TRUE
+    }
+  }
+
+  # 1. complete cluster information ----
+  clusters <- schema@clusters
 
   # set cluster start if it is NULL or a qousure
   if(is.null(clusters$row)){
@@ -169,7 +179,9 @@ validateSchema <- function(schema = NULL, input = NULL){
       }
 
       # build selectCols and assign it to filter$row
-      filter$row <- sort(unique(c(filter$row, varProp$row)))
+      if(headInTemp){
+        filter$row <- sort(unique(c(filter$row, varProp$row)))
+      }
     }
 
     if(varProp$type == "id" & !is.null(varProp$val)){
@@ -219,6 +231,10 @@ validateSchema <- function(schema = NULL, input = NULL){
   emptyRows <- which(rowSums(is.na(testRows)) == ncol(testRows))
   filter$row <- sort(unique(c(filter$row, emptyRows)))
 
+  # revert this again to output rows to keep, and not to discard
+  # if(!filter$invert){
+  #   filter$row <- (1:tabDim[1])[-filter$row]
+  # }
 
   out <- new(Class = "schema",
              clusters = clusters,
