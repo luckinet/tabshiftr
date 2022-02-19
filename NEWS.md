@@ -1,3 +1,7 @@
+# tabshiftr 0.3.3
+
+- fix a bug where the header was not properly recognised when using `setFilter()`.
+
 # tabshiftr 0.3.2
 
 - be more precise in using tidyr
