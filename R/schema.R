@@ -357,10 +357,14 @@ setMethod(f = "show",
               filterSpecs <- paste0("")
             } else {
 
-              filterType <- ifelse(filter$invert, "include", "exclude")
+              filterType <- ifelse(filter$invert, "exclude", "include")
               filterSpecs <- paste0("  filter (", filterType, ")",
-                                    ifelse(!is.null(filter$col), paste0("\n    col: [", paste0(filter$col, collapse = ", "), "]"), ""),
-                                    ifelse(!is.null(filter$row), paste0("\n    row: [", paste0(filter$row, collapse = ", "), "]"), ""), "\n\n")
+                                    # ifelse(!is.null(filter$col), paste0("\n    col: [", ifelse(length(filter$col) > 10, paste0(c(filter$col[1:10], "..."), collapse = ", "), paste0(filter$col, collapse = ", ")), "]"), ""),
+                                    paste0(" [",
+                                           ifelse(is.list(filter$row),
+                                                  paste0("by '", as.character(filter$row$by[2]), "' in column ", filter$row$col),
+                                                  paste0("rows ", ifelse(length(filter$row) > 10, paste0(c(filter$row[1:10], "..."), collapse = ", "), paste0(filter$row, collapse = ", ")))),
+                                           "]"), "\n\n")
             }
             cat(filterSpecs)
 
