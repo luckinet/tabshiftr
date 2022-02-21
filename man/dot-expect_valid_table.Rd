@@ -4,7 +4,13 @@
 \alias{.expect_valid_table}
 \title{Test for a valid table}
 \usage{
-.expect_valid_table(x = NULL, units = 1, variables = NULL, groups = FALSE)
+.expect_valid_table(
+  x = NULL,
+  units = 1,
+  variables = NULL,
+  groups = FALSE,
+  flags = FALSE
+)
 }
 \arguments{
 \item{x}{a table to test.}
@@ -15,6 +21,8 @@
 "harvested" or "production")}
 
 \item{groups}{whether or not groups are in the test table.}
+
+\item{flags}{whether or not flags are in the test table.}
 }
 \value{
 Either an error message of the invalid expectations, or the output of
