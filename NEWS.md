@@ -1,3 +1,7 @@
+# tabshiftr 0.3.4
+
+- incl. handling of flags (character additions to the numeric values of observed variables), which are now extracted into an ancillary column.
+
 # tabshiftr 0.3.3
 
 - fix a bug where the header was not properly recognised when using `setFilter()`.
