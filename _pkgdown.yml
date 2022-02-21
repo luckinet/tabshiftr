@@ -12,6 +12,7 @@ reference:
   - title: build a schema description
     contents:
       - schema
+      - schema_default
       - setCluster
       - setFilter
       - setFormat
@@ -36,6 +37,7 @@ reference:
       - .expect_valid_table
       - .tidyVars
       - .updateFormat
+      - show
 
 navbar:
   left:
