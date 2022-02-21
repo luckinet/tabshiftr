@@ -7,6 +7,8 @@
 #'   \code{input}.
 #' @importFrom purrr map
 #' @importFrom dplyr row_number
+#' @importFrom stringr str_extract str_remove_all
+#' @importFrom tidyselect starts_with
 
 .updateFormat <- function(input = NULL, schema = NULL){
 
@@ -48,10 +50,25 @@
       theVar <- gsub(format$dec, ".", theVar)
     }
 
+    if(length(format$flags$flag) != 0){
+      # capture flags ...
+      input <- input %>%
+        mutate(!!paste0("flag_", names(obsVars)[i]) := str_extract(string = theVar, pattern = paste0("[", paste0(format$flags$flag, collapse = ""), "]")))
+
+      # ... and remove them
+      theVar <- str_remove_all(string = theVar, pattern = paste0("[", paste0(format$flags$flag, collapse = ""), "]"))
+    }
+
     # multiply with factor
     theVar <- suppressWarnings(as.numeric(theVar)) * obsVars[[i]]$factor
 
     input[[which(names(obsVars)[i] == names(input))]] <- theVar
+
+  }
+
+  if(length(format$flags$flag) != 0){
+    input <- input %>%
+      unite(col = "flag", starts_with("flag_"), sep = ", ", na.rm = TRUE)
   }
 
   out <- input %>%
@@ -450,12 +467,14 @@
 #' @param variables the variables that should be in the output table (either
 #'   "harvested" or "production")
 #' @param groups whether or not groups are in the test table.
+#' @param flags whether or not flags are in the test table.
 #' @return Either an error message of the invalid expectations, or the output of
 #'   the last successful expectation.
 #' @importFrom testthat expect_identical
 #' @importFrom checkmate expect_names expect_tibble expect_list assertChoice
 
-.expect_valid_table <- function(x = NULL, units = 1, variables = NULL, groups = FALSE){
+.expect_valid_table <- function(x = NULL, units = 1, variables = NULL,
+                                groups = FALSE, flags = FALSE){
 
   assertChoice(x = units, choices = c(1:3))
   assertChoice(x = variables, choices = c("harvested", "production"), null.ok = TRUE)
@@ -473,8 +492,13 @@
         expect_tibble(x = x, any.missing = FALSE, nrows = 4, ncols = 6)
         expect_names(x = colnames(x), permutation.of = c("region", "territories", "year", "commodities", "harvested", "production") )
       } else {
-        expect_tibble(x = x, any.missing = FALSE, nrows = 4, ncols = 5)
-        expect_names(x = colnames(x), permutation.of =c("territories", "year", "commodities", "harvested", "production") )
+        if(flags){
+          expect_tibble(x = x, any.missing = FALSE, nrows = 4, ncols = 6)
+          expect_names(x = colnames(x), permutation.of =c("territories", "year", "commodities", "harvested", "production", "flag") )
+        } else {
+          expect_tibble(x = x, any.missing = FALSE, nrows = 4, ncols = 5)
+          expect_names(x = colnames(x), permutation.of =c("territories", "year", "commodities", "harvested", "production") )
+        }
       }
       expect_identical(object = x$harvested, expected = c(1121, 1111, 1221, 1211))
       expect_identical(object = x$production, expected = c(1122, 1112, 1222, 1212))
@@ -500,8 +524,13 @@
         expect_tibble(x = x, any.missing = FALSE, nrows = 8, ncols = 6)
         expect_names(x = colnames(x), permutation.of = c("region", "territories", "year", "commodities", "harvested", "production") )
       } else {
-        expect_tibble(x = x, any.missing = FALSE, nrows = 8, ncols = 5)
-        expect_names(x = colnames(x), permutation.of =c("territories", "year", "commodities", "harvested", "production") )
+        if(flags){
+          expect_tibble(x = x, any.missing = FALSE, nrows = 8, ncols = 6)
+          expect_names(x = colnames(x), permutation.of =c("territories", "year", "commodities", "harvested", "production", "flag") )
+        } else {
+          expect_tibble(x = x, any.missing = FALSE, nrows = 8, ncols = 5)
+          expect_names(x = colnames(x), permutation.of =c("territories", "year", "commodities", "harvested", "production") )
+        }
       }
 
       expect_identical(object = x$harvested, expected = c(1121, 1111, 1221, 1211, 2121, 2111, 2221, 2211))
@@ -529,8 +558,13 @@
         expect_tibble(x = x, any.missing = FALSE, nrows = 12, ncols = 6)
         expect_names(x = colnames(x), permutation.of = c("region", "territories", "year", "commodities", "harvested", "production") )
       } else {
-        expect_tibble(x = x, any.missing = FALSE, nrows = 12, ncols = 5)
-        expect_names(x = colnames(x), permutation.of = c("territories", "year", "commodities", "harvested", "production") )
+        if(flags){
+          expect_tibble(x = x, any.missing = FALSE, nrows = 12, ncols = 6)
+          expect_names(x = colnames(x), permutation.of =c("territories", "year", "commodities", "harvested", "production", "flag") )
+        } else {
+          expect_tibble(x = x, any.missing = FALSE, nrows = 12, ncols = 5)
+          expect_names(x = colnames(x), permutation.of =c("territories", "year", "commodities", "harvested", "production") )
+        }
       }
       expect_identical(object = x$harvested, expected = c(1121, 1111, 1221, 1211, 2121, 2111, 2221, 2211, 3121, 3111, 3221, 3211))
       expect_identical(object = x$production, expected = c(1122, 1112, 1222, 1212, 2122, 2112, 2222, 2212, 3122, 3112, 3222, 3212))
