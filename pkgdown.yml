@@ -1,9 +1,9 @@
 pandoc: 2.7.3
-pkgdown: 1.6.1
+pkgdown: 2.0.2
 pkgdown_sha: ~
 articles:
   tabshiftr: tabshiftr.html
-last_built: 2021-08-26T10:13Z
+last_built: 2022-02-21T10:34Z
 urls:
   reference: http://EhrmannS.github.io/tabshiftr/reference
   article: http://EhrmannS.github.io/tabshiftr/articles
