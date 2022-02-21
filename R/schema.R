@@ -156,8 +156,8 @@ setValidity(Class = "schema", function(object){
     if(length(object@format) == 0){
       errors <- c(errors, "the slot 'format' does not contain any entries.")
     }
-    if(!all(names(object@format) %in% c("del", "dec", "na"))){
-      errors <- c(errors, "'names(schema$format)' must be a permutation of set {del,dec,na}")
+    if(!all(names(object@format) %in% c("del", "dec", "na", "flags"))){
+      errors <- c(errors, "'names(schema$format)' must be a permutation of set {del,dec,na,flags}")
     }
     if(!is.null(object@format$del)){
       if(!is.character(object@format$del)){
@@ -172,6 +172,11 @@ setValidity(Class = "schema", function(object){
     if(!is.null(object@format$na)){
       if(!is.character(object@format$na)){
         errors <- c(errors, "'schema$format$na' must have a character value.")
+      }
+    }
+    if(!is.null(object@format$flags)){
+      if(!is.data.frame(object@format$flags)){
+        errors <- c(errors, "'schema$format$flags' must be a data.frame with column names 'flag' and 'value'.")
       }
     }
     # if(!is.null(object@format$types)){
