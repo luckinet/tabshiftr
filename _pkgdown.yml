@@ -37,7 +37,7 @@ reference:
       - .expect_valid_table
       - .tidyVars
       - .updateFormat
-      - show
+      - show,schema-method
 
 navbar:
   left:
