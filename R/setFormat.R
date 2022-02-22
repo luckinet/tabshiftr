@@ -35,7 +35,9 @@ setFormat <- function(schema = NULL, decimal = NULL, thousand = NULL,
   assertCharacter(x = thousand, len = 1, any.missing = FALSE, null.ok = TRUE)
   assertCharacter(x = na_values, any.missing = FALSE, null.ok = TRUE)
   assertDataFrame(x = flags, any.missing = FALSE, ncols = 2, null.ok = TRUE)
-  assertNames(x = names(flags), must.include = c("flag", "value"))
+  if(!is.null(flags)){
+    assertNames(x = names(flags), must.include = c("flag", "value"))
+  }
 
   if(is.null(schema)){
     schema <- schema_default

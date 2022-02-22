@@ -240,13 +240,16 @@
 
         # ... all id variables that have the same length
         equalID <- map(.x = seq_along(ids), .f = function(ix){
-          if(tempDim[1] == dim(ids[[ix]])[1]){
-            bla <- ids[ix]
-            names(bla[[1]]) <- names(ids[ix])
-            return(bla)
-          } else if(all(dim(ids[[ix]]) == c(1, 1))){
-            set_names(list(tibble(!!names(ids[ix]) := rep(ids[[ix]][[1]], tempDim[1]))), names(ids[ix]))
+          if(!names(ids[ix]) %in% names(wideID)){
+            if(tempDim[1] == dim(ids[[ix]])[1]){
+              bla <- ids[ix]
+              names(bla[[1]]) <- names(ids[ix])
+              return(bla)
+            } else if(all(dim(ids[[ix]]) == c(1, 1))){
+              set_names(list(tibble(!!names(ids[ix]) := rep(ids[[ix]][[1]], tempDim[1]))), names(ids[ix]))
+            }
           }
+
         })
         equalID <- unlist(equalID, recursive = FALSE)
         temp <- bind_cols(temp, equalID, .name_repair = "minimal")
