@@ -1,3 +1,7 @@
+# tabshiftr 0.3.5
+
+- fix a bug that would not allow tables that have only one row and implicit variables to be properly reorganised.
+
 # tabshiftr 0.3.4
 
 - incl. handling of flags (character additions to the numeric values of observed variables), which are now extracted into an ancillary column.
