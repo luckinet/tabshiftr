@@ -310,7 +310,7 @@ schema <- setCluster(id = "territories",
 
 In case identifying variables are factors with a small number of levels, those levels may be falsely used as names of other variables, where they would be next to each other and thus \"wide\" ([Tab. 7](#one_wide_id)).
 Those other variables (both identifying and observed variables) would then be \"nested\" in the wide identifying variables.
-In those cases we have to record for the identifying variable(s) the columns and the row in which the **values of the identifying variable** are found (they will look like they are part of the header). For the observed variable(s) we need to record also the columns and the topmost row of that variable, i.e., the row in which the name of the nested observed variable is found.
+In those cases we have to record for the identifying variable(s) the columns and the row in which the **values of the identifying variable** are found (they will look like they are part of the header). For the observed variable(s) we need to record the columns and the row where the **name of that variable** is found.
 
 ```{r}
 kable(input <- tabs2shift$one_wide_id)

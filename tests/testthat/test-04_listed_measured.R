@@ -46,7 +46,7 @@ test_that("listed observed variable", {
     setObsVar(name = "production", columns = 7,
               key = 6, value = "production")
 
-  out <- reorganise(input = input, schema = schema)
+  expect_warning(out <- reorganise(input = input, schema = schema))
   expect_tibble(x = out, nrows = 10, ncols = 5)
 
 })
