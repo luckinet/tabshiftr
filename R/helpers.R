@@ -89,7 +89,7 @@
 #' @importFrom checkmate assertSetEqual
 #' @importFrom purrr reduce map_int map set_names
 #' @importFrom tidyr pivot_longer pivot_wider fill separate
-#' @importFrom dplyr distinct select bind_cols if_any
+#' @importFrom dplyr distinct select bind_cols if_any full_join
 #' @importFrom tidyselect all_of everything
 #' @importFrom rlang `:=`
 
@@ -145,20 +145,25 @@
       wideID <- unlist(wideID, recursive = FALSE)
 
       # build a tibble for joining with the column names of temp
-      wideColnames <- NULL
-      for(j in seq_along(wideID)){
-
-        nextColNames <- wideColnames
-        wideColnames <- wideID[[j]] %>%
+      wideColnames <- map(.x = seq_along(wideID), .f = function(jx){
+        wideID[[jx]] %>%
           pivot_longer(cols = everything(),
                        names_to = "name",
-                       values_to = names(wideID)[j])
+                       values_to = names(wideID)[jx])
+      })
 
-        if(!is.null(nextColNames)){
-          wideColnames <- left_join(wideColnames, nextColNames, by = "name") %>%
-            fill(everything())
-        }
+      # sort the resulting list by the length of the tables, so that longer
+      # tables are at the beginning of the following "join" sequence
+      tempDims <- map_int(.x = seq_along(wideColnames), .f = function(jx){
+        dim(wideColnames[[jx]])[[1]]
+      })
+      wideColnames <- wideColnames[order(tempDims, decreasing = TRUE)]
+
+      if(!is.null(wideID)){
+        wideColnames <- reduce(wideColnames, full_join, by = "name") %>%
+          fill(everything())
       }
+
 
       if(varName == "listed"){
 

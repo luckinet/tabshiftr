@@ -138,3 +138,19 @@ test_that("several wide identifying variables", {
   .expect_valid_table(x = reorganise(input = input, schema = schema), units = 2)
 
 })
+
+
+test_that("when the 'wider' identifying variable is registered first", {
+
+  input <- tabs2shift$two_wide_id2
+
+  schema <-
+    setIDVar(name = "territories", columns = 1) %>%
+    setIDVar(name = "year", columns = c(2, 4, 6, 8), rows = 2) %>%
+    setIDVar(name = "commodities", columns = c(2, 6), rows = 1) %>%
+    setObsVar(name = "harvested", columns = c(2, 4, 6, 8), top = 3) %>%
+    setObsVar(name = "production", columns = c(3, 5, 7, 9), top = 3)
+
+  .expect_valid_table(x = reorganise(input = input, schema = schema), units = 2)
+
+})

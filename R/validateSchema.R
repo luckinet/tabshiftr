@@ -178,7 +178,6 @@ validateSchema <- function(schema = NULL, input = NULL){
         }
       }
 
-      # build selectCols and assign it to filter$row
       if(headInTemp){
         filter$row <- sort(unique(c(filter$row, varProp$row)))
       }
