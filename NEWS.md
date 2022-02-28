@@ -1,3 +1,7 @@
+# tabshiftr 0.3.6
+
+- fix a bug that would not allow to register of two wide identifying variables first the wider, then the narrower wide identifying variable.
+
 # tabshiftr 0.3.5
 
 - fix a bug that would not allow tables that have only one row and implicit variables to be properly reorganised.
