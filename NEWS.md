@@ -1,3 +1,7 @@
+# tabshiftr 0.3.7
+
+- implement code so that duplicated observations in the input table are by default summarised (with a warning)
+
 # tabshiftr 0.3.6
 
 - fix a bug that would not allow to register of two wide identifying variables first the wider, then the narrower wide identifying variable.
