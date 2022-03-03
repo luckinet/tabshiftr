@@ -104,7 +104,6 @@ reorganise <- function(input = NULL, schema = NULL){
   }
 
   out <- out %>%
-    unnest(cols = c(names(schema@variables))) %>%
     select(names(schema@variables)) %>%
     .updateFormat(schema = schema)
 
