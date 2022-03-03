@@ -47,7 +47,8 @@ test_that("listed observed variable", {
               key = 6, value = "production")
 
   expect_warning(out <- reorganise(input = input, schema = schema))
-  expect_tibble(x = out, nrows = 10, ncols = 5)
+  expect_tibble(x = out, nrows = 8, ncols = 5)
+  expect_true(all(out$production[7:8] == c(4444, 4424)))
 
 })
 
