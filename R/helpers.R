@@ -7,7 +7,7 @@
 #'   \code{input}.
 #' @importFrom purrr map
 #' @importFrom dplyr row_number
-#' @importFrom stringr str_extract str_remove_all
+#' @importFrom stringr str_remove_all str_extract_all
 #' @importFrom tidyselect starts_with
 
 .updateFormat <- function(input = NULL, schema = NULL){
@@ -15,6 +15,18 @@
   clusters <- schema@clusters
   variables <- schema@variables
   format <- schema@format
+
+  if(!is.null(format$del)){
+    if(format$del == "."){
+      format$del <- "[.]"
+    }
+  }
+
+  if(!is.null(format$dec)){
+    if(format$dec == "."){
+      format$dec <- "[.]"
+    }
+  }
 
   idVars <- map(.x = seq_along(variables), .f = function(ix){
     if(variables[[ix]]$type == "id"){
@@ -33,36 +45,65 @@
   for(i in seq_along(obsVars)){
     theVar <- input[[which(names(obsVars)[i] == names(input))]]
 
-    theVar <- gsub(" ", "", theVar)
-    if(!is.null(format$na)){
-      theVar[theVar %in% format$na] <- NA
+    # capture flags
+    if(length(format$flags$flag) != 0){
+      theFlags <- map(seq_along(theVar), function(ix){
+        temp <- str_extract_all(string = theVar[[ix]], pattern = paste0("[", paste0(format$flags$flag, collapse = ""), "]")) %>%
+          unlist()
+        if(length(temp) == 0){
+          NA
+        } else {
+          temp
+        }
+      })
     }
-    if(!is.null(format$del)){
-      if(format$del == "."){
-        format$del <- "[.]"
+
+    theVar <- map(seq_along(theVar), function(ix){
+      tmp <- theVar[[ix]]
+
+      if(length(tmp) != 0){
+        # replace white-spaces
+        tmp <- gsub(" ", "", tmp)
+
+        # replace NA values
+        if(!is.null(format$na)){
+          tmp[tmp %in% format$na] <- NA
+        }
+
+        # replace thousands seperator
+        if(!is.null(format$del)){
+          tmp <- gsub(format$del, "", tmp)
+        }
+
+        # replace decimal seperator
+        if(!is.null(format$dec)){
+          tmp <- gsub(format$dec, ".", tmp)
+        }
+
+        # remove flags
+        if(length(format$flags$flag) != 0){
+          tmp <- str_remove_all(string = tmp, pattern = paste0("[", paste0(format$flags$flag, collapse = ""), "]"))
+        }
+
+        # multiply with factor
+        tmp <- suppressWarnings(as.numeric(tmp)) * obsVars[[i]]$factor
+
+        # apply function to aggregate duplicated values
+        if(length(tmp) > 1){
+          tmp <- sum(tmp, na.rm = TRUE)
+        }
+        return(tmp)
+      } else {
+        NA
       }
-      theVar <- gsub(format$del, "", theVar)
-    }
-    if(!is.null(format$dec)){
-      if(format$dec == "."){
-        format$dec <- "[.]"
-      }
-      theVar <- gsub(format$dec, ".", theVar)
-    }
+
+    })
 
     if(length(format$flags$flag) != 0){
-      # capture flags ...
-      input <- input %>%
-        mutate(!!paste0("flag_", names(obsVars)[i]) := str_extract(string = theVar, pattern = paste0("[", paste0(format$flags$flag, collapse = ""), "]")))
-
-      # ... and remove them
-      theVar <- str_remove_all(string = theVar, pattern = paste0("[", paste0(format$flags$flag, collapse = ""), "]"))
+      input <- input %>% bind_cols(tibble(!!paste0("flag_", names(obsVars)[i]) := unlist(theFlags)))
     }
 
-    # multiply with factor
-    theVar <- suppressWarnings(as.numeric(theVar)) * obsVars[[i]]$factor
-
-    input[[which(names(obsVars)[i] == names(input))]] <- theVar
+    input[[which(names(obsVars)[i] == names(input))]] <- unlist(theVar)
 
   }
 
@@ -209,7 +250,7 @@
           filter(if_any(all_of(obsNames), ~ . != 1))
 
         if(dim(dupObs)[1] != 0){
-          warning("rows(", paste0(dupObs$row, collapse = ", "), ") are duplicated.")
+          warning("rows(", paste0(dupObs$row, collapse = ", "), ") are summarised from several values.", call. = FALSE)
         }
 
         newObs <- newObs %>%
