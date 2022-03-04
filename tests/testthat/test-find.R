@@ -52,12 +52,28 @@ test_that(".find cluster positions based on regular expressions", {
 
 })
 
-test_that(".find filter rows based on a function", {
+test_that(".find filter-rows based on a function", {
 
   input <- tabs2shift$messy_rows
 
   schema <-
     setFilter(rows = .find(by = is.numeric, col = 1), invert = TRUE) %>%
+    setIDVar(name = "territories", columns = 1) %>%
+    setIDVar(name = "year", columns = 2) %>%
+    setIDVar(name = "commodities", columns = 3) %>%
+    setObsVar(name = "harvested", columns = 5) %>%
+    setObsVar(name = "production", columns = 6)
+
+  .expect_valid_table(x = reorganise(input = input, schema = schema), units = 2)
+
+})
+
+test_that(".find filter-rows based on several character strings", {
+
+  input <- tabs2shift$messy_rows
+
+  schema <-
+    setFilter(rows = .find(by = c("all", "none", "xyz", "5"), col = 3), invert = TRUE) %>%
     setIDVar(name = "territories", columns = 1) %>%
     setIDVar(name = "year", columns = 2) %>%
     setIDVar(name = "commodities", columns = 3) %>%

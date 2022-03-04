@@ -483,6 +483,11 @@
           map(subset[,ix], term)[[1]]
         })
       } else {
+
+        if(length(term) > 1){
+          term <- paste0(term, collapse = "|")
+        }
+
         rows <- map_int(.x = 1:dim(input)[1], .f = function(ix){
           if(!is.null(row$col)){
             if(!is.na(input[ix,row$col])){
