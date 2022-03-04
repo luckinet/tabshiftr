@@ -1,9 +1,9 @@
 #' Set the specific format of a table
 #'
-#' Any table makes some assumptions, which are mostly not explicitly recorded in
-#' the commonly available table format, about the data. This concerns, for
-#' example, the symbol(s) that signal "not available" values or the symbol that
-#' is used as decimal sign.
+#' Any table makes some assumptions about the data, but they are mostly not
+#' explicitly recorded in the commonly available table format. This concerns,
+#' for example, the symbol(s) that signal "not available" values or the symbol
+#' that is used as decimal sign.
 #' @param schema [\code{schema(1)}]\cr In case this information is added to an
 #'   already existing schema, provide that schema here (overwrites previous
 #'   information).

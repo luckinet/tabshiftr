@@ -21,7 +21,7 @@
 #'
 #' validateSchema(schema = schema, input = input) %>%
 #'    getObsVars(input = input)
-#' @importFrom purrr map set_names
+#' @importFrom purrr map set_names map_chr reduce
 #' @importFrom dplyr row_number
 #' @export
 

@@ -35,10 +35,10 @@ as numeric values. This must be a data.frame with two columns with names
 An object of class \code{\link{schema}}.
 }
 \description{
-Any table makes some assumptions, which are mostly not explicitly recorded in
-the commonly available table format, about the data. This concerns, for
-example, the symbol(s) that signal "not available" values or the symbol that
-is used as decimal sign.
+Any table makes some assumptions about the data, but they are mostly not
+explicitly recorded in the commonly available table format. This concerns,
+for example, the symbol(s) that signal "not available" values or the symbol
+that is used as decimal sign.
 }
 \details{
 Please also take a look at the currently suggested strategy to set
