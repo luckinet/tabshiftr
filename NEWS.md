@@ -1,3 +1,7 @@
+# tabshiftr 0.3.8
+
+- allow `.find`ing based on several character strings (that can themselves be regular expressions).
+
 # tabshiftr 0.3.7
 
 - implement code so that duplicated observations in the input table are by default summarised (with a warning)
