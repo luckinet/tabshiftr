@@ -67,6 +67,7 @@ Please also take a look at the currently suggested strategy to set
 Other functions to describe table arrangement: 
 \code{\link{setFilter}()},
 \code{\link{setFormat}()},
+\code{\link{setGroups}()},
 \code{\link{setIDVar}()},
 \code{\link{setObsVar}()}
 }

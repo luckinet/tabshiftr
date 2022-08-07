@@ -23,12 +23,25 @@ An object of class \code{\link{schema}}.
 This function allows to specify additional rules to filter certain rows
 }
 \examples{
-# please check the vignette for examples
+(input <- tabs2shift$messy_rows)
+
+# select only 'unit 2' and 'year 2'
+schema <-
+  setFilter(rows = .find(by = "unit 2", col = 1)) \%>\%
+  setFilter(rows = .find(by = "year 2", col = 2)) \%>\%
+  setIDVar(name = "territories", columns = 1) \%>\%
+  setIDVar(name = "year", columns = 2) \%>\%
+  setIDVar(name = "commodities", columns = 3) \%>\%
+  setObsVar(name = "harvested", columns = 5) \%>\%
+  setObsVar(name = "production", columns = 6)
+
+reorganise(schema = schema, input = input)
 }
 \seealso{
 Other functions to describe table arrangement: 
 \code{\link{setCluster}()},
 \code{\link{setFormat}()},
+\code{\link{setGroups}()},
 \code{\link{setIDVar}()},
 \code{\link{setObsVar}()}
 }
