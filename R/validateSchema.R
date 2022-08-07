@@ -54,7 +54,7 @@ validateSchema <- function(schema = NULL, input = NULL){
   if(filter$invert){
     headInTemp <- TRUE
   } else {
-    if(!is.null(names(filter$row))){
+    if(!is.null(names(filter$row[[1]]))){
       headInTemp <- FALSE
     } else {
       headInTemp <- TRUE
@@ -68,7 +68,7 @@ validateSchema <- function(schema = NULL, input = NULL){
   if(is.null(clusters$row)){
     clusters$row <- 1
   } else if(is.list(clusters$row)){
-    clusters$row <- .eval_find(input = input, row = clusters$row)
+    clusters$row <- .eval_find(input = input, row = list(clusters$row))
   }
 
   if(is.null(clusters$col)){
@@ -102,11 +102,14 @@ validateSchema <- function(schema = NULL, input = NULL){
   clusters$width <- rep(x = clusters$width, length.out = nClusters)
   clusters$height <- rep(x = clusters$height, length.out = nClusters)
 
-
   # 2. complete filter ----
   # evaluate quosure
   if(is.list(filter$row)){
-    filter$row <- .eval_find(input = input, row = filter$row)
+    if(!is.null(names(filter$row[[1]]))){
+      filter$row <- .eval_find(input = input, row = filter$row)
+    } else {
+      filter$row <- unlist(filter$row)
+    }
   }
 
   if(!filter$invert){
@@ -151,15 +154,17 @@ validateSchema <- function(schema = NULL, input = NULL){
     }
 
     # resolve quosures from grep-ing unkown col/rows ----
-    if(is.list(varProp$row)){
-      varProp$row <- .eval_find(input = input, row = varProp$row)
+    # if(!is.null(names(varProp$row))){
+      if(is.list(varProp$row)){
+      varProp$row <- .eval_find(input = input, row = list(varProp$row))
 
       # ignore header rows
       varProp$row <- varProp$row[!varProp$row %in% headerRows]
     }
 
+    # if(!is.null(names(varProp$col))){
     if(is.list(varProp$col)){
-      varProp$col <- .eval_find(input = input, col = varProp$col, row = varProp$row)
+      varProp$col <- .eval_find(input = input, col = varProp$col, row = list(varProp$row))
     }
 
     # figure out which rows to filter out
@@ -179,6 +184,7 @@ validateSchema <- function(schema = NULL, input = NULL){
       }
 
       if(headInTemp){
+        message(varProp$row)
         filter$row <- sort(unique(c(filter$row, varProp$row)))
       }
     }
@@ -238,6 +244,7 @@ validateSchema <- function(schema = NULL, input = NULL){
   out <- new(Class = "schema",
              clusters = clusters,
              format = schema@format,
+             groups = schema@groups,
              filter = filter,
              variables = variables)
 
