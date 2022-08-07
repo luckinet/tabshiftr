@@ -20,6 +20,28 @@ test_that("filter rows", {
 
 })
 
+test_that("filter several rows", {
+
+  input <- tabs2shift$messy_rows
+
+  schema <-
+    setFilter(rows = .find(by = "unit 2", col = 1)) %>%
+    setFilter(rows = .find(by = "year 2", col = 2)) %>%
+    setIDVar(name = "territories", columns = 1) %>%
+    setIDVar(name = "year", columns = 2) %>%
+    setIDVar(name = "commodities", columns = 3) %>%
+    setObsVar(name = "harvested", columns = 5) %>%
+    setObsVar(name = "production", columns = 6)
+
+  out <- reorganise(input = input, schema = schema)
+  expect_equal(out$territories, c("unit 2", "unit 2"))
+  expect_equal(out$year, c("year 2", "year 2"))
+  expect_equal(out$commodities, c("maize", "soybean"))
+  expect_equal(out$harvested, c(2221, 2211))
+  expect_equal(out$production, c(2222, 2212))
+
+})
+
 test_that("filter rows from clusters", {
 
   input <- tabs2shift$clusters_nested
