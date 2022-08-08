@@ -420,7 +420,7 @@
 #' @importFrom purrr map_int map_lgl
 #' @importFrom tibble rownames_to_column
 #' @importFrom tidyr pivot_longer pivot_wider
-#' @importFrom dplyr select mutate across
+#' @importFrom dplyr select mutate across pull if_else
 #' @importFrom stringr str_count
 
 .eval_find <- function(input = NULL, col = NULL, row = NULL){
@@ -497,18 +497,31 @@
             term <- paste0(term, collapse = "|")
           }
 
-          rows <- map_int(.x = 1:dim(input)[1], .f = function(ix){
-            if(!is.null(theRow$col)){
-              if(!is.na(input[ix, theRow$col])){
-                lookup <- unlist(input[ix, theRow$col], use.names = FALSE)
-              } else {
-                lookup <- ""
-              }
-            } else {
-              lookup <-input[ix,]
-            }
-            str_count(string = paste(lookup, collapse = " "), pattern = term)
-          })
+          # rows <- map_int(.x = 1:dim(input)[1], .f = function(ix){
+          #   if(!is.null(theRow$col)){
+          #     if(!is.na(input[ix, theRow$col])){
+          #       lookup <- unlist(input[ix, theRow$col], use.names = FALSE)
+          #     } else {
+          #       lookup <- ""
+          #     }
+          #   } else {
+          #     lookup <-input[ix,]
+          #   }
+          #   str_count(string = paste(lookup, collapse = " "), pattern = term)
+          # })
+
+          if(!is.null(theRow$col)){
+            rows <- input %>%
+              mutate(it = if_else(if_any(theRow$col, ~ grepl(x = .x, pattern = term)), 1, 0)) %>%
+              pull(it)
+          } else {
+            rows <- input %>%
+              unite(col = all, everything(), sep = " ", na.rm = TRUE) %>%
+              mutate(it = str_count(string = all, pattern = term)) %>%
+              pull(it)
+          }
+
+
         }
 
         theRows <- c(theRows, list(rows))

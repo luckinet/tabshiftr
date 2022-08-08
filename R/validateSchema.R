@@ -184,7 +184,7 @@ validateSchema <- function(schema = NULL, input = NULL){
       }
 
       if(headInTemp){
-        message(varProp$row)
+        # message(varProp$row)
         filter$row <- sort(unique(c(filter$row, varProp$row)))
       }
     }
