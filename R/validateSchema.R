@@ -155,7 +155,7 @@ validateSchema <- function(schema = NULL, input = NULL){
 
     # resolve quosures from grep-ing unkown col/rows ----
     # if(!is.null(names(varProp$row))){
-      if(is.list(varProp$row)){
+    if(is.list(varProp$row)){
       varProp$row <- .eval_find(input = input, row = list(varProp$row))
 
       # ignore header rows
