@@ -231,9 +231,13 @@
           wideName <- names(wideID)
         }
 
+        # remove columns that are both in equalID and tempObs (for example, when an id-variable is used as key)
+        # dupEqualIDs <- which(!as.list(bind_cols(equalID)) %in% as.list(bind_cols(tempObs)))
+
         tempObs <- outObs
         if(!is.null(wideID)){
           names(tempObs$listed) <- c("key", wideNames)
+          # newObs <- bind_cols(c(equalID[dupEqualIDs], tempObs), .name_repair = "minimal") %>%
           newObs <- bind_cols(c(equalID, tempObs), .name_repair = "minimal") %>%
             pivot_longer(cols = all_of(wideNames), names_to = wideName)
           valueNames <- "value"
@@ -453,7 +457,13 @@
 
       } else {
         cols <- map_int(.x = 1:dim(input)[2], .f = function(ix){
-          str_count(string = paste(input[[ix]], collapse = " "), pattern = term)
+          # message(ix)
+          # str_count(string = paste(input[[ix]], collapse = " "), pattern = term)
+          if(!is.null(col$row)){
+            str_count(string = paste(input[[ix]][col$row], collapse = " "), pattern = term)
+          } else {
+            str_count(string = paste(input[[ix]], collapse = " "), pattern = term)
+          }
         })
       }
       out <- rep(seq_along(cols), cols)
