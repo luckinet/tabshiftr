@@ -99,10 +99,19 @@ getIDVars <- function(schema = NULL, input = NULL){
               unite(col = !!newName, sep = tempVar$merge)
           }
 
+          # apply a possibly given filter
           if(!is.null(theFilter)){
             temp <- temp %>%
               filter(!row_number() %in% theFilter)
           }
+
+          # and copy missing values downwards
+          if(anyNA(temp[1])){
+            message("filling NA-values in downwards direction in column '", names(idVars[i]),"'.")
+            temp <- temp %>%
+              fill(1, .direction = "down")
+          }
+
         }
 
         vars <- c(vars, set_names(x = list(temp), nm = names(idVars)[i]))
