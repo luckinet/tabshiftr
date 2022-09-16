@@ -92,6 +92,7 @@
 schema <- setClass(Class = "schema",
                    slots = c(clusters = "list",
                              format = "list",
+                             groups = "list",
                              filter = "list",
                              variables = "list"
                    )
@@ -179,11 +180,12 @@ setValidity(Class = "schema", function(object){
         errors <- c(errors, "'schema$format$flags' must be a data.frame with column names 'flag' and 'value'.")
       }
     }
-    # if(!is.null(object@format$types)){
-    #   if(!is.character(object@format$types)){
-    #     errors <- c(errors, "'schema$format$types' must have a character value.")
-    #   }
-    # }
+  }
+
+  if(!.hasSlot(object = object, name = "groups")){
+    errors <- c(errors, "the schema does not have a 'groups' slot.")
+  } else {
+
   }
 
   if(!.hasSlot(object = object, name = "filter")){
@@ -263,11 +265,6 @@ setValidity(Class = "schema", function(object){
         if(!all(names(theVariable) %in% c("type", "unit", "factor", "row", "col", "rel", "dist", "key", "value"))){
           errors <- c(errors, paste0("'names(", theName, ")' must be a permutation of set {type,unit,factor,row,col,rel,dist,key,value}"))
         }
-        # if(!is.null(theVariable$unit)){
-        #   if(!is.character(theVariable$unit)){
-        #     errors <- c(errors, paste0("'", theName, "$unit' must have a character value."))
-        #   }
-        # }
         if(!is.null(theVariable$factor)){
           if(!is.numeric(theVariable$factor)){
             errors <- c(errors, paste0("'", theName, "$factor' must have a numeric value."))
@@ -289,11 +286,6 @@ setValidity(Class = "schema", function(object){
         if(!is.logical(theVariable$dist)){
           errors <- c(errors, paste0("'", theName, "$dist' must either be 'TRUE' or 'FALSE'."))
         }
-        # if(!is.null(theVariable$key)){
-        #   if(!is.character(theVariable$key)){
-        #     errors <- c(errors, paste0("'", theName, "$key' must have a character value."))
-        #   }
-        # }
         if(!is.null(theVariable$value)){
           if(theVariable$key == "cluster"){
             if(!rlang::is_integerish(theVariable$value)){
