@@ -138,6 +138,24 @@ validateSchema <- function(schema = NULL, input = NULL){
     varProp <- variables[[i]]
     varName <- names(variables)[i]
 
+    # resolve quosures from grep-ing unknown col/rows ----
+    if(is.list(varProp$row)){
+      varProp$row <- .eval_find(input = input, row = varProp$row)
+
+      # ignore header rows
+      varProp$row <- varProp$row[!varProp$row %in% headerRows]
+
+      # when evaluating here, it isn't relative anymore
+      varProp$rel <- FALSE
+    }
+
+    if(is.list(varProp$col)){
+      varProp$col <- .eval_find(input = input, col = varProp$col, row = varProp$row)
+
+      # when evaluating here, it isn't relative anymore
+      varProp$rel <- FALSE
+    }
+
     # check whether the variable has relative values and if so, make them absolute ----
     if(varProp$rel){
       # this might become problematic in case a schema requires several col/row to be set with a relative value
@@ -148,18 +166,6 @@ validateSchema <- function(schema = NULL, input = NULL){
         varProp$row <- clusters$row + varProp$row - 1
       }
       varProp$rel <- FALSE
-    }
-
-    # resolve quosures from grep-ing unkown col/rows ----
-    if(is.list(varProp$row)){
-      varProp$row <- .eval_find(input = input, row = varProp$row)
-
-      # ignore header rows
-      varProp$row <- varProp$row[!varProp$row %in% headerRows]
-    }
-
-    if(is.list(varProp$col)){
-      varProp$col <- .eval_find(input = input, col = varProp$col, row = varProp$row)
     }
 
     # figure out which rows to filter out
@@ -238,6 +244,7 @@ validateSchema <- function(schema = NULL, input = NULL){
   out <- new(Class = "schema",
              clusters = clusters,
              format = schema@format,
+             groups = schema@groups,
              filter = filter,
              variables = variables)
 
