@@ -1,3 +1,7 @@
+# tabshiftr 0.3.9
+
+- allow several filters to be applied in a seperate function and thus for seperate columns.
+
 # tabshiftr 0.3.8
 
 - allow `.find`ing based on several character strings (that can themselves be regular expressions).

@@ -6,7 +6,7 @@
 #' @param schema [\code{character(1)}]\cr the schema description of
 #'   \code{input}.
 #' @importFrom purrr map
-#' @importFrom dplyr row_number
+#' @importFrom dplyr row_number arrange_at
 #' @importFrom stringr str_remove_all str_extract_all
 #' @importFrom tidyselect starts_with
 
@@ -231,9 +231,13 @@
           wideName <- names(wideID)
         }
 
+        # remove columns that are both in equalID and tempObs (for example, when an id-variable is used as key)
+        # dupEqualIDs <- which(!as.list(bind_cols(equalID)) %in% as.list(bind_cols(tempObs)))
+
         tempObs <- outObs
         if(!is.null(wideID)){
           names(tempObs$listed) <- c("key", wideNames)
+          # newObs <- bind_cols(c(equalID[dupEqualIDs], tempObs), .name_repair = "minimal") %>%
           newObs <- bind_cols(c(equalID, tempObs), .name_repair = "minimal") %>%
             pivot_longer(cols = all_of(wideNames), names_to = wideName)
           valueNames <- "value"
@@ -415,15 +419,19 @@
 #' @param row [\code{list(2)}]\cr the output of the respective .find construct
 #'   used to match in rows.
 #' @return the columns or rows of the evaluated position
-#' @importFrom checkmate assertNumeric
+#' @importFrom checkmate assertNumeric assertList assertDataFrame
 #' @importFrom rlang eval_tidy
 #' @importFrom purrr map_int map_lgl
 #' @importFrom tibble rownames_to_column
 #' @importFrom tidyr pivot_longer pivot_wider
-#' @importFrom dplyr select mutate across
+#' @importFrom dplyr select mutate across pull if_else
 #' @importFrom stringr str_count
 
 .eval_find <- function(input = NULL, col = NULL, row = NULL){
+
+  assertDataFrame(x = input)
+  assertList(x = row, min.len = 1, null.ok = TRUE)
+  # assertList(x = col, min.len = 1)
 
   # in case to look for columns
   if(!is.null(col)){
@@ -449,7 +457,13 @@
 
       } else {
         cols <- map_int(.x = 1:dim(input)[2], .f = function(ix){
-          str_count(string = paste(input[[ix]], collapse = " "), pattern = term)
+          # message(ix)
+          # str_count(string = paste(input[[ix]], collapse = " "), pattern = term)
+          if(!is.null(col$row)){
+            str_count(string = paste(input[[ix]][col$row], collapse = " "), pattern = term)
+          } else {
+            str_count(string = paste(input[[ix]], collapse = " "), pattern = term)
+          }
         })
       }
       out <- rep(seq_along(cols), cols)
@@ -459,51 +473,75 @@
 
   # in case to look for rows
   if(!is.null(row)){
-    if(is.list(row)){
-      term <- eval_tidy(row$by)
 
-      if(is.function(term)){
+    if(!is.null(names(row[[1]]))){
+      theRows <- NULL
+      for(i in seq_along(row)){
 
-        if(!is.null(row$col)){
-          assertNumeric(x = row$col, len = 1, any.missing = FALSE)
-          subset <- input[,unique(row$col)]
-        } else {
-          subset <- input
-        }
+        theRow <- row[[i]]
+        term <- eval_tidy(theRow$by)
 
-        # make a subset table that contains numbers when possible
-        subset <- subset %>%
-          rownames_to_column() %>%
-          pivot_longer(cols = -rowname, names_to = 'variable', values_to = 'value') %>%
-          pivot_wider(id_cols = variable, names_from = rowname, values_from = value) %>%
-          select(-variable) %>%
-          mutate(across(.cols = where(function(x) suppressWarnings(!anyNA(as.numeric(x)))), .fns = as.numeric))
+        if(is.function(term)){
 
-        rows <- map_int(.x = 1:dim(subset)[2], .f = function(ix){
-          map(subset[,ix], term)[[1]]
-        })
-      } else {
-
-        if(length(term) > 1){
-          term <- paste0(term, collapse = "|")
-        }
-
-        rows <- map_int(.x = 1:dim(input)[1], .f = function(ix){
-          if(!is.null(row$col)){
-            if(!is.na(input[ix,row$col])){
-              lookup <- unlist(input[ix,row$col], use.names = FALSE)
-            } else {
-              lookup <- ""
-            }
+          if(!is.null(theRow$col)){
+            assertNumeric(x = theRow$col, len = 1, any.missing = FALSE)
+            subset <- input[,unique(theRow$col)]
           } else {
-            lookup <-input[ix,]
+            subset <- input
           }
-          str_count(string = paste(lookup, collapse = " "), pattern = term)
-        })
-      }
-      out <- rep(seq_along(rows), rows)
-    }
 
+          # make a subset table that contains numbers when possible
+          subset <- subset %>%
+            rownames_to_column() %>%
+            pivot_longer(cols = -rowname, names_to = 'variable', values_to = 'value') %>%
+            pivot_wider(id_cols = variable, names_from = rowname, values_from = value) %>%
+            select(-variable) %>%
+            mutate(across(.cols = where(function(x) suppressWarnings(!anyNA(as.numeric(x)))), .fns = as.numeric))
+
+          rows <- map_int(.x = 1:dim(subset)[2], .f = function(ix){
+            map(subset[,ix], term)[[1]]
+          })
+        } else {
+
+          if(length(term) > 1){
+            term <- paste0(term, collapse = "|")
+          }
+
+          # rows <- map_int(.x = 1:dim(input)[1], .f = function(ix){
+          #   if(!is.null(theRow$col)){
+          #     if(!is.na(input[ix, theRow$col])){
+          #       lookup <- unlist(input[ix, theRow$col], use.names = FALSE)
+          #     } else {
+          #       lookup <- ""
+          #     }
+          #   } else {
+          #     lookup <-input[ix,]
+          #   }
+          #   str_count(string = paste(lookup, collapse = " "), pattern = term)
+          # })
+
+          if(!is.null(theRow$col)){
+            rows <- input %>%
+              mutate(it = if_else(if_any(theRow$col, ~ grepl(x = .x, pattern = term)), 1, 0)) %>%
+              pull(it)
+          } else {
+            rows <- input %>%
+              unite(col = all, everything(), sep = " ", na.rm = TRUE) %>%
+              mutate(it = str_count(string = all, pattern = term)) %>%
+              pull(it)
+          }
+
+
+        }
+
+        theRows <- c(theRows, list(rows))
+
+      }
+
+      theRows <- reduce(theRows, `&`)
+      out <- rep(seq_along(theRows), theRows)
+
+    }
   }
 
   return(out)

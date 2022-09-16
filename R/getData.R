@@ -21,10 +21,12 @@
 #'
 #' validateSchema(schema = schema, input = input) %>%
 #'    getData(input = input)
-#' @importFrom purrr map map_dfr
+#' @importFrom rlang eval_tidy
+#' @importFrom dplyr mutate group_by summarise filter select across n
 #' @importFrom tibble as_tibble
-#' @importFrom dplyr n summarise
+#' @importFrom tidyselect everything
 #' @importFrom stats na.omit
+#' @importFrom purrr map_dfr
 #' @export
 
 getData <- function(schema = NULL, input = NULL){

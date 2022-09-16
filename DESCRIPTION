@@ -1,12 +1,16 @@
 Package: tabshiftr
 Title: Reshape Disorganised Messy Data
-Version: 0.3.8
+Version: 0.3.9
 Authors@R: 
     c(person(given = "Steffen",
              family = "Ehrmann",
              role = c("aut", "cre"),
              email = "steffen.ehrmann@posteo.de",
              comment = c(ORCID = "0000-0002-2958-0796")),
+      person(given = "Tsvetelina",
+             family = "Tomova",
+             role = "ctb",
+             email = "tsvetelina.tomova@gmail.com"),
       person(given = "Carsten",
              family = "Meyer",
              role = "aut",
@@ -28,11 +32,7 @@ Authors@R:
              comment = c(ORCID = "0000-0001-8637-9071")),
       person(given = "Caroline",
              family = "Busse",
-             role = "ctb"),
-      person(given = "Tsvetelina",
-             family = "Tomova",
-             role = "ctb",
-             email = "tsvetelina.tomova@gmail.com"))
+             role = "ctb"))
 Description: Helps the user to build and register schema descriptions of 
     disorganised (messy) tables. Disorganised tables are tables that are 
     not in a topologically coherent form, where packages such as 'tidyr' could 

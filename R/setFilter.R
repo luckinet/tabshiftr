@@ -9,7 +9,19 @@
 #'   provided in \code{columns} and \code{rows}.
 #' @return An object of class \code{\link{schema}}.
 #' @examples
-#' # please check the vignette for examples
+#' (input <- tabs2shift$messy_rows)
+#'
+#' # select only 'unit 2' and 'year 2'
+#' schema <-
+#'   setFilter(rows = .find(by = "unit 2", col = 1)) %>%
+#'   setFilter(rows = .find(by = "year 2", col = 2)) %>%
+#'   setIDVar(name = "territories", columns = 1) %>%
+#'   setIDVar(name = "year", columns = 2) %>%
+#'   setIDVar(name = "commodities", columns = 3) %>%
+#'   setObsVar(name = "harvested", columns = 5) %>%
+#'   setObsVar(name = "production", columns = 6)
+#'
+#' reorganise(schema = schema, input = input)
 #' @family functions to describe table arrangement
 #' @importFrom checkmate assertClass testIntegerish testClass
 #' @export
@@ -27,7 +39,8 @@ setFilter <- function(schema = NULL, rows = NULL, invert = FALSE){
   }
 
   if(!is.null(rows)){
-    schema@filter$row <- rows
+    schema@filter$row <- c(schema@filter$row, list(rows))
+    # schema@filter$row <- rows
   }
 
   schema@filter$invert <- invert

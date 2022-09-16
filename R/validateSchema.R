@@ -39,7 +39,7 @@
 #' @importFrom rlang is_quosure
 #' @importFrom dplyr mutate across
 #' @importFrom tidyr replace_na everything
-#' @importFrom purrr map_int map_lgl
+#' @importFrom purrr map_int map_lgl map
 #' @importFrom methods new
 #' @export
 
@@ -54,7 +54,7 @@ validateSchema <- function(schema = NULL, input = NULL){
   if(filter$invert){
     headInTemp <- TRUE
   } else {
-    if(!is.null(names(filter$row))){
+    if(!is.null(names(filter$row[[1]]))){
       headInTemp <- FALSE
     } else {
       headInTemp <- TRUE
@@ -68,7 +68,7 @@ validateSchema <- function(schema = NULL, input = NULL){
   if(is.null(clusters$row)){
     clusters$row <- 1
   } else if(is.list(clusters$row)){
-    clusters$row <- .eval_find(input = input, row = clusters$row)
+    clusters$row <- .eval_find(input = input, row = list(clusters$row))
   }
 
   if(is.null(clusters$col)){
@@ -102,11 +102,14 @@ validateSchema <- function(schema = NULL, input = NULL){
   clusters$width <- rep(x = clusters$width, length.out = nClusters)
   clusters$height <- rep(x = clusters$height, length.out = nClusters)
 
-
   # 2. complete filter ----
   # evaluate quosure
   if(is.list(filter$row)){
-    filter$row <- .eval_find(input = input, row = filter$row)
+    if(!is.null(names(filter$row[[1]]))){
+      filter$row <- .eval_find(input = input, row = filter$row)
+    } else {
+      filter$row <- unlist(filter$row)
+    }
   }
 
   if(!filter$invert){
@@ -185,6 +188,7 @@ validateSchema <- function(schema = NULL, input = NULL){
       }
 
       if(headInTemp){
+        # message(varProp$row)
         filter$row <- sort(unique(c(filter$row, varProp$row)))
       }
     }
