@@ -31,15 +31,16 @@ setFilter <- function(schema = NULL, rows = NULL, invert = FALSE){
   # assertions ----
   assertClass(x = schema, classes = "schema", null.ok = TRUE)
   rowInt <- testIntegerish(x = rows, lower = 1, min.len = 1, null.ok = TRUE)
-  rowList <- testList(x = rows, len = 3)
+  rowList <- testList(x = rows, len = 1)
   assert(rowInt, rowList)
+  if(rowList) assertSubset(x = names(rows), choices = c("find"))
 
   if(is.null(schema)){
     schema <- schema_default
   }
 
   if(!is.null(rows)){
-    schema@filter$row <- c(schema@filter$row, list(rows))
+    schema@filter$row <- c(schema@filter$row, rows)
     # schema@filter$row <- rows
   }
 
