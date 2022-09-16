@@ -20,7 +20,7 @@ chunks are what is called 'cluster' in tabshiftr."><meta property="og:image" con
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tabshiftr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.9</span>
       </span>
     </div>
 
@@ -68,16 +68,16 @@ chunks are what is called 'cluster' in <code>tabshiftr</code>.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">setCluster</span><span class="op">(</span>
-  schema <span class="op">=</span> <span class="cn">NULL</span>,
-  id <span class="op">=</span> <span class="cn">NULL</span>,
-  group <span class="op">=</span> <span class="cn">NULL</span>,
-  member <span class="op">=</span> <span class="cn">NULL</span>,
-  left <span class="op">=</span> <span class="cn">NULL</span>,
-  top <span class="op">=</span> <span class="cn">NULL</span>,
-  width <span class="op">=</span> <span class="cn">NULL</span>,
-  height <span class="op">=</span> <span class="cn">NULL</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">setCluster</span><span class="op">(</span></span>
+<span>  schema <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  group <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  member <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  left <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  top <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  width <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  height <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -86,37 +86,54 @@ chunks are what is called 'cluster' in <code>tabshiftr</code>.</p>
 <dd><p>[<code>schema(1)</code>]<br> In case this information is added to an
 already existing schema, provide that schema here (overwrites previous
 information).</p></dd>
+
+
 <dt>id</dt>
 <dd><p>[<code>character(1)</code>]<br> When data are clustered, it is typically
 the case that the data are segregated according to a categorical variables
 of interest. In such cases, this variable needs to be registered as cluster
 ID.</p></dd>
+
+
 <dt>group</dt>
 <dd><p>[<code>character(1)</code>]<br> When clusters themselves are
 clustered, they are typically nested into another categorical variable,
 which needs to be registered as group ID.</p></dd>
+
+
 <dt>member</dt>
 <dd><p>[<code>integerish(.)</code>]<br> For each cluster, specify here to
 which group it belongs. Clusters are enumerated from left to right and
 from top to bottom.</p></dd>
+
+
 <dt>left</dt>
 <dd><p>[<code>integerish(.)</code>]<br> The horizontal cell value of the
 top-left cell of each cluster. This can also be a vector of values in case
 there are several clusters.</p></dd>
+
+
 <dt>top</dt>
 <dd><p>[<code>integerish(.)</code>]<br> The vertical cell values of the top-left
 cell of each cluster. This can also be a vector of values in case there are
 several clusters.</p></dd>
+
+
 <dt>width</dt>
 <dd><p>[<code>integerish(.)</code>]<br> The width of each cluster in cells.
 This can also be a vector of values in case there are several clusters.</p></dd>
+
+
 <dt>height</dt>
 <dd><p>[<code>integerish(.)</code>]<br> The height of each cluster in cells.
 This can also be a vector of values in case there are several clusters.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An object of class <code><a href="schema-class.html">schema</a></code>.</p>
+    
+
+<p>An object of class <code><a href="schema-class.html">schema</a></code>.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -134,7 +151,7 @@ This can also be a vector of values in case there are several clusters.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># please check the vignette for examples</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># please check the vignette for examples</span></span></span>
 <span class="r-in"></span>
 </code></pre></div>
     </div>
@@ -150,7 +167,7 @@ This can also be a vector of values in case there are several clusters.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

@@ -20,7 +20,7 @@ a schema."><meta property="og:image" content="http://EhrmannS.github.io/tabshift
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tabshiftr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.9</span>
       </span>
     </div>
 
@@ -68,20 +68,25 @@ a schema.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">validateSchema</span><span class="op">(</span>schema <span class="op">=</span> <span class="cn">NULL</span>, input <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">validateSchema</span><span class="op">(</span>schema <span class="op">=</span> <span class="cn">NULL</span>, input <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>schema</dt>
 <dd><p>[<code>symbol(1)</code>]<br> the schema description.</p></dd>
+
+
 <dt>input</dt>
 <dd><p>[<code>data.frame(1)</code>]<br> an input for which to check a schema
 description.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An updated schema description</p>
+    
+
+<p>An updated schema description</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -98,8 +103,8 @@ description.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># build a schema for an already tidy table</span></span>
-<span class="r-in"><span class="op">(</span><span class="va">tidyTab</span> <span class="op">&lt;-</span> <span class="va">tabs2shift</span><span class="op">$</span><span class="va">tidy</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># build a schema for an already tidy table</span></span></span>
+<span class="r-in"><span><span class="op">(</span><span class="va">tidyTab</span> <span class="op">&lt;-</span> <span class="va">tabs2shift</span><span class="op">$</span><span class="va">tidy</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 10 × 7</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    X1          X2     X3          X4             X5        X6         X7       </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    </span>
@@ -113,28 +118,28 @@ description.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> unit 2      year 1 maize       xyz            2121      2122       <span style="color: #BB0000;">NA</span>       </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> unit 2      year 2 soybean     xyz            2211      2212       <span style="color: #BB0000;">NA</span>       </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> unit 2      year 2 maize       xyz            2221      2222       <span style="color: #BB0000;">NA</span>       </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">schema</span> <span class="op">&lt;-</span></span>
-<span class="r-in">  <span class="fu"><a href="setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"territories"</span>, col <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"year"</span>, col <span class="op">=</span> <span class="fu"><a href="dot-find.html">.find</a></span><span class="op">(</span><span class="st">"period"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"commodities"</span>, col <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="setObsVar.html">setObsVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"harvested"</span>, col <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="setObsVar.html">setObsVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"production"</span>, col <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># before ...</span></span>
-<span class="r-in"><span class="va">schema</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">schema</span> <span class="op">&lt;-</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"territories"</span>, col <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"year"</span>, col <span class="op">=</span> <span class="fu"><a href="dot-find.html">.find</a></span><span class="op">(</span><span class="st">"period"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"commodities"</span>, col <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="setObsVar.html">setObsVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"harvested"</span>, col <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="setObsVar.html">setObsVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"production"</span>, col <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># before ...</span></span></span>
+<span class="r-in"><span><span class="va">schema</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   1 cluster (whole spreadsheet)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    variable      type       col                </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ------------- ---------- -----------------  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #BBBB00;">territories</span>   id         1                 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #BBBB00;">year</span>          id         ~"period", NULL   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #BBBB00;">commodities</span>   id         3                 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #BBBB00;">harvested</span>     observed   5                 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #BBBB00;">production</span>    observed   6                 </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># ... after</span></span>
-<span class="r-in"><span class="fu">validateSchema</span><span class="op">(</span>schema <span class="op">=</span> <span class="va">schema</span>, input <span class="op">=</span> <span class="va">tidyTab</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    variable      type       col       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ------------- ---------- --------  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #BBBB00;">territories</span>   id         1        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #BBBB00;">year</span>          id         period   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #BBBB00;">commodities</span>   id         3        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #BBBB00;">harvested</span>     observed   5        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #BBBB00;">production</span>    observed   6        </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># ... after</span></span></span>
+<span class="r-in"><span><span class="fu">validateSchema</span><span class="op">(</span>schema <span class="op">=</span> <span class="va">schema</span>, input <span class="op">=</span> <span class="va">tidyTab</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   1 cluster</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     origin : 1|1  (row|col)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -147,7 +152,7 @@ description.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #BBBB00;">commodities</span>   id               3     </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #BBBB00;">harvested</span>     observed   1     5     </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #BBBB00;">production</span>    observed   1     6     </span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -162,7 +167,7 @@ description.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

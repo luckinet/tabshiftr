@@ -20,7 +20,7 @@ and in a tidy table they'd be recorded as separate columns."><meta property="og:
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tabshiftr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.9</span>
       </span>
     </div>
 
@@ -68,18 +68,18 @@ and in a tidy table they'd be recorded as separate columns.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">setObsVar</span><span class="op">(</span>
-  schema <span class="op">=</span> <span class="cn">NULL</span>,
-  name <span class="op">=</span> <span class="cn">NULL</span>,
-  columns <span class="op">=</span> <span class="cn">NULL</span>,
-  top <span class="op">=</span> <span class="cn">NULL</span>,
-  relative <span class="op">=</span> <span class="cn">FALSE</span>,
-  distinct <span class="op">=</span> <span class="cn">FALSE</span>,
-  unit <span class="op">=</span> <span class="cn">NULL</span>,
-  factor <span class="op">=</span> <span class="fl">1</span>,
-  key <span class="op">=</span> <span class="cn">NULL</span>,
-  value <span class="op">=</span> <span class="cn">NULL</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">setObsVar</span><span class="op">(</span></span>
+<span>  schema <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  name <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  columns <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  top <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  relative <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  distinct <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  unit <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  factor <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  key <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  value <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -88,45 +88,66 @@ and in a tidy table they'd be recorded as separate columns.</p>
 <dd><p>[<code>schema(1)</code>]<br> In case this information is added to an
 already existing schema, provide that schema here (overwrites previous
 information).</p></dd>
+
+
 <dt>name</dt>
 <dd><p>[<code>character(1)</code>]<br> Name of the new measured variable.</p></dd>
+
+
 <dt>columns</dt>
 <dd><p>[<code>integerish(.)</code>]<br> The column(s) in which the
 <em>values</em> of the new variable are recorded.</p></dd>
+
+
 <dt>top</dt>
 <dd><p>[<code>integerish(.)</code>]<br> In case the variable is nested in a wide
 identifying variable, specify here additionally the topmost row in which
 the variable <em>name</em> sits</p></dd>
+
+
 <dt>relative</dt>
 <dd><p>[<code>logical(1)</code>]<br> whether or not the values provided in
 <code>columns</code> and <code>rows</code> are relative to the cluster position(s) or
 whether they refer to the overall table.</p></dd>
+
+
 <dt>distinct</dt>
 <dd><p>[<code>logical(1)</code>]<br> Whether or not the variable is
 distinct from a cluster. This is the case when the variable is recorded
 somewhere 'on the side' and thus not explicitly included in all clusters.</p></dd>
+
+
 <dt>unit</dt>
 <dd><p>[<code>character(1)</code>]<br> the unit of this variable.</p></dd>
+
+
 <dt>factor</dt>
 <dd><p>[<code>numeric(1)</code>]<br> the factor that needs to be multiplied
 with the values to convert to <code>unit</code>, defaults to 1. For instance, if
 values are recorded in acres, but shall be recorded in hectare, the factor
 would be 0.40468.</p></dd>
+
+
 <dt>key</dt>
 <dd><p>[<code>integerish(1)</code>]<br> If the variable is recorded (together
 with other variables) so that the variable names are listed in one column
 and the respective values are listed in another column, give here the
 number of the column that contains the variable names. Can alternatively be
 "cluster", in case observed variables are the cluster ID.</p></dd>
+
+
 <dt>value</dt>
 <dd><p>[<code>character(1)</code>]<br> If the variable is recorded (together
 with other variables) so that the variable names are listed in one column
 and the respective values are listed in another column, give here the level
 in the names column that refer to the values of this variable.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An object of class <code><a href="schema-class.html">schema</a></code>.</p>
+    
+
+<p>An object of class <code><a href="schema-class.html">schema</a></code>.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -144,7 +165,7 @@ in the names column that refer to the values of this variable.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># please check the vignette for examples</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># please check the vignette for examples</span></span></span>
 <span class="r-in"></span>
 </code></pre></div>
     </div>
@@ -160,7 +181,7 @@ in the names column that refer to the values of this variable.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

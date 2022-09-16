@@ -45,7 +45,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">tabshiftr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.9</span>
       </span>
     </div>
 
@@ -101,29 +101,25 @@
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<ol style="list-style-type: decimal">
-<li>Install the official version from CRAN:</li>
-</ol>
+<ol style="list-style-type: decimal"><li>Install the official version from CRAN:</li></ol>
 <!-- end list --><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"tabshiftr"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"tabshiftr"</span><span class="op">)</span></span></code></pre></div>
 <p>or the latest development version from github:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"EhrmannS/tabshiftr"</span><span class="op">)</span></code></pre></div>
-<ol start="2" style="list-style-type: decimal">
-<li>The <a href="https://ehrmanns.github.io/tabshiftr/articles/tabshiftr.html" class="external-link">vignette</a> gives an introduction, provides an instruction on how to set up schema descriptions by going step by step through certain dimensions of disorganisation to show which table arrangements can be reorganised and how that works.</li>
-</ol>
+<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"EhrmannS/tabshiftr"</span><span class="op">)</span></span></code></pre></div>
+<ol start="2" style="list-style-type: decimal"><li>The <a href="https://ehrmanns.github.io/tabshiftr/articles/tabshiftr.html" class="external-link">vignette</a> gives an introduction, provides an instruction on how to set up schema descriptions by going step by step through certain dimensions of disorganisation to show which table arrangements can be reorganised and how that works.</li></ol>
 </div>
 <div class="section level2">
 <h2 id="examples">Examples<a class="anchor" aria-label="anchor" href="#examples"></a>
 </h2>
 <p>A disorganised table may look like the following table:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/EhrmannS/tabshiftr" class="external-link">tabshiftr</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://yihui.org/knitr/" class="external-link">knitr</a></span><span class="op">)</span>
-
-<span class="co"># a rather disorganised table with messy clusters and a distinct variable</span>
-<span class="va">input</span> <span class="op">&lt;-</span> <span class="va">tabs2shift</span><span class="op">$</span><span class="va">clusters_messy</span>
-<span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">input</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/EhrmannS/tabshiftr" class="external-link">tabshiftr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://yihui.org/knitr/" class="external-link">knitr</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># a rather disorganised table with messy clusters and a distinct variable</span></span>
+<span><span class="va">input</span> <span class="op">&lt;-</span> <span class="va">tabs2shift</span><span class="op">$</span><span class="va">clusters_messy</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">input</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <thead><tr class="header">
 <th align="left">X1</th>
@@ -256,177 +252,177 @@
 </table>
 <p>If we were to transform this data into tidy data by merely using the functions in <code>tidyr</code> (or the extended <code>tidyverse</code> in general), we’d potentially end up with a massive algorithm, especially for such complicated table arrangements. For other tables that may or may not be as complicated, we’d have to set up yet more algorithms and while a pipeline of tidy functions is relatively easy to set up, it would still become very laborious to repeat this for the dozens of potential table arrangements. In <code>tabshiftr</code> we solve that by describing the schema of the input table and providing this schema description to the <code><a href="reference/reorganise.html">reorganise()</a></code> function. This requires us to use a vastly smaller set of code and makes it thus a lot more efficient to bring multiple heterogeneous data into an interoperable format.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># put together schema description by ...</span>
-<span class="co"># ... identifying cluster positions</span>
-<span class="va">schema</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/setCluster.html">setCluster</a></span><span class="op">(</span>id <span class="op">=</span> <span class="st">"territories"</span>, left <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">4</span><span class="op">)</span>, top <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">8</span>, <span class="fl">8</span><span class="op">)</span><span class="op">)</span>
-
-<span class="co"># ... specifying the cluster ID as id variable (obligatory for when we deal with clusters)</span>
-<span class="va">schema</span> <span class="op">&lt;-</span> <span class="va">schema</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span>
-   <span class="fu"><a href="reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"territories"</span>, columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">4</span><span class="op">)</span>, rows <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">9</span>, <span class="fl">9</span><span class="op">)</span><span class="op">)</span>
-
-<span class="co"># ... specifying a distinct variable (explicit position)</span>
-<span class="va">schema</span> <span class="op">&lt;-</span> <span class="va">schema</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span>
-   <span class="fu"><a href="reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"year"</span>, columns <span class="op">=</span> <span class="fl">4</span>, rows <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span><span class="op">:</span><span class="fl">6</span><span class="op">)</span>, distinct <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-
-<span class="co"># ... specifying a tidy variable (by giving the column values)</span>
-<span class="va">schema</span> <span class="op">&lt;-</span> <span class="va">schema</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span>
-   <span class="fu"><a href="reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"commodities"</span>, columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span>
-
-<span class="co"># ... identifying the (tidy) observed variables</span>
-<span class="va">schema</span> <span class="op">&lt;-</span> <span class="va">schema</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span>
-   <span class="fu"><a href="reference/setObsVar.html">setObsVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"harvested"</span>, columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">5</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span>
-   <span class="fu"><a href="reference/setObsVar.html">setObsVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"production"</span>, columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">3</span>, <span class="fl">6</span><span class="op">)</span><span class="op">)</span>
-
-<span class="co"># to potentially debug the schema description, first validate the schema ...</span>
-<span class="va">schema_valid</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/validateSchema.html">validateSchema</a></span><span class="op">(</span>schema <span class="op">=</span> <span class="va">schema</span>, input <span class="op">=</span> <span class="va">input</span><span class="op">)</span>
-
-<span class="co"># ... and extract parts of it per cluster (also check out the other getters in</span>
-<span class="co"># this package)</span>
-<span class="fu"><a href="reference/getIDVars.html">getIDVars</a></span><span class="op">(</span>schema <span class="op">=</span> <span class="va">schema_valid</span>, input <span class="op">=</span> <span class="va">input</span><span class="op">)</span>
-<span class="co">#&gt; [[1]]</span>
-<span class="co">#&gt; [[1]]$year</span>
-<span class="co">#&gt; # A tibble: 4 × 1</span>
-<span class="co">#&gt;   X4    </span>
-<span class="co">#&gt;   &lt;chr&gt; </span>
-<span class="co">#&gt; 1 year 1</span>
-<span class="co">#&gt; 2 year 1</span>
-<span class="co">#&gt; 3 year 2</span>
-<span class="co">#&gt; 4 year 2</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; [[1]]$commodities</span>
-<span class="co">#&gt; # A tibble: 4 × 1</span>
-<span class="co">#&gt;   X1     </span>
-<span class="co">#&gt;   &lt;chr&gt;  </span>
-<span class="co">#&gt; 1 soybean</span>
-<span class="co">#&gt; 2 maize  </span>
-<span class="co">#&gt; 3 soybean</span>
-<span class="co">#&gt; 4 maize  </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; [[2]]</span>
-<span class="co">#&gt; [[2]]$year</span>
-<span class="co">#&gt; # A tibble: 4 × 1</span>
-<span class="co">#&gt;   X4    </span>
-<span class="co">#&gt;   &lt;chr&gt; </span>
-<span class="co">#&gt; 1 year 1</span>
-<span class="co">#&gt; 2 year 1</span>
-<span class="co">#&gt; 3 year 2</span>
-<span class="co">#&gt; 4 year 2</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; [[2]]$commodities</span>
-<span class="co">#&gt; # A tibble: 4 × 1</span>
-<span class="co">#&gt;   X1     </span>
-<span class="co">#&gt;   &lt;chr&gt;  </span>
-<span class="co">#&gt; 1 soybean</span>
-<span class="co">#&gt; 2 maize  </span>
-<span class="co">#&gt; 3 soybean</span>
-<span class="co">#&gt; 4 maize  </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; [[3]]</span>
-<span class="co">#&gt; [[3]]$year</span>
-<span class="co">#&gt; # A tibble: 4 × 1</span>
-<span class="co">#&gt;   X4    </span>
-<span class="co">#&gt;   &lt;chr&gt; </span>
-<span class="co">#&gt; 1 year 1</span>
-<span class="co">#&gt; 2 year 1</span>
-<span class="co">#&gt; 3 year 2</span>
-<span class="co">#&gt; 4 year 2</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; [[3]]$commodities</span>
-<span class="co">#&gt; # A tibble: 4 × 1</span>
-<span class="co">#&gt;   X4     </span>
-<span class="co">#&gt;   &lt;chr&gt;  </span>
-<span class="co">#&gt; 1 soybean</span>
-<span class="co">#&gt; 2 maize  </span>
-<span class="co">#&gt; 3 soybean</span>
-<span class="co">#&gt; 4 maize</span>
-<span class="fu"><a href="reference/getObsVars.html">getObsVars</a></span><span class="op">(</span>schema <span class="op">=</span> <span class="va">schema_valid</span>, input <span class="op">=</span> <span class="va">input</span><span class="op">)</span>
-<span class="co">#&gt; [[1]]</span>
-<span class="co">#&gt; [[1]]$harvested</span>
-<span class="co">#&gt; # A tibble: 4 × 1</span>
-<span class="co">#&gt;   X2   </span>
-<span class="co">#&gt;   &lt;chr&gt;</span>
-<span class="co">#&gt; 1 1111 </span>
-<span class="co">#&gt; 2 1121 </span>
-<span class="co">#&gt; 3 1211 </span>
-<span class="co">#&gt; 4 1221 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; [[1]]$production</span>
-<span class="co">#&gt; # A tibble: 4 × 1</span>
-<span class="co">#&gt;   X3   </span>
-<span class="co">#&gt;   &lt;chr&gt;</span>
-<span class="co">#&gt; 1 1112 </span>
-<span class="co">#&gt; 2 1122 </span>
-<span class="co">#&gt; 3 1212 </span>
-<span class="co">#&gt; 4 1222 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; [[2]]</span>
-<span class="co">#&gt; [[2]]$harvested</span>
-<span class="co">#&gt; # A tibble: 4 × 1</span>
-<span class="co">#&gt;   X2   </span>
-<span class="co">#&gt;   &lt;chr&gt;</span>
-<span class="co">#&gt; 1 2111 </span>
-<span class="co">#&gt; 2 2121 </span>
-<span class="co">#&gt; 3 2211 </span>
-<span class="co">#&gt; 4 2221 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; [[2]]$production</span>
-<span class="co">#&gt; # A tibble: 4 × 1</span>
-<span class="co">#&gt;   X3   </span>
-<span class="co">#&gt;   &lt;chr&gt;</span>
-<span class="co">#&gt; 1 2112 </span>
-<span class="co">#&gt; 2 2122 </span>
-<span class="co">#&gt; 3 2212 </span>
-<span class="co">#&gt; 4 2222 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; [[3]]</span>
-<span class="co">#&gt; [[3]]$harvested</span>
-<span class="co">#&gt; # A tibble: 4 × 1</span>
-<span class="co">#&gt;   X5   </span>
-<span class="co">#&gt;   &lt;chr&gt;</span>
-<span class="co">#&gt; 1 3111 </span>
-<span class="co">#&gt; 2 3121 </span>
-<span class="co">#&gt; 3 3211 </span>
-<span class="co">#&gt; 4 3221 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; [[3]]$production</span>
-<span class="co">#&gt; # A tibble: 4 × 1</span>
-<span class="co">#&gt;   X6   </span>
-<span class="co">#&gt;   &lt;chr&gt;</span>
-<span class="co">#&gt; 1 3112 </span>
-<span class="co">#&gt; 2 3122 </span>
-<span class="co">#&gt; 3 3212 </span>
-<span class="co">#&gt; 4 3222</span>
-
-<span class="co"># alternatively, if the clusters are regular, relative values starting from the</span>
-<span class="co"># cluster origin could be set</span>
-<span class="va">schema_alt</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/setCluster.html">setCluster</a></span><span class="op">(</span>id <span class="op">=</span> <span class="st">"territories"</span>,
-                         left <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">4</span><span class="op">)</span>, top <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">8</span>, <span class="fl">8</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span>
-  <span class="fu"><a href="reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"territories"</span>, columns <span class="op">=</span> <span class="fl">1</span>, rows <span class="op">=</span> <span class="fl">2</span>, relative <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span>
-  <span class="fu"><a href="reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"year"</span>, columns <span class="op">=</span> <span class="fl">4</span>, rows <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span><span class="op">:</span><span class="fl">6</span><span class="op">)</span>, distinct <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span>
-  <span class="fu"><a href="reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"commodities"</span>, columns <span class="op">=</span> <span class="fl">1</span>, relative <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span>
-  <span class="fu"><a href="reference/setObsVar.html">setObsVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"harvested"</span>, columns <span class="op">=</span> <span class="fl">2</span>, relative <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span>
-  <span class="fu"><a href="reference/setObsVar.html">setObsVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"production"</span>, columns <span class="op">=</span> <span class="fl">3</span>, relative <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># put together schema description by ...</span></span>
+<span><span class="co"># ... identifying cluster positions</span></span>
+<span><span class="va">schema</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/setCluster.html">setCluster</a></span><span class="op">(</span>id <span class="op">=</span> <span class="st">"territories"</span>, left <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">4</span><span class="op">)</span>, top <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">8</span>, <span class="fl">8</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># ... specifying the cluster ID as id variable (obligatory for when we deal with clusters)</span></span>
+<span><span class="va">schema</span> <span class="op">&lt;-</span> <span class="va">schema</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<span>   <span class="fu"><a href="reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"territories"</span>, columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">4</span><span class="op">)</span>, rows <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">9</span>, <span class="fl">9</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># ... specifying a distinct variable (explicit position)</span></span>
+<span><span class="va">schema</span> <span class="op">&lt;-</span> <span class="va">schema</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<span>   <span class="fu"><a href="reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"year"</span>, columns <span class="op">=</span> <span class="fl">4</span>, rows <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span><span class="op">:</span><span class="fl">6</span><span class="op">)</span>, distinct <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># ... specifying a tidy variable (by giving the column values)</span></span>
+<span><span class="va">schema</span> <span class="op">&lt;-</span> <span class="va">schema</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<span>   <span class="fu"><a href="reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"commodities"</span>, columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># ... identifying the (tidy) observed variables</span></span>
+<span><span class="va">schema</span> <span class="op">&lt;-</span> <span class="va">schema</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<span>   <span class="fu"><a href="reference/setObsVar.html">setObsVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"harvested"</span>, columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">5</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<span>   <span class="fu"><a href="reference/setObsVar.html">setObsVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"production"</span>, columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">3</span>, <span class="fl">6</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># to potentially debug the schema description, first validate the schema ...</span></span>
+<span><span class="va">schema_valid</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/validateSchema.html">validateSchema</a></span><span class="op">(</span>schema <span class="op">=</span> <span class="va">schema</span>, input <span class="op">=</span> <span class="va">input</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># ... and extract parts of it per cluster (also check out the other getters in</span></span>
+<span><span class="co"># this package)</span></span>
+<span><span class="fu"><a href="reference/getIDVars.html">getIDVars</a></span><span class="op">(</span>schema <span class="op">=</span> <span class="va">schema_valid</span>, input <span class="op">=</span> <span class="va">input</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [[1]]</span></span>
+<span><span class="co">#&gt; [[1]]$year</span></span>
+<span><span class="co">#&gt; # A tibble: 4 × 1</span></span>
+<span><span class="co">#&gt;   X4    </span></span>
+<span><span class="co">#&gt;   &lt;chr&gt; </span></span>
+<span><span class="co">#&gt; 1 year 1</span></span>
+<span><span class="co">#&gt; 2 year 1</span></span>
+<span><span class="co">#&gt; 3 year 2</span></span>
+<span><span class="co">#&gt; 4 year 2</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [[1]]$commodities</span></span>
+<span><span class="co">#&gt; # A tibble: 4 × 1</span></span>
+<span><span class="co">#&gt;   X1     </span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;  </span></span>
+<span><span class="co">#&gt; 1 soybean</span></span>
+<span><span class="co">#&gt; 2 maize  </span></span>
+<span><span class="co">#&gt; 3 soybean</span></span>
+<span><span class="co">#&gt; 4 maize  </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [[2]]</span></span>
+<span><span class="co">#&gt; [[2]]$year</span></span>
+<span><span class="co">#&gt; # A tibble: 4 × 1</span></span>
+<span><span class="co">#&gt;   X4    </span></span>
+<span><span class="co">#&gt;   &lt;chr&gt; </span></span>
+<span><span class="co">#&gt; 1 year 1</span></span>
+<span><span class="co">#&gt; 2 year 1</span></span>
+<span><span class="co">#&gt; 3 year 2</span></span>
+<span><span class="co">#&gt; 4 year 2</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [[2]]$commodities</span></span>
+<span><span class="co">#&gt; # A tibble: 4 × 1</span></span>
+<span><span class="co">#&gt;   X1     </span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;  </span></span>
+<span><span class="co">#&gt; 1 soybean</span></span>
+<span><span class="co">#&gt; 2 maize  </span></span>
+<span><span class="co">#&gt; 3 soybean</span></span>
+<span><span class="co">#&gt; 4 maize  </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [[3]]</span></span>
+<span><span class="co">#&gt; [[3]]$year</span></span>
+<span><span class="co">#&gt; # A tibble: 4 × 1</span></span>
+<span><span class="co">#&gt;   X4    </span></span>
+<span><span class="co">#&gt;   &lt;chr&gt; </span></span>
+<span><span class="co">#&gt; 1 year 1</span></span>
+<span><span class="co">#&gt; 2 year 1</span></span>
+<span><span class="co">#&gt; 3 year 2</span></span>
+<span><span class="co">#&gt; 4 year 2</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [[3]]$commodities</span></span>
+<span><span class="co">#&gt; # A tibble: 4 × 1</span></span>
+<span><span class="co">#&gt;   X4     </span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;  </span></span>
+<span><span class="co">#&gt; 1 soybean</span></span>
+<span><span class="co">#&gt; 2 maize  </span></span>
+<span><span class="co">#&gt; 3 soybean</span></span>
+<span><span class="co">#&gt; 4 maize</span></span>
+<span><span class="fu"><a href="reference/getObsVars.html">getObsVars</a></span><span class="op">(</span>schema <span class="op">=</span> <span class="va">schema_valid</span>, input <span class="op">=</span> <span class="va">input</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [[1]]</span></span>
+<span><span class="co">#&gt; [[1]]$harvested</span></span>
+<span><span class="co">#&gt; # A tibble: 4 × 1</span></span>
+<span><span class="co">#&gt;   X2   </span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;</span></span>
+<span><span class="co">#&gt; 1 1111 </span></span>
+<span><span class="co">#&gt; 2 1121 </span></span>
+<span><span class="co">#&gt; 3 1211 </span></span>
+<span><span class="co">#&gt; 4 1221 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [[1]]$production</span></span>
+<span><span class="co">#&gt; # A tibble: 4 × 1</span></span>
+<span><span class="co">#&gt;   X3   </span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;</span></span>
+<span><span class="co">#&gt; 1 1112 </span></span>
+<span><span class="co">#&gt; 2 1122 </span></span>
+<span><span class="co">#&gt; 3 1212 </span></span>
+<span><span class="co">#&gt; 4 1222 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [[2]]</span></span>
+<span><span class="co">#&gt; [[2]]$harvested</span></span>
+<span><span class="co">#&gt; # A tibble: 4 × 1</span></span>
+<span><span class="co">#&gt;   X2   </span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;</span></span>
+<span><span class="co">#&gt; 1 2111 </span></span>
+<span><span class="co">#&gt; 2 2121 </span></span>
+<span><span class="co">#&gt; 3 2211 </span></span>
+<span><span class="co">#&gt; 4 2221 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [[2]]$production</span></span>
+<span><span class="co">#&gt; # A tibble: 4 × 1</span></span>
+<span><span class="co">#&gt;   X3   </span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;</span></span>
+<span><span class="co">#&gt; 1 2112 </span></span>
+<span><span class="co">#&gt; 2 2122 </span></span>
+<span><span class="co">#&gt; 3 2212 </span></span>
+<span><span class="co">#&gt; 4 2222 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [[3]]</span></span>
+<span><span class="co">#&gt; [[3]]$harvested</span></span>
+<span><span class="co">#&gt; # A tibble: 4 × 1</span></span>
+<span><span class="co">#&gt;   X5   </span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;</span></span>
+<span><span class="co">#&gt; 1 3111 </span></span>
+<span><span class="co">#&gt; 2 3121 </span></span>
+<span><span class="co">#&gt; 3 3211 </span></span>
+<span><span class="co">#&gt; 4 3221 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [[3]]$production</span></span>
+<span><span class="co">#&gt; # A tibble: 4 × 1</span></span>
+<span><span class="co">#&gt;   X6   </span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;</span></span>
+<span><span class="co">#&gt; 1 3112 </span></span>
+<span><span class="co">#&gt; 2 3122 </span></span>
+<span><span class="co">#&gt; 3 3212 </span></span>
+<span><span class="co">#&gt; 4 3222</span></span>
+<span></span>
+<span><span class="co"># alternatively, if the clusters are regular, relative values starting from the</span></span>
+<span><span class="co"># cluster origin could be set</span></span>
+<span><span class="va">schema_alt</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/setCluster.html">setCluster</a></span><span class="op">(</span>id <span class="op">=</span> <span class="st">"territories"</span>,</span>
+<span>                         left <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">4</span><span class="op">)</span>, top <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">8</span>, <span class="fl">8</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"territories"</span>, columns <span class="op">=</span> <span class="fl">1</span>, rows <span class="op">=</span> <span class="fl">2</span>, relative <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"year"</span>, columns <span class="op">=</span> <span class="fl">4</span>, rows <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span><span class="op">:</span><span class="fl">6</span><span class="op">)</span>, distinct <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"commodities"</span>, columns <span class="op">=</span> <span class="fl">1</span>, relative <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="reference/setObsVar.html">setObsVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"harvested"</span>, columns <span class="op">=</span> <span class="fl">2</span>, relative <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="reference/setObsVar.html">setObsVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"production"</span>, columns <span class="op">=</span> <span class="fl">3</span>, relative <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>The <code><a href="reference/reorganise.html">reorganise()</a></code> function carries out the steps of validating, extracting the variables, pivoting the tentative output and putting the final table together automatically, so it merely requires the finalised <code>schema</code> and the <code>input</code> table.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">schema</span> <span class="co"># has a pretty print function</span>
-<span class="co">#&gt;   3 clusters</span>
-<span class="co">#&gt;     origin : 1|1, 8|1, 8|4  (row|col)</span>
-<span class="co">#&gt;     id     : territories</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;    variable      type       row    col    dist </span>
-<span class="co">#&gt;   ------------- ---------- ------ ------ ------  </span>
-<span class="co">#&gt;    territories   id         2, 9   1, 4   F  </span>
-<span class="co">#&gt;    year          id         3:6    4      T  </span>
-<span class="co">#&gt;    commodities   id                1, 4   F  </span>
-<span class="co">#&gt;    harvested     observed          2, 5   F  </span>
-<span class="co">#&gt;    production    observed          3, 6   F</span>
-
-<span class="va">output</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/reorganise.html">reorganise</a></span><span class="op">(</span>input <span class="op">=</span> <span class="va">input</span>, schema <span class="op">=</span> <span class="va">schema</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">output</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">schema</span> <span class="co"># has a pretty print function</span></span>
+<span><span class="co">#&gt;   3 clusters</span></span>
+<span><span class="co">#&gt;     origin : 1|1, 8|1, 8|4  (row|col)</span></span>
+<span><span class="co">#&gt;     id     : territories</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;    variable      type       row    col    dist </span></span>
+<span><span class="co">#&gt;   ------------- ---------- ------ ------ ------  </span></span>
+<span><span class="co">#&gt;    territories   id         2, 9   1, 4   F  </span></span>
+<span><span class="co">#&gt;    year          id         3:6    4      T  </span></span>
+<span><span class="co">#&gt;    commodities   id                1, 4   F  </span></span>
+<span><span class="co">#&gt;    harvested     observed          2, 5   F  </span></span>
+<span><span class="co">#&gt;    production    observed          3, 6   F</span></span>
+<span></span>
+<span><span class="va">output</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/reorganise.html">reorganise</a></span><span class="op">(</span>input <span class="op">=</span> <span class="va">input</span>, schema <span class="op">=</span> <span class="va">schema</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">output</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <thead><tr class="header">
 <th align="left">territories</th>
@@ -577,16 +573,7 @@
 </ul>
 </div>
 
-<div class="dev-status">
-<h2 data-toc-skip>Dev status</h2>
-<ul class="list-unstyled">
-<li><a href="https://cran.r-project.org/package=tabshiftr" class="external-link"><img src="http://www.r-pkg.org/badges/version/tabshiftr" alt="CRAN_Status_Badge"></a></li>
-<li><a href="https://github.com/EhrmannS/tabshiftr/actions" class="external-link"><img src="https://github.com/EhrmannS/tabshiftr/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
-<li><a href="https://codecov.io/github/EhrmannS/tabshiftr?branch=master" class="external-link"><img src="https://img.shields.io/codecov/c/github/EhrmannS/tabshiftr/master.svg" alt="Coverage Status"></a></li>
-<li><a href="https://cran.r-project.org/package=tabshiftr" class="external-link"><img src="http://cranlogs.r-pkg.org/badges/grand-total/tabshiftr"></a></li>
-<li><a href="https://lifecycle.r-lib.org/articles/stages.html" class="external-link"><img src="https://img.shields.io/badge/lifecycle-maturing-blue.svg" alt="Lifecycle:maturing"></a></li>
-</ul>
-</div>
+
 
   </div>
 </div>
@@ -599,7 +586,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>
