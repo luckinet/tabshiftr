@@ -12,10 +12,6 @@ already existing schema, provide that schema here (overwrites previous
 information).}
 
 \item{rows}{[\code{integerish(.)}]\cr .}
-
-\item{columns}{[\code{integerish(.)}]\cr .}
-
-\item{clusters}{[\code{integerish(.)}]\cr .}
 }
 \value{
 An object of class \code{\link{schema}}.

@@ -21,7 +21,10 @@
 #'
 #' validateSchema(schema = schema, input = input) %>%
 #'    getData(input = input)
-#' @importFrom purrr map
+#' @importFrom purrr map map_dfr
+#' @importFrom tibble as_tibble
+#' @importFrom dplyr n summarise
+#' @importFrom stats na.omit
 #' @export
 
 getData <- function(schema = NULL, input = NULL){
