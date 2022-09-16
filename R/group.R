@@ -2,7 +2,7 @@
 #'
 #' Find the location of a variable not based on it's columns/rows, but based on
 #' a regular expression or function
-#' @param by [\code{character(1)}]\cr character string containing a regular
+#' @param fn [\code{character(1)}]\cr character string containing a regular
 #'   expression or function to identify columns or rows in the input table on
 #'   the fly.
 #' @param ... [\code{integerish(1)}]\cr

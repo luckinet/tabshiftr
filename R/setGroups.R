@@ -6,8 +6,6 @@
 #'   already existing schema, provide that schema here (overwrites previous
 #'   information).
 #' @param rows [\code{integerish(.)}]\cr .
-#' @param columns [\code{integerish(.)}]\cr .
-#' @param clusters [\code{integerish(.)}]\cr .
 #' @return An object of class \code{\link{schema}}.
 #' @examples
 #' # please check the vignette for examples
