@@ -383,8 +383,10 @@ setMethod(f = "show",
               if(variables[[x]]$type == "id"){
                 if(is.null(variables[[x]]$row)){
                   ""
-                } else if(is_quosure(variables[[x]]$row)){
-                  prim_name(eval_tidy(variables[[x]]$row))
+                } else if(is.list(variables[[x]]$row)){
+                  if(names(variables[[x]]$row) == "find"){
+                    eval_tidy(variables[[x]]$row$find$by)
+                  }
                 } else {
                   temp <- unique(variables[[x]]$row)
                   # make a short sequence of 'theRows'
@@ -414,8 +416,10 @@ setMethod(f = "show",
               if(variables[[x]]$type == "observed"){
                 if(is.null(variables[[x]]$row)){
                   ""
-                } else if(is_quosure(variables[[x]]$row)){
-                  prim_name(eval_tidy(variables[[x]]$row))
+                } else if(is.list(variables[[x]]$row)){
+                  if(names(variables[[x]]$row) == "find"){
+                    eval_tidy(variables[[x]]$row$find$by)
+                  }
                 } else {
                   temp <- unique(variables[[x]]$row)
                   # make a short sequence of 'theRows'
@@ -445,8 +449,11 @@ setMethod(f = "show",
             theCols <- sapply(seq_along(variables), function(x){
               if(is.null(variables[[x]]$col)){
                 ""
-              } else if(is_quosure(variables[[x]]$col)){
-                prim_name(eval_tidy(variables[[x]]$col))
+              } else if(is.list(variables[[x]]$col)){
+                if(names(variables[[x]]$col) == "find"){
+                  # prim_name(eval_tidy(variables[[x]]$col))
+                  eval_tidy(variables[[x]]$col$find$by)
+                }
               } else {
                 temp <- unique(variables[[x]]$col)
                 # make a short sequence of 'theRows'
