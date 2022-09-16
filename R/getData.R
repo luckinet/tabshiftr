@@ -27,15 +27,57 @@
 getData <- function(schema = NULL, input = NULL){
 
   clusters <- schema@clusters
+  groups <- schema@groups
   nClusters <- max(lengths(clusters))
 
-  map(.x = 1:nClusters, .f = function(ix){
+  if(any(lengths(groups) > 0)){
 
-    input[
-      clusters$row[ix]:(clusters$row[ix]+clusters$height[ix] - 1),
-      clusters$col[ix]:(clusters$col[ix]+clusters$width[ix] - 1)
-      ]
+    tempGroups <- 1:dim(input)[1]
+    for(i in seq_along(groups$rows$ind)){
+      temp <- eval_tidy(groups$rows$ind[[i]])
+      tempGroups[temp] <- max(tempGroups) + 1
+    }
 
-  })
+    tempInput <- input %>%
+      mutate(grps = tempGroups)
+    tempGroups <- tempGroups %>%
+      as_tibble() %>%
+      group_by(value) %>%
+      summarise(n = n())
 
+    out <- map_dfr(seq_along(tempGroups$value), function(ix){
+
+      temp <- tempInput %>%
+        filter(grps == tempGroups$value[ix]) %>%
+        select(-grps)
+
+      if(tempGroups$n[ix] == 1){
+        return(temp)
+      } else {
+
+        nums <- suppressWarnings(temp %>% mutate(across(everything(), as.numeric)))
+        nums <- nums %>% summarise(across(everything(), sum))
+        # targetCols <- get columns where all rows are NA
+
+        chars <- temp %>% summarise(across(everything(), function(x){  paste0(na.omit(x), collapse = " ")}))
+
+        bind_cols(chars[targetCols], nums[!targetCols])
+      }
+
+    })
+
+  # } else if(!is.null(clusters$id)){
+  #   out <- map(.x = 1:nClusters, .f = function(ix){
+  #
+  #     input[
+  #       clusters$row[ix]:(clusters$row[ix]+clusters$height[ix] - 1),
+  #       clusters$col[ix]:(clusters$col[ix]+clusters$width[ix] - 1)
+  #     ]
+  #
+  #   })
+  } else {
+    out <- input
+  }
+
+  return(out)
 }
