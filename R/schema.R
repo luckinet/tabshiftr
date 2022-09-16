@@ -314,6 +314,7 @@ setValidity(Class = "schema", function(object){
 #'
 #' @param object [\code{schema}]\cr the schema to print.
 #' @importFrom crayon yellow
+#' @importFrom rlang is_primitive
 #' @importFrom stringr str_split
 #' @importFrom rlang eval_tidy is_quosure prim_name
 
@@ -451,8 +452,12 @@ setMethod(f = "show",
                 ""
               } else if(is.list(variables[[x]]$col)){
                 if(names(variables[[x]]$col) == "find"){
-                  # prim_name(eval_tidy(variables[[x]]$col))
-                  eval_tidy(variables[[x]]$col$find$by)
+                  temp <- eval_tidy(variables[[x]]$col$find$by)
+                  if(is_primitive(temp)){
+                    prim_name(temp)
+                  } else {
+                    temp
+                  }
                 }
               } else {
                 temp <- unique(variables[[x]]$col)
@@ -470,7 +475,7 @@ setMethod(f = "show",
               }
             })
             nCols <- sapply(seq_along(theCols), function(x){
-              ifelse(test = is.null(theCols[[x]]), yes = 0, no = nchar(paste0(theCols[[x]], collapse = ", ")))
+              ifelse(test = is.null(theCols[[x]]) | is.function(theCols[[x]]), yes = 0, no = nchar(paste0(theCols[[x]], collapse = ", ")))
             })
             maxCols <- ifelse(any(nCols > 3), max(nCols), 3)
             if(any(nCols != 0)){

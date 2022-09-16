@@ -147,17 +147,11 @@ validateSchema <- function(schema = NULL, input = NULL){
 
       # ignore header rows
       varProp$row <- varProp$row[!varProp$row %in% headerRows]
-
-      # when evaluating here, it isn't relative anymore
-      varProp$rel <- FALSE
     }
 
     if(is.list(varProp$col)){
       # varProp$col <- .eval_find(input = input, col = varProp$col, row = varProp$row)
       varProp$col <- .eval_find(input = input, col = varProp$col)
-
-      # when evaluating here, it isn't relative anymore
-      varProp$rel <- FALSE
     }
 
     # check whether the variable has relative values and if so, make them absolute ----
