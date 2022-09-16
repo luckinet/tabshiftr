@@ -68,7 +68,7 @@ validateSchema <- function(schema = NULL, input = NULL){
   if(is.null(clusters$row)){
     clusters$row <- 1
   } else if(is.list(clusters$row)){
-    clusters$row <- .eval_find(input = input, row = list(clusters$row))
+    clusters$row <- .eval_find(input = input, row = clusters$row)
   }
 
   if(is.null(clusters$col)){
@@ -104,8 +104,8 @@ validateSchema <- function(schema = NULL, input = NULL){
 
   # 2. complete filter ----
   # evaluate quosure
-  if(is.list(filter$row)){
-    if(!is.null(names(filter$row[[1]]))){
+  if(!is.null(filter$row)){
+    if("find" %in% names(filter$row)){
       filter$row <- .eval_find(input = input, row = filter$row)
     } else {
       filter$row <- unlist(filter$row)
@@ -153,7 +153,8 @@ validateSchema <- function(schema = NULL, input = NULL){
     }
 
     if(is.list(varProp$col)){
-      varProp$col <- .eval_find(input = input, col = varProp$col, row = varProp$row)
+      # varProp$col <- .eval_find(input = input, col = varProp$col, row = varProp$row)
+      varProp$col <- .eval_find(input = input, col = varProp$col)
 
       # when evaluating here, it isn't relative anymore
       varProp$rel <- FALSE
