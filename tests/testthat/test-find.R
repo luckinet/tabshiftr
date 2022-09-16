@@ -68,7 +68,7 @@ test_that(".find filter-rows based on a function", {
 
 })
 
-test_that(".find filter-rows based on several character strings", {
+test_that(".find filter-rows based on several character strings in one column", {
 
   input <- tabs2shift$messy_rows
 
