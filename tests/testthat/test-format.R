@@ -10,8 +10,11 @@ test_that("extract flags into their own column", {
   input$X5[3] <- paste0(input$X5[3], "p")
   input$X6[7] <- paste0(input$X6[7], " $")
 
+  flags <- tibble(flag = c("p", "$"),
+                  value = c("provisional", "only applicable in case of X"))
+
   schema <-
-    setFormat(flags = tibble(flag = c("p", "$"), value = c("provisional", "only applicable in case of X"))) %>%
+    setFormat(flags = flags) %>%
     setIDVar(name = "territories", columns = 1) %>%
     setIDVar(name = "year", columns = 2) %>%
     setIDVar(name = "commodities", columns = 3) %>%

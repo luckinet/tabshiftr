@@ -125,21 +125,3 @@ test_that("clusters that are aggregated per observed variable", {
 
 })
 
-test_that("clusters that are nested into groups", {
-
-  input <- tabs2shift$clusters_nested
-
-  schema <- setCluster(id = "territories",
-                       group = "region", member = c(1, 1, 2),
-                       left = 1, top = c(3, 8, 15)) %>%
-    setIDVar(name = "region", columns = 1, rows = c(2, 14)) %>%
-    setIDVar(name = "territories", columns = 1, rows = c(3, 8, 15)) %>%
-    setIDVar(name = "year", columns = 7) %>%
-    setIDVar(name = "commodities", columns = 2) %>%
-    setObsVar(name = "harvested", columns = 5) %>%
-    setObsVar(name = "production", columns = 6)
-
-  .expect_valid_table(x = reorganise(input = input, schema = schema), units = 3, groups = TRUE)
-
-})
-
