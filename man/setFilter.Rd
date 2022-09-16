@@ -41,7 +41,6 @@ reorganise(schema = schema, input = input)
 Other functions to describe table arrangement: 
 \code{\link{setCluster}()},
 \code{\link{setFormat}()},
-\code{\link{setGroups}()},
 \code{\link{setIDVar}()},
 \code{\link{setObsVar}()}
 }

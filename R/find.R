@@ -66,7 +66,7 @@
 
   temp <- enquo(by)
 
-  out <- list(by = temp, col = col, row = row)
+  out <- list(find = list(by = temp, col = col, row = row))
 
   return(out)
 

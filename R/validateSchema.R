@@ -39,7 +39,7 @@
 #' @importFrom rlang is_quosure
 #' @importFrom dplyr mutate across
 #' @importFrom tidyr replace_na everything
-#' @importFrom purrr map_int map_lgl
+#' @importFrom purrr map_int map_lgl map
 #' @importFrom methods new
 #' @export
 
@@ -68,7 +68,7 @@ validateSchema <- function(schema = NULL, input = NULL){
   if(is.null(clusters$row)){
     clusters$row <- 1
   } else if(is.list(clusters$row)){
-    clusters$row <- .eval_find(input = input, row = list(clusters$row))
+    clusters$row <- .eval_find(input = input, row = clusters$row)
   }
 
   if(is.null(clusters$col)){
@@ -104,8 +104,8 @@ validateSchema <- function(schema = NULL, input = NULL){
 
   # 2. complete filter ----
   # evaluate quosure
-  if(is.list(filter$row)){
-    if(!is.null(names(filter$row[[1]]))){
+  if(!is.null(filter$row)){
+    if("find" %in% names(filter$row)){
       filter$row <- .eval_find(input = input, row = filter$row)
     } else {
       filter$row <- unlist(filter$row)
@@ -141,6 +141,19 @@ validateSchema <- function(schema = NULL, input = NULL){
     varProp <- variables[[i]]
     varName <- names(variables)[i]
 
+    # resolve quosures from grep-ing unknown col/rows ----
+    if(is.list(varProp$row)){
+      varProp$row <- .eval_find(input = input, row = varProp$row)
+
+      # ignore header rows
+      varProp$row <- varProp$row[!varProp$row %in% headerRows]
+    }
+
+    if(is.list(varProp$col)){
+      # varProp$col <- .eval_find(input = input, col = varProp$col, row = varProp$row)
+      varProp$col <- .eval_find(input = input, col = varProp$col)
+    }
+
     # check whether the variable has relative values and if so, make them absolute ----
     if(varProp$rel){
       # this might become problematic in case a schema requires several col/row to be set with a relative value
@@ -151,20 +164,6 @@ validateSchema <- function(schema = NULL, input = NULL){
         varProp$row <- clusters$row + varProp$row - 1
       }
       varProp$rel <- FALSE
-    }
-
-    # resolve quosures from grep-ing unkown col/rows ----
-    # if(!is.null(names(varProp$row))){
-    if(is.list(varProp$row)){
-      varProp$row <- .eval_find(input = input, row = list(varProp$row))
-
-      # ignore header rows
-      varProp$row <- varProp$row[!varProp$row %in% headerRows]
-    }
-
-    # if(!is.null(names(varProp$col))){
-    if(is.list(varProp$col)){
-      varProp$col <- .eval_find(input = input, col = varProp$col, row = list(varProp$row))
     }
 
     # figure out which rows to filter out

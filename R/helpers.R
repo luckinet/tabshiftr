@@ -430,19 +430,23 @@
 .eval_find <- function(input = NULL, col = NULL, row = NULL){
 
   assertDataFrame(x = input)
-  assertList(x = row, min.len = 1, null.ok = TRUE)
-  # assertList(x = col, min.len = 1)
+  # assertList(x = row, min.len = 1, null.ok = TRUE)
+  # assertList(x = col, min.len = 1, null.ok = TRUE)
 
   # in case to look for columns
   if(!is.null(col)){
-    if(is.list(col)){
-      term <- eval_tidy(col$by)
+
+    for(i in seq_along(col)){
+      if(!names(col)[i] == "find") next
+
+      theCol <- col[[i]]
+      term <- eval_tidy(theCol$by)
 
       if(is.function(term)){
 
-        if(!is.null(col$row)){
-          assertNumeric(x = col$row, len = 1, any.missing = FALSE)
-          subset <- input[unique(col$row),]
+        if(!is.null(theCol$row)){
+          assertNumeric(x = theCol$row, len = 1, any.missing = FALSE)
+          subset <- input[unique(theCol$row),]
         } else {
           subset <- input
         }
@@ -459,14 +463,15 @@
         cols <- map_int(.x = 1:dim(input)[2], .f = function(ix){
           # message(ix)
           # str_count(string = paste(input[[ix]], collapse = " "), pattern = term)
-          if(!is.null(col$row)){
-            str_count(string = paste(input[[ix]][col$row], collapse = " "), pattern = term)
+          if(!is.null(theCol$row)){
+            str_count(string = paste(input[[ix]][theCol$row], collapse = " "), pattern = term)
           } else {
             str_count(string = paste(input[[ix]], collapse = " "), pattern = term)
           }
         })
       }
       out <- rep(seq_along(cols), cols)
+
     }
 
   }
@@ -474,9 +479,11 @@
   # in case to look for rows
   if(!is.null(row)){
 
-    if(!is.null(names(row[[1]]))){
+    # if(!is.null(names(row[[1]]))){
+    # if(is.list(row)){
       theRows <- NULL
       for(i in seq_along(row)){
+        if(!names(row)[i] == "find") next
 
         theRow <- row[[i]]
         term <- eval_tidy(theRow$by)
@@ -541,7 +548,7 @@
       theRows <- reduce(theRows, `&`)
       out <- rep(seq_along(theRows), theRows)
 
-    }
+    # }
   }
 
   return(out)
