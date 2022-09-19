@@ -1,7 +1,7 @@
 #' Set Groups
 #'
-#' This function allows set groups for rows, columns or clusters that shall be
-#' aggregated/summarised.
+#' This function allows to set groups for rows, columns or clusters that shall
+#' be aggregated/summarised.
 #' @param schema [\code{schema(1)}]\cr In case this information is added to an
 #'   already existing schema, provide that schema here (overwrites previous
 #'   information).
