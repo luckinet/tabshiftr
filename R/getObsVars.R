@@ -45,7 +45,9 @@ getObsVars <- function(schema = NULL, input = NULL){
     theVar <- variables[[ix]]
     if(theVar$type == "observed"){
       if(is.numeric(theVar$key)){
-        c(theVar$key, theVar$col)
+        if(!any(0 %in% theVar$key)){
+          c(theVar$key, theVar$col)
+        }
       }
     }
   })
@@ -99,7 +101,11 @@ getObsVars <- function(schema = NULL, input = NULL){
               theFilter <- which(varRows %in% filter$row)
             } else if(is.numeric(tempVar$key)){
               temp <- input[varRows, tempVar$col]
-              theFilter <- NULL
+              if(!tempVar$key == 0){
+                theFilter <- NULL
+              } else {
+                theFilter <- which(varRows %in% filter$row)
+              }
             }
           } else {
 

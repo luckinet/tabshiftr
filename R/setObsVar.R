@@ -12,7 +12,7 @@
 #'   \emph{values} of the new variable are recorded.
 #' @param top [\code{integerish(.)}]\cr In case the variable is nested in a wide
 #'   identifying variable, specify here additionally the topmost row in which
-#'   the variable \emph{name} sits
+#'   the variable \emph{name} sits.
 #' @param unit [\code{character(1)}]\cr the unit of this variable.
 #' @param factor [\code{numeric(1)}]\cr the factor that needs to be multiplied
 #'   with the values to convert to \code{unit}, defaults to 1. For instance, if

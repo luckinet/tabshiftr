@@ -122,7 +122,7 @@ validateSchema <- function(schema = NULL, input = NULL){
 
   # 3. complete variables ----
   outsideCluster <- NULL
-  selectRows <- selectCols <- NULL
+  selectRows <- selectCols <- idCols <- NULL
   clusterID <- clusters$id
   groupID <- clusters$group
 
@@ -166,6 +166,17 @@ validateSchema <- function(schema = NULL, input = NULL){
       varProp$rel <- FALSE
     }
 
+    # check whether the variable is wide ----
+    if(varProp$type == "observed"){
+      isWide <- map_lgl(.x = seq_along(idCols), function(ix){
+        all(varProp$col == idCols[[ix]]) & length(varProp$col) > 1
+      })
+      if(any(isWide) & is.null(varProp$key)){
+        varProp$key <- 0
+        varProp$value <- "harvested"
+      }
+    }
+
     # figure out which rows to filter out
     if(!varProp$dist & !varName %in% c(groupID, clusterID)){
       if(varProp$type == "observed"){
@@ -188,8 +199,11 @@ validateSchema <- function(schema = NULL, input = NULL){
       }
     }
 
-    if(varProp$type == "id" & !is.null(varProp$val)){
-      varProp$dist <- TRUE
+    if(varProp$type == "id"){
+      if(!is.null(varProp$val)){
+        varProp$dist <- TRUE
+      }
+      idCols <- c(idCols, list(varProp$col))
     }
 
     # identify all selected columns ----
