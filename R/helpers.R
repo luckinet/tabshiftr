@@ -7,7 +7,7 @@
 #'   \code{input}.
 #' @importFrom purrr map
 #' @importFrom dplyr row_number arrange_at
-#' @importFrom stringr str_remove_all str_extract_all
+#' @importFrom stringr str_remove_all str_extract_all coll
 #' @importFrom tidyselect starts_with
 
 .updateFormat <- function(input = NULL, schema = NULL){
@@ -48,7 +48,7 @@
     # capture flags
     if(length(format$flags$flag) != 0){
       theFlags <- map(seq_along(theVar), function(ix){
-        temp <- str_extract_all(string = theVar[[ix]], pattern = paste0("[", paste0(format$flags$flag, collapse = ""), "]")) %>%
+        temp <- str_extract_all(string = theVar[[ix]], pattern = coll(paste0(format$flags$flag, collapse = ""))) %>%
           unlist()
         if(length(temp) == 0){
           NA
@@ -63,7 +63,7 @@
 
       if(length(tmp) != 0){
         # replace white-spaces
-        tmp <- gsub(" ", "", tmp)
+        tmp <- gsub(" |\xe2\x80\x80|\xe2\x80\x81|\xe2\x80\x82|\xe2\x80\x83|\xe2\x80\x84|\xe2\x80\x85|\xe2\x80\x86|\xe2\x80\x87|\xe2\x80\x88|\xe2\x80\x89|\xe2\x80\x8a|\xe2\x80\x8b|\xe2\x80\x8c|\xe2\x80\x8d|", "", tmp)
 
         # replace NA values
         if(!is.null(format$na)){
@@ -400,7 +400,11 @@
       if(all(dims == 1)){
         temp <- tibble(X = rep(unlist(clust, use.names = FALSE), nrRows))
       } else {
-        temp <- tibble(X = unlist(clust, use.names = FALSE))
+        if(dims[1] != nrRows){
+          temp <- tibble(X = rep(unlist(clust, use.names = FALSE), nrRows/dims[1]))
+        } else {
+          temp <- tibble(X = unlist(clust, use.names = FALSE))
+        }
       }
       outClust <-  set_names(x = list(temp), nm = names(clust))
 
