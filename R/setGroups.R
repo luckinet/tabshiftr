@@ -13,20 +13,20 @@
 #' @importFrom checkmate assertClass testIntegerish testClass
 #' @export
 
-setGroups <- function(schema = NULL, rows = NULL#, columns = NULL, clusters = NULL
-                      ){
+setGroups <- function(schema = NULL, rows = NULL, columns = NULL,
+                      clusters = NULL){
 
   # assertions ----
   assertClass(x = schema, classes = "schema", null.ok = TRUE)
   rowInt <- testIntegerish(x = rows, lower = 1, min.len = 1, null.ok = TRUE)
   rowList <- testList(x = rows)
-  # colInt <- testIntegerish(x = columns, lower = 1, min.len = 1, null.ok = TRUE)
-  # colList <- testList(x = columns)
-  # clustInt <- testIntegerish(x = clusters, lower = 1, min.len = 1, null.ok = TRUE)
-  # clustList <- testList(x = clusters)
+  colInt <- testIntegerish(x = columns, lower = 1, min.len = 1, null.ok = TRUE)
+  colList <- testList(x = columns)
+  clustInt <- testIntegerish(x = clusters, lower = 1, min.len = 1, null.ok = TRUE)
+  clustList <- testList(x = clusters)
   assert(rowInt, rowList)
-  # assert(colInt, colList)
-  # assert(clustInt, clustList)
+  assert(colInt, colList)
+  assert(clustInt, clustList)
 
   if(is.null(schema)){
     schema <- schema_default
