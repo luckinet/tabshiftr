@@ -20,12 +20,12 @@ setGroups <- function(schema = NULL, rows = NULL, columns = NULL,
   assertClass(x = schema, classes = "schema", null.ok = TRUE)
   rowInt <- testIntegerish(x = rows, lower = 1, min.len = 1, null.ok = TRUE)
   rowList <- testList(x = rows)
+  assert(rowInt, rowList)
   colInt <- testIntegerish(x = columns, lower = 1, min.len = 1, null.ok = TRUE)
   colList <- testList(x = columns)
+  assert(colInt, colList)
   clustInt <- testIntegerish(x = clusters, lower = 1, min.len = 1, null.ok = TRUE)
   clustList <- testList(x = clusters)
-  assert(rowInt, rowList)
-  assert(colInt, colList)
   assert(clustInt, clustList)
 
   if(is.null(schema)){
@@ -33,25 +33,16 @@ setGroups <- function(schema = NULL, rows = NULL, columns = NULL,
   }
 
   if(!is.null(rows)){
-    rws <- list()
-    if(rowInt){
-      rws$fun <- "id"
-      rws$ind <- rows
-    }
-    if(rowList){
-      rws$fun <- rows$by
-      rws$ind <- rows$groups
-    }
-    schema@groups$rows <- rws
+    schema@groups$rows <- c(schema@groups$rows, rows)
   }
 
-  # if(!is.null(columns)){
-  #   schema@groups$cols <- columns
-  # }
-  #
-  # if(!is.null(clusters)){
-  #   schema@groups$clusters <- clusters
-  # }
+  if(!is.null(columns)){
+    schema@groups$cols <- c(schema@groups$cols, columns)
+  }
+
+  if(!is.null(clusters)){
+    schema@groups$clusters <- c(schema@groups$clusters, clusters)
+  }
 
   return(schema)
 
