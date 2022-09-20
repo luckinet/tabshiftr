@@ -2,19 +2,24 @@
 % Please edit documentation in R/group.R
 \name{.group}
 \alias{.group}
-\title{Group rows or columns}
+\title{Combine groups of rows or columns}
 \usage{
-.group(fn, ...)
+.group(fn, sep = NULL, ...)
 }
 \arguments{
 \item{fn}{[\code{character(1)}]\cr function by which selected columns or rows
 shall be combined.}
 
-\item{...}{[\code{integerish(1)}]\cr columns or rows that shall be combined.}
+\item{sep}{[\code{character(1)}]\cr a character string to paste the terms
+provided in \code{...} when no \code{fn} is given (not yet supported).}
+
+\item{...}{[\code{integerish(1)}]\cr columns or rows that shall be combined.
+If there are several items provided, they will be summarised into one
+group that is combined according to \code{fn}.}
 }
 \value{
 the index values where the target was found.
 }
 \description{
-Group rows or columns
+Combine groups of rows or columns
 }

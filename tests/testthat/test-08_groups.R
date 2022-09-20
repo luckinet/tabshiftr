@@ -1,7 +1,7 @@
 library(tabshiftr)
 library(testthat)
 library(checkmate)
-context("groups")
+context("setGroups")
 
 test_that("groups of rows", {
 
@@ -9,10 +9,12 @@ test_that("groups of rows", {
 
   schema <-
     # setGroups(rows = c(1, 1, 2, 3, 3, 4, 5, 5, 6)) %>%
-    setGroups(rows = .group(fn = paste0, c(1, 2), c(4, 5), c(7, 8))) %>%
+    setGroups(rows = .group(fn = function(x) paste0(na.omit(x), collapse = " "), c(1, 2))) %>%
+    setGroups(rows = .group(fn = function(x) paste0(na.omit(x), collapse = " "), c(4, 5))) %>%
+    setGroups(rows = .group(fn = function(x) paste0(na.omit(x), collapse = " "), c(7, 8))) %>%
     setIDVar(name = "territories", columns = 1) %>%
     setIDVar(name = "year", columns = 2) %>%
-    setIDVar(name = "commodities", columns = c(3:6), rows = 2) %>%
+    setIDVar(name = "commodities", columns = c(3:6), rows = 3) %>%
     setObsVar(name = "harvested", columns = c(3, 4)) %>%
     setObsVar(name = "production", columns = c(5, 6))
   #
