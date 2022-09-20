@@ -49,6 +49,7 @@ validateSchema <- function(schema = NULL, input = NULL){
   assertClass(x = schema, classes = "schema")
 
   filter <- schema@filter
+  groups <- schema@groups
   tabDim <- dim(input)
   variables <- schema@variables
   if(filter$invert){
@@ -231,7 +232,10 @@ validateSchema <- function(schema = NULL, input = NULL){
     names(variables)[i] <- varName
   }
 
-  # 4. remove empty rows ----
+  # 4. handle groups information ----
+
+
+  # 5. remove empty rows ----
   testRows <- input[,selectCols]
   emptyRows <- which(rowSums(is.na(testRows)) == ncol(testRows))
   filter$row <- sort(unique(c(filter$row, emptyRows)))
