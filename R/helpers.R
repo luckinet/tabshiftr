@@ -511,12 +511,6 @@
 }
 
 
-.eval_group <- function(input = NULL, col = NULL, row = NULL){
-
-
-}
-
-
 #' Test for a valid table
 #'
 #' This function is a collection of expectations which ensure that the output of
