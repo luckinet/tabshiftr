@@ -60,15 +60,15 @@ setIDVar <- function(schema = NULL, name = NULL, value = NULL, columns = NULL,
   if(is.null(schema)){
     schema <- schema_default
   }
-  nClusters <- max(lengths(schema@clusters))
-  if(nClusters == 0) nClusters <- 1
-  prevIDcols <- unlist(lapply(seq_along(schema@variables), function(x){
-    if(schema@variables[[x]]$typ == "id"){
-      if(is.null(schema@variables[[x]]$row)){
-        schema@variables[[x]]$col
-      }
-    }
-  }))
+  # nClusters <- max(lengths(schema@clusters))
+  # if(nClusters == 0) nClusters <- 1
+  # prevIDcols <- unlist(lapply(seq_along(schema@variables), function(x){
+  #   if(schema@variables[[x]]$typ == "id"){
+  #     if(is.null(schema@variables[[x]]$row)){
+  #       schema@variables[[x]]$col
+  #     }
+  #   }
+  # }))
 
   # error management ----
   # if(!is.null(columns)){

@@ -67,8 +67,8 @@ setObsVar <- function(schema = NULL, name = NULL, columns = NULL, top = NULL,
   if(is.null(schema)){
     schema <- schema_default
   }
-  nClusters <- max(lengths(schema@clusters))
-  if(nClusters == 0) nClusters <- 1
+  # nClusters <- max(lengths(schema@clusters))
+  # if(nClusters == 0) nClusters <- 1
 
   # error management ----
 
