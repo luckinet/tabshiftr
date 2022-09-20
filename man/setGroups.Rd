@@ -4,7 +4,7 @@
 \alias{setGroups}
 \title{Set Groups}
 \usage{
-setGroups(schema = NULL, rows = NULL)
+setGroups(schema = NULL, rows = NULL, columns = NULL, clusters = NULL)
 }
 \arguments{
 \item{schema}{[\code{schema(1)}]\cr In case this information is added to an

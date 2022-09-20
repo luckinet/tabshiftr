@@ -2,7 +2,7 @@
 % Please edit documentation in R/group.R
 \name{.group}
 \alias{.group}
-\title{Determine row or column on the fly}
+\title{Group rows or columns}
 \usage{
 .group(fn, ...)
 }
@@ -16,6 +16,5 @@ shall be combined.}
 the index values where the target was found.
 }
 \description{
-Find the location of a variable not based on it's columns/rows, but based on
-a regular expression or function
+Group rows or columns
 }
