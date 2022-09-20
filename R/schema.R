@@ -185,7 +185,30 @@ setValidity(Class = "schema", function(object){
   if(!.hasSlot(object = object, name = "groups")){
     errors <- c(errors, "the schema does not have a 'groups' slot.")
   } else {
-
+    if(!is.list(object@groups)){
+      errors <- c(errors, "the slot 'groups' is not a list.")
+    }
+    if(length(object@groups) == 0){
+      errors <- c(errors, "the slot 'groups' does not contain any entries.")
+    }
+    if(!all(names(object@groups) %in% c("rows", "cols", "clusters"))){
+      errors <- c(errors, "'names(schema$groups)' must be a permutation of set {rows,cols,clusters}")
+    }
+    if(!is.null(object@groups$rows)){
+      if(!is.numeric(object@filter$row)){
+        errors <- c(errors, "'schema$groups$row' must have a numeric value.")
+      }
+    }
+    if(!is.null(object@groups$cols)){
+      if(!is.numeric(object@filter$cols)){
+        errors <- c(errors, "'schema$groups$cols' must have a numeric value.")
+      }
+    }
+    if(!is.null(object@groups$clusters)){
+      if(!is.numeric(object@filter$clusters)){
+        errors <- c(errors, "'schema$groups$clusters' must have a numeric value.")
+      }
+    }
   }
 
   if(!.hasSlot(object = object, name = "filter")){
