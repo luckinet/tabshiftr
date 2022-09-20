@@ -5,15 +5,16 @@ context("groups")
 
 test_that("groups of rows", {
 
-  # input <- tabs2shift$group_simple
-  #
-  # schema <-
-  #   setGroups(rows = c(1, 1, 2, 3, 3, 4, 5, 5, 6)) %>%
-  #   setIDVar(name = "territories", columns = 1) %>%
-  #   setIDVar(name = "year", columns = 2) %>%
-  #   setIDVar(name = "commodities", columns = c(3:6), rows = 2) %>%
-  #   setObsVar(name = "harvested", columns = c(3, 4)) %>%
-  #   setObsVar(name = "production", columns = c(5, 6))
+  input <- tabs2shift$group_simple
+
+  schema <-
+    # setGroups(rows = c(1, 1, 2, 3, 3, 4, 5, 5, 6)) %>%
+    setGroups(rows = .group(fn = paste0, c(1, 2), c(4, 5), c(7, 8))) %>%
+    setIDVar(name = "territories", columns = 1) %>%
+    setIDVar(name = "year", columns = 2) %>%
+    setIDVar(name = "commodities", columns = c(3:6), rows = 2) %>%
+    setObsVar(name = "harvested", columns = c(3, 4)) %>%
+    setObsVar(name = "production", columns = c(5, 6))
   #
   # .expect_valid_table(x = reorganise(input = input, schema = schema), units = 2)
 

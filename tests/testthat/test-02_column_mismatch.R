@@ -15,6 +15,13 @@ test_that("split a column that contains several identifying variables in one col
     setObsVar(name = "harvested", columns = 4) %>%
     setObsVar(name = "production", columns = 5)
 
+  # schema <-
+  #   setIDVar(name = "territories", columns = 1) %>%
+  #   setIDVar(name = "year", columns = .split(by = ".+?(?=_)", 2))) %>%
+  #   setIDVar(name = "commodities", columns = .split(by = "(?<=\\_).*", 2)) %>%
+  #   setObsVar(name = "harvested", columns = 4) %>%
+  #   setObsVar(name = "production", columns = 5)
+
   .expect_valid_table(x = reorganise(input = input, schema = schema), units = 2)
 
 })
@@ -31,7 +38,13 @@ test_that("recognise an identifying variable that is actually a merge of two col
     setObsVar(name = "harvested", columns = 6) %>%
     setObsVar(name = "production", columns = 7)
 
-  .expect_valid_table(x = reorganise(input = input, schema = schema), units = 2)
+  # schema <-
+  #   setIDVar(name = "territories", columns = 1) %>%
+  #   setIDVar(name = "year", columns = .group(fn = paste, c(2, 4))) %>%
+  #   setIDVar(name = "commodities", columns = 5) %>%
+  #   setObsVar(name = "harvested", columns = 6) %>%
+  #   setObsVar(name = "production", columns = 7)
+  # .expect_valid_table(x = reorganise(input = input, schema = schema), units = 2)
 
 })
 
