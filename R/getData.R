@@ -21,12 +21,10 @@
 #'
 #' validateSchema(schema = schema, input = input) %>%
 #'    getData(input = input)
-#' @importFrom rlang eval_tidy
-#' @importFrom dplyr mutate group_by summarise filter select across n
-#' @importFrom tibble as_tibble
+#' @importFrom dplyr row_number group_by summarise na_if across
+#'   select mutate
 #' @importFrom tidyselect everything
-#' @importFrom stats na.omit
-#' @importFrom purrr map_dfr
+#' @importFrom rlang eval_tidy
 #' @export
 
 getData <- function(schema = NULL, input = NULL){
@@ -35,42 +33,87 @@ getData <- function(schema = NULL, input = NULL){
   groups <- schema@groups
   nClusters <- max(lengths(clusters))
 
-  if(any(lengths(groups) > 0)){
+  out <- input
 
-    tempGroups <- 1:dim(input)[1]
-    for(i in seq_along(groups$rows$ind)){
-      temp <- eval_tidy(groups$rows$ind[[i]])
-      tempGroups[temp] <- max(tempGroups) + 1
+  if(!is.null(groups$rows)){
+
+    out <- out %>%
+      mutate(ind = as.double(row_number()))
+
+    for(i in seq_along(groups$rows)){
+
+      temp <- groups$rows[[i]]
+      targetRows <- eval_tidy(temp$groups[[1]])
+
+      out <- out %>%
+        mutate(ind = if_else(ind %in% targetRows, min(targetRows), ind)) %>%
+        group_by(ind) %>%
+        summarise(across(everything(), eval_tidy(temp$by))) %>%
+        mutate(across(everything(), ~na_if(x = ., y = "")))
+
     }
 
-    tempInput <- input %>%
-      mutate(grps = tempGroups)
-    tempGroups <- tempGroups %>%
-      as_tibble() %>%
-      group_by(value) %>%
-      summarise(n = n())
+    out <- out %>%
+      select(-ind)
 
-    out <- map_dfr(seq_along(tempGroups$value), function(ix){
+  }
 
-      temp <- tempInput %>%
-        filter(grps == tempGroups$value[ix]) %>%
-        select(-grps)
+  # if(!is.null(groups$cols)){
+  #
+  #   for(i in seq_along(groups$cols)){
+  #
+  #     temp <- groups$cols[[1]]
+  #
+  #   }
+  #
+  # }
 
-      if(tempGroups$n[ix] == 1){
-        return(temp)
-      } else {
+  # if(!is.null(groups$clusters)){
+  #
+  #   for(i in seq_along(groups$clusters)){
+  #
+  #     temp <- groups$clusters[[1]]
+  #
+  #   }
+  #
+  # }
 
-        nums <- suppressWarnings(temp %>% mutate(across(everything(), as.numeric)))
-        nums <- nums %>% summarise(across(everything(), sum))
-        # targetCols <- get columns where all rows are NA
 
-        chars <- temp %>% summarise(across(everything(), function(x){  paste0(na.omit(x), collapse = " ")}))
-
-        bind_cols(chars[targetCols], nums[!targetCols])
-      }
-
-    })
-
+  # if(){
+  #   tempGroups <- 1:dim(input)[1]
+  #   for(i in seq_along(groups$rows$ind)){
+  #     temp <- eval_tidy(groups$rows$ind[[i]])
+  #     tempGroups[temp] <- max(tempGroups) + 1
+  #   }
+  #
+  #   tempInput <- input %>%
+  #     mutate(grps = tempGroups)
+  #   tempGroups <- tempGroups %>%
+  #     as_tibble() %>%
+  #     group_by(value) %>%
+  #     summarise(n = n())
+  #
+  #   out <- map_dfr(seq_along(tempGroups$value), function(ix){
+  #
+  #     temp <- tempInput %>%
+  #       filter(grps == tempGroups$value[ix]) %>%
+  #       select(-grps)
+  #
+  #     if(tempGroups$n[ix] == 1){
+  #       return(temp)
+  #     } else {
+  #
+  #       nums <- suppressWarnings(temp %>% mutate(across(everything(), as.numeric)))
+  #       nums <- nums %>% summarise(across(everything(), sum))
+  #       # targetCols <- get columns where all rows are NA
+  #
+  #       chars <- temp %>% summarise(across(everything(), function(x){  paste0(na.omit(x), collapse = " ")}))
+  #
+  #       bind_cols(chars[targetCols], nums[!targetCols])
+  #     }
+  #
+  #   })
+  #
   # } else if(!is.null(clusters$id)){
   #   out <- map(.x = 1:nClusters, .f = function(ix){
   #
@@ -80,9 +123,9 @@ getData <- function(schema = NULL, input = NULL){
   #     ]
   #
   #   })
-  } else {
-    out <- input
-  }
+  # } else {
+  #   out <- input
+  # }
 
   return(out)
 }
