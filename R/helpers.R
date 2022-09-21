@@ -415,6 +415,61 @@
 
 }
 
+#' Evaluate .group constructs
+#'
+#' @param input [\code{character(1)}]\cr table to reorganise.
+#' @param groups [\code{list(3)}]\cr the groups-slot from a schema.
+#' @param positions [\code{integerish(.)}]\cr the cell column or row that should
+#'   be adapted to groupings.
+#' @return the position of the evaluated position
+#' @importFrom dplyr mutate row_number if_else group_by summarise n ungroup
+#'   left_join pull
+#' @importFrom rlang eval_tidy
+
+.eval_group <- function(input = NULL, groups = NULL, positions = NULL){
+
+  out <- positions
+
+  if(!is.null(positions)){
+
+    tempGroups <-  input %>%
+      mutate(rn = as.double(row_number()),
+             rn_new = rn)
+
+    if(!is.null(groups$rows)){
+
+      for(i in seq_along(groups$rows)){
+
+        temp <- groups$rows[[i]]
+        targetRows <- eval_tidy(temp$groups[[1]])
+
+        tempGroups <- tempGroups %>%
+          mutate(rn_new = if_else(rn_new %in% targetRows, min(targetRows), rn_new))
+
+      }
+      nrs <- tempGroups %>%
+        group_by(rn_new) %>%
+        summarise(nr = n()) %>%
+        ungroup() %>%
+        mutate(id = row_number())
+      tempGroups$rn_new <- rep(nrs$id, nrs$nr)
+
+      out <- tempGroups %>%
+        left_join(tibble(rn = out), ., by = "rn") %>%
+        pull(rn_new)
+
+    }
+
+    # if(!is.null(groups$cols)){
+    #
+    # }
+
+  }
+
+  return(out)
+
+}
+
 #' Evaluate .find constructs
 #'
 #' @param input [\code{character(1)}]\cr table to reorganise.
@@ -607,7 +662,7 @@
       expect_identical(object = x$production, expected = c(1122, 1112, 1222, 1212))
     } else {
       expect_tibble(x = x, any.missing = FALSE, nrows = 4, ncols = 4)
-      expect_names(x = colnames(x), permutation.of =c("territories", "year", "commodities", variables) )
+      expect_names(x = colnames(x), permutation.of = c("territories", "year", "commodities", variables) )
       if(variables == "harvested") expect_identical(object = x$harvested, expected = c(1121, 1111, 1221, 1211))
       if(variables == "production") expect_identical(object = x$production, expected = c(1122, 1112, 1222, 1212))
     }
