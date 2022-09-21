@@ -5,28 +5,33 @@
 #' @param schema [\code{schema(1)}]\cr In case this information is added to an
 #'   already existing schema, provide that schema here (overwrites previous
 #'   information).
-#' @param rows [\code{integerish(.)}]\cr .
+#' @param rows [\code{list(3)}]\cr the output of .group indicating the rows and
+#'   a function according to which those rows should be summarised.
+#' @param columns [\code{list(3)}]\cr the output of .group indicating the
+#'   columns and a function according to which those columns should be
+#'   summarised.
 #' @return An object of class \code{\link{schema}}.
 #' @examples
 #' # please check the vignette for examples
 #' @family functions to describe table arrangement
-#' @importFrom checkmate assertClass testIntegerish testClass
+#' @importFrom checkmate assertClass assertList
 #' @export
 
-setGroups <- function(schema = NULL, rows = NULL, columns = NULL,
-                      clusters = NULL){
+setGroups <- function(schema = NULL, rows = NULL, columns = NULL){
 
   # assertions ----
   assertClass(x = schema, classes = "schema", null.ok = TRUE)
-  rowInt <- testIntegerish(x = rows, lower = 1, min.len = 1, null.ok = TRUE)
-  rowList <- testList(x = rows)
-  assert(rowInt, rowList)
-  colInt <- testIntegerish(x = columns, lower = 1, min.len = 1, null.ok = TRUE)
-  colList <- testList(x = columns)
-  assert(colInt, colList)
-  clustInt <- testIntegerish(x = clusters, lower = 1, min.len = 1, null.ok = TRUE)
-  clustList <- testList(x = clusters)
-  assert(clustInt, clustList)
+  # rowInt <- testIntegerish(x = rows, lower = 1, min.len = 1, null.ok = TRUE)
+  # rowList <- testList(x = rows)
+  assertList(x = rows, len = 3)
+  # assert(rowInt, rowList)
+  # colInt <- testIntegerish(x = columns, lower = 1, min.len = 1, null.ok = TRUE)
+  # colList <- testList(x = columns)
+  assertList(x = columns, len = 3)
+  # assert(colInt, colList)
+  # clustInt <- testIntegerish(x = clusters, lower = 1, min.len = 1, null.ok = TRUE)
+  # clustList <- testList(x = clusters)
+  # assert(clustInt, clustList)
 
   if(is.null(schema)){
     schema <- schema_default
@@ -40,9 +45,9 @@ setGroups <- function(schema = NULL, rows = NULL, columns = NULL,
     schema@groups$cols <- c(schema@groups$cols, columns)
   }
 
-  if(!is.null(clusters)){
-    schema@groups$clusters <- c(schema@groups$clusters, clusters)
-  }
+  # if(!is.null(clusters)){
+  #   schema@groups$clusters <- c(schema@groups$clusters, clusters)
+  # }
 
   return(schema)
 
