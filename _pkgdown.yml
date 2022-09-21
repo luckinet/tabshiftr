@@ -18,26 +18,32 @@ reference:
       - setFormat
       - setIDVar
       - setObsVar
-  - title: validate the schema description
+      - setGroups
+      - .find
+      - .group
+  - title: validate and debug the schema description
     contents:
-      - tabs2shift
       - getClusterVar
       - getData
       - getGroupVar
       - getIDVars
       - getObsVars
       - validateSchema
-      - .find
   - title: reorganise tables
     contents:
       - reorganise
   - title: other helpers
     contents:
       - .eval_find
+      - .eval_group
       - .expect_valid_table
       - .tidyVars
       - .updateFormat
       - show,schema-method
+  - title: example data
+    contents:
+      - tabs2shift
+
 
 navbar:
   left:
