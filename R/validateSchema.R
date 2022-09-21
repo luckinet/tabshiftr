@@ -35,9 +35,9 @@
 #' # ... after
 #' validateSchema(schema = schema, input = tidyTab)
 #'
-#' @importFrom checkmate assertNames assertClass
+#' @importFrom checkmate assertNames assertClass assertNumeric
 #' @importFrom rlang is_quosure
-#' @importFrom dplyr mutate across
+#' @importFrom dplyr mutate across ungroup n right_join
 #' @importFrom tidyr replace_na everything
 #' @importFrom purrr map_int map_lgl map
 #' @importFrom methods new
@@ -49,6 +49,7 @@ validateSchema <- function(schema = NULL, input = NULL){
   assertClass(x = schema, classes = "schema")
 
   filter <- schema@filter
+  groups <- schema@groups
   tabDim <- dim(input)
   variables <- schema@variables
   if(filter$invert){
@@ -120,7 +121,8 @@ validateSchema <- function(schema = NULL, input = NULL){
 
   topAfterFilter <- min(which(!1:dim(input)[1] %in% filter$row))
 
-  # 3. complete variables ----
+
+  # 3. adjust variables ----
   outsideCluster <- NULL
   selectRows <- selectCols <- idCols <- NULL
   clusterID <- clusters$id
@@ -194,7 +196,6 @@ validateSchema <- function(schema = NULL, input = NULL){
       }
 
       if(headInTemp){
-        # message(varProp$row)
         filter$row <- sort(unique(c(filter$row, varProp$row)))
       }
     }
@@ -240,20 +241,33 @@ validateSchema <- function(schema = NULL, input = NULL){
       }
     }
 
+    # adapt rows and columns if there are groups ----
+    varProp$row <- .eval_group(input = input, groups = groups,
+                               positions = varProp$row)
+    # varProp$col <- .eval_group(input = input, groups = groups,
+    #                            positions = varProp$col)
+
     variables[[i]] <- varProp
     names(variables)[i] <- varName
   }
+
 
   # 4. remove empty rows ----
   testRows <- input[,selectCols]
   emptyRows <- which(rowSums(is.na(testRows)) == ncol(testRows))
   filter$row <- sort(unique(c(filter$row, emptyRows)))
 
-  # revert this again to output rows to keep, and not to discard
-  # if(!filter$invert){
-  #   filter$row <- (1:tabDim[1])[-filter$row]
-  # }
 
+  # 5. adapt filter and cluster position to groups ----
+  filter$row <- .eval_group(input = input, groups = groups,
+                            positions = filter$row)
+  clusters$row <- .eval_group(input = input, groups = groups,
+                              positions = clusters$row)
+  clusters$height <- .eval_group(input = input, groups = groups,
+                                 positions = clusters$height)
+
+
+  # 6. write it all ----
   out <- new(Class = "schema",
              clusters = clusters,
              format = schema@format,
