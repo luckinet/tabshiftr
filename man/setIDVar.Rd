@@ -71,6 +71,7 @@ Other functions to describe table arrangement:
 \code{\link{setCluster}()},
 \code{\link{setFilter}()},
 \code{\link{setFormat}()},
+\code{\link{setGroups}()},
 \code{\link{setObsVar}()}
 }
 \concept{functions to describe table arrangement}

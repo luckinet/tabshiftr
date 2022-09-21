@@ -51,6 +51,7 @@ Please also take a look at the currently suggested strategy to set
 Other functions to describe table arrangement: 
 \code{\link{setCluster}()},
 \code{\link{setFilter}()},
+\code{\link{setGroups}()},
 \code{\link{setIDVar}()},
 \code{\link{setObsVar}()}
 }
