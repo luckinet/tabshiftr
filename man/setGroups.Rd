@@ -4,14 +4,19 @@
 \alias{setGroups}
 \title{Set Groups}
 \usage{
-setGroups(schema = NULL, rows = NULL, columns = NULL, clusters = NULL)
+setGroups(schema = NULL, rows = NULL, columns = NULL)
 }
 \arguments{
 \item{schema}{[\code{schema(1)}]\cr In case this information is added to an
 already existing schema, provide that schema here (overwrites previous
 information).}
 
-\item{rows}{[\code{integerish(.)}]\cr .}
+\item{rows}{[\code{list(3)}]\cr the output of .group indicating the rows and
+a function according to which those rows should be summarised.}
+
+\item{columns}{[\code{list(3)}]\cr the output of .group indicating the
+columns and a function according to which those columns should be
+summarised.}
 }
 \value{
 An object of class \code{\link{schema}}.
