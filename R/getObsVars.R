@@ -22,7 +22,7 @@
 #' validateSchema(schema = schema, input = input) %>%
 #'    getObsVars(input = input)
 #' @importFrom purrr map set_names map_chr reduce
-#' @importFrom dplyr row_number
+#' @importFrom dplyr row_number filter
 #' @export
 
 getObsVars <- function(schema = NULL, input = NULL){

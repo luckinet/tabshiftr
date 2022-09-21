@@ -21,9 +21,11 @@
 #'
 #' validateSchema(schema = schema, input = input) %>%
 #'    getIDVars(input = input)
+#' @importFrom tibble tibble
 #' @importFrom purrr map set_names map_dfc
-#' @importFrom dplyr row_number
-#' @importFrom tidyr extract unite
+#' @importFrom dplyr row_number filter select
+#' @importFrom tidyr extract unite fill
+#' @importFrom tidyselect all_of
 #' @export
 
 getIDVars <- function(schema = NULL, input = NULL){
