@@ -11,6 +11,7 @@
 #' @importFrom checkmate assertFunction
 #' @importFrom rlang enquo enquos eval_tidy
 #' @importFrom purrr map
+#' @importFrom stats na.omit
 #' @export
 
 .group <- function(..., character = NULL, numeric = NULL){
