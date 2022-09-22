@@ -22,7 +22,8 @@
 #' validateSchema(schema = schema, input = input) %>%
 #'    getData(input = input)
 #' @importFrom dplyr row_number group_by summarise na_if across
-#'   select mutate
+#'   select mutate if_else
+#' @importFrom tibble as_tibble
 #' @importFrom tidyselect everything
 #' @importFrom rlang eval_tidy
 #' @export
@@ -37,24 +38,53 @@ getData <- function(schema = NULL, input = NULL){
 
   if(!is.null(groups$rows)){
 
+    isNumeric <- suppressWarnings(out %>%
+      mutate(across(everything(), ~if_else(!is.na(as.numeric(.x)), TRUE, FALSE)))) %>%
+      mutate(ind = as.double(row_number()))
+
     out <- out %>%
       mutate(ind = as.double(row_number()))
+    outChar <- outNum <- out
 
     for(i in seq_along(groups$rows)){
 
       temp <- groups$rows[[i]]
       targetRows <- eval_tidy(temp$groups[[1]])
 
-      out <- out %>%
+      outChar <- outChar %>%
         mutate(ind = if_else(ind %in% targetRows, min(targetRows), ind)) %>%
         group_by(ind) %>%
-        summarise(across(everything(), eval_tidy(temp$by))) %>%
+        summarise(across(everything(), eval_tidy(temp$by$char))) %>%
         mutate(across(everything(), ~na_if(x = ., y = "")))
+
+      outNum <- suppressWarnings(outNum %>%
+        mutate(ind = if_else(ind %in% targetRows, min(targetRows), ind)) %>%
+        group_by(ind) %>%
+        mutate(across(everything(), as.numeric)) %>%
+        summarise(across(everything(), eval_tidy(temp$by$num))))
+
+      isNumeric <- isNumeric %>%
+        mutate(ind = if_else(ind %in% targetRows, min(targetRows), ind)) %>%
+        group_by(ind) %>%
+        summarise(across(everything(), ~if_else(any(.x), TRUE, FALSE)))
 
     }
 
-    out <- out %>%
-      select(-ind)
+    dims <- dim(isNumeric); dims[2] <- dims[2]-1
+    isNumeric <- isNumeric %>%
+      select(-ind) %>%
+      unlist()
+    outChar <- outChar %>%
+      select(-ind) %>%
+      unlist()
+    outNum <- outNum %>%
+      select(-ind) %>%
+      unlist()
+
+    outChar[isNumeric] <- as.character(outNum[isNumeric])
+
+    out <- as_tibble(matrix(data = outChar, nrow = dims[1], ncol = dims[2]), .name_repair = "minimal")
+    colnames(out) <- paste0("X", 1:(dims[2]))
 
   }
 
@@ -68,64 +98,6 @@ getData <- function(schema = NULL, input = NULL){
   #
   # }
 
-  # if(!is.null(groups$clusters)){
-  #
-  #   for(i in seq_along(groups$clusters)){
-  #
-  #     temp <- groups$clusters[[1]]
-  #
-  #   }
-  #
-  # }
-
-
-  # if(){
-  #   tempGroups <- 1:dim(input)[1]
-  #   for(i in seq_along(groups$rows$ind)){
-  #     temp <- eval_tidy(groups$rows$ind[[i]])
-  #     tempGroups[temp] <- max(tempGroups) + 1
-  #   }
-  #
-  #   tempInput <- input %>%
-  #     mutate(grps = tempGroups)
-  #   tempGroups <- tempGroups %>%
-  #     as_tibble() %>%
-  #     group_by(value) %>%
-  #     summarise(n = n())
-  #
-  #   out <- map_dfr(seq_along(tempGroups$value), function(ix){
-  #
-  #     temp <- tempInput %>%
-  #       filter(grps == tempGroups$value[ix]) %>%
-  #       select(-grps)
-  #
-  #     if(tempGroups$n[ix] == 1){
-  #       return(temp)
-  #     } else {
-  #
-  #       nums <- suppressWarnings(temp %>% mutate(across(everything(), as.numeric)))
-  #       nums <- nums %>% summarise(across(everything(), sum))
-  #       # targetCols <- get columns where all rows are NA
-  #
-  #       chars <- temp %>% summarise(across(everything(), function(x){  paste0(na.omit(x), collapse = " ")}))
-  #
-  #       bind_cols(chars[targetCols], nums[!targetCols])
-  #     }
-  #
-  #   })
-  #
-  # } else if(!is.null(clusters$id)){
-  #   out <- map(.x = 1:nClusters, .f = function(ix){
-  #
-  #     input[
-  #       clusters$row[ix]:(clusters$row[ix]+clusters$height[ix] - 1),
-  #       clusters$col[ix]:(clusters$col[ix]+clusters$width[ix] - 1)
-  #     ]
-  #
-  #   })
-  # } else {
-  #   out <- input
-  # }
 
   return(out)
 }
