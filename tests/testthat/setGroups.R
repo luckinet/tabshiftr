@@ -13,7 +13,7 @@
 #' @importFrom checkmate assertClass testIntegerish testClass
 #' @export
 
-setGroups <- function(schema = NULL, rows = NULL, columns = NULL,
+setGroups <- function(schema = NULL, rows = NULL, columns = NULL, sep = NULL,
                       clusters = NULL){
 
   # assertions ----

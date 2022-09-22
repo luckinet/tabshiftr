@@ -4,7 +4,17 @@ library(checkmate)
 context(".group")
 
 
-test_that(".find columns and rows based on regular expressions", {
+test_that(".group and summarise numeric values", {
+
+
+})
+
+test_that(".group and summarise character values", {
+
+
+})
+
+test_that(".group several collections of rows", {
 
 
 })
