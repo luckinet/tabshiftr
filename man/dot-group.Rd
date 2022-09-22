@@ -4,15 +4,18 @@
 \alias{.group}
 \title{Combine groups of rows or columns}
 \usage{
-.group(fn, ...)
+.group(..., character = NULL, numeric = NULL)
 }
 \arguments{
-\item{fn}{[\code{character(1)}]\cr function by which selected columns or rows
-shall be combined.}
-
 \item{...}{[\code{integerish(1)}]\cr columns or rows that shall be combined.
-If there are several items provided, they will be summarised into one
-group that is combined according to \code{fn}.}
+If there are several items provided, they will be summarised into one group
+that is combined according to \code{fn}.}
+
+\item{character}{[\code{function(1)}]\cr function by which character columns
+or rows shall be combined.}
+
+\item{numeric}{[\code{function(1)}]\cr function by which numeric columns or
+rows shall be combined.}
 }
 \value{
 the index values where the target was found.
