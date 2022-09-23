@@ -4,7 +4,7 @@
 \alias{.find}
 \title{Determine row or column on the fly}
 \usage{
-.find(by, col = NULL, row = NULL)
+.find(by, col = NULL, row = NULL, invert = FALSE)
 }
 \arguments{
 \item{by}{[\code{character(1)}]\cr character string containing a regular
@@ -18,6 +18,10 @@ be applied to the whole table, this is the column(s) in which to apply
 \item{row}{[\code{integerish(1)}]\cr optionally, in case \code{by} should not
 be applied to the whole table, this is the row(s) in which to apply
 \code{by}.}
+
+\item{invert}{[\code{logical(1)}]\cr whether or not the identified columns or
+rows should be inverted, i.e., all other columns or rows should be
+selected.}
 }
 \value{
 the index values where the target was found.
@@ -64,7 +68,7 @@ validateSchema(schema = schema, input = input)
 (input <- tabs2shift$messy_rows)
 
 schema <-
-  setFilter(rows = .find(by = is.numeric, col = 1), invert = TRUE) \%>\%
+  setFilter(rows = .find(by = is.numeric, col = 1, invert = TRUE)) \%>\%
   setIDVar(name = "territories", columns = 1) \%>\%
   setIDVar(name = "year", columns = 2) \%>\%
   setIDVar(name = "commodities", columns = 3) \%>\%
