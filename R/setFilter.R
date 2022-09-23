@@ -5,16 +5,20 @@
 #'   already existing schema, provide that schema here (overwrites previous
 #'   information).
 #' @param rows [\code{integerish(.)}]\cr rows that are mentioned here are kept.
-#' @param invert [\code{logical(1)}]\cr whether or not to invert the values
-#'   provided in \code{columns} and \code{rows}.
+#' @param columns [\code{integerish(.)}]\cr columns that are mentioned here are
+#'   kept.
+#' @param operator [\code{function(1)}]\cr \code{\link[base]{Logic}} operators
+#'   by which the current filter should be combined with the directly preceeding
+#'   filter; hence this argument is not used in case no other filter was defined
+#'   before it.
 #' @return An object of class \code{\link{schema}}.
 #' @examples
 #' (input <- tabs2shift$messy_rows)
 #'
-#' # select only 'unit 2' and 'year 2'
+#' # select rows where there is 'unit 2' in column 1 or 'year 2' in column 2
 #' schema <-
 #'   setFilter(rows = .find(by = "unit 2", col = 1)) %>%
-#'   setFilter(rows = .find(by = "year 2", col = 2)) %>%
+#'   setFilter(rows = .find(by = "year 2", col = 2), operator = `|`) %>%
 #'   setIDVar(name = "territories", columns = 1) %>%
 #'   setIDVar(name = "year", columns = 2) %>%
 #'   setIDVar(name = "commodities", columns = 3) %>%
@@ -26,7 +30,8 @@
 #' @importFrom checkmate assertClass testIntegerish testClass
 #' @export
 
-setFilter <- function(schema = NULL, rows = NULL, invert = FALSE){
+setFilter <- function(schema = NULL, rows = NULL, columns = NULL,
+                      operator = NULL){
 
   # assertions ----
   assertClass(x = schema, classes = "schema", null.ok = TRUE)
@@ -39,14 +44,19 @@ setFilter <- function(schema = NULL, rows = NULL, invert = FALSE){
     schema <- schema_default
   }
 
-  if(!is.null(rows)){
-    schema@filter$row <- c(schema@filter$row, rows)
-    # schema@filter$row <- rows
+  if(is.null(operator)){
+    operator <- `&`
   }
 
-  schema@filter$invert <- invert
-
-  # need a test that ensures header rows are not filtered out
+  if(!is.null(rows)){
+    if(!is.list(rows)){
+      rows <- list(position = rows)
+    }
+    if(!is.null(schema@filter$row)){
+      rows <- c(operator = operator, rows)
+    }
+    schema@filter$row <- c(schema@filter$row, rows)
+  }
 
   return(schema)
 
