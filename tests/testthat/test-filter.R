@@ -20,13 +20,47 @@ test_that("filter rows", {
 
 })
 
-test_that("filter several rows", {
+test_that("filter on several columns", {
 
   input <- tabs2shift$messy_rows
 
   schema <-
     setFilter(rows = .find(by = "unit 2", col = 1)) %>%
-    setFilter(rows = .find(by = "year 2", col = 2)) %>%
+    setFilter(rows = .find(by = "year 2", col = 2), operator = `&`) %>%
+    setIDVar(name = "territories", columns = 1) %>%
+    setIDVar(name = "year", columns = 2) %>%
+    setIDVar(name = "commodities", columns = 3) %>%
+    setObsVar(name = "harvested", columns = 5) %>%
+    setObsVar(name = "production", columns = 6)
+
+  out <- reorganise(input = input, schema = schema)
+  expect_equal(out$territories, c("unit 2", "unit 2"))
+  expect_equal(out$year, c("year 2", "year 2"))
+  expect_equal(out$commodities, c("maize", "soybean"))
+  expect_equal(out$harvested, c(2221, 2211))
+  expect_equal(out$production, c(2222, 2212))
+
+  # set several filters without the .find function
+  schema <-
+    setFilter(rows = 13:16) %>%
+    setFilter(rows = c(9, 10, 15, 16), operator = `&`) %>%
+    setIDVar(name = "territories", columns = 1) %>%
+    setIDVar(name = "year", columns = 2) %>%
+    setIDVar(name = "commodities", columns = 3) %>%
+    setObsVar(name = "harvested", columns = 5) %>%
+    setObsVar(name = "production", columns = 6)
+
+  out <- reorganise(input = input, schema = schema)
+  expect_equal(out$territories, c("unit 2", "unit 2"))
+  expect_equal(out$year, c("year 2", "year 2"))
+  expect_equal(out$commodities, c("maize", "soybean"))
+  expect_equal(out$harvested, c(2221, 2211))
+  expect_equal(out$production, c(2222, 2212))
+
+  # combination of position and .find function
+  schema <-
+    setFilter(rows = c(13:16)) %>%
+    setFilter(rows = .find(by = "year 2", col = 2), operator = `&`) %>%
     setIDVar(name = "territories", columns = 1) %>%
     setIDVar(name = "year", columns = 2) %>%
     setIDVar(name = "commodities", columns = 3) %>%
@@ -83,5 +117,19 @@ test_that("filter rows from clusters with listed observed variables", {
 
 })
 
+test_that("mask out a couple of rows and columns that don't contain target data", {
+
+  input <- tabs2shift$implicit_variable
+
+  schema <- setFilter(rows = c(5:8)) %>%
+    setIDVar(name = "territories", value = "unit 1") %>%
+    setIDVar(name = "year", columns = 4) %>%
+    setIDVar(name = "commodities", columns = 1) %>%
+    setObsVar(name = "harvested", columns = 2) %>%
+    setObsVar(name = "production", columns = 3)
+
+  .expect_valid_table(x = reorganise(input = input, schema = schema), units = 1)
+
+})
 
 

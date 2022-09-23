@@ -57,7 +57,7 @@ test_that(".find filter-rows based on a function", {
   input <- tabs2shift$messy_rows
 
   schema <-
-    setFilter(rows = .find(by = is.numeric, col = 1), invert = TRUE) %>%
+    setFilter(rows = .find(by = is.numeric, col = 1, invert = TRUE)) %>%
     setIDVar(name = "territories", columns = 1) %>%
     setIDVar(name = "year", columns = 2) %>%
     setIDVar(name = "commodities", columns = 3) %>%
@@ -73,7 +73,7 @@ test_that(".find filter-rows based on several character strings in one column", 
   input <- tabs2shift$messy_rows
 
   schema <-
-    setFilter(rows = .find(by = c("all", "none", "xyz", "5"), col = 3), invert = TRUE) %>%
+    setFilter(rows = .find(by = c("all", "none", "xyz", "5"), col = 3, invert = TRUE)) %>%
     setIDVar(name = "territories", columns = 1) %>%
     setIDVar(name = "year", columns = 2) %>%
     setIDVar(name = "commodities", columns = 3) %>%
