@@ -11,6 +11,9 @@
 #' @param row [\code{integerish(1)}]\cr optionally, in case \code{by} should not
 #'   be applied to the whole table, this is the row(s) in which to apply
 #'   \code{by}.
+#' @param invert [\code{logical(1)}]\cr whether or not the identified columns or
+#'   rows should be inverted, i.e., all other columns or rows should be
+#'   selected.
 #' @details This functions is basically a wild-card for when columns or rows are
 #'   not known ad-hoc, but have to be assigned on the fly. This can be very
 #'   helpful when several tables contain the same variables, but the arrangement
@@ -45,7 +48,7 @@
 #' (input <- tabs2shift$messy_rows)
 #'
 #' schema <-
-#'   setFilter(rows = .find(by = is.numeric, col = 1), invert = TRUE) %>%
+#'   setFilter(rows = .find(by = is.numeric, col = 1, invert = TRUE)) %>%
 #'   setIDVar(name = "territories", columns = 1) %>%
 #'   setIDVar(name = "year", columns = 2) %>%
 #'   setIDVar(name = "commodities", columns = 3) %>%
@@ -53,20 +56,21 @@
 #'   setObsVar(name = "production", columns = 6)
 #'
 #' reorganise(schema = schema, input = input)
-#' @importFrom checkmate testCharacter testFunction assert
+#' @importFrom checkmate testCharacter testFunction assert assertLogical
 #' @importFrom purrr map_chr
 #' @importFrom rlang enquo
 #' @export
 
-.find <- function(by, col = NULL, row = NULL){
+.find <- function(by, col = NULL, row = NULL, invert = FALSE){
 
   isPat <- testCharacter(x = by, min.len = 1, any.missing = FALSE)
   isFun <- testFunction(x = by)
   assert(isPat, isFun)
+  assertLogical(x = invert, len = 1)
 
   temp <- enquo(by)
 
-  out <- list(find = list(by = temp, col = col, row = row))
+  out <- list(find = list(by = temp, col = col, row = row, invert = invert))
 
   return(out)
 
