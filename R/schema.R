@@ -197,8 +197,8 @@ setValidity(Class = "schema", function(object){
     if(length(object@filter) == 0){
       errors <- c(errors, "the slot 'filter' does not contain any entries.")
     }
-    if(!all(names(object@filter) %in% c("row", "col", "invert"))){
-      errors <- c(errors, "'names(schema$filter)' must be a permutation of set {row,col,invert}")
+    if(!all(names(object@filter) %in% c("row", "col"))){
+      errors <- c(errors, "'names(schema$filter)' must be a permutation of set {row,col}")
     }
     if(!is.null(object@filter$row)){
       if(!is.numeric(object@filter$row)){
@@ -355,8 +355,7 @@ setMethod(f = "show",
               filterSpecs <- paste0("")
             } else {
 
-              filterType <- ifelse(filter$invert, "exclude", "include")
-              filterSpecs <- paste0("  filter (", filterType, ")",
+              filterSpecs <- paste0("  filter ",
                                     # ifelse(!is.null(filter$col), paste0("\n    col: [", ifelse(length(filter$col) > 10, paste0(c(filter$col[1:10], "..."), collapse = ", "), paste0(filter$col, collapse = ", ")), "]"), ""),
                                     paste0(" [",
                                            ifelse(is.list(filter$row),

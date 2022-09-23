@@ -70,7 +70,7 @@ getObsVars <- function(schema = NULL, input = NULL){
 
         if(!is.null(theFilter)){
           temp <- temp %>%
-            filter(!row_number() %in% theFilter)
+            filter(row_number() %in% theFilter)
         }
 
         # replace keys with their variable name
@@ -126,7 +126,7 @@ getObsVars <- function(schema = NULL, input = NULL){
 
           if(!is.null(theFilter)){
             temp <- temp %>%
-              filter(!row_number() %in% theFilter)
+              filter(row_number() %in% theFilter)
           }
 
           vars <- c(vars, set_names(x = list(temp), nm = names(obsVars)[i]))

@@ -104,7 +104,7 @@ getIDVars <- function(schema = NULL, input = NULL){
           # apply a possibly given filter
           if(!is.null(theFilter)){
             temp <- temp %>%
-              filter(!row_number() %in% theFilter)
+              filter(row_number() %in% theFilter)
           }
 
           # and copy missing values downwards
