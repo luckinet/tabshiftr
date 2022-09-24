@@ -62,20 +62,25 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">.group</span><span class="op">(</span><span class="va">fn</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">.group</span><span class="op">(</span><span class="va">...</span>, character <span class="op">=</span> <span class="cn">NULL</span>, numeric <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>fn</dt>
-<dd><p>[<code>character(1)</code>]<br> function by which selected columns or rows
-shall be combined.</p></dd>
-
-
-<dt>...</dt>
+    <dl><dt>...</dt>
 <dd><p>[<code>integerish(1)</code>]<br> columns or rows that shall be combined.
-If there are several items provided, they will be summarised into one
-group that is combined according to <code>fn</code>.</p></dd>
+If there are several items provided, they will be summarised into one group
+that is combined according to <code>fn</code>.</p></dd>
+
+
+<dt>character</dt>
+<dd><p>[<code>function(1)</code>]<br> function by which character columns
+or rows shall be combined.</p></dd>
+
+
+<dt>numeric</dt>
+<dd><p>[<code>function(1)</code>]<br> function by which numeric columns or
+rows shall be combined.</p></dd>
 
 </dl></div>
     <div id="value">
