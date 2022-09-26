@@ -20,7 +20,7 @@ reference:
       - setObsVar
       - setGroups
       - .find
-      - .group
+      - .sum
   - title: validate and debug the schema description
     contents:
       - getClusterVar
@@ -35,7 +35,7 @@ reference:
   - title: other helpers
     contents:
       - .eval_find
-      - .eval_group
+      - .eval_sum
       - .expect_valid_table
       - .tidyVars
       - .updateFormat
