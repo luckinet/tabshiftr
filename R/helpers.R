@@ -415,24 +415,24 @@
 
 }
 
-#' Evaluate .group constructs
+#' Evaluate .sum constructs
 #'
 #' @param input [\code{character(1)}]\cr table to reorganise.
 #' @param groups [\code{list(3)}]\cr the groups-slot from a schema.
-#' @param positions [\code{integerish(.)}]\cr the cell column or row that should
-#'   be adapted to groupings.
+#' @param data [\code{integerish(.)}]\cr the cell column or row that should be
+#'   adapted to groupings.
 #' @return the position of the evaluated position
 #' @importFrom dplyr mutate row_number if_else group_by summarise n ungroup
 #'   left_join pull
 #' @importFrom rlang eval_tidy
 
-.eval_group <- function(input = NULL, groups = NULL, positions = NULL){
+.eval_sum <- function(input = NULL, groups = NULL, data = NULL){
 
-  out <- positions
+  out <- data
 
-  if(!is.null(positions)){
+  if(!is.null(data)){
 
-    tempGroups <-  input %>%
+    rowGroups <- input %>%
       mutate(rn = as.double(row_number()),
              rn_new = rn)
 
@@ -443,18 +443,18 @@
         temp <- groups$rows[[i]]
         targetRows <- eval_tidy(temp$groups[[1]])
 
-        tempGroups <- tempGroups %>%
+        rowGroups <- rowGroups %>%
           mutate(rn_new = if_else(rn_new %in% targetRows, min(targetRows), rn_new))
 
       }
-      nrs <- tempGroups %>%
+      nrs <- rowGroups %>%
         group_by(rn_new) %>%
         summarise(nr = n()) %>%
         ungroup() %>%
         mutate(id = row_number())
-      tempGroups$rn_new <- rep(nrs$id, nrs$nr)
+      rowGroups$rn_new <- rep(nrs$id, nrs$nr)
 
-      out <- tempGroups %>%
+      out <- rowGroups %>%
         left_join(tibble(rn = out), ., by = "rn") %>%
         pull(rn_new)
 
@@ -489,137 +489,159 @@
 .eval_find <- function(input = NULL, col = NULL, row = NULL){
 
   assertDataFrame(x = input)
-  # assertList(x = row, min.len = 1, null.ok = TRUE)
-  # assertList(x = col, min.len = 1, null.ok = TRUE)
+  assertList(x = row, min.len = 1, null.ok = TRUE)
+  assertList(x = col, min.len = 1, null.ok = TRUE)
 
   # in case to look for columns
   if(!is.null(col)){
 
+    theCols <- NULL
     for(i in seq_along(col)){
-      if(!names(col)[i] == "find") next
 
-      theCol <- col[[i]]
-      term <- eval_tidy(theCol$by)
+      if(names(col)[i] == "position"){
+        cols <-  as.numeric(1:dim(input)[2] %in% col[[i]])
+      } else if(names(col)[i] == "find"){
 
-      if(is.function(term)){
+        theCol <- col[[i]]
+        term <- eval_tidy(theCol$by)
 
-        if(!is.null(theCol$row)){
-          assertNumeric(x = theCol$row, len = 1, any.missing = FALSE)
-          subset <- input[unique(theCol$row),]
+        if(is.function(term)){
+
+          if(!is.null(theCol$row)){
+            assertNumeric(x = theCol$row, len = 1, any.missing = FALSE)
+            subset <- input[unique(theCol$row),]
+          } else {
+            subset <- input
+          }
+
+          # make a subset table that contains numbers when possible
+          subset <- subset %>%
+            mutate(across(.cols = where(function(x) suppressWarnings(!anyNA(as.numeric(x)))), .fns = as.numeric))
+
+          cols <- map_int(.x = 1:dim(input)[2], .f = function(ix){
+            map(subset[,ix], term)[[1]] & !is.na(subset[,ix])[[1]]
+          })
+
         } else {
-          subset <- input
+          cols <- map_int(.x = 1:dim(input)[2], .f = function(ix){
+            # message(ix)
+            # str_count(string = paste(input[[ix]], collapse = " "), pattern = term)
+            if(!is.null(theCol$row)){
+              str_count(string = paste(input[[ix]][theCol$row], collapse = " "), pattern = term)
+            } else {
+              str_count(string = paste(input[[ix]], collapse = " "), pattern = term)
+            }
+          })
         }
 
-        # make a subset table that contains numbers when possible
-        subset <- subset %>%
-          mutate(across(.cols = where(function(x) suppressWarnings(!anyNA(as.numeric(x)))), .fns = as.numeric))
-
-        cols <- map_int(.x = 1:dim(input)[2], .f = function(ix){
-          map(subset[,ix], term)[[1]] & !is.na(subset[,ix])[[1]]
-        })
+        if(theCol$invert){
+          temp <- cols
+          temp[cols == 0] <- 1
+          temp[cols != 0] <- 0
+          cols <- temp
+        }
 
       } else {
-        cols <- map_int(.x = 1:dim(input)[2], .f = function(ix){
-          # message(ix)
-          # str_count(string = paste(input[[ix]], collapse = " "), pattern = term)
-          if(!is.null(theCol$row)){
-            str_count(string = paste(input[[ix]][theCol$row], collapse = " "), pattern = term)
-          } else {
-            str_count(string = paste(input[[ix]], collapse = " "), pattern = term)
-          }
-        })
+        next
       }
-      out <- rep(seq_along(cols), cols)
+
+      theCols <- c(theCols, list(cols))
+
+      if(i != 1){
+        theCols <- reduce(theCols, col[[i - 1]])
+      } else {
+        if(length(col) == 1){
+          theCols <- theCols[[1]]
+        }
+      }
 
     }
+
+    out <- rep(seq_along(cols), cols)
 
   }
 
   # in case to look for rows
   if(!is.null(row)){
 
-    # if(!is.null(names(row[[1]]))){
-    # if(is.list(row)){
-      theRows <- NULL
-      for(i in seq_along(row)){
+    theRows <- NULL
+    for(i in seq_along(row)){
 
-        if(names(row)[i] == "position"){
-          rows <- input %>%
-            mutate(it = if_else(row_number() %in% row[[i]], 1, 0)) %>%
-            pull(it)
-        } else if(names(row)[i] == "find") {
+      if(names(row)[i] == "position"){
+        rows <- input %>%
+          mutate(it = if_else(row_number() %in% row[[i]], 1, 0)) %>%
+          pull(it)
+      } else if(names(row)[i] == "find"){
 
-          theRow <- row[[i]]
-          term <- eval_tidy(theRow$by)
-          if(is.function(term)){
+        theRow <- row[[i]]
+        term <- eval_tidy(theRow$by)
+        if(is.function(term)){
 
-            if(!is.null(theRow$col)){
-              assertNumeric(x = theRow$col, len = 1, any.missing = FALSE)
-              subset <- input[,unique(theRow$col)]
-            } else {
-              subset <- input
-            }
-
-            # make a subset table that contains numbers when possible
-            subset <- subset %>%
-              rownames_to_column() %>%
-              pivot_longer(cols = -rowname, names_to = 'variable', values_to = 'value') %>%
-              pivot_wider(id_cols = variable, names_from = rowname, values_from = value) %>%
-              select(-variable) %>%
-              mutate(across(.cols = where(function(x) suppressWarnings(!anyNA(as.numeric(x)))), .fns = as.numeric))
-
-            rows <- map_int(.x = 1:dim(subset)[2], .f = function(ix){
-              map(subset[,ix], term)[[1]]
-            })
+          if(!is.null(theRow$col)){
+            assertNumeric(x = theRow$col, len = 1, any.missing = FALSE)
+            subset <- input[,unique(theRow$col)]
           } else {
-
-            if(length(term) > 1){
-              term <- paste0(term, collapse = "|")
-            }
-
-            if(!is.null(theRow$col)){
-              rows <- input %>%
-                mutate(it = if_else(if_any(theRow$col, ~ grepl(x = .x, pattern = term)), 1, 0)) %>%
-                pull(it)
-            } else {
-              rows <- input %>%
-                unite(col = all, everything(), sep = " ", na.rm = TRUE) %>%
-                mutate(it = str_count(string = all, pattern = term)) %>%
-                pull(it)
-            }
-
+            subset <- input
           }
 
-          if(theRow$invert){
-            temp <- rows
-            temp[rows == 0] <- 1
-            temp[rows != 0] <- 0
-            rows <- temp
-          }
+          # make a subset table that contains numbers when possible
+          subset <- subset %>%
+            rownames_to_column() %>%
+            pivot_longer(cols = -rowname, names_to = 'variable', values_to = 'value') %>%
+            pivot_wider(id_cols = variable, names_from = rowname, values_from = value) %>%
+            select(-variable) %>%
+            mutate(across(.cols = where(function(x) suppressWarnings(!anyNA(as.numeric(x)))), .fns = as.numeric))
 
+          rows <- map_int(.x = 1:dim(subset)[2], .f = function(ix){
+            map(subset[,ix], term)[[1]]
+          })
         } else {
-          next
+
+          if(length(term) > 1){
+            term <- paste0(term, collapse = "|")
+          }
+
+          if(!is.null(theRow$col)){
+            rows <- input %>%
+              mutate(it = if_else(if_any(theRow$col, ~ grepl(x = .x, pattern = term)), 1, 0)) %>%
+              pull(it)
+          } else {
+            rows <- input %>%
+              unite(col = all, everything(), sep = " ", na.rm = TRUE) %>%
+              mutate(it = str_count(string = all, pattern = term)) %>%
+              pull(it)
+          }
+
         }
 
-        theRows <- c(theRows, list(rows))
-
-        if(i != 1){
-          theRows <- reduce(theRows, row[[i - 1]])
-        } else {
-          if(length(row) == 1){
-            theRows <- theRows[[1]]
-          }
+        if(theRow$invert){
+          temp <- rows
+          temp[rows == 0] <- 1
+          temp[rows != 0] <- 0
+          rows <- temp
         }
 
+      } else {
+        next
       }
 
-      out <- rep(seq_along(theRows), theRows)
+      theRows <- c(theRows, list(rows))
 
-    # }
+      if(i != 1){
+        theRows <- reduce(theRows, row[[i - 1]])
+      } else {
+        if(length(row) == 1){
+          theRows <- theRows[[1]]
+        }
+      }
+
+    }
+
+    out <- rep(seq_along(theRows), theRows)
+
   }
 
   return(out)
-
 }
 
 

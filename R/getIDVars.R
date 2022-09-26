@@ -2,11 +2,10 @@
 #'
 #' This function extracts the identifying variables from a table by applying a
 #' schema description to it.
-#' @param schema [\code{character(1)}]\cr the schema description of
+#' @param schema [\code{character(1)}]\cr the (validated) schema description of
 #'   \code{input}.
 #' @param input [\code{character(1)}]\cr table to reorganise.
-#' @return list of the length of number of clusters with values of the
-#'   identifying variables per cluster
+#' @return a list per cluster with values of the identifying variables
 #' @examples
 #' input <- tabs2shift$clusters_nested
 #' schema <- setCluster(id = "sublevel",
@@ -21,6 +20,7 @@
 #'
 #' validateSchema(schema = schema, input = input) %>%
 #'    getIDVars(input = input)
+#' @importFrom checkmate assertTRUE
 #' @importFrom tibble tibble
 #' @importFrom purrr map set_names map_dfc
 #' @importFrom dplyr row_number filter select
@@ -29,6 +29,8 @@
 #' @export
 
 getIDVars <- function(schema = NULL, input = NULL){
+
+  assertTRUE(x = schema@validated)
 
   clusters <- schema@clusters
   nClusters <- max(lengths(clusters))
@@ -61,20 +63,28 @@ getIDVars <- function(schema = NULL, input = NULL){
             if(!tempVar$dist){
               # in case a row value is set, this means we deal with a variable that is not tidy ...
               temp <- input[tempVar$row[ix], tempVar$col]
-              theFilter <- NULL
+              rowFilter <- NULL
+              if(!is.null(filter$col)){
+                colFilter <- colnames(temp)[tempVar$col %in% filter$col]
+              } else {
+                colFilter <- NULL
+              }
             } else {
               # ... or distinct from clusters
               temp <- input[unique(tempVar$row), unique(tempVar$col)]
-              theFilter <- NULL
+              rowFilter <- NULL
+              colFilter <- NULL
             }
           } else {
 
             if(!is.null(tempVar$merge)){
               temp <- input[varRow, tempVar$col]
-              theFilter <- filter$row
+              rowFilter <- filter$row
+              colFilter <- NULL
             } else {
               temp <- input[varRow, tempVar$col[ix]]
-              theFilter <- which(varRow %in% filter$row)
+              rowFilter <- which(varRow %in% filter$row)
+              colFilter <- NULL
             }
 
           }
@@ -101,10 +111,16 @@ getIDVars <- function(schema = NULL, input = NULL){
               unite(col = !!newName, sep = tempVar$merge)
           }
 
-          # apply a possibly given filter
-          if(!is.null(theFilter)){
+          # apply a row filter ...
+          if(!is.null(rowFilter)){
             temp <- temp %>%
-              filter(row_number() %in% theFilter)
+              filter(row_number() %in% rowFilter)
+          }
+
+          # ... and column filter
+          if(!is.null(colFilter)){
+            temp <- temp %>%
+              select(all_of(colFilter))
           }
 
           # and copy missing values downwards

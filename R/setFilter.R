@@ -38,7 +38,11 @@ setFilter <- function(schema = NULL, rows = NULL, columns = NULL,
   rowInt <- testIntegerish(x = rows, lower = 1, min.len = 1, null.ok = TRUE)
   rowList <- testList(x = rows, len = 1)
   assert(rowInt, rowList)
+  colInt <- testIntegerish(x = columns, lower = 1, min.len = 1, null.ok = TRUE)
+  colList <- testList(x = columns, len = 1)
+  assert(colInt, colList)
   if(rowList) assertSubset(x = names(rows), choices = c("find"))
+  if(colList) assertSubset(x = names(columns), choices = c("find"))
 
   if(is.null(schema)){
     schema <- schema_default
@@ -56,6 +60,16 @@ setFilter <- function(schema = NULL, rows = NULL, columns = NULL,
       rows <- c(operator = operator, rows)
     }
     schema@filter$row <- c(schema@filter$row, rows)
+  }
+
+  if(!is.null(columns)){
+    if(!is.list(columns)){
+      columns <- list(position = columns)
+    }
+    if(!is.null(schema@filter$row)){
+      columns <- c(operator = operator, columns)
+    }
+    schema@filter$col <- c(schema@filter$col, columns)
   }
 
   return(schema)

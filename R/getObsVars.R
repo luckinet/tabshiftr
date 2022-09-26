@@ -2,11 +2,10 @@
 #'
 #' This function extracts the observed variables from a table by applying a
 #' schema description to it.
-#' @param schema [\code{character(1)}]\cr the schema description of
+#' @param schema [\code{character(1)}]\cr the (validated) schema description of
 #'   \code{input}.
 #' @param input [\code{character(1)}]\cr table to reorganise.
-#' @return list of the length of number of clusters with values of the observed
-#'   variables per cluster
+#' @return a list per cluster with values of the observed variables
 #' @examples
 #' input <- tabs2shift$clusters_nested
 #' schema <- setCluster(id = "sublevel",
@@ -21,11 +20,14 @@
 #'
 #' validateSchema(schema = schema, input = input) %>%
 #'    getObsVars(input = input)
+#' @importFrom checkmate assertTRUE
 #' @importFrom purrr map set_names map_chr reduce
 #' @importFrom dplyr row_number filter
 #' @export
 
 getObsVars <- function(schema = NULL, input = NULL){
+
+  assertTRUE(x = schema@validated)
 
   clusters <- schema@clusters
   nClusters <- max(lengths(clusters))
@@ -66,11 +68,19 @@ getObsVars <- function(schema = NULL, input = NULL){
         }
         temp <- input[varRows, listedCols]
         names(temp)[1] <- "key"
-        theFilter <- which(varRows %in% filter$row)
+        rowFilter <- which(varRows %in% filter$row)
+        colFilter <- NULL
 
-        if(!is.null(theFilter)){
+        # apply a row filter ...
+        if(!is.null(rowFilter)){
           temp <- temp %>%
-            filter(row_number() %in% theFilter)
+            filter(row_number() %in% rowFilter)
+        }
+
+        # ... and column filter
+        if(!is.null(colFilter)){
+          temp <- temp %>%
+            select(all_of(colFilter))
         }
 
         # replace keys with their variable name
@@ -98,13 +108,16 @@ getObsVars <- function(schema = NULL, input = NULL){
               } else {
                 temp <- input[varRows, tempVar$col]
               }
-              theFilter <- which(varRows %in% filter$row)
+              rowFilter <- which(varRows %in% filter$row)
+              colFilter <- NULL
             } else if(is.numeric(tempVar$key)){
               temp <- input[varRows, tempVar$col]
               if(!tempVar$key == 0){
-                theFilter <- NULL
+                rowFilter <- NULL
+                colFilter <- NULL
               } else {
-                theFilter <- which(varRows %in% filter$row)
+                rowFilter <- which(varRows %in% filter$row)
+                colFilter <- NULL
               }
             }
           } else {
@@ -112,21 +125,35 @@ getObsVars <- function(schema = NULL, input = NULL){
             if(!is.null(tempVar$row[ix])){
               if(nClusters != 1){
                 temp <- input[varRows, tempVar$col[ix]]
-                theFilter <- which(varRows %in% filter$row)
+                rowFilter <- which(varRows %in% filter$row)
+                colFilter <- NULL
               } else {
                 temp <- input[varRows, tempVar$col]
-                theFilter <- which(varRows %in% filter$row)
+                rowFilter <- which(varRows %in% filter$row)
+                if(!is.null(filter$col)){
+                  colFilter <- colnames(temp)[tempVar$col %in% filter$col]
+                } else{
+                  colFilter <- NULL
+                }
               }
             } else {
               temp <- input[varRows, tempVar$col[ix]]
-              theFilter <- which(varRows %in% filter$row)
+              rowFilter <- which(varRows %in% filter$row)
+              colFilter <- NULL
             }
 
           }
 
-          if(!is.null(theFilter)){
+          # apply a row filter ...
+          if(!is.null(rowFilter)){
             temp <- temp %>%
-              filter(row_number() %in% theFilter)
+              filter(row_number() %in% rowFilter)
+          }
+
+          # ... and column filter
+          if(!is.null(colFilter)){
+            temp <- temp %>%
+              select(all_of(colFilter))
           }
 
           vars <- c(vars, set_names(x = list(temp), nm = names(obsVars)[i]))
