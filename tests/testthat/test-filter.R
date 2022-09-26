@@ -20,6 +20,35 @@ test_that("filter rows", {
 
 })
 
+
+test_that("filter columns", {
+
+  input <- tabs2shift$tidy
+
+  schema <-
+    setFilter(columns = c(1, 2, 3, 5, 6)) %>%
+    setIDVar(name = "territories", columns = 1) %>%
+    setIDVar(name = "year", columns = 2) %>%
+    setIDVar(name = "commodities", columns = 3) %>%
+    setObsVar(name = "harvested", columns = 5) %>%
+    setObsVar(name = "production", columns = 6)
+
+  .expect_valid_table(x = reorganise(input = input, schema = schema), units = 2)
+
+  input <- tabs2shift$one_wide_id_alt2
+
+  schema <-
+    setFilter(columns = c(1:4, 6:7, 9:10)) %>%
+    setIDVar(name = "territories", columns = 1) %>%
+    setIDVar(name = "year", columns = 3) %>%
+    setIDVar(name = "commodities", columns = c(4:9), rows = 1) %>%
+    setObsVar(name = "harvested", columns = c(4:6), top = 2) %>%
+    setObsVar(name = "production", columns = c(7:9), top = 2)
+
+  .expect_valid_table(x = reorganise(input = input, schema = schema), units = 2)
+
+})
+
 test_that("filter on several columns", {
 
   input <- tabs2shift$messy_rows
