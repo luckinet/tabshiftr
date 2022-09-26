@@ -94,7 +94,8 @@ schema <- setClass(Class = "schema",
                              format = "list",
                              groups = "list",
                              filter = "list",
-                             variables = "list"
+                             variables = "list",
+                             validated = "logical"
                    )
 )
 
@@ -322,6 +323,15 @@ setValidity(Class = "schema", function(object){
 
     }
   }
+
+  if(!.hasSlot(object = object, name = "validated")){
+    errors <- c(errors, "the schema does not have a 'validated' slot.")
+  } else {
+    if(!is.logical(object@validated)){
+      errors <- c(errors, "the slot 'validated' is not a logical value.")
+    }
+  }
+
 
   if(length(errors) == 0){
     return(TRUE)

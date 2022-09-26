@@ -100,6 +100,9 @@ validateSchema <- function(schema = NULL, input = NULL){
   if(!is.null(filter$row)){
     filter$row <- .eval_find(input = input, row = filter$row)
   }
+  if(!is.null(filter$col)){
+    filter$col <- .eval_find(input = input, col = filter$col)
+  }
 
 
   # 3. adjust variables ----
@@ -219,10 +222,8 @@ validateSchema <- function(schema = NULL, input = NULL){
     }
 
     # adapt rows and columns if there are groups ----
-    varProp$row <- .eval_group(input = input, groups = groups,
-                               positions = varProp$row)
-    # varProp$col <- .eval_group(input = input, groups = groups,
-    #                            positions = varProp$col)
+    varProp$row <- .eval_sum(input = input, groups = groups,
+                               data = varProp$row)
 
     variables[[i]] <- varProp
     names(variables)[i] <- varName
@@ -233,24 +234,25 @@ validateSchema <- function(schema = NULL, input = NULL){
   testRows <- input[,selectCols]
   emptyRows <- which(rowSums(is.na(testRows)) == ncol(testRows))
 
+
   # 5. adapt filter and cluster position to groups ----
-  filterOut <- .eval_group(input = input, groups = groups,
-                           positions = filterOut)
-  allRows <- .eval_group(input = input, groups = groups,
-                         positions = allRows)
+  clusters$row <- .eval_sum(input = input, groups = groups,
+                              data = clusters$row)
+  clusters$height <- .eval_sum(input = input, groups = groups,
+                                 data = clusters$height)
+
+  filterOut <- .eval_sum(input = input, groups = groups,
+                           data = filterOut)
+  allRows <- .eval_sum(input = input, groups = groups,
+                         data = allRows)
 
   if(!is.null(filter$row)){
     filter$row <- filter$row[filter$row %in% sort(unique(allRows[!allRows %in% c(filterOut, emptyRows)]))]
-    filter$row <- .eval_group(input = input, groups = groups,
-                              positions = filter$row)
+    filter$row <- .eval_sum(input = input, groups = groups,
+                              data = filter$row)
   } else {
     filter$row <- sort(unique(allRows[!allRows %in% c(filterOut, emptyRows)]))
   }
-
-  clusters$row <- .eval_group(input = input, groups = groups,
-                              positions = clusters$row)
-  clusters$height <- .eval_group(input = input, groups = groups,
-                                 positions = clusters$height)
 
 
   # 6. write it all ----
@@ -259,7 +261,8 @@ validateSchema <- function(schema = NULL, input = NULL){
              format = schema@format,
              groups = schema@groups,
              filter = filter,
-             variables = variables)
+             variables = variables,
+             validated = TRUE)
 
   return(out)
 
