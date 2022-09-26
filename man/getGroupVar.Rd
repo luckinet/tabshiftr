@@ -13,8 +13,7 @@ getGroupVar(schema = NULL, input = NULL)
 \item{input}{[\code{character(1)}]\cr table to reorganise.}
 }
 \value{
-list of the length of number of clusters with values of the grouping
-  variable
+a list per cluster with values of the grouping variable
 }
 \description{
 This function extracts the cluster grouping variable from a table by applying

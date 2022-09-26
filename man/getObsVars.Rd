@@ -7,14 +7,13 @@
 getObsVars(schema = NULL, input = NULL)
 }
 \arguments{
-\item{schema}{[\code{character(1)}]\cr the schema description of
+\item{schema}{[\code{character(1)}]\cr the (validated) schema description of
 \code{input}.}
 
 \item{input}{[\code{character(1)}]\cr table to reorganise.}
 }
 \value{
-list of the length of number of clusters with values of the observed
-  variables per cluster
+a list per cluster with values of the observed variables
 }
 \description{
 This function extracts the observed variables from a table by applying a

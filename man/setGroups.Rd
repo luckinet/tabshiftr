@@ -11,19 +11,19 @@ setGroups(schema = NULL, rows = NULL, columns = NULL)
 already existing schema, provide that schema here (overwrites previous
 information).}
 
-\item{rows}{[\code{list(3)}]\cr the output of .group indicating the rows and
-a function according to which those rows should be summarised.}
+\item{rows}{[\code{list(3)}]\cr the output of \code{\link{.sum}} indicating
+the rows and a function according to which those rows should be summarised.}
 
-\item{columns}{[\code{list(3)}]\cr the output of .group indicating the
-columns and a function according to which those columns should be
-summarised.}
+\item{columns}{[\code{list(3)}]\cr the output of \code{\link{.sum}}
+indicating the columns and a function according to which those columns
+should be summarised.}
 }
 \value{
 An object of class \code{\link{schema}}.
 }
 \description{
 This function allows to set groups for rows, columns or clusters that shall
-be aggregated/summarised.
+be summarised.
 }
 \examples{
 # please check the vignette for examples

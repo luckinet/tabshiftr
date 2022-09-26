@@ -2,23 +2,22 @@
 % Please edit documentation in R/getData.R
 \name{getData}
 \alias{getData}
-\title{Extract clusters}
+\title{Extract summarised data}
 \usage{
 getData(schema = NULL, input = NULL)
 }
 \arguments{
-\item{schema}{[\code{character(1)}]\cr the schema description of
+\item{schema}{[\code{character(1)}]\cr the (validated) schema description of
 \code{input}.}
 
 \item{input}{[\code{character(1)}]\cr table to reorganise.}
 }
 \value{
-list of the length of number of clusters with clusters cut out from
-  the original input
+a table where columns and rows are summarised
 }
 \description{
-This function extracts clusters of data from a table by applying a schema
-description to it.
+This function extracts data from a table that are summarised by applying a
+schema description to it.
 }
 \examples{
 input <- tabs2shift$clusters_nested
