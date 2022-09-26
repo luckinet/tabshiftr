@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tabshiftr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.9</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -57,26 +57,34 @@
     </div>
 
     <div class="section level2">
+<h2 class="page-header" data-toc-text="0.4.0" id="tabshiftr-040---grouping-update">tabshiftr 0.4.0 - grouping update<a class="anchor" aria-label="anchor" href="#tabshiftr-040---grouping-update"></a></h2>
+<ul><li>introduction of the function <code><a href="../reference/setGroups.html">setGroups()</a></code>, which allows to summarize columns and/or rows according to a function. The positions and summarise function here are provided via the new function <code><a href="../reference/dot-sum.html">.sum()</a></code>.</li>
+<li>now each getter ensures that it only gets things from an already validated schema.</li>
+<li>for filter and group slots of a schema there is now a new way implemented for storing locations. Each location statement is now a list that contains either <code>find</code>, <code>group</code> or <code>position</code> parameters.</li>
+</ul></div>
+    <div class="section level2">
 <h2 class="page-header" data-toc-text="0.3.9" id="tabshiftr-039">tabshiftr 0.3.9<a class="anchor" aria-label="anchor" href="#tabshiftr-039"></a></h2>
-<ul><li>allow several filters to be applied in a seperate function and thus for seperate columns.</li></ul></div>
+<ul><li>allow several filters to be applied in a separate function and thus for separate columns.</li>
+<li>allow filtering on columns</li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.3.8" id="tabshiftr-038">tabshiftr 0.3.8<a class="anchor" aria-label="anchor" href="#tabshiftr-038"></a></h2>
 <ul><li>allow <code>.find</code>ing based on several character strings (that can themselves be regular expressions).</li></ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.3.7" id="tabshiftr-037">tabshiftr 0.3.7<a class="anchor" aria-label="anchor" href="#tabshiftr-037"></a></h2>
-<ul><li>implement code so that duplicated observations in the input table are by default summarised (with a warning)</li></ul></div>
+<ul><li>implement code so that duplicated observations in the input table are by default summarized (with a warning)</li></ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.3.6" id="tabshiftr-036">tabshiftr 0.3.6<a class="anchor" aria-label="anchor" href="#tabshiftr-036"></a></h2>
 <ul><li>fix a bug that would not allow to register of two wide identifying variables first the wider, then the narrower wide identifying variable.</li></ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.3.5" id="tabshiftr-035">tabshiftr 0.3.5<a class="anchor" aria-label="anchor" href="#tabshiftr-035"></a></h2>
-<ul><li>fix a bug that would not allow tables that have only one row and implicit variables to be properly reorganised.</li></ul></div>
+<ul><li>fix a bug that would not allow tables that have only one row and implicit variables to be properly reorganized.</li></ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.3.4" id="tabshiftr-034">tabshiftr 0.3.4<a class="anchor" aria-label="anchor" href="#tabshiftr-034"></a></h2>
 <ul><li>incl. handling of flags (character additions to the numeric values of observed variables), which are now extracted into an ancillary column.</li></ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.3.3" id="tabshiftr-033">tabshiftr 0.3.3<a class="anchor" aria-label="anchor" href="#tabshiftr-033"></a></h2>
-<ul><li>fix a bug where the header was not properly recognised when using <code><a href="../reference/setFilter.html">setFilter()</a></code>.</li></ul></div>
+<ul><li>fix a bug where the header was not properly recognized when using <code><a href="../reference/setFilter.html">setFilter()</a></code>.</li></ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.3.2" id="tabshiftr-032">tabshiftr 0.3.2<small>2022-01-13</small><a class="anchor" aria-label="anchor" href="#tabshiftr-032"></a></h2>
 <ul><li>be more precise in using tidyr</li>
@@ -86,7 +94,7 @@
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.3.1" id="tabshiftr-031">tabshiftr 0.3.1<a class="anchor" aria-label="anchor" href="#tabshiftr-031"></a></h2>
 <ul><li>various minor bugfixes</li>
-<li>minor reorganisation of the internal workings</li>
+<li>minor reorganization of the internal workings</li>
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.3.0" id="tabshiftr-030---getters-update">tabshiftr 0.3.0 - getters update<small>2021-07-01</small><a class="anchor" aria-label="anchor" href="#tabshiftr-030---getters-update"></a></h2>
