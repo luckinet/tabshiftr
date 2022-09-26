@@ -1,12 +1,11 @@
-#' Extract clusters
+#' Extract summarised data
 #'
-#' This function extracts clusters of data from a table by applying a schema
-#' description to it.
-#' @param schema [\code{character(1)}]\cr the schema description of
+#' This function extracts data from a table that are summarised by applying a
+#' schema description to it.
+#' @param schema [\code{character(1)}]\cr the (validated) schema description of
 #'   \code{input}.
 #' @param input [\code{character(1)}]\cr table to reorganise.
-#' @return list of the length of number of clusters with clusters cut out from
-#'   the original input
+#' @return a table where columns and rows are summarised
 #' @examples
 #' input <- tabs2shift$clusters_nested
 #' schema <- setCluster(id = "sublevel",
@@ -21,8 +20,9 @@
 #'
 #' validateSchema(schema = schema, input = input) %>%
 #'    getData(input = input)
-#' @importFrom dplyr row_number group_by summarise na_if across
-#'   select mutate if_else
+#' @importFrom checkmate assertTRUE
+#' @importFrom dplyr row_number group_by summarise na_if across select mutate
+#'   if_else
 #' @importFrom tibble as_tibble
 #' @importFrom tidyselect everything
 #' @importFrom rlang eval_tidy
@@ -30,9 +30,10 @@
 
 getData <- function(schema = NULL, input = NULL){
 
-  clusters <- schema@clusters
+  assertTRUE(x = schema@validated)
+
+  filter <- schema@filter
   groups <- schema@groups
-  nClusters <- max(lengths(clusters))
 
   out <- input
 

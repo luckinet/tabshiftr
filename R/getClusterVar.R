@@ -2,11 +2,10 @@
 #'
 #' This function extracts the cluster variable from a table by applying a schema
 #' description to it.
-#' @param schema [\code{character(1)}]\cr the schema description of
+#' @param schema [\code{character(1)}]\cr the (validated) schema description of
 #'   \code{input}.
 #' @param input [\code{character(1)}]\cr table to reorganise.
-#' @return list of the length of number of clusters with values cluster
-#'   variable.
+#' @return a list per cluster with values of the cluster variable
 #' @examples
 #' input <- tabs2shift$clusters_nested
 #' schema <- setCluster(id = "sublevel",
@@ -21,10 +20,13 @@
 #'
 #' validateSchema(schema = schema, input = input) %>%
 #'    getClusterVar(input = input)
+#' @importFrom checkmate assertTRUE
 #' @importFrom purrr map set_names
 #' @export
 
 getClusterVar <- function(schema = NULL, input = NULL){
+
+  assertTRUE(x = schema@validated)
 
   clusters <- schema@clusters
   nClusters <- max(lengths(clusters))

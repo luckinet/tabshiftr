@@ -5,8 +5,7 @@
 #' @param schema [\code{character(1)}]\cr the schema description of
 #'   \code{input}.
 #' @param input [\code{character(1)}]\cr table to reorganise.
-#' @return list of the length of number of clusters with values of the grouping
-#'   variable
+#' @return a list per cluster with values of the grouping variable
 #' @examples
 #' input <- tabs2shift$clusters_nested
 #' schema <- setCluster(id = "sublevel",
@@ -21,10 +20,13 @@
 #'
 #' validateSchema(schema = schema, input = input) %>%
 #'    getGroupVar(input = input)
+#' @importFrom checkmate assertTRUE
 #' @importFrom purrr map
 #' @export
 
 getGroupVar <- function(schema = NULL, input = NULL){
+
+  assertTRUE(x = schema@validated)
 
   clusters <- schema@clusters
   nClusters <- max(lengths(clusters))
