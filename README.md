@@ -1,12 +1,12 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# tabshiftr <a href='https://ehrmanns.github.io/tabshiftr/'><img src='man/figures/logo.svg' align="right" height="200" /></a>
+# tabshiftr <a href='https://luckinet.github.io/tabshiftr/'><img src='man/figures/logo.svg' align="right" height="200" /></a>
 
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/tabshiftr)](https://cran.r-project.org/package=tabshiftr)
-[![R-CMD-check](https://github.com/EhrmannS/tabshiftr/workflows/R-CMD-check/badge.svg)](https://github.com/EhrmannS/tabshiftr/actions)
+[![R-CMD-check](https://github.com/luckinet/tabshiftr/workflows/R-CMD-check/badge.svg)](https://github.com/luckinet/tabshiftr/actions)
 [![Coverage
-Status](https://img.shields.io/codecov/c/github/EhrmannS/tabshiftr/master.svg)](https://codecov.io/github/EhrmannS/tabshiftr?branch=master)
+Status](https://img.shields.io/codecov/c/github/luckinet/tabshiftr/master.svg)](https://codecov.io/github/luckinet/tabshiftr?branch=master)
 [![](http://cranlogs.r-pkg.org/badges/grand-total/tabshiftr)](https://cran.r-project.org/package=tabshiftr)
 [![Lifecycle:maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://lifecycle.r-lib.org/articles/stages.html)
 
@@ -42,11 +42,11 @@ install.packages("tabshiftr")
 or the latest development version from github:
 
 ``` r
-devtools::install_github("EhrmannS/tabshiftr")
+devtools::install_github("luckinet/tabshiftr")
 ```
 
 2)  The
-    [vignette](https://ehrmanns.github.io/tabshiftr/articles/tabshiftr.html)
+    [vignette](https://luckinet.github.io/tabshiftr/articles/tabshiftr.html)
     gives an introduction, provides an instruction on how to set up
     schema descriptions by going step by step through certain dimensions
     of disorganisation to show which table arrangements can be
