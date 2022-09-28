@@ -107,7 +107,7 @@
 <li>Variables that contain categorical levels that identify the units for which values have been observed (they are called <em>identifying variables</em> here).</li>
 <li>Variables that have been measured or observed and that consequently represent the target values of that measurement, be they continuous or categorical (they are called <em>observed variables</em> here).</li>
 </ol>
-<p>Moreover, a table is part of a <strong>series</strong> when other tables of that series contain the same variables, irrespective of how the distinct tables of that series are arranged.</p>
+<p>Moreover, a table is part of a <strong>series</strong> when other tables of that series contain the same variables with slightly different values for the identifying variables, irrespective of how the distinct tables of that series are arranged.</p>
 <table class="table">
 <caption>
 <a name="tabExample1"></a>Table 1: An example table containing one identifying and two observed variables, with the variable names in the topmost row and the values in all consecutive rows.</caption>
@@ -139,7 +139,7 @@
 </tr>
 </tbody>
 </table>
-<p>Even though data in many spreadsheet are "disorganised", they are mostly not non-systematic. Especially in complex spreadsheets, one often encounters a situation where a set of variables occurs more than once with the same or very similar arrangement, which we call <strong>cluster</strong> here. Data that are part of clusters are split along one of the, typically categorical, variables (the <strong>cluster ID</strong>), with the aim to increase the visual accessibility or direct the focus for human readers (<a href="#tabExample2">Tab. 2</a>). This may also be the case where data are split up into several files or spreadsheets of a file, where the cluster ID can be found in the file or spreasheet name or the meta-data. In many cases, the cluster ID is an <strong>implicit variable</strong>, a variable that is not immediately recogniseable as such.</p>
+<p>Here, we do use the term <strong>spreadsheet</strong> to denote what would typically be seen as <em>table</em>, as the data we deal with here are typically "disorganised" and thus not what would be recognised as a table. Even though data in many spreadsheets are disorganised, they are mostly not non-systematic. Especially in complex spreadsheets, one often encounters a situation where a set of variables occurs more than once with the same or very similar arrangement, which we call <strong>cluster</strong> here. Data that are part of clusters are split along one of the, typically categorical, variables (the <strong>cluster ID</strong>), with the aim to increase the visual accessibility or direct the focus for human readers (<a href="#tabExample2">Tab. 2</a>). This may also be the case where data are split up into several files or spreadsheets of a file, where the cluster ID can be found in the file or spreasheet name or the meta-data. In many cases, the cluster ID is an <strong>implicit variable</strong>, a variable that is not immediately recogniseable as such.</p>
 <table class="table">
 <caption>
 <a name="tabExample2"></a>Table 2: An example of a table with several clusters of comparable variables.</caption>
