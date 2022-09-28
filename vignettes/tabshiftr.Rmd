@@ -58,7 +58,7 @@ Conceptually, there are two types of variables in any table:
 1. Variables that contain categorical levels that identify the units for which values have been observed (they are called *identifying variables* here).
 2. Variables that have been measured or observed and that consequently represent the target values of that measurement, be they continuous or categorical (they are called *observed variables* here).
 
-Moreover, a table is part of a **series** when other tables of that series contain the same variables, irrespective of how the distinct tables of that series are arranged.
+Moreover, a table is part of a **series** when other tables of that series contain the same variables with slightly different values for the identifying variables, irrespective of how the distinct tables of that series are arranged.
 
 | identifying variable | observed variable (categorical) | observed variable (continuous) |
 | :- | :- | :- |
@@ -68,7 +68,7 @@ Moreover, a table is part of a **series** when other tables of that series conta
 
 Table: <a name="tabExample1"></a>Table 1: An example table containing one identifying and two observed variables, with the variable names in the topmost row and the values in all consecutive rows.
 
-Even though data in many spreadsheet are \"disorganised\", they are mostly not non-systematic. Especially in complex spreadsheets, one often encounters a situation where a set of variables occurs more than once with the same or very similar arrangement, which we call **cluster** here. Data that are part of clusters are split along one of the, typically categorical, variables (the **cluster ID**), with the aim to increase the visual accessibility or direct the focus for human readers ([Tab. 2](#tabExample2)). This may also be the case where data are split up into several files or spreadsheets of a file, where the cluster ID can be found in the file or spreasheet name or the meta-data. In many cases, the cluster ID is an **implicit variable**, a variable that is not immediately recogniseable as such.
+Here, we do use the term **spreadsheet** to denote what would typically be seen as *table*, as the data we deal with here are typically \"disorganised\" and thus not what would be recognised as a table. Even though data in many spreadsheets are disorganised, they are mostly not non-systematic. Especially in complex spreadsheets, one often encounters a situation where a set of variables occurs more than once with the same or very similar arrangement, which we call **cluster** here. Data that are part of clusters are split along one of the, typically categorical, variables (the **cluster ID**), with the aim to increase the visual accessibility or direct the focus for human readers ([Tab. 2](#tabExample2)). This may also be the case where data are split up into several files or spreadsheets of a file, where the cluster ID can be found in the file or spreasheet name or the meta-data. In many cases, the cluster ID is an **implicit variable**, a variable that is not immediately recogniseable as such.
 
 | sample | colour | intensity | sample | colour | intensity |
 | :- | :- | :- | :- | :- | :- |
