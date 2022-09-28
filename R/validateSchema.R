@@ -106,7 +106,7 @@ validateSchema <- function(schema = NULL, input = NULL){
 
 
   # 3. adjust variables ----
-  outsideCluster <- filterOut <- NULL
+  outsideCluster <- filterOut <- isAbs <- NULL
   selectRows <- selectCols <- idCols <- NULL
   clusterID <- clusters$id
   groupID <- clusters$group
@@ -127,37 +127,38 @@ validateSchema <- function(schema = NULL, input = NULL){
     varName <- names(variables)[i]
 
     # resolve quosures from grep-ing unknown col/rows ----
-    if(is.list(varProp$row)){
-      varProp$row <- .eval_find(input = input, row = varProp$row)
+    if(!is.null(varProp$row)){
+      if(is.list(varProp$row)){
+        varProp$row <- .eval_find(input = input, row = varProp$row)
 
-      # ignore header rows
-      varProp$row <- varProp$row[!varProp$row %in% headerRows]
-    }
-
-    if(is.list(varProp$col)){
-      varProp$col <- .eval_find(input = input, col = varProp$col)
-    }
-
-    # check whether the variable has relative values and if so, make them absolute ----
-    if(varProp$rel){
-      # this might become problematic in case a schema requires several col/row to be set with a relative value
-      if(!is.null(varProp$col) & !is_quosure(varProp$col) & !is.name(varProp$col)){
-        varProp$col <- clusters$col + varProp$col - 1
-      }
-      if(!is.null(varProp$row) & !is_quosure(varProp$row) & !is.name(varProp$row)){
+        # ignore header rows
+        varProp$row <- varProp$row[!varProp$row %in% headerRows]
+      } else if(varProp$rel){
         varProp$row <- clusters$row + varProp$row - 1
       }
-      varProp$rel <- FALSE
     }
+
+    if(!is.null(varProp$col)){
+      if(is.list(varProp$col)){
+        varProp$col <- .eval_find(input = input, col = varProp$col)
+      } else if(varProp$rel){
+        varProp$col <- clusters$col + varProp$col - 1
+      }
+    }
+    varProp$rel <- FALSE
 
     # check whether the variable is wide ----
     if(varProp$type == "observed"){
       isWide <- map_lgl(.x = seq_along(idCols), function(ix){
-        all(varProp$col == idCols[[ix]]) & length(varProp$col) > 1
+        if(length(varProp$col) == length(idCols[[ix]])){
+          all(varProp$col == idCols[[ix]])
+        } else {
+          FALSE
+        }
       })
       if(any(isWide) & is.null(varProp$key)){
         varProp$key <- 0
-        varProp$value <- "harvested"
+        varProp$value <- "{all_rows}"
       }
     }
 

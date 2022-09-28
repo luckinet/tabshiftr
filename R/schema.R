@@ -451,13 +451,17 @@ setMethod(f = "show",
                     eval_tidy(variables[[x]]$row$find$by)
                   }
                 } else {
-                  temp <- unique(variables[[x]]$row)
-                  # make a short sequence of 'theRows'
-                  dists <- temp - c(temp[1]-1, temp)[-(length(temp)+1)]
-                  if(all(dists == 1) & length(temp) > 1){
-                    paste0(min(temp), ":", max(temp))
+                  if(all(variables[[x]]$value != "{all_rows}")){
+                    temp <- unique(variables[[x]]$row)
+                    # make a short sequence of 'theRows'
+                    dists <- temp - c(temp[1]-1, temp)[-(length(temp)+1)]
+                    if(all(dists == 1) & length(temp) > 1){
+                      paste0(min(temp), ":", max(temp))
+                    } else {
+                      temp
+                    }
                   } else {
-                    temp
+                    ""
                   }
                 }
               } else {
@@ -490,7 +494,7 @@ setMethod(f = "show",
                 }
               } else {
                 temp <- unique(variables[[x]]$col)
-                # make a short sequence of 'theRows'
+                # make a short sequence of 'theCols'
                 if(is.numeric(temp)){
                   dists <- temp - c(temp[1]-1, temp)[-(length(temp)+1)]
                 } else {
