@@ -64,15 +64,26 @@ a regular expression or function</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">.find</span><span class="op">(</span><span class="va">by</span>, col <span class="op">=</span> <span class="cn">NULL</span>, row <span class="op">=</span> <span class="cn">NULL</span>, invert <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">.find</span><span class="op">(</span></span>
+<span>  fun <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  pattern <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  col <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  row <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  invert <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  relative <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>by</dt>
+    <dl><dt>fun</dt>
+<dd><p>[<code>character(1)</code>]<br> function to identify columns or rows in
+the input table on the fly.</p></dd>
+
+
+<dt>pattern</dt>
 <dd><p>[<code>character(1)</code>]<br> character string containing a regular
-expression or function to identify columns or rows in the input table on
-the fly.</p></dd>
+expression to identify columns or rows in the input table on the fly.</p></dd>
 
 
 <dt>col</dt>
@@ -91,6 +102,12 @@ be applied to the whole table, this is the row(s) in which to apply
 <dd><p>[<code>logical(1)</code>]<br> whether or not the identified columns or
 rows should be inverted, i.e., all other columns or rows should be
 selected.</p></dd>
+
+
+<dt>relative</dt>
+<dd><p>[<code>logical(1)</code>]<br> whether or not the values provided in
+<code>col</code> or <code>row</code> are relative to the cluster position(s) or whether
+they are absolute positions, i.e, refer to the overall table.</p></dd>
 
 </dl></div>
     <div id="value">
@@ -141,7 +158,7 @@ selected.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">13</span> maize       2221      2222       maize       3221      3222       year 2</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">schema</span> <span class="op">&lt;-</span> <span class="fu"><a href="setCluster.html">setCluster</a></span><span class="op">(</span>id <span class="op">=</span> <span class="st">"territories"</span>,</span></span>
-<span class="r-in"><span>                     left <span class="op">=</span> <span class="fu">.find</span><span class="op">(</span><span class="st">"comm*"</span><span class="op">)</span>, top <span class="op">=</span> <span class="fu">.find</span><span class="op">(</span><span class="st">"comm*"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
+<span class="r-in"><span>                     left <span class="op">=</span> <span class="fu">.find</span><span class="op">(</span>pattern <span class="op">=</span> <span class="st">"comm*"</span><span class="op">)</span>, top <span class="op">=</span> <span class="fu">.find</span><span class="op">(</span>pattern <span class="op">=</span> <span class="st">"comm*"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"territories"</span>, columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">4</span><span class="op">)</span>, rows <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">9</span>, <span class="fl">9</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"year"</span>, columns <span class="op">=</span> <span class="fl">4</span>, rows <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span><span class="op">:</span><span class="fl">6</span><span class="op">)</span>, distinct <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"commodities"</span>, columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
@@ -150,7 +167,7 @@ selected.</p></dd>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">schema</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   1 cluster</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     origin : list(by = ~"comm*", col = NULL, row = NULL, invert = FALSE)|list(by = ~"comm*", col = NULL, row = NULL, invert = FALSE)  (row|col)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     origin : list(by = ~"comm*", col = NULL, row = NULL, invert = FALSE, relative = FALSE)|list(by = ~"comm*", col = NULL, row = NULL, invert = FALSE, relative = FALSE)  (row|col)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     id     : territories</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    variable      type       row    col    dist </span>
@@ -198,7 +215,7 @@ selected.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">16</span> unit 2      year 2 maize       xyz            2221      2222       <span style="color: #BB0000;">NA</span>       </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">schema</span> <span class="op">&lt;-</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="setFilter.html">setFilter</a></span><span class="op">(</span>rows <span class="op">=</span> <span class="fu">.find</span><span class="op">(</span>by <span class="op">=</span> <span class="va">is.numeric</span>, col <span class="op">=</span> <span class="fl">1</span>, invert <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="setFilter.html">setFilter</a></span><span class="op">(</span>rows <span class="op">=</span> <span class="fu">.find</span><span class="op">(</span>fun <span class="op">=</span> <span class="va">is.numeric</span>, col <span class="op">=</span> <span class="fl">1</span>, invert <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"territories"</span>, columns <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"year"</span>, columns <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"commodities"</span>, columns <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>

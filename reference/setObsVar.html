@@ -73,7 +73,6 @@ and in a tidy table they'd be recorded as separate columns.</p>
 <span>  name <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  columns <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  top <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  relative <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  distinct <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  unit <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  factor <span class="op">=</span> <span class="fl">1</span>,</span>
@@ -103,12 +102,6 @@ information).</p></dd>
 <dd><p>[<code>integerish(.)</code>]<br> In case the variable is nested in a wide
 identifying variable, specify here additionally the topmost row in which
 the variable <em>name</em> sits.</p></dd>
-
-
-<dt>relative</dt>
-<dd><p>[<code>logical(1)</code>]<br> whether or not the values provided in
-<code>columns</code> and <code>rows</code> are relative to the cluster position(s) or
-whether they refer to the overall table.</p></dd>
 
 
 <dt>distinct</dt>

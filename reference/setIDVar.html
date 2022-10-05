@@ -74,7 +74,6 @@ properties that make each observation (as described by the
 <span>  rows <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  split <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  merge <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  relative <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  distinct <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -118,12 +117,6 @@ respective value off of that compound value. See
 <dd><p>[<code>character(1)</code>]<br> In case a variable is made up of
 several columns, this should be the character string that would connect the
 two columns (e.g., an empty space <code>" "</code>).</p></dd>
-
-
-<dt>relative</dt>
-<dd><p>[<code>logical(1)</code>]<br> whether the values provided in
-<code>columns</code> and <code>rows</code> are relative to the cluster position(s) or
-whether they refer to the overall table.</p></dd>
 
 
 <dt>distinct</dt>
