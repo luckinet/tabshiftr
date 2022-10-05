@@ -17,8 +17,8 @@
 #'
 #' # select rows where there is 'unit 2' in column 1 or 'year 2' in column 2
 #' schema <-
-#'   setFilter(rows = .find(by = "unit 2", col = 1)) %>%
-#'   setFilter(rows = .find(by = "year 2", col = 2), operator = `|`) %>%
+#'   setFilter(rows = .find(pattern = "unit 2", col = 1)) %>%
+#'   setFilter(rows = .find(pattern = "year 2", col = 2), operator = `|`) %>%
 #'   setIDVar(name = "territories", columns = 1) %>%
 #'   setIDVar(name = "year", columns = 2) %>%
 #'   setIDVar(name = "commodities", columns = 3) %>%
