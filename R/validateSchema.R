@@ -60,13 +60,13 @@ validateSchema <- function(schema = NULL, input = NULL){
   if(is.null(clusters$row)){
     clusters$row <- 1
   } else if(is.list(clusters$row)){
-    clusters$row <- .eval_find(input = input, row = clusters$row)
+    clusters$row <- .eval_find(input = input, row = clusters$row, clusters = clusters)
   }
 
   if(is.null(clusters$col)){
     clusters$col <- 1
   } else if(is.list(clusters$col)){
-    clusters$col <- .eval_find(input = input, col = clusters$col)
+    clusters$col <- .eval_find(input = input, col = clusters$col, clusters = clusters)
   }
 
   if(is.null(clusters$width)){
@@ -116,7 +116,11 @@ validateSchema <- function(schema = NULL, input = NULL){
     tempName <- names(variables)[ix]
     if(!tempName %in% c(groupID, clusterID)){
       temp <- variables[[ix]]
-      temp$row
+      if(temp$type == "observed"){
+        temp$row
+      } else {
+        NULL
+      }
     }
   })
   headerRows <- unlist(headerRows, use.names = FALSE)
@@ -129,23 +133,18 @@ validateSchema <- function(schema = NULL, input = NULL){
     # resolve quosures from grep-ing unknown col/rows ----
     if(!is.null(varProp$row)){
       if(is.list(varProp$row)){
-        varProp$row <- .eval_find(input = input, row = varProp$row)
+        varProp$row <- .eval_find(input = input, row = varProp$row, clusters = clusters)
 
         # ignore header rows
         varProp$row <- varProp$row[!varProp$row %in% headerRows]
-      } else if(varProp$rel){
-        varProp$row <- clusters$row + varProp$row - 1
       }
     }
 
     if(!is.null(varProp$col)){
       if(is.list(varProp$col)){
-        varProp$col <- .eval_find(input = input, col = varProp$col)
-      } else if(varProp$rel){
-        varProp$col <- clusters$col + varProp$col - 1
+        varProp$col <- .eval_find(input = input, col = varProp$col, clusters = clusters)
       }
     }
-    varProp$rel <- FALSE
 
     # check whether the variable is wide ----
     if(varProp$type == "observed"){
