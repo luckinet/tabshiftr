@@ -99,21 +99,6 @@ test_that("vertical clusters with a listed observed variable and an implicit var
 
   .expect_valid_table(x = reorganise(input = input, schema = schema), units = 2, groups = TRUE)
 
-  # territories relative
-  schema <- setCluster(id = "territories",
-                       left = 1, top = c(2, 7)) %>%
-    setIDVar(name = "region", value = "group 1") %>%
-    setIDVar(name = "territories", columns = 1, rows = 1, relative = T) %>%
-    setIDVar(name = "year", columns = 2) %>%
-    setIDVar(name = "commodities", columns = c(6, 7), rows = 1) %>%
-    setObsVar(name = "harvested", columns = c(6, 7),
-              key = 4, value = "harvested") %>%
-    setObsVar(name = "production", columns = c(6, 7),
-              key = 4, value = "production")
-
-
-  .expect_valid_table(x = reorganise(input = input, schema = schema), units = 2, groups = TRUE)
-
   # territories implicit
   schema <- setCluster(id = "territories",
                        left = 1, top = c(2, 7)) %>%

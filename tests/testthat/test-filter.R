@@ -54,8 +54,8 @@ test_that("filter on several columns", {
   input <- tabs2shift$messy_rows
 
   schema <-
-    setFilter(rows = .find(by = "unit 2", col = 1)) %>%
-    setFilter(rows = .find(by = "year 2", col = 2), operator = `&`) %>%
+    setFilter(rows = .find(pattern = "unit 2", col = 1)) %>%
+    setFilter(rows = .find(pattern = "year 2", col = 2), operator = `&`) %>%
     setIDVar(name = "territories", columns = 1) %>%
     setIDVar(name = "year", columns = 2) %>%
     setIDVar(name = "commodities", columns = 3) %>%
@@ -89,7 +89,7 @@ test_that("filter on several columns", {
   # combination of position and .find function
   schema <-
     setFilter(rows = c(13:16)) %>%
-    setFilter(rows = .find(by = "year 2", col = 2), operator = `&`) %>%
+    setFilter(rows = .find(pattern = "year 2", col = 2), operator = `&`) %>%
     setIDVar(name = "territories", columns = 1) %>%
     setIDVar(name = "year", columns = 2) %>%
     setIDVar(name = "commodities", columns = 3) %>%
