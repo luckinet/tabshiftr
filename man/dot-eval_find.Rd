@@ -4,7 +4,7 @@
 \alias{.eval_find}
 \title{Evaluate .find constructs}
 \usage{
-.eval_find(input = NULL, col = NULL, row = NULL)
+.eval_find(input = NULL, col = NULL, row = NULL, clusters = NULL)
 }
 \arguments{
 \item{input}{[\code{character(1)}]\cr table to reorganise.}
@@ -14,6 +14,8 @@ used to match in columns.}
 
 \item{row}{[\code{list(2)}]\cr the output of the respective .find construct
 used to match in rows.}
+
+\item{clusters}{[\code{list(7)}]\cr the cluster slot of the schema.}
 }
 \value{
 the columns or rows of the evaluated position

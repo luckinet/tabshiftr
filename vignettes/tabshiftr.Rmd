@@ -535,11 +535,11 @@ schema <- setCluster(id = "territories",
 
 schema_alt <- setCluster(id = "territories",
                          left = c(1, 1, 4), top = c(1, 8, 8)) %>%
-  setIDVar(name = "territories", columns = 1, rows = 2, relative = TRUE) %>%
+  setIDVar(name = "territories", columns = 1, rows = .find(row = 2, relative = TRUE)) %>%
   setIDVar(name = "year", columns = 4, rows = c(3:6), distinct = TRUE) %>%
-  setIDVar(name = "commodities", columns = 1, relative = TRUE) %>%
-  setObsVar(name = "harvested", columns = 2, relative = TRUE) %>%
-  setObsVar(name = "production", columns = 3, relative = TRUE)
+  setIDVar(name = "commodities", columns = .find(col = 1, relative = TRUE)) %>%
+  setObsVar(name = "harvested", columns = .find(col = 2, relative = TRUE)) %>%
+  setObsVar(name = "production", columns = .find(col = 3, relative = TRUE))
 ```
 
 
@@ -553,7 +553,7 @@ schema <- setCluster(id = ...,
                      left = c(1, 2, 5), top = c(1, 5, 1),  
                      width = c(3, 5, 2), height = c(4, 5, 3), 
                      ...) %>% 
-  setIDVar(name = "territories", columns = 1, relative = TRUE) %>% 
+  setIDVar(name = "territories", columns = .find(col = 1, relative = TRUE)) %>% 
   ...
 ```
 

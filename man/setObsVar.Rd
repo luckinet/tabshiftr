@@ -9,7 +9,6 @@ setObsVar(
   name = NULL,
   columns = NULL,
   top = NULL,
-  relative = FALSE,
   distinct = FALSE,
   unit = NULL,
   factor = 1,
@@ -30,10 +29,6 @@ information).}
 \item{top}{[\code{integerish(.)}]\cr In case the variable is nested in a wide
 identifying variable, specify here additionally the topmost row in which
 the variable \emph{name} sits.}
-
-\item{relative}{[\code{logical(1)}]\cr whether or not the values provided in
-\code{columns} and \code{rows} are relative to the cluster position(s) or
-whether they refer to the overall table.}
 
 \item{distinct}{[\code{logical(1)}]\cr Whether or not the variable is
 distinct from a cluster. This is the case when the variable is recorded

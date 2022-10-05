@@ -4,12 +4,21 @@
 \alias{.find}
 \title{Determine row or column on the fly}
 \usage{
-.find(by, col = NULL, row = NULL, invert = FALSE)
+.find(
+  fun = NULL,
+  pattern = NULL,
+  col = NULL,
+  row = NULL,
+  invert = FALSE,
+  relative = FALSE
+)
 }
 \arguments{
-\item{by}{[\code{character(1)}]\cr character string containing a regular
-expression or function to identify columns or rows in the input table on
-the fly.}
+\item{fun}{[\code{character(1)}]\cr function to identify columns or rows in
+the input table on the fly.}
+
+\item{pattern}{[\code{character(1)}]\cr character string containing a regular
+expression to identify columns or rows in the input table on the fly.}
 
 \item{col}{[\code{integerish(1)}]\cr optionally, in case \code{by} should not
 be applied to the whole table, this is the column(s) in which to apply
@@ -22,6 +31,10 @@ be applied to the whole table, this is the row(s) in which to apply
 \item{invert}{[\code{logical(1)}]\cr whether or not the identified columns or
 rows should be inverted, i.e., all other columns or rows should be
 selected.}
+
+\item{relative}{[\code{logical(1)}]\cr whether or not the values provided in
+\code{col} or \code{row} are relative to the cluster position(s) or whether
+they are absolute positions, i.e, refer to the overall table.}
 }
 \value{
 the index values where the target was found.
@@ -54,7 +67,7 @@ This functions is basically a wild-card for when columns or rows are
 (input <- tabs2shift$clusters_messy)
 
 schema <- setCluster(id = "territories",
-                     left = .find("comm*"), top = .find("comm*")) \%>\%
+                     left = .find(pattern = "comm*"), top = .find(pattern = "comm*")) \%>\%
   setIDVar(name = "territories", columns = c(1, 1, 4), rows = c(2, 9, 9)) \%>\%
   setIDVar(name = "year", columns = 4, rows = c(3:6), distinct = TRUE) \%>\%
   setIDVar(name = "commodities", columns = c(1, 1, 4)) \%>\%
@@ -68,7 +81,7 @@ validateSchema(schema = schema, input = input)
 (input <- tabs2shift$messy_rows)
 
 schema <-
-  setFilter(rows = .find(by = is.numeric, col = 1, invert = TRUE)) \%>\%
+  setFilter(rows = .find(fun = is.numeric, col = 1, invert = TRUE)) \%>\%
   setIDVar(name = "territories", columns = 1) \%>\%
   setIDVar(name = "year", columns = 2) \%>\%
   setIDVar(name = "commodities", columns = 3) \%>\%
