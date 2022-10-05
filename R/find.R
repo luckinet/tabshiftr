@@ -2,9 +2,10 @@
 #'
 #' Find the location of a variable not based on it's columns/rows, but based on
 #' a regular expression or function
-#' @param by [\code{character(1)}]\cr character string containing a regular
-#'   expression or function to identify columns or rows in the input table on
-#'   the fly.
+#' @param fun [\code{character(1)}]\cr function to identify columns or rows in
+#'   the input table on the fly.
+#' @param pattern [\code{character(1)}]\cr character string containing a regular
+#'   expression to identify columns or rows in the input table on the fly.
 #' @param col [\code{integerish(1)}]\cr optionally, in case \code{by} should not
 #'   be applied to the whole table, this is the column(s) in which to apply
 #'   \code{by}.
@@ -14,6 +15,9 @@
 #' @param invert [\code{logical(1)}]\cr whether or not the identified columns or
 #'   rows should be inverted, i.e., all other columns or rows should be
 #'   selected.
+#' @param relative [\code{logical(1)}]\cr whether or not the values provided in
+#'   \code{col} or \code{row} are relative to the cluster position(s) or whether
+#'   they are absolute positions, i.e, refer to the overall table.
 #' @details This functions is basically a wild-card for when columns or rows are
 #'   not known ad-hoc, but have to be assigned on the fly. This can be very
 #'   helpful when several tables contain the same variables, but the arrangement
@@ -34,7 +38,7 @@
 #' (input <- tabs2shift$clusters_messy)
 #'
 #' schema <- setCluster(id = "territories",
-#'                      left = .find("comm*"), top = .find("comm*")) %>%
+#'                      left = .find(pattern = "comm*"), top = .find(pattern = "comm*")) %>%
 #'   setIDVar(name = "territories", columns = c(1, 1, 4), rows = c(2, 9, 9)) %>%
 #'   setIDVar(name = "year", columns = 4, rows = c(3:6), distinct = TRUE) %>%
 #'   setIDVar(name = "commodities", columns = c(1, 1, 4)) %>%
@@ -48,7 +52,7 @@
 #' (input <- tabs2shift$messy_rows)
 #'
 #' schema <-
-#'   setFilter(rows = .find(by = is.numeric, col = 1, invert = TRUE)) %>%
+#'   setFilter(rows = .find(fun = is.numeric, col = 1, invert = TRUE)) %>%
 #'   setIDVar(name = "territories", columns = 1) %>%
 #'   setIDVar(name = "year", columns = 2) %>%
 #'   setIDVar(name = "commodities", columns = 3) %>%
@@ -61,16 +65,27 @@
 #' @importFrom rlang enquo
 #' @export
 
-.find <- function(by, col = NULL, row = NULL, invert = FALSE){
+.find <- function(fun = NULL, pattern = NULL, col = NULL, row = NULL,
+                  invert = FALSE, relative = FALSE){
 
-  isPat <- testCharacter(x = by, min.len = 1, any.missing = FALSE)
-  isFun <- testFunction(x = by)
-  assert(isPat, isFun)
+  assertFunction(x = fun, null.ok = TRUE)
+  assertCharacter(x = pattern, null.ok = TRUE)
   assertLogical(x = invert, len = 1)
+  assertLogical(x = relative, len = 1)
 
-  temp <- enquo(by)
+  if(!is.null(fun) & !is.null(pattern)){
+    stop("please specifiy either 'fun' or 'pattern', but not both.")
+  }
 
-  out <- list(find = list(by = temp, col = col, row = row, invert = invert))
+  if(!is.null(fun)){
+    temp <- enquo(fun)
+  } else if(!is.null(pattern)){
+    temp <- enquo(pattern)
+  } else {
+    temp <- NULL
+  }
+
+  out <- list(find = list(by = temp, col = col, row = row, invert = invert, relative = relative))
 
   return(out)
 

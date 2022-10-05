@@ -142,7 +142,6 @@
   uniqueIDs <- map(.x = seq_along(ids), .f = function(ix){
     unique(unlist(ids[[ix]]))
   })
-  # targetRows <- reduce(lengths(uniqueIDs), `*`)
 
   idCols <- map(.x = seq_along(ids), .f = function(ix){
     names(ids[[ix]])
@@ -163,7 +162,6 @@
 
       temp <- wideObs[[i]]
       varName <- names(wideObs[i])
-      tempDim <- dim(temp)
 
       # ... the corresponding wide id variables that gives the column names
       wideID <- map(.x = seq_along(idCols), .f = function(ix){
@@ -184,6 +182,18 @@
         }
       })
       wideID <- unlist(wideID, recursive = FALSE)
+
+      # in case one of the columns in temp contains only NA-values, remove that empty column
+      for(j in 1:dim(temp)[2]){
+        if(all(is.na(temp[,j]))){
+          temp <- temp %>%
+            select(-all_of(j))
+
+          wideID[[1]] <- wideID[[1]] %>%
+            select(-all_of(j))
+        }
+      }
+      tempDim <- dim(temp)
 
       # build a tibble for joining with the column names of temp
       wideColnames <- map(.x = seq_along(wideID), .f = function(jx){
@@ -277,7 +287,8 @@
         wideColnames <- wideColnames %>% select(all_of(names(wideID)), everything())
 
         # find the correct name by joining via the column names
-        tempColnames <- temp %>% pivot_longer(cols = everything(), names_to = "name", values_to = varName)
+        tempColnames <- temp %>%
+          pivot_longer(cols = everything(), names_to = "name", values_to = varName)
         wideNames <- left_join(tempColnames, wideColnames, by = "name") %>%
           select(-all_of(varName)) %>%
           distinct() %>%
@@ -477,6 +488,7 @@
 #'   used to match in columns.
 #' @param row [\code{list(2)}]\cr the output of the respective .find construct
 #'   used to match in rows.
+#' @param clusters [\code{list(7)}]\cr the cluster slot of the schema.
 #' @return the columns or rows of the evaluated position
 #' @importFrom checkmate assertNumeric assertList assertDataFrame
 #' @importFrom rlang eval_tidy
@@ -484,13 +496,14 @@
 #' @importFrom tibble rownames_to_column
 #' @importFrom tidyr pivot_longer pivot_wider
 #' @importFrom dplyr select mutate across pull if_else
-#' @importFrom stringr str_count
+#' @importFrom stringr str_count str_detect
 
-.eval_find <- function(input = NULL, col = NULL, row = NULL){
+.eval_find <- function(input = NULL, col = NULL, row = NULL, clusters = NULL){
 
   assertDataFrame(x = input)
   assertList(x = row, min.len = 1, null.ok = TRUE)
   assertList(x = col, min.len = 1, null.ok = TRUE)
+  assertList(x = clusters, len = 7, null.ok = TRUE)
 
   # in case to look for columns
   if(!is.null(col)){
@@ -505,33 +518,47 @@
         theCol <- col[[i]]
         term <- eval_tidy(theCol$by)
 
-        if(is.function(term)){
+        if(!is.null(term)){
 
-          if(!is.null(theCol$row)){
-            assertNumeric(x = theCol$row, len = 1, any.missing = FALSE)
-            subset <- input[unique(theCol$row),]
+          if(is.function(term)){
+
+            if(!is.null(theCol$row)){
+              assertNumeric(x = theCol$row, len = 1, any.missing = FALSE)
+              if(theCol$relative){
+                subset <- input[unique(theCol$row + clusters$row - 1),]
+              } else {
+                subset <- input[unique(theCol$row),]
+              }
+            } else {
+              subset <- input
+            }
+
+            # make a subset table that contains numbers when possible
+            subset <- subset %>%
+              mutate(across(.cols = where(function(x) suppressWarnings(!anyNA(as.numeric(x[!is.na(x)]))) & !all(is.na(x))), .fns = as.numeric))
+
+            cols <- map_int(.x = 1:dim(input)[2], .f = function(ix){
+              map(subset[,ix], term)[[1]] & !all(is.na(subset[,ix]))
+            })
+
           } else {
-            subset <- input
+            cols <- map_int(.x = 1:dim(input)[2], .f = function(ix){
+              if(!is.null(theCol$row)){
+                str_count(string = paste(input[[ix]][theCol$row], collapse = " "), pattern = term)
+              } else {
+                str_count(string = paste(input[[ix]], collapse = " "), pattern = term)
+              }
+            })
           }
 
-          # make a subset table that contains numbers when possible
-          subset <- subset %>%
-            mutate(across(.cols = where(function(x) suppressWarnings(!anyNA(as.numeric(x)))), .fns = as.numeric))
+        } else if(theCol$relative) {
 
-          cols <- map_int(.x = 1:dim(input)[2], .f = function(ix){
-            map(subset[,ix], term)[[1]] & !is.na(subset[,ix])[[1]]
-          })
+          targetCols <- theCol$col + clusters$col - 1
+          cols <- rep(0, dim(input)[2])
+          cols[as.numeric(names(table(targetCols)))] <- table(targetCols)
 
         } else {
-          cols <- map_int(.x = 1:dim(input)[2], .f = function(ix){
-            # message(ix)
-            # str_count(string = paste(input[[ix]], collapse = " "), pattern = term)
-            if(!is.null(theCol$row)){
-              str_count(string = paste(input[[ix]][theCol$row], collapse = " "), pattern = term)
-            } else {
-              str_count(string = paste(input[[ix]], collapse = " "), pattern = term)
-            }
-          })
+          stop("not yet implemented")
         }
 
         if(theCol$invert){
@@ -575,44 +602,76 @@
 
         theRow <- row[[i]]
         term <- eval_tidy(theRow$by)
-        if(is.function(term)){
 
-          if(!is.null(theRow$col)){
-            assertNumeric(x = theRow$col, len = 1, any.missing = FALSE)
-            subset <- input[,unique(theRow$col)]
+        if(!is.null(term)){
+
+          if(is.function(term)){
+
+            if(!is.null(theRow$col)){
+              assertNumeric(x = theRow$col, len = 1, any.missing = FALSE)
+              subset <- input[,unique(theRow$col)]
+            } else {
+              subset <- input
+            }
+
+            # make a subset table that contains numbers when possible
+            subset <- subset %>%
+              rownames_to_column() %>%
+              pivot_longer(cols = -rowname, names_to = 'variable', values_to = 'value') %>%
+              pivot_wider(id_cols = variable, names_from = rowname, values_from = value) %>%
+              select(-variable) %>%
+              mutate(across(.cols = where(function(x) suppressWarnings(!anyNA(as.numeric(x)))), .fns = as.numeric))
+
+            rows <- map_int(.x = 1:dim(subset)[2], .f = function(ix){
+              map(subset[,ix], term)[[1]]
+            })
           } else {
-            subset <- input
+
+            if(length(term) > 1){
+              term <- paste0(term, collapse = "|")
+            }
+
+            if(!is.null(theRow$col)){
+              rows <- input %>%
+                mutate(it = if_else(if_any(theRow$col, ~ grepl(x = .x, pattern = term)), 1, 0)) %>%
+                pull(it)
+            } else {
+              rows <- input %>%
+                unite(col = all, everything(), sep = " ", na.rm = TRUE)
+
+              # if the theRow is the clusters row, count elements, otherwise detect them
+              if(is.list(clusters$row)){
+                clustRows <- clusters$row$find
+              } else {
+                clustRows <- NULL
+              }
+              if(identical(theRow, clustRows)){
+                rows <- rows %>%
+                  mutate(it = str_count(string = all, pattern = term))
+              } else {
+                rows <- rows %>%
+                  mutate(it = as.numeric(str_detect(string = all, pattern = term)))
+              }
+              rows <- rows %>%
+                pull(it)
+            }
+
           }
+        } else if(theRow$relative) {
 
-          # make a subset table that contains numbers when possible
-          subset <- subset %>%
-            rownames_to_column() %>%
-            pivot_longer(cols = -rowname, names_to = 'variable', values_to = 'value') %>%
-            pivot_wider(id_cols = variable, names_from = rowname, values_from = value) %>%
-            select(-variable) %>%
-            mutate(across(.cols = where(function(x) suppressWarnings(!anyNA(as.numeric(x)))), .fns = as.numeric))
+          targetRows <- theRow$row + clusters$row - 1
+          rows <- input %>%
+            mutate(rn = row_number()) %>%
+            left_join(., tibble(rn = targetRows), by = "rn") %>%
+            mutate(it = if_else(rn %in% targetRows, 1, 0)) %>%
+            group_by(rn) %>%
+            summarise(it = sum(it, na.rm = TRUE)) %>%
+            pull(it)
 
-          rows <- map_int(.x = 1:dim(subset)[2], .f = function(ix){
-            map(subset[,ix], term)[[1]]
-          })
         } else {
-
-          if(length(term) > 1){
-            term <- paste0(term, collapse = "|")
-          }
-
-          if(!is.null(theRow$col)){
-            rows <- input %>%
-              mutate(it = if_else(if_any(theRow$col, ~ grepl(x = .x, pattern = term)), 1, 0)) %>%
-              pull(it)
-          } else {
-            rows <- input %>%
-              unite(col = all, everything(), sep = " ", na.rm = TRUE) %>%
-              mutate(it = str_count(string = all, pattern = term)) %>%
-              pull(it)
-          }
-
+          stop("not yet implemented")
         }
+
 
         if(theRow$invert){
           temp <- rows
