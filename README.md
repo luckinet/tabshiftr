@@ -3,10 +3,10 @@
 
 # tabshiftr <a href='https://luckinet.github.io/tabshiftr/'><img src='man/figures/logo.svg' align="right" height="200" /></a>
 
-[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/tabshiftr)](https://cran.r-project.org/package=tabshiftr)
-[![R-CMD-check](https://github.com/luckinet/tabshiftr/workflows/R-CMD-check/badge.svg)](https://github.com/luckinet/tabshiftr/actions)
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/tabshiftr)](https://cran.r-project.org/package=tabshiftr)
+[![R-CMD-check](https://github.com/EhrmannS/tabshiftr/workflows/R-CMD-check/badge.svg)](https://github.com/luckinet/tabshiftr/actions)
 [![Coverage
-Status](https://img.shields.io/codecov/c/github/luckinet/tabshiftr/master.svg)](https://codecov.io/github/luckinet/tabshiftr?branch=master)
+Status](https://img.shields.io/codecov/c/github/EhrmannS/tabshiftr/master.svg)](https://codecov.io/github/EhrmannS/tabshiftr?branch=master)
 [![](http://cranlogs.r-pkg.org/badges/grand-total/tabshiftr)](https://cran.r-project.org/package=tabshiftr)
 [![Lifecycle:maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://lifecycle.r-lib.org/articles/stages.html)
 
@@ -33,8 +33,6 @@ together.
 
 1)  Install the official version from CRAN:
 
-<!-- end list -->
-
 ``` r
 install.packages("tabshiftr")
 ```
@@ -42,7 +40,7 @@ install.packages("tabshiftr")
 or the latest development version from github:
 
 ``` r
-devtools::install_github("luckinet/tabshiftr")
+devtools::install_github("EhrmannS/tabshiftr")
 ```
 
 2)  The
@@ -66,7 +64,7 @@ kable(input)
 ```
 
 | X1          | X2        | X3         | X4          | X5        | X6         | X7     |
-| :---------- | :-------- | :--------- | :---------- | :-------- | :--------- | :----- |
+|:------------|:----------|:-----------|:------------|:----------|:-----------|:-------|
 | commodities | harvested | production | .           | .         | .          | .      |
 | unit 1      | .         | .          | .           | .         | .          | .      |
 | soybean     | 1111      | 1112       | year 1      | .         | .          | .      |
@@ -244,11 +242,11 @@ getObsVars(schema = schema_valid, input = input)
 # cluster origin could be set
 schema_alt <- setCluster(id = "territories",
                          left = c(1, 1, 4), top = c(1, 8, 8)) %>%
-  setIDVar(name = "territories", columns = 1, rows = 2, relative = TRUE) %>%
+  setIDVar(name = "territories", columns = 1, rows = .find(row = 2, relative = TRUE)) %>%
   setIDVar(name = "year", columns = 4, rows = c(3:6), distinct = TRUE) %>%
-  setIDVar(name = "commodities", columns = 1, relative = TRUE) %>%
-  setObsVar(name = "harvested", columns = 2, relative = TRUE) %>%
-  setObsVar(name = "production", columns = 3, relative = TRUE)
+  setIDVar(name = "commodities", columns = .find(col = 1, relative = TRUE)) %>%
+  setObsVar(name = "harvested", columns = .find(col = 2, relative = TRUE)) %>%
+  setObsVar(name = "production", columns = .find(col = 3, relative = TRUE))
 ```
 
 The `reorganise()` function carries out the steps of validating,
@@ -275,7 +273,7 @@ kable(output)
 ```
 
 | territories | year   | commodities | harvested | production |
-| :---------- | :----- | :---------- | --------: | ---------: |
+|:------------|:-------|:------------|----------:|-----------:|
 | unit 1      | year 1 | maize       |      1121 |       1122 |
 | unit 1      | year 1 | soybean     |      1111 |       1112 |
 | unit 1      | year 2 | maize       |      1221 |       1222 |
@@ -291,18 +289,18 @@ kable(output)
 
 # Contributions
 
-  - tabshiftr is still in development. So far it reliably reorganises 20
+-   tabshiftr is still in development. So far it reliably reorganises 20
     different types of tables, but additional dimensions of
     disorganisation might show themselves. If you encounter a table that
     can’t be reorganised with the current infrastructure, we’d be more
     than happy to collaborate on advancing `tabshiftr`.
-  - Informative error management is work in process.
-  - Moreover, the resulting schema descriptions can be useful for data
+-   Informative error management is work in process.
+-   Moreover, the resulting schema descriptions can be useful for data
     archiving or database building and `tabshiftr` should at some point
     support that those schemas can be exported into data-formats that
     are used by downstream applications (xml, json, …), following proper
     (ISO) standards. In case you have experience with those standards
-    and would like to collaborate on it, please get in touch\!
+    and would like to collaborate on it, please get in touch!
 
 # Acknowledgement
 
