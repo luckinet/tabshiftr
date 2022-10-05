@@ -39,7 +39,7 @@ The core idea of a schema description is that it can be written in a
 
 schema <-
   setIDVar(name = "territories", col = 1) \%>\%
-  setIDVar(name = "year", col = .find("period")) \%>\%
+  setIDVar(name = "year", col = .find(pattern = "period")) \%>\%
   setIDVar(name = "commodities", col = 3) \%>\%
   setObsVar(name = "harvested", col = 5) \%>\%
   setObsVar(name = "production", col = 6)
