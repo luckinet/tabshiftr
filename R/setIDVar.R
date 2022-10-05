@@ -21,9 +21,6 @@
 #' @param merge [\code{character(1)}]\cr In case a variable is made up of
 #'   several columns, this should be the character string that would connect the
 #'   two columns (e.g., an empty space \code{" "}).
-#' @param relative [\code{logical(1)}]\cr whether the values provided in
-#'   \code{columns} and \code{rows} are relative to the cluster position(s) or
-#'   whether they refer to the overall table.
 #' @param distinct [\code{logical(1)}]\cr whether or not the variable is
 #'   distinct from a cluster. This is the case when the variable is not
 #'   systematically available for all clusters and thus needs to be registered
@@ -39,7 +36,7 @@
 #' @export
 
 setIDVar <- function(schema = NULL, name = NULL, value = NULL, columns = NULL,
-                     rows = NULL, split = NULL, merge = NULL, relative = FALSE,
+                     rows = NULL, split = NULL, merge = NULL,
                      distinct = FALSE){
 
   # assertions ----
@@ -56,7 +53,6 @@ setIDVar <- function(schema = NULL, name = NULL, value = NULL, columns = NULL,
   assertCharacter(x = value, len = 1, any.missing = FALSE, null.ok = TRUE)
   assertCharacter(x = split, len = 1, any.missing = FALSE, null.ok = TRUE)
   assertCharacter(x = merge, len = 1, any.missing = FALSE, null.ok = TRUE)
-  assertLogical(x = relative, any.missing = FALSE, len = 1)
   assertLogical(x = distinct, any.missing = FALSE, len = 1)
 
   if(is.null(schema)){
@@ -153,7 +149,6 @@ setIDVar <- function(schema = NULL, name = NULL, value = NULL, columns = NULL,
                row = rows,
                split = split,
                merge = merge,
-               rel = relative,
                dist = distinct)
   schema@variables[[name]] <- temp
 

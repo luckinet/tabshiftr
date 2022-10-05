@@ -27,9 +27,6 @@
 #'   with other variables) so that the variable names are listed in one column
 #'   and the respective values are listed in another column, give here the level
 #'   in the names column that refer to the values of this variable.
-#' @param relative [\code{logical(1)}]\cr whether or not the values provided in
-#'   \code{columns} and \code{rows} are relative to the cluster position(s) or
-#'   whether they refer to the overall table.
 #' @param distinct [\code{logical(1)}]\cr Whether or not the variable is
 #'   distinct from a cluster. This is the case when the variable is recorded
 #'   somewhere 'on the side' and thus not explicitly included in all clusters.
@@ -44,8 +41,8 @@
 #' @export
 
 setObsVar <- function(schema = NULL, name = NULL, columns = NULL, top = NULL,
-                      relative = FALSE, distinct = FALSE, unit = NULL,
-                      factor = 1, key = NULL, value = NULL){
+                      distinct = FALSE, unit = NULL, factor = 1, key = NULL,
+                      value = NULL){
 
   # assertions ----
   assertClass(x = schema, classes = "schema", null.ok = TRUE)
@@ -58,7 +55,6 @@ setObsVar <- function(schema = NULL, name = NULL, columns = NULL, top = NULL,
   rowList <- testList(x = top, len = 1)
   assert(rowInt, rowList)
   if(rowList) assertSubset(x = names(top), choices = c("find"))
-  assertLogical(x = relative, any.missing = FALSE, len = 1)
   assertLogical(x = distinct, any.missing = FALSE, len = 1)
   assertCharacter(x = unit, len = 1, any.missing = FALSE, null.ok = TRUE)
   assertNumeric(x = factor, len = 1, any.missing = FALSE)
@@ -82,7 +78,6 @@ setObsVar <- function(schema = NULL, name = NULL, columns = NULL, top = NULL,
   temp <- list(type = "observed",
                col = columns,
                row = top,
-               rel = relative,
                dist = distinct,
                unit = unit,
                factor = factor,
