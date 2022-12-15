@@ -56,7 +56,7 @@ getData <- function(schema = NULL, input = NULL){
         mutate(ind = if_else(ind %in% targetRows, min(targetRows), ind)) %>%
         group_by(ind) %>%
         summarise(across(everything(), eval_tidy(temp$by$char))) %>%
-        mutate(across(everything(), ~na_if(x = ., y = "")))
+        mutate(across(where(is.character), ~na_if(x = ., y = "")))
 
       outNum <- suppressWarnings(outNum %>%
         mutate(ind = if_else(ind %in% targetRows, min(targetRows), ind)) %>%
@@ -102,3 +102,5 @@ getData <- function(schema = NULL, input = NULL){
 
   return(out)
 }
+
+utils::globalVariables("where")
