@@ -20,13 +20,11 @@ the input table on the fly.}
 \item{pattern}{[\code{character(1)}]\cr character string containing a regular
 expression to identify columns or rows in the input table on the fly.}
 
-\item{col}{[\code{integerish(1)}]\cr optionally, in case \code{by} should not
-be applied to the whole table, this is the column(s) in which to apply
-\code{by}.}
+\item{col}{[\code{integerish(1)}]\cr optionally, in case this function should
+only be applied to certain columns, provides this here.}
 
-\item{row}{[\code{integerish(1)}]\cr optionally, in case \code{by} should not
-be applied to the whole table, this is the row(s) in which to apply
-\code{by}.}
+\item{row}{[\code{integerish(1)}]\cr optionally, in case this function should
+only be applied to certain rows, provides this here.}
 
 \item{invert}{[\code{logical(1)}]\cr whether or not the identified columns or
 rows should be inverted, i.e., all other columns or rows should be
