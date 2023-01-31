@@ -24,7 +24,7 @@
 #' @importFrom dplyr row_number group_by summarise na_if across select mutate
 #'   if_else
 #' @importFrom tibble as_tibble
-#' @importFrom tidyselect everything
+#' @importFrom tidyselect everything where
 #' @importFrom rlang eval_tidy
 #' @export
 
@@ -56,7 +56,7 @@ getData <- function(schema = NULL, input = NULL){
         mutate(ind = if_else(ind %in% targetRows, min(targetRows), ind)) %>%
         group_by(ind) %>%
         summarise(across(everything(), eval_tidy(temp$by$char))) %>%
-        mutate(across(everything(), ~na_if(x = ., y = "")))
+        mutate(across(where(is.character), function(x) na_if(x, "")))
 
       outNum <- suppressWarnings(outNum %>%
         mutate(ind = if_else(ind %in% targetRows, min(targetRows), ind)) %>%
