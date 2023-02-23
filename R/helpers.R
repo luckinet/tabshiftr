@@ -576,6 +576,7 @@
 
       if(i != 1){
         theCols <- reduce(theCols, col[[i - 1]])
+        theCols <- list(theCols)
       } else {
         if(length(col) == 1){
           theCols <- theCols[[1]]
@@ -584,7 +585,8 @@
 
     }
 
-    out <- rep(seq_along(cols), cols)
+    theCols <- unlist(theCols)
+    out <- rep(seq_along(theCols), theCols)
 
   }
 
@@ -688,6 +690,7 @@
 
       if(i != 1){
         theRows <- reduce(theRows, row[[i - 1]])
+        theRows <- list(theRows)
       } else {
         if(length(row) == 1){
           theRows <- theRows[[1]]
@@ -696,6 +699,7 @@
 
     }
 
+    theRows <- unlist(theRows)
     out <- rep(seq_along(theRows), theRows)
 
   }

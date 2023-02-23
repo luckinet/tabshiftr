@@ -94,7 +94,6 @@ validateSchema <- function(schema = NULL, input = NULL){
   clusters$width <- rep(x = clusters$width, length.out = nClusters)
   clusters$height <- rep(x = clusters$height, length.out = nClusters)
 
-
   # 2. evaluate filter ----
   allRows <- 1:dim(input)[1]
   if(!is.null(filter$row)){
