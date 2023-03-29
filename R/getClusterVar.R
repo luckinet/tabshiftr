@@ -66,7 +66,7 @@ getClusterVar <- function(schema = NULL, input = NULL){
           if(!is.null(theVar$col[ix])){
             theCols <- theVar$col[ix]
           } else {
-            thecol <- c(clusters$col[ix]:(clusters$width[ix]+clusters$col[ix]-1))
+            theCols <- c(clusters$col[ix]:(clusters$width[ix]+clusters$col[ix]-1))
             theCols <- theCols[theCols %in% filter$col]
           }
           input[theRows, theCols]

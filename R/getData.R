@@ -24,7 +24,7 @@
 #' @importFrom dplyr row_number group_by summarise na_if across select mutate
 #'   if_else
 #' @importFrom tibble as_tibble
-#' @importFrom tidyselect everything
+#' @importFrom tidyselect everything where
 #' @importFrom rlang eval_tidy
 #' @export
 

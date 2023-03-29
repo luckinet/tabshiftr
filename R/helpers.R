@@ -184,14 +184,17 @@
       wideID <- unlist(wideID, recursive = FALSE)
 
       # in case one of the columns in temp contains only NA-values, remove that empty column
+      naCol <- NULL
       for(j in 1:dim(temp)[2]){
         if(all(is.na(temp[,j]))){
-          temp <- temp %>%
-            select(-all_of(j))
-
-          wideID[[1]] <- wideID[[1]] %>%
-            select(-all_of(j))
+          naCol <- c(naCol, j)
         }
+      }
+      if(!is.null(naCol)){
+        temp <- temp %>%
+          select(-all_of(naCol))
+        wideID[[1]] <- wideID[[1]] %>%
+          select(-all_of(naCol))
       }
       tempDim <- dim(temp)
 
@@ -576,6 +579,7 @@
 
       if(i != 1){
         theCols <- reduce(theCols, col[[i - 1]])
+        theCols <- list(theCols)
       } else {
         if(length(col) == 1){
           theCols <- theCols[[1]]
@@ -584,7 +588,8 @@
 
     }
 
-    out <- rep(seq_along(cols), cols)
+    theCols <- unlist(theCols)
+    out <- rep(seq_along(theCols), theCols)
 
   }
 
@@ -688,6 +693,7 @@
 
       if(i != 1){
         theRows <- reduce(theRows, row[[i - 1]])
+        theRows <- list(theRows)
       } else {
         if(length(row) == 1){
           theRows <- theRows[[1]]
@@ -696,6 +702,7 @@
 
     }
 
+    theRows <- unlist(theRows)
     out <- rep(seq_along(theRows), theRows)
 
   }

@@ -1,3 +1,7 @@
+# tabshiftr 0.4.1
+
+- adapt to update of dplyr
+
 # tabshiftr 0.4.0 - grouping update
 
 - introduction of the function `setGroups()`, which allows to summarize columns and/or rows according to a function. The positions and summarise function here are provided via the new function `.sum()`.
