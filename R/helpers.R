@@ -193,8 +193,14 @@
       if(!is.null(naCol)){
         temp <- temp %>%
           select(-all_of(naCol))
-        wideID[[1]] <- wideID[[1]] %>%
-          select(-all_of(naCol))
+        if(varName == "listed"){
+          wideID[[1]] <- wideID[[1]] %>%
+            select(-all_of(naCol-1))
+        } else {
+          wideID[[1]] <- wideID[[1]] %>%
+            select(-all_of(naCol))
+        }
+
       }
       tempDim <- dim(temp)
 
@@ -247,9 +253,9 @@
         # remove columns that are both in equalID and tempObs (for example, when an id-variable is used as key)
         # dupEqualIDs <- which(!as.list(bind_cols(equalID)) %in% as.list(bind_cols(tempObs)))
 
-        tempObs <- outObs
+        tempObs <- list(temp)
         if(!is.null(wideID)){
-          names(tempObs$listed) <- c("key", wideNames)
+          names(tempObs[[1]]) <- c("key", wideNames)
           # newObs <- bind_cols(c(equalID[dupEqualIDs], tempObs), .name_repair = "minimal") %>%
           newObs <- bind_cols(c(equalID, tempObs), .name_repair = "minimal") %>%
             pivot_longer(cols = all_of(wideNames), names_to = wideName)
