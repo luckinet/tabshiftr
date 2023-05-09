@@ -101,13 +101,17 @@
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<ol style="list-style-type: decimal"><li>Install the official version from CRAN:</li></ol>
+<ol style="list-style-type: decimal">
+<li>Install the official version from CRAN:</li>
+</ol>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"tabshiftr"</span><span class="op">)</span></span></code></pre></div>
 <p>or the latest development version from github:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"EhrmannS/tabshiftr"</span><span class="op">)</span></span></code></pre></div>
-<ol start="2" style="list-style-type: decimal"><li>The <a href="https://luckinet.github.io/tabshiftr/articles/tabshiftr.html" class="external-link">vignette</a> gives an introduction, provides an instruction on how to set up schema descriptions by going step by step through certain dimensions of disorganisation to show which table arrangements can be reorganised and how that works.</li></ol>
+<ol start="2" style="list-style-type: decimal">
+<li>The <a href="https://luckinet.github.io/tabshiftr/articles/tabshiftr.html" class="external-link">vignette</a> gives an introduction, provides an instruction on how to set up schema descriptions by going step by step through certain dimensions of disorganisation to show which table arrangements can be reorganised and how that works.</li>
+</ol>
 </div>
 <div class="section level2">
 <h2 id="examples">Examples<a class="anchor" aria-label="anchor" href="#examples"></a>
@@ -121,6 +125,15 @@
 <span><span class="va">input</span> <span class="op">&lt;-</span> <span class="va">tabs2shift</span><span class="op">$</span><span class="va">clusters_messy</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">input</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
+<colgroup>
+<col width="16%">
+<col width="13%">
+<col width="15%">
+<col width="16%">
+<col width="13%">
+<col width="15%">
+<col width="10%">
+</colgroup>
 <thead><tr class="header">
 <th align="left">X1</th>
 <th align="left">X2</th>

@@ -79,7 +79,7 @@
 
       
 
-      </header><script src="tabshiftr_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>tabshiftr - Reshape disorganised messy data</h1>
@@ -95,22 +95,62 @@
 <div class="section level2">
 <h2 id="rationale">Rationale<a class="anchor" aria-label="anchor" href="#rationale"></a>
 </h2>
-<p>Tables as places where data are recorded can be pretty messy. The ‘tidy’ paradigm in R proposes that data are organised so that variables are recorded in columns, observations in rows and that there is only one value per cell <span class="citation">(Wickham <a href="#ref-Wickham2014" role="doc-biblioref">2014</a>)</span>. This, however, is only one interpretation of how data should be organised <span class="citation">(Broman and Woo <a href="#ref-Broman" role="doc-biblioref">2018</a>)</span> and especially when scraping data off the internet, one frequently encounters spreadsheets that don’t follow this paradigm.</p>
-<p>The <code>tidyr</code> package is one of the most popular tools to bring data into a tidy format. However, up until today it is limited to tables that are already organised into topologically coherent (rectangular) chunks and any messiness beyond that requires dedicated scripts for reorganisation. In <code>tabshiftr</code> we try to describe and work with a further dimension of messiness, where data are available as so-called <em>disorganised (messy) data</em>, data that are not yet arranged into rectangular form.</p>
-<p>The approach of <code>tabshiftr</code> is based on describing the arrangement of such tables in a so-called <a href="https://en.wikipedia.org/wiki/Database_schema" class="external-link">schema</a> description, which is then the basis for automatic reorganisation via the function <code><a href="../reference/reorganise.html">reorganise()</a></code>. Typically there is an input and an output schema, describing the arrangement of the input and output tables, respectively. The advantage of this procedure is that input and output tables exist explicitly and the schema maps the transformation of the data. As we want to end up with tidy tables, the output schema is pre-determined by a tidy table of the included variables and the input <a href="#makeSchema">schema needs to be put together</a> by you, the user.</p>
+<p>Tables as places where data are recorded can be pretty messy. The
+‘tidy’ paradigm in R proposes that data are organised so that variables
+are recorded in columns, observations in rows and that there is only one
+value per cell <span class="citation">(<a href="#ref-Wickham2014" role="doc-biblioref">Wickham 2014</a>)</span>. This, however, is only
+one interpretation of how data should be organised <span class="citation">(<a href="#ref-Broman" role="doc-biblioref">Broman and
+Woo 2018</a>)</span> and especially when scraping data off the internet,
+one frequently encounters spreadsheets that don’t follow this
+paradigm.</p>
+<p>The <code>tidyr</code> package is one of the most popular tools to
+bring data into a tidy format. However, up until today it is limited to
+tables that are already organised into topologically coherent
+(rectangular) chunks and any messiness beyond that requires dedicated
+scripts for reorganisation. In <code>tabshiftr</code> we try to describe
+and work with a further dimension of messiness, where data are available
+as so-called <em>disorganised (messy) data</em>, data that are not yet
+arranged into rectangular form.</p>
+<p>The approach of <code>tabshiftr</code> is based on describing the
+arrangement of such tables in a so-called <a href="https://en.wikipedia.org/wiki/Database_schema" class="external-link">schema</a>
+description, which is then the basis for automatic reorganisation via
+the function <code><a href="../reference/reorganise.html">reorganise()</a></code>. Typically there is an input and
+an output schema, describing the arrangement of the input and output
+tables, respectively. The advantage of this procedure is that input and
+output tables exist explicitly and the schema maps the transformation of
+the data. As we want to end up with tidy tables, the output schema is
+pre-determined by a tidy table of the included variables and the input
+<a href="#makeSchema">schema needs to be put together</a> by you, the
+user.</p>
 </div>
 <div class="section level2">
 <h2 id="the-basics">The basics<a class="anchor" aria-label="anchor" href="#the-basics"></a>
 </h2>
-<p>Data can be disorganised according to multiple dimensions. To understand those dimensions, we first need to understand the nature of data. Data "of the same kind" are collected in a <strong>variable</strong>, which is always a combination of a <strong>name</strong> and the <strong>values</strong>. In a table, names are typically in the topmost row and values are in the column below that name (<a href="#tabExample1">Tab. 1</a>). Conceptually, there are two types of variables in any table:</p>
+<p>Data can be disorganised according to multiple dimensions. To
+understand those dimensions, we first need to understand the nature of
+data. Data "of the same kind" are collected in a
+<strong>variable</strong>, which is always a combination of a
+<strong>name</strong> and the <strong>values</strong>. In a table, names
+are typically in the topmost row and values are in the column below that
+name (<a href="#tabExample1">Tab. 1</a>). Conceptually, there are two
+types of variables in any table:</p>
 <ol style="list-style-type: decimal">
-<li>Variables that contain categorical levels that identify the units for which values have been observed (they are called <em>identifying variables</em> here).</li>
-<li>Variables that have been measured or observed and that consequently represent the target values of that measurement, be they continuous or categorical (they are called <em>observed variables</em> here).</li>
+<li>Variables that contain categorical levels that identify the units
+for which values have been observed (they are called <em>identifying
+variables</em> here).</li>
+<li>Variables that have been measured or observed and that consequently
+represent the target values of that measurement, be they continuous or
+categorical (they are called <em>observed variables</em> here).</li>
 </ol>
-<p>Moreover, a table is part of a <strong>series</strong> when other tables of that series contain the same variables with slightly different values for the identifying variables, irrespective of how the distinct tables of that series are arranged.</p>
+<p>Moreover, a table is part of a <strong>series</strong> when other
+tables of that series contain the same variables with slightly different
+values for the identifying variables, irrespective of how the distinct
+tables of that series are arranged.</p>
 <table class="table">
 <caption>
-<a name="tabExample1"></a>Table 1: An example table containing one identifying and two observed variables, with the variable names in the topmost row and the values in all consecutive rows.</caption>
+<a name="tabExample1"></a>Table 1: An example table containing
+one identifying and two observed variables, with the variable names in
+the topmost row and the values in all consecutive rows.</caption>
 <colgroup>
 <col width="33%">
 <col width="33%">
@@ -139,10 +179,26 @@
 </tr>
 </tbody>
 </table>
-<p>Here, we do use the term <strong>spreadsheet</strong> to denote what would typically be seen as <em>table</em>, as the data we deal with here are typically "disorganised" and thus not what would be recognised as a table. Even though data in many spreadsheets are disorganised, they are mostly not non-systematic. Especially in complex spreadsheets, one often encounters a situation where a set of variables occurs more than once with the same or very similar arrangement, which we call <strong>cluster</strong> here. Data that are part of clusters are split along one of the, typically categorical, variables (the <strong>cluster ID</strong>), with the aim to increase the visual accessibility or direct the focus for human readers (<a href="#tabExample2">Tab. 2</a>). This may also be the case where data are split up into several files or spreadsheets of a file, where the cluster ID can be found in the file or spreasheet name or the meta-data. In many cases, the cluster ID is an <strong>implicit variable</strong>, a variable that is not immediately recogniseable as such.</p>
+<p>Here, we do use the term <strong>spreadsheet</strong> to denote what
+would typically be seen as <em>table</em>, as the data we deal with here
+are typically "disorganised" and thus not what would be recognised as a
+table. Even though data in many spreadsheets are disorganised, they are
+mostly not non-systematic. Especially in complex spreadsheets, one often
+encounters a situation where a set of variables occurs more than once
+with the same or very similar arrangement, which we call
+<strong>cluster</strong> here. Data that are part of clusters are split
+along one of the, typically categorical, variables (the <strong>cluster
+ID</strong>), with the aim to increase the visual accessibility or
+direct the focus for human readers (<a href="#tabExample2">Tab. 2</a>).
+This may also be the case where data are split up into several files or
+spreadsheets of a file, where the cluster ID can be found in the file or
+spreasheet name or the meta-data. In many cases, the cluster ID is an
+<strong>implicit variable</strong>, a variable that is not immediately
+recogniseable as such.</p>
 <table class="table">
 <caption>
-<a name="tabExample2"></a>Table 2: An example of a table with several clusters of comparable variables.</caption>
+<a name="tabExample2"></a>Table 2: An example of a table with
+several clusters of comparable variables.</caption>
 <thead><tr class="header">
 <th align="left">sample</th>
 <th align="left">colour</th>
@@ -235,35 +291,56 @@
 <div class="section level3">
 <h3 id="decision-tree">Decision tree<a class="anchor" aria-label="anchor" href="#decision-tree"></a>
 </h3>
-<p>To set up a schema description, go through the following questions step by step and provide the respective answer in the respective function. Linked tables in the <a href="#tablesTypes">next section</a> can serve as examples to compare against.</p>
+<p>To set up a schema description, go through the following questions
+step by step and provide the respective answer in the respective
+function. Linked tables in the <a href="#tablesTypes">next section</a>
+can serve as examples to compare against.</p>
 <ol style="list-style-type: decimal">
-<li><p><strong>Variables</strong>: Clarify which are the identifying variables and which are the observed variables. Make sure not to mistake a listed observed variable (<a href="#long">Tab. 10</a>) as an identifying variable.</p></li>
-<li><p><strong>Format</strong>: Provide potentially information about the table format in <code><a href="../reference/setFormat.html">setFormat()</a></code>.</p></li>
+<li><p><strong>Variables</strong>: Clarify which are the identifying
+variables and which are the observed variables. Make sure not to mistake
+a listed observed variable (<a href="#long">Tab. 10</a>) as an
+identifying variable.</p></li>
+<li><p><strong>Format</strong>: Provide potentially information about
+the table format in <code><a href="../reference/setFormat.html">setFormat()</a></code>.</p></li>
 <li>
-<p><strong>Clusters</strong>: In case there are clusters, provide in <code><a href="../reference/setCluster.html">setCluster()</a></code></p>
+<p><strong>Clusters</strong>: In case there are clusters, provide in
+<code><a href="../reference/setCluster.html">setCluster()</a></code></p>
 <ul>
-<li>are data clustered into several files or spreadsheets and is the information used to separate the data (i.e., the spreadsheet name) a variable of interest (<a href="#implicitVar">Tab. 6</a>) or are the data clustered within one spreadsheet (<a href="#clusHor">Tab. 12</a>, <a href="#clusId">Tab. 13</a>, <a href="#clusMeas">Tab. 14</a> &amp; <a href="#clustNest">Tab. 15</a>)?</li>
-<li>are data clustered according to an identifying variable (<a href="#clusHor">Tab. 12</a>, <a href="#clusId">Tab. 13</a>), or are observed variables grouped into clusters (<a href="#clusMeas">Tab. 14</a>)?</li>
+<li>are data clustered into several files or spreadsheets and is the
+information used to separate the data (i.e., the spreadsheet name) a
+variable of interest (<a href="#implicitVar">Tab. 6</a>) or are the data
+clustered within one spreadsheet (<a href="#clusHor">Tab. 12</a>, <a href="#clusId">Tab. 13</a>, <a href="#clusMeas">Tab. 14</a> &amp; <a href="#clustNest">Tab. 15</a>)?</li>
+<li>are data clustered according to an identifying variable (<a href="#clusHor">Tab. 12</a>, <a href="#clusId">Tab. 13</a>), or are
+observed variables grouped into clusters (<a href="#clusMeas">Tab.
+14</a>)?</li>
 <li>are clusters nested into a grouping variable of interest (<a href="#clustNest">Tab. 15</a>)? <br><br>
 </li>
 </ul>
 </li>
 <li>
-<p><strong>Identifying variables</strong>: provide in <code><a href="../reference/setIDVar.html">setIDVar()</a></code></p>
+<p><strong>Identifying variables</strong>: provide in
+<code><a href="../reference/setIDVar.html">setIDVar()</a></code></p>
 <ul>
 <li>in which column(s) is the variable?</li>
-<li>is the variable a result of merging several columns (<a href="#mergeCol">Tab. 4</a>) or must it be split off of another column (<a href="#splitCol">Tab. 5</a>)?</li>
-<li>is the variable wide (i.e., its values are in several columns) (<a href="#one_wide_id">Tab. 7</a>, <a href="#wide_obs">Tab. 8</a> &amp; <a href="#two_wide_id">Tab. 9</a>)? In this case, the values will look like they are part of the header.</li>
+<li>is the variable a result of merging several columns (<a href="#mergeCol">Tab. 4</a>) or must it be split off of another column
+(<a href="#splitCol">Tab. 5</a>)?</li>
+<li>is the variable wide (i.e., its values are in several columns) (<a href="#one_wide_id">Tab. 7</a>, <a href="#wide_obs">Tab. 8</a> &amp; <a href="#two_wide_id">Tab. 9</a>)? In this case, the values will look like
+they are part of the header.</li>
 <li>is the variable distinct from the main table (<a href="#distVar">Tab. 16</a>)? <br><br>
 </li>
 </ul>
 </li>
 <li>
-<p><strong>Observed variable</strong>: provide in <code><a href="../reference/setObsVar.html">setObsVar()</a></code></p>
+<p><strong>Observed variable</strong>: provide in
+<code><a href="../reference/setObsVar.html">setObsVar()</a></code></p>
 <ul>
 <li>in which column(s) is the variable?</li>
-<li>is the variable wide and nested in a wide identifying variable (i.e., the name of the observed variable is below the name of the identifying variable) (<a href="#one_wide_id">Tab. 7</a> &amp; <a href="#two_wide_id">Tab. 9</a>)?</li>
-<li>is the variable listed (i.e., the names of the variable are given as a value of an identifying variable) (<a href="#long">Tab. 10</a>)? <br><br>
+<li>is the variable wide and nested in a wide identifying variable
+(i.e., the name of the observed variable is below the name of the
+identifying variable) (<a href="#one_wide_id">Tab. 7</a> &amp; <a href="#two_wide_id">Tab. 9</a>)?</li>
+<li>is the variable listed (i.e., the names of the variable are given as
+a value of an identifying variable) (<a href="#long">Tab. 10</a>)?
+<br><br>
 </li>
 </ul>
 </li>
@@ -273,8 +350,12 @@
 <h3 id="additional-remarks">Additional remarks<a class="anchor" aria-label="anchor" href="#additional-remarks"></a>
 </h3>
 <ul>
-<li>To work with <code>tabshiftr</code>, tables need to be read in while treating any header rows <em>as data</em>, i.e., by not setting the first row as header, because in disorganised tables it’s often not only the first row that is part of the header.</li>
-<li>Each column should be treated as a character data type, because some columns might contain data with both numeric and character cells.</li>
+<li>To work with <code>tabshiftr</code>, tables need to be read in while
+treating any header rows <em>as data</em>, i.e., by not setting the
+first row as header, because in disorganised tables it’s often not only
+the first row that is part of the header.</li>
+<li>Each column should be treated as a character data type, because some
+columns might contain data with both numeric and character cells.</li>
 </ul>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">input</span> <span class="op">&lt;-</span> <span class="fu">read_csv</span><span class="op">(</span>file <span class="op">=</span> <span class="va">...</span>,</span>
@@ -282,17 +363,43 @@
 <span>                  col_types <span class="op">=</span> <span class="fu">cols</span><span class="op">(</span>.default <span class="op">=</span> <span class="st">"c"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <ul>
 <li>
-<code><a href="../reference/reorganise.html">reorganise()</a></code> takes care of reformatting the data-types into the most permissive data type that does not introduce <code>NA</code>s where there should be data, i.e, if a variable can be numeric, it is formatted as numeric column.</li>
-<li>When setting up a schema description, some generalisations are hard to wrap your mind around. Try imagining that once you have set a variable, it’s values are “removed” from the table. For instance, once clusters are set for <a href="#implicitVar">Tab. 6</a>, imagine that the meta-data header isn’t part of the table anymore, resulting in a much simpler table. Or for <a href="#distVar">Tab. 16</a>, once territories are set, imagine that the respective <code>unit1/2/3</code> values disappear to see that the respective column is actually a tidy column of commodities.</li>
+<code><a href="../reference/reorganise.html">reorganise()</a></code> takes care of reformatting the data-types
+into the most permissive data type that does not introduce
+<code>NA</code>s where there should be data, i.e, if a variable can be
+numeric, it is formatted as numeric column.</li>
+<li>When setting up a schema description, some generalisations are hard
+to wrap your mind around. Try imagining that once you have set a
+variable, it’s values are “removed” from the table. For instance, once
+clusters are set for <a href="#implicitVar">Tab. 6</a>, imagine that the
+meta-data header isn’t part of the table anymore, resulting in a much
+simpler table. Or for <a href="#distVar">Tab. 16</a>, once territories
+are set, imagine that the respective <code>unit1/2/3</code> values
+disappear to see that the respective column is actually a tidy column of
+commodities.</li>
 </ul>
 </div>
 <div class="section level3">
 <h3 id="an-example">An example<a class="anchor" aria-label="anchor" href="#an-example"></a>
 </h3>
-<p>As an example, we show here how to build a schema description for a table that has a wide identifying variable and a listed observed variable. This table contains additionally some dummy information one would typically encounter in tables, such as <code>empty_col</code>s and rows and data that are not immediately of interest (<code>other_observed</code>).</p>
+<p>As an example, we show here how to build a schema description for a
+table that has a wide identifying variable and a listed observed
+variable. This table contains additionally some dummy information one
+would typically encounter in tables, such as <code>empty_col</code>s and
+rows and data that are not immediately of interest
+(<code>other_observed</code>).</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">input</span> <span class="op">&lt;-</span> <span class="va">tabs2shift</span><span class="op">$</span><span class="va">listed_column_wide</span><span class="op">)</span></span></code></pre></div>
-<table class="table">
+<table style="width:100%;" class="table">
+<colgroup>
+<col width="16%">
+<col width="9%">
+<col width="4%">
+<col width="15%">
+<col width="20%">
+<col width="11%">
+<col width="8%">
+<col width="13%">
+</colgroup>
 <thead><tr class="header">
 <th align="left">X1</th>
 <th align="left">X2</th>
@@ -406,10 +513,22 @@
 </tr>
 </tbody>
 </table>
-<p>In this case we don’t need to set clusters and can start immediately with setting the first id variable <code>territories</code>, which is in the first column and otherwise tidy. The order by which we set the variables determines where they ocurr in the output table. Any of the setters start by default with an empty schema, in case none is provided to them from a previous setter, thus none needs to be provided at the beginning of a schema.</p>
+<p>In this case we don’t need to set clusters and can start immediately
+with setting the first id variable <code>territories</code>, which is in
+the first column and otherwise tidy. The order by which we set the
+variables determines where they ocurr in the output table. Any of the
+setters start by default with an empty schema, in case none is provided
+to them from a previous setter, thus none needs to be provided at the
+beginning of a schema.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">schema</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"territories"</span>, columns <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
-<p>Since version 0.3.0, <code>tabshiftr</code> comes with getters that allow to debug the current schema description. To do this, however, the schema first needs to be validated. This is in order to make sure that all the generic information are evaluated with the respective input. After that, a getter can be used to extract the respective information, for example the reorganised id variables with <code><a href="../reference/getIDVars.html">getIDVars()</a></code>.</p>
+<p>Since version 0.3.0, <code>tabshiftr</code> comes with getters that
+allow to debug the current schema description. To do this, however, the
+schema first needs to be validated. This is in order to make sure that
+all the generic information are evaluated with the respective input.
+After that, a getter can be used to extract the respective information,
+for example the reorganised id variables with
+<code><a href="../reference/getIDVars.html">getIDVars()</a></code>.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/validateSchema.html">validateSchema</a></span><span class="op">(</span>schema <span class="op">=</span> <span class="va">schema</span>, input <span class="op">=</span> <span class="va">input</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="../reference/getIDVars.html">getIDVars</a></span><span class="op">(</span>input <span class="op">=</span> <span class="va">input</span><span class="op">)</span></span>
@@ -427,12 +546,18 @@
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">7</span> unit 2     </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">8</span> unit 2     </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">9</span> unit 2</span></span></code></pre></div>
-<p>After seeing that our specification results in a meaningful output, we can continue setting the other id variables <code>years</code> (tidy and in column 2) and <code>commodities</code> (spread over two columns and the values are in the first row). Note, how we pipe the previous schema into the next setter. This results in the next variable being added to that schema.</p>
+<p>After seeing that our specification results in a meaningful output,
+we can continue setting the other id variables <code>years</code> (tidy
+and in column 2) and <code>commodities</code> (spread over two columns
+and the values are in the first row). Note, how we pipe the previous
+schema into the next setter. This results in the next variable being
+added to that schema.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">schema</span> <span class="op">&lt;-</span> <span class="va">schema</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="../reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"year"</span>, columns <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"commodities"</span>, columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">6</span>, <span class="fl">7</span><span class="op">)</span>, rows <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
-<p>Validating and checking for id variables again results in the following</p>
+<p>Validating and checking for id variables again results in the
+following</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/validateSchema.html">validateSchema</a></span><span class="op">(</span>schema <span class="op">=</span> <span class="va">schema</span>, input <span class="op">=</span> <span class="va">input</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="../reference/getIDVars.html">getIDVars</a></span><span class="op">(</span>input <span class="op">=</span> <span class="va">input</span><span class="op">)</span></span>
@@ -468,13 +593,24 @@
 <span><span class="co">#&gt;   X6      X7   </span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> soybean maize</span></span></code></pre></div>
-<p>The id variable <code>commodities</code> is clearly wide (more than one column) and its’ values are not repeated four times, as it should be, judging by the combination of the other variables. However, this is an expected tentative output that will be handled in a later step and the id variables have been specified correctly.</p>
-<p>Next, we set the listed observed variables. <em>Listed</em> means that the column names of the observed variables are treated as if they were the values of an identifying variable (in column 4), while the values are in the columns 6 and 7. In this case, the values need to be filtered by <code>value</code> (i.e., the values of that variable are found in columns 6 and 7, where column 4 contains <code>value</code>).</p>
+<p>The id variable <code>commodities</code> is clearly wide (more than
+one column) and its’ values are not repeated four times, as it should
+be, judging by the combination of the other variables. However, this is
+an expected tentative output that will be handled in a later step and
+the id variables have been specified correctly.</p>
+<p>Next, we set the listed observed variables. <em>Listed</em> means
+that the column names of the observed variables are treated as if they
+were the values of an identifying variable (in column 4), while the
+values are in the columns 6 and 7. In this case, the values need to be
+filtered by <code>value</code> (i.e., the values of that variable are
+found in columns 6 and 7, where column 4 contains
+<code>value</code>).</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">schema</span> <span class="op">&lt;-</span> <span class="va">schema</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="../reference/setObsVar.html">setObsVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"harvested"</span>, columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">6</span>, <span class="fl">7</span><span class="op">)</span>, key <span class="op">=</span> <span class="fl">4</span>, value <span class="op">=</span> <span class="st">"harvested"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/setObsVar.html">setObsVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"production"</span>, columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">6</span>, <span class="fl">7</span><span class="op">)</span>, key <span class="op">=</span> <span class="fl">4</span>, value <span class="op">=</span> <span class="st">"production"</span><span class="op">)</span></span></code></pre></div>
-<p>We then get the following observed variables, which is also an expected tentative output.</p>
+<p>We then get the following observed variables, which is also an
+expected tentative output.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/validateSchema.html">validateSchema</a></span><span class="op">(</span>schema <span class="op">=</span> <span class="va">schema</span>, input <span class="op">=</span> <span class="va">input</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="../reference/getObsVars.html">getObsVars</a></span><span class="op">(</span>input <span class="op">=</span> <span class="va">input</span><span class="op">)</span></span>
@@ -491,8 +627,17 @@
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> production 2112  2122 </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">7</span> harvested  2211  2221 </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">8</span> production 2212  2222</span></span></code></pre></div>
-<p>From both, the output of <code>getIDVars</code> and <code>getObsVars</code> we can calculate how many and which combinations of data exist (e.g., the two columns in the observed variables correspond to the two values of the identifying variable <code>commodities</code>) and that they still need to be pivoted to be in a tidy arrangement.</p>
-<p>The <code><a href="../reference/reorganise.html">reorganise()</a></code> function carries out the steps of validating, extracting the variables, pivoting the tentative output and putting the final table together automatically, so it merely requires the finalised (non-validated) <code>schema</code> and the <code>input</code> table.</p>
+<p>From both, the output of <code>getIDVars</code> and
+<code>getObsVars</code> we can calculate how many and which combinations
+of data exist (e.g., the two columns in the observed variables
+correspond to the two values of the identifying variable
+<code>commodities</code>) and that they still need to be pivoted to be
+in a tidy arrangement.</p>
+<p>The <code><a href="../reference/reorganise.html">reorganise()</a></code> function carries out the steps of
+validating, extracting the variables, pivoting the tentative output and
+putting the final table together automatically, so it merely requires
+the finalised (non-validated) <code>schema</code> and the
+<code>input</code> table.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">schema</span> <span class="co"># has a pretty print function</span></span>
 <span><span class="co">#&gt;   1 cluster (whole spreadsheet)</span></span>
@@ -523,20 +668,41 @@
 <h2 id="table-types">Table types<a class="anchor" aria-label="anchor" href="#table-types"></a>
 </h2>
 <p><a name="tablesTypes"></a></p>
-<p>In this section we look at some examples of disorganised data, discuss the dimension along which they are disorganised and show which schema description should be used to reorganise them.</p>
-<p>All of the following examples contain an <code>other_observed</code>, an <code>empty_col</code> column and an empty row, which serve the purpose of dummy information or formating that could be found in any table and should not disturb the process of reorganising. You can run all the examples by simply loading the schema and calling <code>reorganise(input = tabs2shift$..., schema = schema)</code> with the respective table that is plotted for this example.</p>
+<p>In this section we look at some examples of disorganised data,
+discuss the dimension along which they are disorganised and show which
+schema description should be used to reorganise them.</p>
+<p>All of the following examples contain an <code>other_observed</code>,
+an <code>empty_col</code> column and an empty row, which serve the
+purpose of dummy information or formating that could be found in any
+table and should not disturb the process of reorganising. You can run
+all the examples by simply loading the schema and calling
+<code>reorganise(input = tabs2shift$..., schema = schema)</code> with
+the respective table that is plotted for this example.</p>
 <div class="section level3">
 <h3 id="table-contains-one-cluster">Table contains one cluster<a class="anchor" aria-label="anchor" href="#table-contains-one-cluster"></a>
 </h3>
 <div class="section level4">
 <h4 id="tidy-table">Tidy table<a class="anchor" aria-label="anchor" href="#tidy-table"></a>
 </h4>
-<p>In case the observed variables are arranged into individual columns (<a href="#tabTidy">Tab. 3</a>), we have tidy data <span class="citation">(Wickham <a href="#ref-Wickham2014" role="doc-biblioref">2014</a>)</span>, which are largely already in the target arrangement. The tidy table may however, still contain unneeded data, need different names, or transformation factors for the values.</p>
+<p>In case the observed variables are arranged into individual columns
+(<a href="#tabTidy">Tab. 3</a>), we have tidy data <span class="citation">(<a href="#ref-Wickham2014" role="doc-biblioref">Wickham 2014</a>)</span>, which are largely already
+in the target arrangement. The tidy table may however, still contain
+unneeded data, need different names, or transformation factors for the
+values.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">tabs2shift</span><span class="op">$</span><span class="va">tidy</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>
 <a name="tabTidy"></a>Table 3: A largely tidy table.</caption>
+<colgroup>
+<col width="15%">
+<col width="9%">
+<col width="15%">
+<col width="19%">
+<col width="12%">
+<col width="14%">
+<col width="12%">
+</colgroup>
 <thead><tr class="header">
 <th align="left">X1</th>
 <th align="left">X2</th>
@@ -663,13 +829,20 @@
 <div class="section level4">
 <h4 id="mismatch-of-columns-and-variables">Mismatch of columns and variables<a class="anchor" aria-label="anchor" href="#mismatch-of-columns-and-variables"></a>
 </h4>
-<p>Sometimes it may be the case that the number of variables is not the same as there are columns because either one variable is spread over several column, or one column contains several variables.</p>
-<p>In the former case, columns need to be merged (<a href="#splitCol">Tab. 4</a>) and in the latter case, columns need to be split via <a href="https://edrub.in/CheatSheets/cheatSheetStringr.pdf" class="external-link">regular expressions</a> (<a href="#mergeCol">Tab. 5</a>). For example, <code>.+?(?=_)</code> gives everything up until the first <code>_</code> and <code>(?&lt;=\\_).*</code> everything after the <code>_</code>.</p>
+<p>Sometimes it may be the case that the number of variables is not the
+same as there are columns because either one variable is spread over
+several column, or one column contains several variables.</p>
+<p>In the former case, columns need to be merged (<a href="#splitCol">Tab. 4</a>) and in the latter case, columns need to be
+split via <a href="https://edrub.in/CheatSheets/cheatSheetStringr.pdf" class="external-link">regular
+expressions</a> (<a href="#mergeCol">Tab. 5</a>). For example,
+<code>.+?(?=_)</code> gives everything up until the first <code>_</code>
+and <code>(?&lt;=\\_).*</code> everything after the <code>_</code>.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">input</span> <span class="op">&lt;-</span> <span class="va">tabs2shift</span><span class="op">$</span><span class="va">split_column</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>
-<a name="mergeCol"></a>Table 4: The variables <code>year</code> is split up into two columns.</caption>
+<a name="mergeCol"></a>Table 4: The variables <code>year</code>
+is split up into two columns.</caption>
 <colgroup>
 <col width="14%">
 <col width="10%">
@@ -802,9 +975,18 @@
 <span>  <span class="fu"><a href="../reference/setObsVar.html">setObsVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"production"</span>, columns <span class="op">=</span> <span class="fl">7</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">tabs2shift</span><span class="op">$</span><span class="va">merged_column</span><span class="op">)</span></span></code></pre></div>
-<table class="table">
+<table style="width:100%;" class="table">
 <caption>
-<a name="splitCol"></a>Table 5: The variables <code>year</code> and <code>commodities</code> are stored in the same column.</caption>
+<a name="splitCol"></a>Table 5: The variables <code>year</code>
+and <code>commodities</code> are stored in the same column.</caption>
+<colgroup>
+<col width="16%">
+<col width="20%">
+<col width="20%">
+<col width="13%">
+<col width="15%">
+<col width="13%">
+</colgroup>
 <thead><tr class="header">
 <th align="left">X1</th>
 <th align="left">X2</th>
@@ -907,12 +1089,18 @@
 <div class="section level4">
 <h4 id="implicit-variables">Implicit variables<a class="anchor" aria-label="anchor" href="#implicit-variables"></a>
 </h4>
-<p>When data are split up into clusters that are stored in separate files or spreadsheets, the cluster ID is often recorded not in the table as an explicit variable, but is only provided in the file or table name. In those cases, we have to register this cluster ID as an identifying variable nevertheless, to output a consistent table.</p>
+<p>When data are split up into clusters that are stored in separate
+files or spreadsheets, the cluster ID is often recorded not in the table
+as an explicit variable, but is only provided in the file or table name.
+In those cases, we have to register this cluster ID as an identifying
+variable nevertheless, to output a consistent table.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">input</span> <span class="op">&lt;-</span> <span class="va">tabs2shift</span><span class="op">$</span><span class="va">implicit_variable</span><span class="op">)</span></span></code></pre></div>
 <table style="width:100%;" class="table">
 <caption>
-<a name="implicitVar"></a>Table 6: The information about which territory we are dealing with is missing or implied by some meta-data.</caption>
+<a name="implicitVar"></a>Table 6: The information about which
+territory we are dealing with is missing or implied by some
+meta-data.</caption>
 <colgroup>
 <col width="73%">
 <col width="9%">
@@ -927,13 +1115,15 @@
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left">this meta-data header doesn’t tell us this tables is actually about unit 1.</td>
+<td align="left">this meta-data header doesn’t tell us this tables is
+actually about unit 1.</td>
 <td align="left">.</td>
 <td align="left">.</td>
 <td align="left">.</td>
 </tr>
 <tr class="even">
-<td align="left">We might get these information only from the context</td>
+<td align="left">We might get these information only from the
+context</td>
 <td align="left">.</td>
 <td align="left">.</td>
 <td align="left">.</td>
@@ -988,12 +1178,33 @@
 <div class="section level4">
 <h4 id="wide-variables">Wide variables<a class="anchor" aria-label="anchor" href="#wide-variables"></a>
 </h4>
-<p>In case identifying variables are factors with a small number of levels, those levels may be falsely used as names of other variables, where they would be next to each other and thus "wide" (<a href="#one_wide_id">Tab. 7</a>). Those other variables (both identifying and observed variables) would then be "nested" in the wide identifying variables. In those cases we have to record for the identifying variable(s) the columns and the row in which the <strong>values of the identifying variable</strong> are found (they will look like they are part of the header). For the observed variable(s) we need to record the columns and the row where the <strong>name of that variable</strong> is found.</p>
+<p>In case identifying variables are factors with a small number of
+levels, those levels may be falsely used as names of other variables,
+where they would be next to each other and thus "wide" (<a href="#one_wide_id">Tab. 7</a>). Those other variables (both identifying
+and observed variables) would then be "nested" in the wide identifying
+variables. In those cases we have to record for the identifying
+variable(s) the columns and the row in which the <strong>values of the
+identifying variable</strong> are found (they will look like they are
+part of the header). For the observed variable(s) we need to record the
+columns and the row where the <strong>name of that variable</strong> is
+found.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">input</span> <span class="op">&lt;-</span> <span class="va">tabs2shift</span><span class="op">$</span><span class="va">one_wide_id</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>
-<a name="one_wide_id"></a>Table 7: The observed variables are nested within the identifying variable <code>commodities</code>.</caption>
+<a name="one_wide_id"></a>Table 7: The observed variables are
+nested within the identifying variable
+<code>commodities</code>.</caption>
+<colgroup>
+<col width="16%">
+<col width="4%">
+<col width="9%">
+<col width="13%">
+<col width="14%">
+<col width="13%">
+<col width="14%">
+<col width="13%">
+</colgroup>
 <thead><tr class="header">
 <th align="left">X1</th>
 <th align="left">X2</th>
@@ -1084,12 +1295,18 @@
 <span>  <span class="fu"><a href="../reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"commodities"</span>, columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">6</span><span class="op">)</span>, rows <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/setObsVar.html">setObsVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"harvested"</span>, columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">6</span><span class="op">)</span>, top <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/setObsVar.html">setObsVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"production"</span>, columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">7</span><span class="op">)</span>, top <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
-<p>The same is also true in case the identifying variables are actually nested within the observed variables, i.e., the names of the observed variables are on top of the names of the id variables (<a href="#wide_obs">Tab. 8</a>). However, if an observed variables is in the topmost row (and there are no clusters), <code>top = 1</code> can be omitted.</p>
+<p>The same is also true in case the identifying variables are actually
+nested within the observed variables, i.e., the names of the observed
+variables are on top of the names of the id variables (<a href="#wide_obs">Tab. 8</a>). However, if an observed variables is in
+the topmost row (and there are no clusters), <code>top = 1</code> can be
+omitted.</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">input</span> <span class="op">&lt;-</span> <span class="va">tabs2shift</span><span class="op">$</span><span class="va">wide_obs</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>
-<a name="wide_obs"></a>Table 8: The identifying variable <code>commodities</code> is nested within the observed variables.</caption>
+<a name="wide_obs"></a>Table 8: The identifying variable
+<code>commodities</code> is nested within the observed
+variables.</caption>
 <thead><tr class="header">
 <th align="left">X1</th>
 <th align="left">X2</th>
@@ -1156,12 +1373,16 @@
 <span>  <span class="fu"><a href="../reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"commodities"</span>, columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span><span class="op">:</span><span class="fl">6</span><span class="op">)</span>, rows <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/setObsVar.html">setObsVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"harvested"</span>, columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/setObsVar.html">setObsVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"production"</span>, columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">6</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>In case several variables are nested within other variables, we have to specify for all nested or nesting variables in which respective rows their values sit.</p>
+<p>In case several variables are nested within other variables, we have
+to specify for all nested or nesting variables in which respective rows
+their values sit.</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">input</span> <span class="op">&lt;-</span> <span class="va">tabs2shift</span><span class="op">$</span><span class="va">two_wide_id</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>
-<a name="two_wide_id"></a>Table 9: The observed variables are nested within the identifying variable <code>year</code> and <code>commodities</code>.</caption>
+<a name="two_wide_id"></a>Table 9: The observed variables are
+nested within the identifying variable <code>year</code> and
+<code>commodities</code>.</caption>
 <colgroup>
 <col width="12%">
 <col width="10%">
@@ -1253,12 +1474,33 @@
 <div class="section level4">
 <h4 id="listed-observed-variables">Listed <em>observed variables</em><a class="anchor" aria-label="anchor" href="#listed-observed-variables"></a>
 </h4>
-<p>Some tables contain a column where the names of observed variables (<code>harvested</code> and <code>production</code>) are treated as if they were the values of an identifying variable (<code>dimension</code>), while the values are presented in only one column (<code>values</code>) (<a href="#long">Tab. 10</a>). To end up with tidy data in those cases, we need to extract the values associated with the observed variables. Thus, we define the observed variables and specify the <code>key =</code> in which the variable names sit, and the <code>value =</code> the variable name has, to extract that variable.</p>
+<p>Some tables contain a column where the names of observed variables
+(<code>harvested</code> and <code>production</code>) are treated as if
+they were the values of an identifying variable
+(<code>dimension</code>), while the values are presented in only one
+column (<code>values</code>) (<a href="#long">Tab. 10</a>). To end up
+with tidy data in those cases, we need to extract the values associated
+with the observed variables. Thus, we define the observed variables and
+specify the <code>key =</code> in which the variable names sit, and the
+<code>value =</code> the variable name has, to extract that
+variable.</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">input</span> <span class="op">&lt;-</span> <span class="va">tabs2shift</span><span class="op">$</span><span class="va">listed_column</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>
-<a name="long"></a>Table 10: The variable names of the observed variable are treated as if they were the values of the identifying variable <code>dimension</code>.</caption>
+<a name="long"></a>Table 10: The variable names of the observed
+variable are treated as if they were the values of the identifying
+variable <code>dimension</code>.</caption>
+<colgroup>
+<col width="15%">
+<col width="9%">
+<col width="15%">
+<col width="19%">
+<col width="3%">
+<col width="14%">
+<col width="9%">
+<col width="12%">
+</colgroup>
 <thead><tr class="header">
 <th align="left">X1</th>
 <th align="left">X2</th>
@@ -1459,12 +1701,28 @@
 <span>  <span class="fu"><a href="../reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"commodities"</span>, columns <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/setObsVar.html">setObsVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"harvested"</span>, columns <span class="op">=</span> <span class="fl">7</span>, key <span class="op">=</span> <span class="fl">6</span>, value <span class="op">=</span> <span class="st">"harvested"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/setObsVar.html">setObsVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"production"</span>, columns <span class="op">=</span> <span class="fl">7</span>, key <span class="op">=</span> <span class="fl">6</span>, value <span class="op">=</span> <span class="st">"production"</span><span class="op">)</span></span></code></pre></div>
-<p>Moreover, (several) identifying variables may be wide additionally and we have to proceed as mentioned above, by providing the columns and the rows of the variable values (which appear to be names).</p>
+<p>Moreover, (several) identifying variables may be wide additionally
+and we have to proceed as mentioned above, by providing the columns and
+the rows of the variable values (which appear to be names).</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">input</span> <span class="op">&lt;-</span> <span class="va">tabs2shift</span><span class="op">$</span><span class="va">listed_column_wide</span><span class="op">)</span></span></code></pre></div>
-<table class="table">
+<table style="width:100%;" class="table">
 <caption>
-<a name="wideLong"></a>Table 11: The identifying variable <code>commodities</code> is treated as if it were the observed variables while the variable names of the observed variable are treated as if they were the values of the identifying variable <code>dimension</code>.</caption>
+<a name="wideLong"></a>Table 11: The identifying variable
+<code>commodities</code> is treated as if it were the observed variables
+while the variable names of the observed variable are treated as if they
+were the values of the identifying variable
+<code>dimension</code>.</caption>
+<colgroup>
+<col width="16%">
+<col width="9%">
+<col width="4%">
+<col width="15%">
+<col width="20%">
+<col width="11%">
+<col width="8%">
+<col width="13%">
+</colgroup>
 <thead><tr class="header">
 <th align="left">X1</th>
 <th align="left">X2</th>
@@ -1595,16 +1853,28 @@
 <div class="section level3">
 <h3 id="table-contains-several-clusters">Table contains several clusters<a class="anchor" aria-label="anchor" href="#table-contains-several-clusters"></a>
 </h3>
-<p>Clusters are typically of the same arrangement within one table, they can be repeated along rows (horizontally) or along columns (vertically), but also a non-systematic distribution is possible. Moreover, clusters may be nested into some grouping variable in a similar way that data are nested into clusters. A table could also be treated like a cluster when the table is not only composed of the table, but perhaps also text in the form of some table description (that may be scattered in the document and) that does not allow the table to start at the table origin in the topmost left cell.</p>
+<p>Clusters are typically of the same arrangement within one table, they
+can be repeated along rows (horizontally) or along columns (vertically),
+but also a non-systematic distribution is possible. Moreover, clusters
+may be nested into some grouping variable in a similar way that data are
+nested into clusters. A table could also be treated like a cluster when
+the table is not only composed of the table, but perhaps also text in
+the form of some table description (that may be scattered in the
+document and) that does not allow the table to start at the table origin
+in the topmost left cell.</p>
 <div class="section level4">
 <h4 id="horizontal-clusters">Horizontal clusters<a class="anchor" aria-label="anchor" href="#horizontal-clusters"></a>
 </h4>
-<p>In case clusters are sitting right next to each other in the same origin row (<a href="#clusHor">Tab. 12</a>), it is sufficient to provide the topmost row and all leftmost columns at which a new cluster starts.</p>
+<p>In case clusters are sitting right next to each other in the same
+origin row (<a href="#clusHor">Tab. 12</a>), it is sufficient to provide
+the topmost row and all leftmost columns at which a new cluster
+starts.</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">input</span> <span class="op">&lt;-</span> <span class="va">tabs2shift</span><span class="op">$</span><span class="va">clusters_horizontal</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>
-<a name="clusHor"></a>Table 12: Horizontal clusters of the identifying variable <code>period</code>.</caption>
+<a name="clusHor"></a>Table 12: Horizontal clusters of the
+identifying variable <code>period</code>.</caption>
 <colgroup>
 <col width="11%">
 <col width="6%">
@@ -1716,12 +1986,25 @@
 <div class="section level4">
 <h4 id="vertical-clusters">Vertical clusters<a class="anchor" aria-label="anchor" href="#vertical-clusters"></a>
 </h4>
-<p>For vertically arranged clusters (<a href="#clusId">Tab. 13</a>), just like for the horizontal case, the respective rows and columns need to be provided.</p>
+<p>For vertically arranged clusters (<a href="#clusId">Tab. 13</a>),
+just like for the horizontal case, the respective rows and columns need
+to be provided.</p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">input</span> <span class="op">&lt;-</span> <span class="va">tabs2shift</span><span class="op">$</span><span class="va">clusters_vertical</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>
-<a name="clusId"></a>Table 13: Vertical clusters of the identifying variable <code>period</code>.</caption>
+<a name="clusId"></a>Table 13: Vertical clusters of the
+identifying variable <code>period</code>.</caption>
+<colgroup>
+<col width="15%">
+<col width="8%">
+<col width="18%">
+<col width="3%">
+<col width="15%">
+<col width="12%">
+<col width="13%">
+<col width="12%">
+</colgroup>
 <thead><tr class="header">
 <th align="left">X1</th>
 <th align="left">X2</th>
@@ -1877,12 +2160,30 @@
 <div class="section level4">
 <h4 id="clusters-of-observed-variables">Clusters of observed variables<a class="anchor" aria-label="anchor" href="#clusters-of-observed-variables"></a>
 </h4>
-<p>The previous two types of clusters are clusters of identifying variables, but it may also be the case that the observed variables are split up into distinct clusters. Here, we need to specify first of all <code>setClusters(..., id = "observed")</code> to indicate that clusters are observed variables. Next, we need to set up the observed variables so that they contain <code>"key = "cluster"</code> and in <code>value</code> the number of the cluster this variable can be found in.</p>
+<p>The previous two types of clusters are clusters of identifying
+variables, but it may also be the case that the observed variables are
+split up into distinct clusters. Here, we need to specify first of all
+<code>setClusters(..., id = "observed")</code> to indicate that clusters
+are observed variables. Next, we need to set up the observed variables
+so that they contain <code>"key = "cluster"</code> and in
+<code>value</code> the number of the cluster this variable can be found
+in.</p>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">input</span> <span class="op">&lt;-</span> <span class="va">tabs2shift</span><span class="op">$</span><span class="va">clusters_observed</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>
-<a name="clusMeas"></a>Table 14: Vertical clusters of the observed variables.</caption>
+<a name="clusMeas"></a>Table 14: Vertical clusters of the
+observed variables.</caption>
+<colgroup>
+<col width="14%">
+<col width="15%">
+<col width="9%">
+<col width="19%">
+<col width="15%">
+<col width="3%">
+<col width="7%">
+<col width="13%">
+</colgroup>
 <thead><tr class="header">
 <th align="left">X1</th>
 <th align="left">X2</th>
@@ -2108,12 +2409,31 @@
 <div class="section level4">
 <h4 id="clusters-that-are-nested-into-another-variable">Clusters that are nested into another variable<a class="anchor" aria-label="anchor" href="#clusters-that-are-nested-into-another-variable"></a>
 </h4>
-<p>When (some) clusters are nested into a (grouping) variable of interest, not only the cluster positions need to be specified, but also their relation to the grouping variable. Similar to the cluster ID, this group ID also needs to be specified as an identifying variable and needs to be provided as <code>group = ...</code> and the membership of each cluster to a group needs to be specified in <code>member = ...</code>. The cluster position needs to be specified just as it would be without groups.</p>
+<p>When (some) clusters are nested into a (grouping) variable of
+interest, not only the cluster positions need to be specified, but also
+their relation to the grouping variable. Similar to the cluster ID, this
+group ID also needs to be specified as an identifying variable and needs
+to be provided as <code>group = ...</code> and the membership of each
+cluster to a group needs to be specified in <code>member = ...</code>.
+The cluster position needs to be specified just as it would be without
+groups.</p>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">input</span> <span class="op">&lt;-</span> <span class="va">tabs2shift</span><span class="op">$</span><span class="va">clusters_nested</span><span class="op">)</span></span></code></pre></div>
-<table class="table">
+<table style="width:100%;" class="table">
 <caption>
-<a name="clustNest"></a>Table 15: Clusters are grouped according to a variable of interest that should also be captured.</caption>
+<a name="clustNest"></a>Table 15: Clusters are grouped
+according to a variable of interest that should also be
+captured.</caption>
+<colgroup>
+<col width="12%">
+<col width="15%">
+<col width="3%">
+<col width="19%">
+<col width="12%">
+<col width="14%">
+<col width="8%">
+<col width="12%">
+</colgroup>
 <thead><tr class="header">
 <th align="left">X1</th>
 <th align="left">X2</th>
@@ -2331,12 +2651,31 @@
 <div class="section level4">
 <h4 id="variables-that-are-distinct-from-a-cluster">Variables that are distinct from a cluster<a class="anchor" aria-label="anchor" href="#variables-that-are-distinct-from-a-cluster"></a>
 </h4>
-<p>When not all identifying variables can be provided relative to the cluster origin, for example because they are missing for some clusters, it makes more sense to define such a variable as a distinct variable. This is done by providing <code>row</code> and <code>col</code> as absolute values and setting <code>distinct = TRUE</code>. Other variables that are all arranged in the same way in each cluster can be specified so that their row and column indices are given relative to the cluster position (<code>relative = TRUE</code>), as shown in the alternative shema below.</p>
+<p>When not all identifying variables can be provided relative to the
+cluster origin, for example because they are missing for some clusters,
+it makes more sense to define such a variable as a distinct variable.
+This is done by providing <code>row</code> and <code>col</code> as
+absolute values and setting <code>distinct = TRUE</code>. Other
+variables that are all arranged in the same way in each cluster can be
+specified so that their row and column indices are given relative to the
+cluster position (<code>relative = TRUE</code>), as shown in the
+alternative shema below.</p>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">input</span> <span class="op">&lt;-</span> <span class="va">tabs2shift</span><span class="op">$</span><span class="va">clusters_messy</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>
-<a name="distVar"></a>Table 16: Several clusters where one variable is not available for each cluster, but distinct of them.</caption>
+<a name="distVar"></a>Table 16: Several clusters where one
+variable is not available for each cluster, but distinct of
+them.</caption>
+<colgroup>
+<col width="16%">
+<col width="13%">
+<col width="15%">
+<col width="16%">
+<col width="13%">
+<col width="15%">
+<col width="9%">
+</colgroup>
 <thead><tr class="header">
 <th align="left">X1</th>
 <th align="left">X2</th>
@@ -2486,7 +2825,12 @@
 <div class="section level4">
 <h4 id="messy-clusters">Messy clusters<a class="anchor" aria-label="anchor" href="#messy-clusters"></a>
 </h4>
-<p>In case several clusters are neither aligned along a row nor a column, and are all of differing size, the respective information need to be provided at the same index of the respective property. For example, three clusters, where the first cluster starts at (1,1) and is 3 by 4 cells in size, where the second clusters starts at (5,2) and is 5 by 5 cells in size, and so on, needs to be specified as below.</p>
+<p>In case several clusters are neither aligned along a row nor a
+column, and are all of differing size, the respective information need
+to be provided at the same index of the respective property. For
+example, three clusters, where the first cluster starts at (1,1) and is
+3 by 4 cells in size, where the second clusters starts at (5,2) and is 5
+by 5 cells in size, and so on, needs to be specified as below.</p>
 <div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">schema</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/setCluster.html">setCluster</a></span><span class="op">(</span>id <span class="op">=</span> <span class="va">...</span>,</span>
 <span>                     left <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">5</span><span class="op">)</span>, top <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">5</span>, <span class="fl">1</span><span class="op">)</span>,  </span>
@@ -2494,19 +2838,26 @@
 <span>                     <span class="va">...</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="../reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"territories"</span>, columns <span class="op">=</span> <span class="fu"><a href="../reference/dot-find.html">.find</a></span><span class="op">(</span>col <span class="op">=</span> <span class="fl">1</span>, relative <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="va">...</span></span></code></pre></div>
-<p>Additionally, given that at least the tables within each cluster are all arranged in the same way, the contained variables can be specified so that their row and column indices are given relative to the cluster position (<code>relative = TRUE</code>). If also that is not the case, the row and column values for each cluster need to be provided for the respective variables in the same way as for cluster positions.</p>
+<p>Additionally, given that at least the tables within each cluster are
+all arranged in the same way, the contained variables can be specified
+so that their row and column indices are given relative to the cluster
+position (<code>relative = TRUE</code>). If also that is not the case,
+the row and column values for each cluster need to be provided for the
+respective variables in the same way as for cluster positions.</p>
 </div>
 </div>
 </div>
 <div class="section level2">
-<h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+<h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<div id="refs" class="references">
-<div id="ref-Broman">
-<p>Broman, Karl W., and Kara H. Woo. 2018. “Data Organization in Spreadsheets.” <em>PeerJ Preprints</em>. <a href="https://doi.org/10.7287/peerj.preprints.3183v2" class="external-link">https://doi.org/10.7287/peerj.preprints.3183v2</a>.</p>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-Broman" class="csl-entry">
+Broman, Karl W., and Kara H. Woo. 2018. <span>“Data Organization in
+Spreadsheets.”</span> <em>PeerJ Preprints</em>. <a href="https://doi.org/10.7287/peerj.preprints.3183v2" class="external-link">https://doi.org/10.7287/peerj.preprints.3183v2</a>.
 </div>
-<div id="ref-Wickham2014">
-<p>Wickham, Hadley. 2014. “Tidy Data.” <em>Journal of Statistical Software</em> 59 (10): 1–23. <a href="https://doi.org/10.18637/jss.v059.i10" class="external-link">https://doi.org/10.18637/jss.v059.i10</a>.</p>
+<div id="ref-Wickham2014" class="csl-entry">
+Wickham, Hadley. 2014. <span>“Tidy Data.”</span> <em>Journal of
+Statistical Software</em> 59 (10): 1–23. <a href="https://doi.org/10.18637/jss.v059.i10" class="external-link">https://doi.org/10.18637/jss.v059.i10</a>.
 </div>
 </div>
 </div>
