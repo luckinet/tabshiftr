@@ -65,6 +65,5 @@ Suggests:
     knitr,
     rmarkdown,
     bookdown,
-    readr,
-    covr
+    readr
 VignetteBuilder: knitr

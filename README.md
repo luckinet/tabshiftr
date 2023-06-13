@@ -4,9 +4,10 @@
 # tabshiftr <a href='https://luckinet.github.io/tabshiftr/'><img src='man/figures/logo.svg' align="right" height="200" /></a>
 
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/tabshiftr)](https://cran.r-project.org/package=tabshiftr)
-[![R-CMD-check](https://github.com/EhrmannS/tabshiftr/workflows/R-CMD-check/badge.svg)](https://github.com/luckinet/tabshiftr/actions)
-[![Coverage
-Status](https://img.shields.io/codecov/c/github/EhrmannS/tabshiftr/master.svg)](https://codecov.io/github/EhrmannS/tabshiftr?branch=master)
+[![DOI](https://zenodo.org/badge/248468235.svg)](https://zenodo.org/badge/latestdoi/248468235)
+[![R-CMD-check](https://github.com/luckinet/tabshiftr/workflows/R-CMD-check/badge.svg)](https://github.com/luckinet/tabshiftr/actions)
+[\[Coverage
+Status\](https://codecov.io/gh/luckinet/tabshiftr/branch/main/graph/badge.svg](https://codecov.io/github/luckinet/tabshiftr?branch=master)
 [![](http://cranlogs.r-pkg.org/badges/grand-total/tabshiftr)](https://cran.r-project.org/package=tabshiftr)
 [![Lifecycle:maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://lifecycle.r-lib.org/articles/stages.html)
 
@@ -289,18 +290,18 @@ kable(output)
 
 # Contributions
 
--   tabshiftr is still in development. So far it reliably reorganises 20
-    different types of tables, but additional dimensions of
-    disorganisation might show themselves. If you encounter a table that
-    can’t be reorganised with the current infrastructure, we’d be more
-    than happy to collaborate on advancing `tabshiftr`.
--   Informative error management is work in process.
--   Moreover, the resulting schema descriptions can be useful for data
-    archiving or database building and `tabshiftr` should at some point
-    support that those schemas can be exported into data-formats that
-    are used by downstream applications (xml, json, …), following proper
-    (ISO) standards. In case you have experience with those standards
-    and would like to collaborate on it, please get in touch!
+- tabshiftr is still in development. So far it reliably reorganises 20
+  different types of tables, but additional dimensions of
+  disorganisation might show themselves. If you encounter a table that
+  can’t be reorganised with the current infrastructure, we’d be more
+  than happy to collaborate on advancing `tabshiftr`.
+- Informative error management is work in process.
+- Moreover, the resulting schema descriptions can be useful for data
+  archiving or database building and `tabshiftr` should at some point
+  support that those schemas can be exported into data-formats that are
+  used by downstream applications (xml, json, …), following proper (ISO)
+  standards. In case you have experience with those standards and would
+  like to collaborate on it, please get in touch!
 
 # Acknowledgement
 
