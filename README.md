@@ -6,9 +6,7 @@
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/tabshiftr)](https://cran.r-project.org/package=tabshiftr)
 [![DOI](https://zenodo.org/badge/248468235.svg)](https://zenodo.org/badge/latestdoi/248468235)
 [![R-CMD-check](https://github.com/luckinet/tabshiftr/workflows/R-CMD-check/badge.svg)](https://github.com/luckinet/tabshiftr/actions)
-[\[Coverage
-Status\](https://codecov.io/gh/luckinet/tabshiftr/branch/main/graph/badge.svg](https://codecov.io/github/luckinet/tabshiftr?branch=master)
-[![](http://cranlogs.r-pkg.org/badges/grand-total/tabshiftr)](https://cran.r-project.org/package=tabshiftr)
+[![codecov](https://codecov.io/gh/luckinet/tabshiftr/branch/master/graph/badge.svg?token=hjppymcGr3)](https://codecov.io/gh/EhrmannS/geometr)[![](http://cranlogs.r-pkg.org/badges/grand-total/tabshiftr)](https://cran.r-project.org/package=tabshiftr)
 [![Lifecycle:maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://lifecycle.r-lib.org/articles/stages.html)
 
 ## Overview
