@@ -293,7 +293,8 @@
         obsNames <- names(obs)
         idNames <- names(ids)
 
-        wideColnames <- wideColnames %>% select(all_of(names(wideID)), everything())
+        wideColnames <- wideColnames %>%
+          select(all_of(names(wideID)), everything())
 
         # find the correct name by joining via the column names
         tempColnames <- temp %>%
