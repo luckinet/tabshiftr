@@ -42,8 +42,6 @@
 
 reorganise <- function(input = NULL, schema = NULL){
 
-  # library(tidyverse); library(rlang); library(checkmate)
-
   # check validity of arguments
   assertDataFrame(x = input)
 
