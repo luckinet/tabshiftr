@@ -1,3 +1,7 @@
+# tabshiftr 0.4.2
+
+- include split and merge functionality for cluster ID.
+
 # tabshiftr 0.4.1
 
 - adapt to update of dplyr
