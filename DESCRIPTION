@@ -55,6 +55,8 @@ Imports:
     tidyr,
     magrittr,
     tidyselect,
+    pdftools,
+    ggplot2,
     testthat,
     crayon,
     methods,
