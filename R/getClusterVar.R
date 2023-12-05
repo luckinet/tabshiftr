@@ -22,6 +22,7 @@
 #'    getClusterVar(input = input)
 #' @importFrom checkmate assertTRUE
 #' @importFrom purrr map set_names
+#' @importFrom tidyr extract
 #' @export
 
 getClusterVar <- function(schema = NULL, input = NULL){
@@ -69,7 +70,33 @@ getClusterVar <- function(schema = NULL, input = NULL){
             theCols <- c(clusters$col[ix]:(clusters$width[ix]+clusters$col[ix]-1))
             theCols <- theCols[theCols %in% filter$col]
           }
-          input[theRows, theCols]
+          temp <- input[theRows, theCols]
+
+
+          # split ...
+          if(!is.null(theVar$split)){
+            # need to distinguish between one and several columns
+            if(dim(temp)[2] == 1){
+              temp <- temp %>%
+                tidyr::extract(col = 1, into = names(temp), regex = paste0("(", theVar$split, ")"))
+            } else {
+              temp <- map_dfc(.x = seq_along(temp), .f = function(iy){
+                temp %>%
+                  select(all_of(iy)) %>%
+                  extract(col = 1, into = names(temp)[iy], regex = paste0("(", theVar$split, ")"))
+              })
+            }
+          }
+
+          # ... or merge the variable
+          if(!is.null(theVar$merge)){
+            newName <- paste0(names(temp), collapse = theVar$merge)
+            temp <- temp %>%
+              unite(col = !!newName, sep = theVar$merge)
+          }
+
+          temp
+
         })
         names(out) <- rep(clusters$id, nClusters)
 
