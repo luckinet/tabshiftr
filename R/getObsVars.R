@@ -46,7 +46,7 @@ getObsVars <- function(schema = NULL, input = NULL){
   listedObs <- map(.x = seq_along(variables), .f = function(ix){
     theVar <- variables[[ix]]
     if(theVar$type == "observed"){
-      if(is.numeric(theVar$key)){
+      if(is.numeric(theVar$key) | is.list(theVar$key)){
         if(!any(0 %in% theVar$key)){
           c(theVar$key, theVar$col)
         }
@@ -61,7 +61,14 @@ getObsVars <- function(schema = NULL, input = NULL){
       vars <- NULL
       if(length(listedObs) != 0){
 
+        if(is.list(listedObs[[1]][1])){
+          listedObs[[1]][1] <- .eval_find(input = input, col = listedObs[[1]][1], clusters = clusters)
+          names(listedObs[[1]]) <- NULL
+          listedObs[[1]] <- unlist(listedObs[[1]])
+        }
+
         listedCols <- reduce(.x = listedObs, .f = function(x,y) if (identical(x,y)) x else FALSE)
+
         varRows <- clusters$row[ix]:(clusters$row[ix]+clusters$height[ix] - 1)
         if(isFALSE(listedCols)){
           stop("implement case where not all observed variables are listed.")
