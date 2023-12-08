@@ -94,12 +94,12 @@ getIDVars <- function(schema = NULL, input = NULL){
             # need to distinguish between one and several columns
             if(dim(temp)[2] == 1){
               temp <- temp %>%
-                extract(col = 1, into = names(temp), regex = paste0("(", tempVar$split, ")"))
+                extract(col = 1, into = names(temp), regex = tempVar$split)
             } else {
               temp <- map_dfc(.x = seq_along(temp), .f = function(iy){
                 temp %>%
                   select(all_of(iy)) %>%
-                  extract(col = 1, into = names(temp)[iy], regex = paste0("(", tempVar$split, ")"))
+                  extract(col = 1, into = names(temp)[iy], regex = tempVar$split)
               })
             }
           }
