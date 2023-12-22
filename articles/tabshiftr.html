@@ -293,8 +293,9 @@ several clusters of comparable variables.</caption>
 </h3>
 <p>To set up a schema description, go through the following questions
 step by step and provide the respective answer in the respective
-function. Linked tables in the <a href="#tablesTypes">next section</a>
-can serve as examples to compare against.</p>
+function. <a href="#tablesTypes">Linked tables</a> can serve as examples
+to compare against and right after the decision tree there is a
+step-by-step hands-on example of how to build a schema description.</p>
 <ol style="list-style-type: decimal">
 <li><p><strong>Variables</strong>: Clarify which are the identifying
 variables and which are the observed variables. Make sure not to mistake
@@ -352,8 +353,18 @@ a value of an identifying variable) (<a href="#long">Tab. 10</a>)?
 <ul>
 <li>To work with <code>tabshiftr</code>, tables need to be read in while
 treating any header rows <em>as data</em>, i.e., by not setting the
-first row as header, because in disorganised tables it’s often not only
-the first row that is part of the header.</li>
+first row as header</li>
+<li>To spell this out explicitly, there are two almost inverse cases
+where the type of a variable is confused and the <strong>name</strong>
+and <strong>values</strong> of a variable end up in the wrong place:
+<ol style="list-style-type: decimal">
+<li>Tables are wide when the header contains the <strong>values</strong>
+of one or more (identifying) variables as if they were names.</li>
+<li>When tables are long, it can occur that the <strong>name</strong> of
+several observed variables are gathered as if they were values into a
+single column.</li>
+</ol>
+</li>
 <li>Each column should be treated as a character data type, because some
 columns might contain data with both numeric and character cells.</li>
 </ul>
@@ -366,15 +377,15 @@ columns might contain data with both numeric and character cells.</li>
 <code><a href="../reference/reorganise.html">reorganise()</a></code> takes care of reformatting the data-types
 into the most permissive data type that does not introduce
 <code>NA</code>s where there should be data, i.e, if a variable can be
-numeric, it is formatted as numeric column.</li>
+numeric, it is formatted as numeric column, otherwise it will be stored
+as a character column.</li>
 <li>When setting up a schema description, some generalisations are hard
 to wrap your mind around. Try imagining that once you have set a
-variable, it’s values are “removed” from the table. For instance, once
-clusters are set for <a href="#implicitVar">Tab. 6</a>, imagine that the
-meta-data header isn’t part of the table anymore, resulting in a much
-simpler table. Or for <a href="#distVar">Tab. 16</a>, once territories
-are set, imagine that the respective <code>unit1/2/3</code> values
-disappear to see that the respective column is actually a tidy column of
+variable, it’s values are “cut out” from the input table and pasted into
+the reshaped table. For instance, once clusters are set for <a href="#implicitVar">Tab. 6</a>, imagine that the meta-data header isn’t
+part of the table anymore, resulting in a much simpler table. Or for <a href="#distVar">Tab. 16</a>, once territories are set, imagine that the
+respective <code>unit1/2/3</code> values disappear, which makes it
+easier to see that the respective column is actually a tidy column of
 commodities.</li>
 </ul>
 </div>
