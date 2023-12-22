@@ -10,8 +10,8 @@ test_that("split a column that contains several identifying variables in one col
 
   schema <-
     setIDVar(name = "territories", columns = 1) %>%
-    setIDVar(name = "year", columns = 2, split = ".+?(?=_)") %>%
-    setIDVar(name = "commodities", columns = 2, split = "(?<=\\_).*") %>%
+    setIDVar(name = "year", columns = 2, split = "(.+?(?=_))") %>%
+    setIDVar(name = "commodities", columns = 2, split = "((?<=\\_).*)") %>%
     setObsVar(name = "harvested", columns = 4) %>%
     setObsVar(name = "production", columns = 5)
 
