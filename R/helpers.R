@@ -86,7 +86,9 @@
         }
 
         # multiply with factor
-        tmp <- suppressWarnings(as.numeric(tmp)) * obsVars[[i]]$factor
+        if(!all(is.na(as.numeric(tmp)))){
+          tmp <- suppressWarnings(as.numeric(tmp)) * obsVars[[i]]$factor
+        }
 
         # apply function to aggregate duplicated values
         if(length(tmp) > 1){

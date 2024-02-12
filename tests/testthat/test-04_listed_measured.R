@@ -1,6 +1,7 @@
 library(tabshiftr)
 library(testthat)
 library(checkmate)
+library(dplyr)
 context("listed")
 
 
