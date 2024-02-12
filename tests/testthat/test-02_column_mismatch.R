@@ -1,6 +1,7 @@
 library(tabshiftr)
 library(testthat)
 library(checkmate)
+library(dplyr)
 context("mismatch")
 
 
@@ -15,7 +16,9 @@ test_that("split a column that contains several identifying variables in one col
     setObsVar(name = "harvested", columns = 4) %>%
     setObsVar(name = "production", columns = 5)
 
-  .expect_valid_table(x = reorganise(input = input, schema = schema), units = 2)
+  reorganise(input = input, schema = schema) %>%
+    arrange(territories, year, commodities) %>%
+    .expect_valid_table(units = 2)
 
 })
 
@@ -31,7 +34,9 @@ test_that("recognise an identifying variable that is actually a merge of two col
     setObsVar(name = "harvested", columns = 6) %>%
     setObsVar(name = "production", columns = 7)
 
-  .expect_valid_table(x = reorganise(input = input, schema = schema), units = 2)
+  reorganise(input = input, schema = schema) %>%
+    arrange(territories, year, commodities) %>%
+    .expect_valid_table(units = 2)
 
 })
 
@@ -47,7 +52,9 @@ test_that("recognise a distinct variable that is not available for every cluster
     setObsVar(name = "harvested", columns = c(2, 2, 5)) %>%
     setObsVar(name = "production", columns = c(3, 3, 6))
 
-  .expect_valid_table(x = reorganise(input = input, schema = schema), units = 3)
+  reorganise(input = input, schema = schema) %>%
+    arrange(territories, year, commodities) %>%
+    .expect_valid_table(units = 3)
 
 })
 

@@ -17,7 +17,9 @@ test_that("listed observed variable", {
     setObsVar(name = "production", columns = 7,
               key = 6, value = "production")
 
-  .expect_valid_table(x = reorganise(input = input, schema = schema), units = 2)
+  reorganise(input = input, schema = schema) %>%
+    arrange(territories, year, commodities) %>%
+    .expect_valid_table(units = 2)
 
   # different names for listed observed variables
   schema <-
@@ -47,7 +49,7 @@ test_that("listed observed variable", {
 
   expect_warning(out <- reorganise(input = input, schema = schema))
   expect_tibble(x = out, nrows = 8, ncols = 5)
-  expect_true(all(out$production[7:8] == c(4444, 4424)))
+  expect_true(all(out$production[7:8] == c(4424, 4444)))
 
 })
 
@@ -67,7 +69,9 @@ test_that("listed observed variable and one implicit variable", {
     setObsVar(name = "production", columns = 6,
               key = 5, value = "production")
 
-  .expect_valid_table(x = reorganise(input = input, schema = schema), units = 1)
+  reorganise(input = input, schema = schema) %>%
+    arrange(territories, year, commodities) %>%
+    .expect_valid_table(units = 1)
 
 })
 
@@ -85,7 +89,9 @@ test_that("bring one wide identifying variable into long form and unlist observe
     setObsVar(name = "production", columns = c(6, 7),
               key = 4, value = "production")
 
-  .expect_valid_table(x = reorganise(input = input, schema = schema), units = 2)
+  reorganise(input = input, schema = schema) %>%
+    arrange(territories, year, commodities) %>%
+    .expect_valid_table(units = 2)
 
 })
 
@@ -101,7 +107,9 @@ test_that("bring one wide identifying variable into long form and select only a 
     setObsVar(name = "production", columns = c(6, 7),
               key = 4, value = "production")
 
-  .expect_valid_table(x = reorganise(input = input, schema = schema), units = 2, variables = "production")
+  reorganise(input = input, schema = schema) %>%
+    arrange(territories, year, commodities) %>%
+    .expect_valid_table(units = 2, variables = "production")
 
 })
 
@@ -119,7 +127,9 @@ test_that("several wide identifying variable into long form and unlist observed 
     setObsVar(name = "production", columns = c(5:8),
               key = 3, value = "production")
 
-  .expect_valid_table(x = reorganise(input = input, schema = schema), units = 2)
+  reorganise(input = input, schema = schema) %>%
+    arrange(territories, year, commodities) %>%
+    .expect_valid_table(units = 2)
 
 })
 

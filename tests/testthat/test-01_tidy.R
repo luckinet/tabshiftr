@@ -1,6 +1,7 @@
 library(tabshiftr)
 library(testthat)
 library(checkmate)
+library(dplyr)
 context("tidy")
 
 
@@ -15,6 +16,8 @@ test_that("already tidy table", {
     setObsVar(name = "harvested", columns = 5) %>%
     setObsVar(name = "production", columns = 6)
 
-  .expect_valid_table(x = reorganise(input = input, schema = schema), units = 2)
+  reorganise(input = input, schema = schema) %>%
+    arrange(territories, year, commodities) %>%
+    .expect_valid_table(units = 2)
 
 })

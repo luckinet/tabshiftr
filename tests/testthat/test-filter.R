@@ -16,7 +16,9 @@ test_that("filter rows", {
     setObsVar(name = "harvested", columns = 5) %>%
     setObsVar(name = "production", columns = 6)
 
-  .expect_valid_table(x = reorganise(input = input, schema = schema), units = 2)
+  reorganise(input = input, schema = schema) %>%
+    arrange(territories, year, commodities) %>%
+    .expect_valid_table(units = 2)
 
 })
 
@@ -33,7 +35,9 @@ test_that("filter columns", {
     setObsVar(name = "harvested", columns = 5) %>%
     setObsVar(name = "production", columns = 6)
 
-  .expect_valid_table(x = reorganise(input = input, schema = schema), units = 2)
+  reorganise(input = input, schema = schema) %>%
+    arrange(territories, year, commodities) %>%
+    .expect_valid_table(units = 2)
 
   input <- tabs2shift$one_wide_id_alt2
 
@@ -45,7 +49,9 @@ test_that("filter columns", {
     setObsVar(name = "harvested", columns = c(4:6), top = 2) %>%
     setObsVar(name = "production", columns = c(7:9), top = 2)
 
-  .expect_valid_table(x = reorganise(input = input, schema = schema), units = 2)
+  reorganise(input = input, schema = schema) %>%
+    arrange(territories, year, commodities) %>%
+    .expect_valid_table(units = 2)
 
 })
 
@@ -65,9 +71,9 @@ test_that("filter on several columns", {
   out <- reorganise(input = input, schema = schema)
   expect_equal(out$territories, c("unit 2", "unit 2"))
   expect_equal(out$year, c("year 2", "year 2"))
-  expect_equal(out$commodities, c("maize", "soybean"))
-  expect_equal(out$harvested, c(2221, 2211))
-  expect_equal(out$production, c(2222, 2212))
+  expect_equal(out$commodities, c("soybean", "maize"))
+  expect_equal(out$harvested, c(2211, 2221))
+  expect_equal(out$production, c(2212, 2222))
 
   # set several filters without the .find function
   schema <-
@@ -82,9 +88,9 @@ test_that("filter on several columns", {
   out <- reorganise(input = input, schema = schema)
   expect_equal(out$territories, c("unit 2", "unit 2"))
   expect_equal(out$year, c("year 2", "year 2"))
-  expect_equal(out$commodities, c("maize", "soybean"))
-  expect_equal(out$harvested, c(2221, 2211))
-  expect_equal(out$production, c(2222, 2212))
+  expect_equal(out$commodities, c("soybean", "maize"))
+  expect_equal(out$harvested, c(2211, 2221))
+  expect_equal(out$production, c(2212, 2222))
 
   # combination of position and .find function
   schema <-
@@ -99,9 +105,9 @@ test_that("filter on several columns", {
   out <- reorganise(input = input, schema = schema)
   expect_equal(out$territories, c("unit 2", "unit 2"))
   expect_equal(out$year, c("year 2", "year 2"))
-  expect_equal(out$commodities, c("maize", "soybean"))
-  expect_equal(out$harvested, c(2221, 2211))
-  expect_equal(out$production, c(2222, 2212))
+  expect_equal(out$commodities, c("soybean", "maize"))
+  expect_equal(out$harvested, c(2211, 2221))
+  expect_equal(out$production, c(2212, 2222))
 
 })
 
@@ -118,7 +124,9 @@ test_that("filter rows from clusters", {
     setObsVar(name = "harvested", columns = 5) %>%
     setObsVar(name = "production", columns = 6)
 
-  .expect_valid_table(x = reorganise(input = input, schema = schema), units = 2)
+  reorganise(input = input, schema = schema) %>%
+    arrange(territories, year, commodities) %>%
+    .expect_valid_table(units = 2)
 
 })
 
@@ -140,9 +148,9 @@ test_that("filter rows from clusters with listed observed variables", {
   out <- reorganise(input = input, schema = schema)
   expect_equal(out$territories, c("unit 1", "unit 1", "unit 2", "unit 2"))
   expect_equal(out$year, c("year 2", "year 2", "year 2", "year 2"))
-  expect_equal(out$commodities, c("maize", "soybean", "maize", "soybean"))
-  expect_equal(out$harvested, c(1221, 1211, 2221, 2211))
-  expect_equal(out$production, c(1222, 1212, 2222, 2212))
+  expect_equal(out$commodities, c("soybean", "maize", "soybean", "maize"))
+  expect_equal(out$harvested, c(1211, 1221, 2211, 2221))
+  expect_equal(out$production, c(1212, 1222, 2212, 2222))
 
 })
 
@@ -157,7 +165,9 @@ test_that("mask out a couple of rows and columns that don't contain target data"
     setObsVar(name = "harvested", columns = 2) %>%
     setObsVar(name = "production", columns = 3)
 
-  .expect_valid_table(x = reorganise(input = input, schema = schema), units = 1)
+  reorganise(input = input, schema = schema) %>%
+    arrange(territories, year, commodities) %>%
+    .expect_valid_table(units = 1)
 
 })
 

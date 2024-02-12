@@ -15,7 +15,9 @@ test_that("vertical clusters of otherwise tidy data", {
     setObsVar(name = "harvested", columns = 6) %>%
     setObsVar(name = "production", columns = 7)
 
-  .expect_valid_table(x = reorganise(input = input, schema = schema), units = 2)
+  reorganise(input = input, schema = schema) %>%
+    arrange(territories, year, commodities) %>%
+    .expect_valid_table(units = 2)
 
 })
 
@@ -31,7 +33,9 @@ test_that("horizontal clusters of otherwise tidy data", {
     setObsVar(name = "harvested", columns = c(3, 8)) %>%
     setObsVar(name = "production", columns = c(4, 9))
 
-  .expect_valid_table(x = reorganise(input = input, schema = schema), units = 2)
+  reorganise(input = input, schema = schema) %>%
+    arrange(territories, year, commodities) %>%
+    .expect_valid_table(units = 2)
 
 })
 
@@ -46,7 +50,9 @@ test_that("vertical cluster with a wide identifying variable (and a single liste
     setIDVar(name = "commodities", columns = 2) %>%
     setObsVar(name = "harvested", columns = c(4, 5))
 
-  .expect_valid_table(x = reorganise(input = input, schema = schema), variables = "harvested", units = 2)
+  reorganise(input = input, schema = schema) %>%
+    arrange(territories, year, commodities) %>%
+    .expect_valid_table(units = 2, variables = "harvested")
 
   # input <- tabs2shift$clusters_one_wide_sameColumn
   #
@@ -77,7 +83,9 @@ test_that("vertical clusters with a listed observed variable", {
     setObsVar(name = "production", columns = c(6, 7),
               key = 4, value = "production")
 
-  .expect_valid_table(x = reorganise(input = input, schema = schema), units = 2)
+  reorganise(input = input, schema = schema) %>%
+    arrange(territories, year, commodities) %>%
+    .expect_valid_table(units = 2)
 
 })
 
@@ -97,7 +105,9 @@ test_that("vertical clusters with a listed observed variable and an implicit var
     setObsVar(name = "production", columns = c(6, 7),
               key = 4, value = "production")
 
-  .expect_valid_table(x = reorganise(input = input, schema = schema), units = 2, groups = TRUE)
+  reorganise(input = input, schema = schema) %>%
+    arrange(territories, year, commodities) %>%
+    .expect_valid_table(units = 2, groups = TRUE)
 
   # territories implicit
   schema <- setCluster(id = "territories",
@@ -115,9 +125,9 @@ test_that("vertical clusters with a listed observed variable and an implicit var
 
   expect_equal(out$territories, c("unit 1", "unit 1", "unit 1", "unit 1"))
   expect_equal(out$year, c("year 2", "year 2", "year 2", "year 2"))
-  expect_equal(out$commodities, c("maize", "maize", "soybean", "soybean"))
-  expect_equal(out$harvested, c(1221, 2221, 1211, 2211))
-  expect_equal(out$production, c(1222, 2222, 1212, 2212))
+  expect_equal(out$commodities, c("soybean", "maize", "soybean", "maize"))
+  expect_equal(out$harvested, c(1211, 1221, 2211, 2221))
+  expect_equal(out$production, c(1212, 1222, 2212, 2222))
 
 })
 
@@ -133,7 +143,9 @@ test_that("clusters that are aggregated per observed variable", {
     setObsVar(name = "harvested", columns = 7, key = "cluster", value = 1) %>%
     setObsVar(name = "production", columns = 7, key = "cluster", value = 2)
 
-  .expect_valid_table(x = reorganise(input = input, schema = schema), units = 2)
+  reorganise(input = input, schema = schema) %>%
+    arrange(territories, year, commodities) %>%
+    .expect_valid_table(units = 2)
 
 })
 
@@ -152,7 +164,9 @@ test_that("vertical clusters of observed variable with a wide identifying variab
     setObsVar(name = "production", columns = c(6, 7),
               key = "cluster", value = 2)
 
-  .expect_valid_table(x = reorganise(input = input, schema = schema), units = 2)
+  reorganise(input = input, schema = schema) %>%
+    arrange(territories, year, commodities) %>%
+    .expect_valid_table(units = 2)
 
 })
 
@@ -171,7 +185,9 @@ test_that("vertical clusters of observed variable with two nested wide identifyi
     setObsVar(name = "production", columns = c(5:8),
               key = "cluster", value = 2)
 
-  .expect_valid_table(x = reorganise(input = input, schema = schema), units = 2)
+  reorganise(input = input, schema = schema) %>%
+    arrange(territories, year, commodities) %>%
+    .expect_valid_table(units = 2)
 
 })
 

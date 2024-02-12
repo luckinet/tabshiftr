@@ -16,7 +16,9 @@ test_that("set an implicit variable in a tidy table", {
     setObsVar(name = "harvested", columns = 2) %>%
     setObsVar(name = "production", columns = 3)
 
-  .expect_valid_table(x = reorganise(input = input, schema = schema), units = 1)
+  reorganise(input = input, schema = schema) %>%
+    arrange(territories, year, commodities) %>%
+    .expect_valid_table(units = 1)
 
 })
 
@@ -33,7 +35,9 @@ test_that("set an implicit variable in a wide table (that is only 1 row high)", 
     setObsVar(name = "harvested", columns = c(1, 3, 5, 7), top = 3) %>%
     setObsVar(name = "production", columns = c(2, 4, 6, 8), top = 3)
 
-  .expect_valid_table(x = reorganise(input = input, schema = schema), units = 1)
+  reorganise(input = input, schema = schema) %>%
+    arrange(territories, year, commodities) %>%
+    .expect_valid_table(units = 1)
 
 })
 
@@ -50,7 +54,9 @@ test_that("set several identifying variables as value", {
     setObsVar(name = "harvested", columns = 2) %>%
     setObsVar(name = "production", columns = 3)
 
-  .expect_valid_table(x = reorganise(input = input, schema = schema), units = 1, groups = TRUE)
+  reorganise(input = input, schema = schema) %>%
+    arrange(territories, year, commodities) %>%
+    .expect_valid_table(units = 1, groups = TRUE)
 
 })
 
@@ -66,7 +72,9 @@ test_that("set an id variable from the cluster id", {
     setObsVar(name = "harvested", columns = 2) %>%
     setObsVar(name = "production", columns = 3)
 
-  .expect_valid_table(x = reorganise(input = input, schema = schema), units = 1)
+  reorganise(input = input, schema = schema) %>%
+    arrange(territories, year, commodities) %>%
+    .expect_valid_table(units = 1)
 
 })
 

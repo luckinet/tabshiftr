@@ -15,7 +15,9 @@ test_that(".find columns and rows based on regular expressions", {
     setObsVar(name = "harvested", columns = .find(pattern = "harv*"), top = .find(pattern = "harv*")) %>%
     setObsVar(name = "production", columns = .find(pattern = "prod*"), top = .find(pattern = "prod*"))
 
-  .expect_valid_table(x = reorganise(input = input, schema = schema), units = 2)
+  reorganise(input = input, schema = schema) %>%
+    arrange(territories, year, commodities) %>%
+    .expect_valid_table(units = 2)
 
 })
 
@@ -32,7 +34,9 @@ test_that(".find columns and rows in listed and wide table", {
     setObsVar(name = "production", columns = .find(fun = is.character, row = 3),
               key = 3, value = "production")
 
-  .expect_valid_table(x = reorganise(input = input, schema = schema), units = 2)
+  reorganise(input = input, schema = schema) %>%
+    arrange(territories, year, commodities) %>%
+    .expect_valid_table(units = 2)
 
 })
 
@@ -48,7 +52,9 @@ test_that(".find cluster positions based on regular expressions", {
     setObsVar(name = "harvested", columns = c(2, 2, 5)) %>%
     setObsVar(name = "production", columns = c(3, 3, 6))
 
-  .expect_valid_table(x = reorganise(input = input, schema = schema), units = 3)
+  reorganise(input = input, schema = schema) %>%
+    arrange(territories, year, commodities) %>%
+    .expect_valid_table(units = 3)
 
 })
 
@@ -64,7 +70,9 @@ test_that(".find filter-rows based on a function", {
     setObsVar(name = "harvested", columns = 5) %>%
     setObsVar(name = "production", columns = 6)
 
-  .expect_valid_table(x = reorganise(input = input, schema = schema), units = 2)
+  reorganise(input = input, schema = schema) %>%
+    arrange(territories, year, commodities) %>%
+    .expect_valid_table(units = 2)
 
 })
 
@@ -80,7 +88,9 @@ test_that(".find filter-rows based on several character strings in one column", 
     setObsVar(name = "harvested", columns = 5) %>%
     setObsVar(name = "production", columns = 6)
 
-  .expect_valid_table(x = reorganise(input = input, schema = schema), units = 2)
+  reorganise(input = input, schema = schema) %>%
+    arrange(territories, year, commodities) %>%
+    .expect_valid_table(units = 2)
 
 })
 
@@ -98,7 +108,9 @@ test_that("relative positions in clusters", {
     setObsVar(name = "harvested", columns = 6) %>%
     setObsVar(name = "production", columns = 7)
 
-  .expect_valid_table(x = reorganise(input = input, schema = schema), units = 2)
+  reorganise(input = input, schema = schema) %>%
+    arrange(territories, year, commodities) %>%
+    .expect_valid_table(units = 2)
 
 
   # horizontal cluster
@@ -112,7 +124,9 @@ test_that("relative positions in clusters", {
     setObsVar(name = "harvested", columns = .find(col = 3, relative = TRUE)) %>%
     setObsVar(name = "production", columns = .find(col = 4, relative = TRUE))
 
-  .expect_valid_table(x = reorganise(input = input, schema = schema), units = 2)
+  reorganise(input = input, schema = schema) %>%
+    arrange(territories, year, commodities) %>%
+    .expect_valid_table(units = 2)
 
 
   # several clusters
@@ -126,7 +140,9 @@ test_that("relative positions in clusters", {
     setObsVar(name = "harvested", columns = .find(col = 2, relative = TRUE)) %>%
     setObsVar(name = "production", columns = .find(col = 3, relative = TRUE))
 
-  .expect_valid_table(x = reorganise(input = input, schema = schema), units = 3)
+  reorganise(input = input, schema = schema) %>%
+    arrange(territories, year, commodities) %>%
+    .expect_valid_table(units = 3)
 
 })
 
@@ -147,8 +163,9 @@ test_that("vertical clusters with a listed observed variable and an implicit var
     setObsVar(name = "production", columns = c(6, 7),
               key = 4, value = "production")
 
-
-  .expect_valid_table(x = reorganise(input = input, schema = schema), units = 2, groups = TRUE)
+  reorganise(input = input, schema = schema) %>%
+    arrange(territories, year, commodities) %>%
+    .expect_valid_table(units = 2, groups = TRUE)
 
 })
 
@@ -165,10 +182,9 @@ test_that("vertical cluster with a wide identifying variable that has uneven num
 
   out <- reorganise(input = input, schema = schema)
 
-  expect_equal(out$territories, c("unit 1", "unit 1", "unit 2", "unit 2", "unit 2", "unit 2", "unit 3", "unit 3", "unit 3", "unit 3"))
-  expect_equal(out$year, c("year 2", "year 2", "year 1", "year 1", "year 2", "year 2", "year 1", "year 1", "year 2", "year 2"))
-  expect_equal(out$commodities, c("maize", "soybean", "maize", "soybean", "maize", "soybean", "maize", "soybean", "maize", "soybean"))
-  expect_equal(out$harvested, c(1221, 1211, 2121, 2111, 2221, 2211, 3121, 3111, 3221, 3211))
-
+  expect_equal(out$territories, c("unit 2", "unit 3", "unit 2", "unit 3", "unit 1", "unit 2", "unit 3", "unit 1", "unit 2", "unit 3"))
+  expect_equal(out$year, c("year 1", "year 1", "year 1", "year 1", "year 2", "year 2", "year 2", "year 2", "year 2", "year 2"))
+  expect_equal(out$commodities, c("soybean", "soybean", "maize", "maize", "soybean", "soybean", "soybean", "maize", "maize", "maize"))
+  expect_equal(out$harvested, c(2111, 3111, 2121, 3121, 1211, 2211, 3211, 1221, 2221, 3221))
 
 })

@@ -15,7 +15,9 @@ test_that("one wide identifying variable into long form", {
     setObsVar(name = "harvested", columns = c(4, 5), top = 2) %>%
     setObsVar(name = "production", columns = c(6, 7), top = 2)
 
-  .expect_valid_table(x = reorganise(input = input, schema = schema), units = 2)
+  reorganise(input = input, schema = schema) %>%
+    arrange(territories, year, commodities) %>%
+    .expect_valid_table(units = 2)
 
 })
 
@@ -31,7 +33,9 @@ test_that("wide variable in first row of header", {
     setObsVar(name = "harvested", columns = c(4, 6), top = 2) %>%
     setObsVar(name = "production", columns = c(5, 7), top = 2)
 
-  .expect_valid_table(x = reorganise(input = input, schema = schema), units = 2)
+  reorganise(input = input, schema = schema) %>%
+    arrange(territories, year, commodities) %>%
+    .expect_valid_table(units = 2)
 
 })
 
@@ -49,7 +53,9 @@ test_that("wide variable (that needs to be split) in first row of header", {
     setObsVar(name = "harvested", columns = c(4, 6), top = 2) %>%
     setObsVar(name = "production", columns = c(5, 7), top = 2)
 
-  .expect_valid_table(x = reorganise(input = input, schema = schema), units = 2)
+  reorganise(input = input, schema = schema) %>%
+    arrange(territories, year, commodities) %>%
+    .expect_valid_table(units = 2)
 
 })
 
@@ -65,7 +71,9 @@ test_that("wide variable in second row of header", {
     setObsVar(name = "harvested", columns = c(3, 4)) %>%
     setObsVar(name = "production", columns = c(5, 6))
 
-  .expect_valid_table(x = reorganise(input = input, schema = schema), units = 2)
+  reorganise(input = input, schema = schema) %>%
+    arrange(territories, year, commodities) %>%
+    .expect_valid_table(units = 2)
 
 })
 
@@ -81,7 +89,9 @@ test_that("wide variable in second rows of header, values spearated", {
     setObsVar(name = "harvested", columns = c(3, 5)) %>%
     setObsVar(name = "production", columns = c(4, 6))
 
-  .expect_valid_table(x = reorganise(input = input, schema = schema), units = 2)
+  reorganise(input = input, schema = schema) %>%
+    arrange(territories, year, commodities) %>%
+    .expect_valid_table(units = 2)
 
 })
 
@@ -97,7 +107,9 @@ test_that("several wide identifying variables", {
     setObsVar(name = "harvested", columns = c(2, 4, 6, 8), top = 3) %>%
     setObsVar(name = "production", columns = c(3, 5, 7, 9), top = 3)
 
-  .expect_valid_table(x = reorganise(input = input, schema = schema), units = 2)
+  reorganise(input = input, schema = schema) %>%
+    arrange(territories, year, commodities) %>%
+    .expect_valid_table(units = 2)
 
 })
 
@@ -113,6 +125,8 @@ test_that("when the 'wider' identifying variable is registered first", {
     setObsVar(name = "harvested", columns = c(2, 4, 6, 8), top = 3) %>%
     setObsVar(name = "production", columns = c(3, 5, 7, 9), top = 3)
 
-  .expect_valid_table(x = reorganise(input = input, schema = schema), units = 2)
+  reorganise(input = input, schema = schema) %>%
+    arrange(territories, year, commodities) %>%
+    .expect_valid_table(units = 2)
 
 })

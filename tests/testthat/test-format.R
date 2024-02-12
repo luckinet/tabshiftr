@@ -21,7 +21,9 @@ test_that("extract flags into their own column", {
     setObsVar(name = "harvested", columns = 5) %>%
     setObsVar(name = "production", columns = 6)
 
-  .expect_valid_table(x = reorganise(input = input, schema = schema), units = 2, flags = TRUE)
+  reorganise(input = input, schema = schema) %>%
+    arrange(territories, year, commodities) %>%
+    .expect_valid_table(units = 2, flags = TRUE)
 
 })
 
