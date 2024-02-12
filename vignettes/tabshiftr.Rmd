@@ -105,7 +105,7 @@ Table: <a name="tabExample2"></a>Table 2: An example of a table with several clu
 ## Decision tree
 
 To set up a schema description, go through the following questions step by step and provide the respective answer in the respective function.
-Linked tables in the [next section](#tablesTypes) can serve as examples to compare against.
+[Linked tables](#tablesTypes) can serve as examples to compare against and right after the decision tree there is a step-by-step hands-on example of how to build a schema description.
 
 1. **Variables**: Clarify which are the identifying variables and which are the observed variables. Make sure not to mistake a listed observed variable ([Tab. 10](#long)) as an identifying variable.
 
@@ -136,7 +136,10 @@ Linked tables in the [next section](#tablesTypes) can serve as examples to compa
 
 ## Additional remarks
 
-- To work with `tabshiftr`, tables need to be read in while treating any header rows *as data*, i.e., by not setting the first row as header, because in disorganised tables it's often not only the first row that is part of the header.
+- To work with `tabshiftr`, tables need to be read in while treating any header rows *as data*, i.e., by not setting the first row as header
+- To spell this out explicitly, there are two almost inverse cases where the type of a variable is confused and the **name** and **values** of a variable end up in the wrong place:
+    1. Tables are wide when the header contains the **values** of one or more (identifying) variables as if they were names. 
+    2. When tables are long, it can occur that the **name** of several observed variables are gathered as if they were values into a single column. 
 - Each column should be treated as a character data type, because some columns might contain data with both numeric and character cells.
 
 ```{r, eval=F}
@@ -145,8 +148,8 @@ input <- read_csv(file = ...,
                   col_types = cols(.default = "c"))
 ```
 
-- `reorganise()` takes care of reformatting the data-types into the most permissive data type that does not introduce `NA`s where there should be data, i.e, if a variable can be numeric, it is formatted as numeric column.
-- When setting up a schema description, some generalisations are hard to wrap your mind around. Try imagining that once you have set a variable, it's values are "removed" from the table. For instance, once clusters are set for [Tab. 6](#implicitVar), imagine that the meta-data header isn't part of the table anymore, resulting in a much simpler table. Or for [Tab. 16](#distVar), once territories are set, imagine that the respective `unit1/2/3` values disappear to see that the respective column is actually a tidy column of commodities.
+- `reorganise()` takes care of reformatting the data-types into the most permissive data type that does not introduce `NA`s where there should be data, i.e, if a variable can be numeric, it is formatted as numeric column, otherwise it will be stored as a character column.
+- When setting up a schema description, some generalisations are hard to wrap your mind around. Try imagining that once you have set a variable, it's values are "cut out" from the input table and pasted into the reshaped table. For instance, once clusters are set for [Tab. 6](#implicitVar), imagine that the meta-data header isn't part of the table anymore, resulting in a much simpler table. Or for [Tab. 16](#distVar), once territories are set, imagine that the respective `unit1/2/3` values disappear, which makes it easier to see that the respective column is actually a tidy column of commodities.
 
 ## An example 
 

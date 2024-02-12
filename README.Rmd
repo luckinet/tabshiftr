@@ -83,7 +83,7 @@ schema <- schema %>%
 schema <- schema %>%
    setIDVar(name = "year", columns = 4, rows = c(3:6), distinct = TRUE)
 
-# ... specifying a tidy variable (by giving the column values)
+# ... specifying a tidy identifying variable (by giving the column values)
 schema <- schema %>%
    setIDVar(name = "commodities", columns = c(1, 1, 4))
 
