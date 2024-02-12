@@ -112,8 +112,7 @@
       unite(col = "flag", starts_with("flag_"), sep = ", ", na.rm = TRUE)
   }
 
-  out <- input %>%
-    arrange_at(.vars = names(idVars))
+  out <- input
 
   return(out)
 

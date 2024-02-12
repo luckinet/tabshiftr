@@ -22,7 +22,7 @@
 #'    getClusterVar(input = input)
 #' @importFrom checkmate assertTRUE
 #' @importFrom purrr map set_names
-#' @importFrom tidyr extract
+#' @importFrom tidyr extract unite
 #' @export
 
 getClusterVar <- function(schema = NULL, input = NULL){
