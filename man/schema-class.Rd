@@ -83,7 +83,7 @@ variables.}
 
   \item all columns in which the values of the variable sit.
 
-  \item the unit and conversion factor.
+  \item the conversion factor.
 
   \item in case the variable is not tidy, go through the following cases one
   after the other: \itemize{

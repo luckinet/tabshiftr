@@ -10,7 +10,6 @@ setObsVar(
   columns = NULL,
   top = NULL,
   distinct = FALSE,
-  unit = NULL,
   factor = 1,
   key = NULL,
   value = NULL
@@ -34,12 +33,10 @@ the variable \emph{name} sits.}
 distinct from a cluster. This is the case when the variable is recorded
 somewhere 'on the side' and thus not explicitly included in all clusters.}
 
-\item{unit}{[\code{character(1)}]\cr the unit of this variable.}
-
 \item{factor}{[\code{numeric(1)}]\cr the factor that needs to be multiplied
-with the values to convert to \code{unit}, defaults to 1. For instance, if
-values are recorded in acres, but shall be recorded in hectare, the factor
-would be 0.40468.}
+with the values to convert to the target unit, defaults to 1. For instance,
+if values are recorded in acres, but shall be recorded in hectare, the
+factor would be 0.40468.}
 
 \item{key}{[\code{integerish(1)}]\cr If the variable is recorded (together
 with other variables) so that the variable names are listed in one column
