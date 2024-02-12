@@ -74,7 +74,6 @@ and in a tidy table they'd be recorded as separate columns.</p>
 <span>  columns <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  top <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  distinct <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  unit <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  factor <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  key <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  value <span class="op">=</span> <span class="cn">NULL</span></span>
@@ -110,15 +109,11 @@ distinct from a cluster. This is the case when the variable is recorded
 somewhere 'on the side' and thus not explicitly included in all clusters.</p></dd>
 
 
-<dt>unit</dt>
-<dd><p>[<code>character(1)</code>]<br> the unit of this variable.</p></dd>
-
-
 <dt>factor</dt>
 <dd><p>[<code>numeric(1)</code>]<br> the factor that needs to be multiplied
-with the values to convert to <code>unit</code>, defaults to 1. For instance, if
-values are recorded in acres, but shall be recorded in hectare, the factor
-would be 0.40468.</p></dd>
+with the values to convert to the target unit, defaults to 1. For instance,
+if values are recorded in acres, but shall be recorded in hectare, the
+factor would be 0.40468.</p></dd>
 
 
 <dt>key</dt>
