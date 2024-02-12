@@ -10,10 +10,8 @@ test_that("a schema is printed properly", {
     setIDVar(name = "territories", columns = 2) %>%
     setIDVar(name = "year", columns = 3) %>%
     setIDVar(name = "commodities", columns = 4) %>%
-    setObsVar(name = "harvested", columns = 5, unit = "ha",
-              key = "cluster", value = 1) %>%
-    setObsVar(name = "production", columns = 5, unit = "t",
-              key = "cluster", value = 2)
+    setObsVar(name = "harvested", columns = 5, key = "cluster", value = 1) %>%
+    setObsVar(name = "production", columns = 5, key = "cluster", value = 2)
 
   output <- capture.output(schema)
   expect_character(x = output, len = 11)
