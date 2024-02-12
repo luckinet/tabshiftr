@@ -13,11 +13,10 @@
 #' @param top [\code{integerish(.)}]\cr In case the variable is nested in a wide
 #'   identifying variable, specify here additionally the topmost row in which
 #'   the variable \emph{name} sits.
-#' @param unit [\code{character(1)}]\cr the unit of this variable.
 #' @param factor [\code{numeric(1)}]\cr the factor that needs to be multiplied
-#'   with the values to convert to \code{unit}, defaults to 1. For instance, if
-#'   values are recorded in acres, but shall be recorded in hectare, the factor
-#'   would be 0.40468.
+#'   with the values to convert to the target unit, defaults to 1. For instance,
+#'   if values are recorded in acres, but shall be recorded in hectare, the
+#'   factor would be 0.40468.
 #' @param key [\code{integerish(1)}]\cr If the variable is recorded (together
 #'   with other variables) so that the variable names are listed in one column
 #'   and the respective values are listed in another column, give here the
@@ -41,8 +40,7 @@
 #' @export
 
 setObsVar <- function(schema = NULL, name = NULL, columns = NULL, top = NULL,
-                      distinct = FALSE, unit = NULL, factor = 1, key = NULL,
-                      value = NULL){
+                      distinct = FALSE, factor = 1, key = NULL, value = NULL){
 
   # assertions ----
   assertClass(x = schema, classes = "schema", null.ok = TRUE)
@@ -56,7 +54,6 @@ setObsVar <- function(schema = NULL, name = NULL, columns = NULL, top = NULL,
   assert(rowInt, rowList)
   if(rowList) assertSubset(x = names(top), choices = c("find"))
   assertLogical(x = distinct, any.missing = FALSE, len = 1)
-  assertCharacter(x = unit, len = 1, any.missing = FALSE, null.ok = TRUE)
   assertNumeric(x = factor, len = 1, any.missing = FALSE)
   if(is.character(key)){
     assertSubset(x = key, choices = "cluster", empty.ok = FALSE)
@@ -79,7 +76,6 @@ setObsVar <- function(schema = NULL, name = NULL, columns = NULL, top = NULL,
                col = columns,
                row = top,
                dist = distinct,
-               unit = unit,
                factor = factor,
                key = key,
                value = value)

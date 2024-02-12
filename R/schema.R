@@ -68,7 +68,7 @@
 #'
 #'   \item all columns in which the values of the variable sit.
 #'
-#'   \item the unit and conversion factor.
+#'   \item the conversion factor.
 #'
 #'   \item in case the variable is not tidy, go through the following cases one
 #'   after the other: \itemize{
@@ -280,8 +280,8 @@ setValidity(Class = "schema", function(object){
         }
 
       } else {
-        if(!all(names(theVariable) %in% c("type", "unit", "factor", "row", "col", "dist", "key", "value"))){
-          errors <- c(errors, paste0("'names(", theName, ")' must be a permutation of set {type,unit,factor,row,col,dist,key,value}"))
+        if(!all(names(theVariable) %in% c("type", "factor", "row", "col", "dist", "key", "value"))){
+          errors <- c(errors, paste0("'names(", theName, ")' must be a permutation of set {type,factor,row,col,dist,key,value}"))
         }
         if(!is.null(theVariable$factor)){
           if(!is.numeric(theVariable$factor)){
