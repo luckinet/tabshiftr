@@ -7,6 +7,9 @@
 #'   already existing schema, provide that schema here (overwrites previous
 #'   information).
 #' @param name [\code{character(1)}]\cr Name of the new identifying variable.
+#' @param type [\code{character(1)}]\cr data type of the new identifying
+#'   variable. Possible values are \code{"c/character"}, \code{"i/integer"},
+#'   \code{"n/numeric"}, \code{"l/logical"}, \code{"D/date"} or \code{"_/skip"}.
 #' @param value [\code{character(1)}]\cr In case the variable is an implicit
 #'   variable (i.e., which is not in the origin table), specify it here.
 #' @param columns [\code{integerish(.)}]\cr The column(s) in which the
@@ -33,11 +36,12 @@
 #' @family functions to describe table arrangement
 #' @importFrom checkmate assertClass assertCharacter assertLogical
 #'   testIntegerish testList
+#' @importFrom dplyr case_when
 #' @export
 
-setIDVar <- function(schema = NULL, name = NULL, value = NULL, columns = NULL,
-                     rows = NULL, split = NULL, merge = NULL,
-                     distinct = FALSE){
+setIDVar <- function(schema = NULL, name = NULL, type = "character",
+                     value = NULL, columns = NULL, rows = NULL, split = NULL,
+                     merge = NULL, distinct = FALSE){
 
   # assertions ----
   assertClass(x = schema, classes = "schema", null.ok = TRUE)
@@ -50,23 +54,36 @@ setIDVar <- function(schema = NULL, name = NULL, value = NULL, columns = NULL,
   rowList <- testList(x = rows, len = 1)
   assert(rowInt, rowList)
   if(rowList) assertSubset(x = names(rows), choices = c("find"))
-  assertCharacter(x = value, len = 1, any.missing = FALSE, null.ok = TRUE)
   assertCharacter(x = split, len = 1, any.missing = FALSE, null.ok = TRUE)
   assertCharacter(x = merge, len = 1, any.missing = FALSE, null.ok = TRUE)
   assertLogical(x = distinct, any.missing = FALSE, len = 1)
 
+  data_type <- case_when(
+    type %in% c("i", "integer") ~ "integer",
+    type %in% c("n", "numeric") ~ "numeric",
+    type %in% c("l", "logical") ~ "logical",
+    type %in% c("D", "Date") ~ "Date",
+    type %in% c("_", "skip") ~ "skip",
+    .default = "character"
+  )
+
+  # if type-check should be skipped, don't assert class
+  if(data_type != "skip" & !is.null(value)){
+    assertClass(x = value, classes = data_type)
+  }
+
   if(is.null(schema)){
     schema <- schema_default
   }
-  nClusters <- max(lengths(schema@clusters))
-  if(nClusters == 0) nClusters <- 1
-  prevIDcols <- unlist(lapply(seq_along(schema@variables), function(x){
-    if(schema@variables[[x]]$typ == "id"){
-      if(is.null(schema@variables[[x]]$row)){
-        schema@variables[[x]]$col
-      }
-    }
-  }))
+  # nClusters <- max(lengths(schema@clusters))
+  # if(nClusters == 0) nClusters <- 1
+  # prevIDcols <- unlist(lapply(seq_along(schema@variables), function(x){
+  #   if(schema@variables[[x]]$vartype == "id"){
+  #     if(is.null(schema@variables[[x]]$row)){
+  #       schema@variables[[x]]$col
+  #     }
+  #   }
+  # }))
 
   # error management ----
   # if(!is.null(columns)){
@@ -143,7 +160,8 @@ setIDVar <- function(schema = NULL, name = NULL, value = NULL, columns = NULL,
 
 
   # update schema ----
-  temp <- list(type = "id",
+  temp <- list(vartype = "id",
+               datype = data_type,
                value = value,
                col = columns,
                row = rows,

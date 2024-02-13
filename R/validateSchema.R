@@ -115,7 +115,7 @@ validateSchema <- function(schema = NULL, input = NULL){
     tempName <- names(variables)[ix]
     if(!tempName %in% c(groupID, clusterID)){
       temp <- variables[[ix]]
-      if(temp$type == "observed"){
+      if(temp$vartype == "observed"){
         temp$row
       } else {
         NULL
@@ -146,7 +146,7 @@ validateSchema <- function(schema = NULL, input = NULL){
     }
 
     # check whether the variable is wide ----
-    if(varProp$type == "observed"){
+    if(varProp$vartype == "observed"){
       isWide <- map_lgl(.x = seq_along(idCols), function(ix){
         if(length(varProp$col) == length(idCols[[ix]])){
           all(varProp$col == idCols[[ix]])
@@ -162,7 +162,7 @@ validateSchema <- function(schema = NULL, input = NULL){
 
     # figure out which rows to filter out
     if(!varProp$dist & !varName %in% c(groupID, clusterID)){
-      if(varProp$type == "observed"){
+      if(varProp$vartype == "observed"){
         if(is.null(varProp$row)){
           if(is.null(varProp$key)){
             varProp$row <- clusters$row
@@ -179,7 +179,7 @@ validateSchema <- function(schema = NULL, input = NULL){
       }
     }
 
-    if(varProp$type == "id"){
+    if(varProp$vartype == "id"){
       if(!is.null(varProp$val)){
         varProp$dist <- TRUE
       }

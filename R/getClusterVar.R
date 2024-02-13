@@ -37,7 +37,7 @@ getClusterVar <- function(schema = NULL, input = NULL){
 
   listedObs <- map(.x = seq_along(variables), .f = function(ix){
     theVar <- variables[[ix]]
-    if(theVar$type == "observed"){
+    if(theVar$vartype == "observed"){
       is.numeric(theVar$key)
     }
   })

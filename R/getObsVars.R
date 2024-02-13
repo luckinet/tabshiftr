@@ -36,7 +36,7 @@ getObsVars <- function(schema = NULL, input = NULL){
   filter <- schema@filter
 
   obsVars <- map(.x = seq_along(variables), .f = function(ix){
-    if(variables[[ix]]$type == "observed"){
+    if(variables[[ix]]$vartype == "observed"){
       variables[ix]
     }
   })
@@ -45,7 +45,7 @@ getObsVars <- function(schema = NULL, input = NULL){
   # if there are listed observed variables, act as if they were clusters
   listedObs <- map(.x = seq_along(variables), .f = function(ix){
     theVar <- variables[[ix]]
-    if(theVar$type == "observed"){
+    if(theVar$vartype == "observed"){
       if(is.numeric(theVar$key) | is.list(theVar$key)){
         if(!any(0 %in% theVar$key)){
           c(theVar$key, theVar$col)

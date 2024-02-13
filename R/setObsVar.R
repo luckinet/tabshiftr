@@ -7,7 +7,10 @@
 #' @param schema [\code{schema(1)}]\cr In case this information is added to an
 #'   already existing schema, provide that schema here (overwrites previous
 #'   information).
-#' @param name [\code{character(1)}]\cr Name of the new measured variable.
+#' @param name [\code{character(1)}]\cr Name of the new observed variable.
+#' @param type [\code{character(1)}]\cr data type of the new observed
+#'   variable. Possible values are \code{"c/character"}, \code{"i/integer"},
+#'   \code{"n/numeric"}, \code{"l/logical"}, \code{"D/date"} or \code{"_/skip"}.
 #' @param columns [\code{integerish(.)}]\cr The column(s) in which the
 #'   \emph{values} of the new variable are recorded.
 #' @param top [\code{integerish(.)}]\cr In case the variable is nested in a wide
@@ -37,10 +40,12 @@
 #' @family functions to describe table arrangement
 #' @importFrom checkmate assertClass assertIntegerish assertLogical assertSubset
 #'   assertCharacter assertNumeric testIntegerish testCharacter assert
+#' @importFrom dplyr case_when
 #' @export
 
-setObsVar <- function(schema = NULL, name = NULL, columns = NULL, top = NULL,
-                      distinct = FALSE, factor = 1, key = NULL, value = NULL){
+setObsVar <- function(schema = NULL, name = NULL, type = "numeric",
+                      columns = NULL, top = NULL, distinct = FALSE, factor = 1,
+                      key = NULL, value = NULL){
 
   # assertions ----
   assertClass(x = schema, classes = "schema", null.ok = TRUE)
@@ -59,11 +64,20 @@ setObsVar <- function(schema = NULL, name = NULL, columns = NULL, top = NULL,
     assertSubset(x = key, choices = "cluster", empty.ok = FALSE)
   }
 
+  data_type <- case_when(
+    type %in% c("i", "integer") ~ "integer",
+    type %in% c("n", "numeric") ~ "numeric",
+    type %in% c("l", "logical") ~ "logical",
+    type %in% c("D", "Date") ~ "Date",
+    type %in% c("_", "skip") ~ "skip",
+    .default = "character"
+  )
+
   if(is.null(schema)){
     schema <- schema_default
   }
-  nClusters <- max(lengths(schema@clusters))
-  if(nClusters == 0) nClusters <- 1
+  # nClusters <- max(lengths(schema@clusters))
+  # if(nClusters == 0) nClusters <- 1
 
   # error management ----
 
@@ -72,7 +86,8 @@ setObsVar <- function(schema = NULL, name = NULL, columns = NULL, top = NULL,
 
 
   # update schema ----
-  temp <- list(type = "observed",
+  temp <- list(vartype = "observed",
+               datype = data_type,
                col = columns,
                row = top,
                dist = distinct,

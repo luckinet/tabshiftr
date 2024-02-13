@@ -29,13 +29,20 @@
   }
 
   idVars <- map(.x = seq_along(variables), .f = function(ix){
-    if(variables[[ix]]$type == "id"){
+    if(variables[[ix]]$vartype == "id"){
       variables[ix]
     }
   })
   idVars <- unlist(idVars, recursive = FALSE)
+
+  for(i in seq_along(idVars)){
+    # set the desired type
+    class(input[[which(names(idVars)[i] == names(input))]]) <- idVars[[i]]$datype
+
+  }
+
   obsVars <- map(.x = seq_along(variables), .f = function(ix){
-    if(variables[[ix]]$type == "observed"){
+    if(variables[[ix]]$vartype == "observed"){
       variables[ix]
     }
   })
@@ -107,6 +114,8 @@
 
     input[[which(names(obsVars)[i] == names(input))]] <- unlist(theVar)
 
+    # ... also set the desired type
+    class(input[[which(names(obsVars)[i] == names(input))]]) <- obsVars[[i]]$datype
   }
 
   if(length(format$flags$flag) != 0){

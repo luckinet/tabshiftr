@@ -40,7 +40,7 @@ getIDVars <- function(schema = NULL, input = NULL){
 
   idVars <- map(.x = seq_along(variables), .f = function(ix){
     # unselect those id variables that are also cluster or group id
-    if(variables[[ix]]$type == "id" & !names(variables)[ix] %in% c(clusters$id, clusters$group)){
+    if(variables[[ix]]$vartype == "id" & !names(variables)[ix] %in% c(clusters$id, clusters$group)){
       variables[ix]
     }
   })

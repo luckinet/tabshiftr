@@ -246,20 +246,25 @@ setValidity(Class = "schema", function(object){
       theVariable <- object@variables[[i]]
       theName <- names(object@variables)[i]
 
-      if(!theVariable$type %in% c("id", "observed")){
+      if(!theVariable$vartype %in% c("id", "observed")){
         errors <- c(errors, paste0("the variables '", theName, "' does must be of type 'id' or 'observed'."))
         return(paste0("\n", errors))
       }
 
-      if(theVariable$type == "id"){
-        if(!all(names(theVariable) %in% c("type", "value", "row", "col", "split", "dist", "merge"))){
-          errors <- c(errors, paste0("'names(", theName, ")' must be a permutation of set {type,value,row,col,split,merge,dist}"))
+      if(theVariable$vartype == "id"){
+        if(!all(names(theVariable) %in% c("vartype", "datype", "value", "row", "col", "split", "dist", "merge"))){
+          errors <- c(errors, paste0("'names(", theName, ")' must be a permutation of set {vartype,datype,value,row,col,split,merge,dist}"))
         }
-        if(!is.null(theVariable$value)){
-          if(!is.character(theVariable$value)){
-            errors <- c(errors, paste0("'", theName, "$value' must have a character value."))
+        if(!is.null(theVariable$datype)){
+          if(!is.character(theVariable$datype)){
+            errors <- c(errors, paste0("'", theName, "$datype' must have a character value."))
           }
         }
+        # if(!is.null(theVariable$value)){
+        #   if(!is.character(theVariable$value)){
+        #     errors <- c(errors, paste0("'", theName, "$value' must have a character value."))
+        #   }
+        # }
         if(!is.null(theVariable$split)){
           if(!is.character(theVariable$split)){
             errors <- c(errors, paste0("'", theName, "$split' must have a character value."))
@@ -280,8 +285,13 @@ setValidity(Class = "schema", function(object){
         }
 
       } else {
-        if(!all(names(theVariable) %in% c("type", "factor", "row", "col", "dist", "key", "value"))){
-          errors <- c(errors, paste0("'names(", theName, ")' must be a permutation of set {type,factor,row,col,dist,key,value}"))
+        if(!all(names(theVariable) %in% c("vartype", "datype", "factor", "row", "col", "dist", "key", "value"))){
+          errors <- c(errors, paste0("'names(", theName, ")' must be a permutation of set {vartype,datype,factor,row,col,dist,key,value}"))
+        }
+        if(!is.null(theVariable$datype)){
+          if(!is.character(theVariable$datype)){
+            errors <- c(errors, paste0("'", theName, "$datype' must have a character value."))
+          }
         }
         if(!is.null(theVariable$factor)){
           if(!is.numeric(theVariable$factor)){
@@ -399,12 +409,12 @@ setMethod(f = "show",
             })
             maxNames <- ifelse(any(nNames > 8), max(nNames), 8)
             theTypes <- sapply(seq_along(variables), function(x){
-              variables[[x]]$type
+              variables[[x]]$vartype
             })
 
             # rows
             theRows <- sapply(seq_along(variables), function(x){
-              if(variables[[x]]$type == "id"){
+              if(variables[[x]]$vartype == "id"){
                 if(is.null(variables[[x]]$row)){
                   ""
                 } else if(is.list(variables[[x]]$row)){
@@ -437,7 +447,7 @@ setMethod(f = "show",
             }
 
             theTops <- sapply(seq_along(variables), function(x){
-              if(variables[[x]]$type == "observed"){
+              if(variables[[x]]$vartype == "observed"){
                 if(is.null(variables[[x]]$row)){
                   ""
                 } else if(is.list(variables[[x]]$row)){
@@ -513,7 +523,7 @@ setMethod(f = "show",
 
             # keys
             theKeys <- sapply(seq_along(variables), function(x){
-              if(variables[[x]]$type == "id"){
+              if(variables[[x]]$vartype == "id"){
                 NULL
               } else {
                 if(!is.null(variables[[x]]$key)){
@@ -540,7 +550,7 @@ setMethod(f = "show",
 
             # values
             theValues <- sapply(seq_along(variables), function(x){
-              if(variables[[x]]$type == "id"){
+              if(variables[[x]]$vartype == "id"){
                 NULL
               } else {
                 if(!is.null(variables[[x]]$value)){
