@@ -96,11 +96,11 @@ getIDVars <- function(schema = NULL, input = NULL){
               temp <- temp %>%
                 extract(col = 1, into = names(temp), regex = tempVar$split)
             } else {
-              temp <- map_dfc(.x = seq_along(temp), .f = function(iy){
+              temp <- map(.x = seq_along(temp), .f = function(iy){
                 temp %>%
                   select(all_of(iy)) %>%
-                  extract(col = 1, into = names(temp)[iy], regex = tempVar$split)
-              })
+                  tidyr::extract(col = 1, into = names(temp)[iy], regex = tempVar$split)
+              }) %>% bind_cols(.name_repair = "check_unique")
             }
           }
 
