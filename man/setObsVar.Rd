@@ -7,6 +7,7 @@
 setObsVar(
   schema = NULL,
   name = NULL,
+  type = "numeric",
   columns = NULL,
   top = NULL,
   distinct = FALSE,
@@ -20,7 +21,11 @@ setObsVar(
 already existing schema, provide that schema here (overwrites previous
 information).}
 
-\item{name}{[\code{character(1)}]\cr Name of the new measured variable.}
+\item{name}{[\code{character(1)}]\cr Name of the new observed variable.}
+
+\item{type}{[\code{character(1)}]\cr data type of the new observed
+variable. Possible values are \code{"c/character"}, \code{"i/integer"},
+\code{"n/numeric"}, \code{"l/logical"}, \code{"D/date"} or \code{"_/skip"}.}
 
 \item{columns}{[\code{integerish(.)}]\cr The column(s) in which the
 \emph{values} of the new variable are recorded.}

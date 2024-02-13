@@ -7,6 +7,7 @@
 setIDVar(
   schema = NULL,
   name = NULL,
+  type = "character",
   value = NULL,
   columns = NULL,
   rows = NULL,
@@ -21,6 +22,10 @@ already existing schema, provide that schema here (overwrites previous
 information).}
 
 \item{name}{[\code{character(1)}]\cr Name of the new identifying variable.}
+
+\item{type}{[\code{character(1)}]\cr data type of the new identifying
+variable. Possible values are \code{"c/character"}, \code{"i/integer"},
+\code{"n/numeric"}, \code{"l/logical"}, \code{"D/date"} or \code{"_/skip"}.}
 
 \item{value}{[\code{character(1)}]\cr In case the variable is an implicit
 variable (i.e., which is not in the origin table), specify it here.}
