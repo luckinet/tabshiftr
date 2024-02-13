@@ -37,7 +37,12 @@
 
   for(i in seq_along(idVars)){
     # set the desired type
-    class(input[[which(names(idVars)[i] == names(input))]]) <- idVars[[i]]$datype
+
+    if(idVars[[i]]$datype == "Date"){
+      input[[which(names(idVars)[i] == names(input))]] <- as.Date(input[[which(names(idVars)[i] == names(input))]], tryFormats = c("%Y-%m-%d"), optional = TRUE)
+    } else {
+      class(input[[which(names(idVars)[i] == names(input))]]) <- idVars[[i]]$datype
+    }
 
   }
 

@@ -9,7 +9,9 @@
 #' @param name [\code{character(1)}]\cr Name of the new identifying variable.
 #' @param type [\code{character(1)}]\cr data type of the new identifying
 #'   variable. Possible values are \code{"c/character"}, \code{"i/integer"},
-#'   \code{"n/numeric"}, \code{"l/logical"}, \code{"D/date"} or \code{"_/skip"}.
+#'   \code{"n/numeric"}, \code{"l/logical"}, \code{"D/Date"} or \code{"_/skip"}.
+#'   For \code{"D/Date"}, the value has to follow the form \code{YYYY-MM-DD},
+#'   where dates that don't match that are replaced by NA.
 #' @param value [\code{character(1)}]\cr In case the variable is an implicit
 #'   variable (i.e., which is not in the origin table), specify it here.
 #' @param columns [\code{integerish(.)}]\cr The column(s) in which the
