@@ -69,6 +69,7 @@ properties that make each observation (as described by the
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">setIDVar</span><span class="op">(</span></span>
 <span>  schema <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  name <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  type <span class="op">=</span> <span class="st">"character"</span>,</span>
 <span>  value <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  columns <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  rows <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -88,6 +89,12 @@ information).</p></dd>
 
 <dt>name</dt>
 <dd><p>[<code>character(1)</code>]<br> Name of the new identifying variable.</p></dd>
+
+
+<dt>type</dt>
+<dd><p>[<code>character(1)</code>]<br> data type of the new identifying
+variable. Possible values are <code>"c/character"</code>, <code>"i/integer"</code>,
+<code>"n/numeric"</code>, <code>"l/logical"</code>, <code>"D/date"</code> or <code>"_/skip"</code>.</p></dd>
 
 
 <dt>value</dt>
