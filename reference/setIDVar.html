@@ -94,7 +94,9 @@ information).</p></dd>
 <dt>type</dt>
 <dd><p>[<code>character(1)</code>]<br> data type of the new identifying
 variable. Possible values are <code>"c/character"</code>, <code>"i/integer"</code>,
-<code>"n/numeric"</code>, <code>"l/logical"</code>, <code>"D/date"</code> or <code>"_/skip"</code>.</p></dd>
+<code>"n/numeric"</code>, <code>"l/logical"</code>, <code>"D/Date"</code> or <code>"_/skip"</code>.
+For <code>"D/Date"</code>, the value has to follow the form <code>YYYY-MM-DD</code>,
+where dates that don't match that are replaced by NA.</p></dd>
 
 
 <dt>value</dt>
