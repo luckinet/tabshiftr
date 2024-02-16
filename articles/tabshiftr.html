@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>tabshiftr - Reshape disorganised messy data • tabshiftr</title>
+<title>tabshiftr - Reshape disorganized messy data • tabshiftr</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
 <link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
@@ -17,7 +17,7 @@
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="tabshiftr - Reshape disorganised messy data">
+<script src="../pkgdown.js"></script><meta property="og:title" content="tabshiftr - Reshape disorganized messy data">
 <meta property="og:description" content="tabshiftr">
 <meta property="og:image" content="http://EhrmannS.github.io/tabshiftr/logo.svg">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
@@ -82,7 +82,7 @@
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>tabshiftr - Reshape disorganised messy data</h1>
+      <h1 data-toc-skip>tabshiftr - Reshape disorganized messy data</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/luckinet/tabshiftr/blob/HEAD/vignettes/tabshiftr.Rmd" class="external-link"><code>vignettes/tabshiftr.Rmd</code></a></small>
@@ -107,13 +107,13 @@ paradigm.</p>
 bring data into a tidy format. However, up until today it is limited to
 tables that are already organised into topologically coherent
 (rectangular) chunks and any messiness beyond that requires dedicated
-scripts for reorganisation. In <code>tabshiftr</code> we try to describe
+scripts for reorganization. In <code>tabshiftr</code> we try to describe
 and work with a further dimension of messiness, where data are available
-as so-called <em>disorganised (messy) data</em>, data that are not yet
+as so-called <em>disorganized (messy) data</em>, data that are not yet
 arranged into rectangular form.</p>
 <p>The approach of <code>tabshiftr</code> is based on describing the
 arrangement of such tables in a so-called <a href="https://en.wikipedia.org/wiki/Database_schema" class="external-link">schema</a>
-description, which is then the basis for automatic reorganisation via
+description, which is then the basis for automatic reorganization via
 the function <code><a href="../reference/reorganise.html">reorganise()</a></code>. Typically there is an input and
 an output schema, describing the arrangement of the input and output
 tables, respectively. The advantage of this procedure is that input and
@@ -282,7 +282,6 @@ several clusters of comparable variables.</caption>
 </tr>
 </tbody>
 </table>
-<!-- ## Dimensions of disorganisation --><!-- Several of the following dimensions of disorganisation can co-occur in one table. --><!-- Examples of each of them are presented in the section [Table types](#table-types). --><!-- 1) Each level of an identifying variable, or a categorical observed variable are organised into separate topologically coherent chunks (clusters) of data, instead of all variables in one cluster/table. --><!-- 2) The names of several observed variables are treated as if they were the levels of an identifying variable (they are *listed*), instead of each observed variable in its own column. This is also called \"long\" data. --><!-- 3) The levels of one or more identifying variable are spread over several columns, instead of all levels in only one column. This is also called \"wide\" data. --><!-- 4) Several identifying variables are stored in the same column or one identifying variable is split up into several columns. --><!-- 5) A table is organised so that one or more variables are \"not in one piece\" (e.g., empty rows and/or columns). --><!-- 6) One or more variables are merely implicitly available (e.g., as table or file name or in a \"meta-data header\") --><!-- 7) Tables that are part of the same series (i.e., that contain the same variables), contain variables in different columns in each table. --><!-- 8) Some columns of a particular chunk are misplaced vertically or some rows are misplaced horizontally so that variables and observations don't match across the whole table (not yet explicitly solved here). -->
 </div>
 <div class="section level2">
 <h2 id="how-to-make-a-schema-description">How to make a schema description<a class="anchor" aria-label="anchor" href="#how-to-make-a-schema-description"></a>
@@ -647,7 +646,7 @@ in a tidy arrangement.</p>
 <p>The <code><a href="../reference/reorganise.html">reorganise()</a></code> function carries out the steps of
 validating, extracting the variables, pivoting the tentative output and
 putting the final table together automatically, so it merely requires
-the finalised (non-validated) <code>schema</code> and the
+the finalized (non-validated) <code>schema</code> and the
 <code>input</code> table.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">schema</span> <span class="co"># has a pretty print function</span></span>
@@ -679,13 +678,13 @@ the finalised (non-validated) <code>schema</code> and the
 <h2 id="table-types">Table types<a class="anchor" aria-label="anchor" href="#table-types"></a>
 </h2>
 <p><a name="tablesTypes"></a></p>
-<p>In this section we look at some examples of disorganised data,
-discuss the dimension along which they are disorganised and show which
-schema description should be used to reorganise them.</p>
+<p>In this section we look at some examples of disorganized data,
+discuss the dimension along which they are disorganized and show which
+schema description should be used to reorganize them.</p>
 <p>All of the following examples contain an <code>other_observed</code>,
 an <code>empty_col</code> column and an empty row, which serve the
-purpose of dummy information or formating that could be found in any
-table and should not disturb the process of reorganising. You can run
+purpose of dummy information or formatting that could be found in any
+table and should not disturb the process of reorganizing. You can run
 all the examples by simply loading the schema and calling
 <code>reorganise(input = tabs2shift$..., schema = schema)</code> with
 the respective table that is plotted for this example.</p>
