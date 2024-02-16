@@ -42,25 +42,27 @@ install.packages("tabshiftr")
 or the latest development version from github:
 
 ``` r
-devtools::install_github("EhrmannS/tabshiftr")
+devtools::install_github("luckinet/tabshiftr")
 ```
 
 2)  The
     [vignette](https://luckinet.github.io/tabshiftr/articles/tabshiftr.html)
-    gives an introduction, provides an instruction on how to set up
-    schema descriptions by going step by step through certain dimensions
-    of disorganisation to show which table arrangements can be
-    reorganised and how that works.
+
+- gives an introduction of the nature of tabular data and of the
+  dimensions of disorganization dealt with here,
+- provides an instruction on how to set up a schema description
+- shows a wide range of table arrangements that can be reshaped with the
+  tools provided here.
 
 ## Examples
 
-A disorganised table may look like the following table:
+A disorganized table may look like the following table:
 
 ``` r
 library(tabshiftr)
 library(knitr)
 
-# a rather disorganised table with messy clusters and a distinct variable
+# a rather disorganized table with messy clusters and a distinct variable
 input <- tabs2shift$clusters_messy
 kable(input)
 ```
@@ -276,25 +278,25 @@ kable(output)
 
 | territories | year   | commodities | harvested | production |
 |:------------|:-------|:------------|----------:|-----------:|
-| unit 1      | year 1 | maize       |      1121 |       1122 |
 | unit 1      | year 1 | soybean     |      1111 |       1112 |
-| unit 1      | year 2 | maize       |      1221 |       1222 |
+| unit 1      | year 1 | maize       |      1121 |       1122 |
 | unit 1      | year 2 | soybean     |      1211 |       1212 |
-| unit 2      | year 1 | maize       |      2121 |       2122 |
+| unit 1      | year 2 | maize       |      1221 |       1222 |
 | unit 2      | year 1 | soybean     |      2111 |       2112 |
-| unit 2      | year 2 | maize       |      2221 |       2222 |
+| unit 2      | year 1 | maize       |      2121 |       2122 |
 | unit 2      | year 2 | soybean     |      2211 |       2212 |
-| unit 3      | year 1 | maize       |      3121 |       3122 |
+| unit 2      | year 2 | maize       |      2221 |       2222 |
 | unit 3      | year 1 | soybean     |      3111 |       3112 |
-| unit 3      | year 2 | maize       |      3221 |       3222 |
+| unit 3      | year 1 | maize       |      3121 |       3122 |
 | unit 3      | year 2 | soybean     |      3211 |       3212 |
+| unit 3      | year 2 | maize       |      3221 |       3222 |
 
 # Contributions
 
-- tabshiftr is still in development. So far it reliably reorganises 20
+- tabshiftr is still in development. So far it reliably reorganizes 20
   different types of tables, but additional dimensions of
-  disorganisation might show themselves. If you encounter a table that
-  can’t be reorganised with the current infrastructure, we’d be more
+  disorganization might show themselves. If you encounter a table that
+  can’t be reorganized with the current infrastructure, we’d be more
   than happy to collaborate on advancing `tabshiftr`.
 - Informative error management is work in process.
 - Moreover, the resulting schema descriptions can be useful for data
