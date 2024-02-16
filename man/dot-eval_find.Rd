@@ -7,7 +7,7 @@
 .eval_find(input = NULL, col = NULL, row = NULL, clusters = NULL)
 }
 \arguments{
-\item{input}{[\code{character(1)}]\cr table to reorganise.}
+\item{input}{[\code{data.frame(1)}]\cr table to reorganise.}
 
 \item{col}{[\code{list(2)}]\cr the output of the respective .find construct
 used to match in columns.}

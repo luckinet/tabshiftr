@@ -6,6 +6,7 @@
 \usage{
 setFormat(
   schema = NULL,
+  header = 0L,
   decimal = NULL,
   thousand = NULL,
   na_values = NULL,
@@ -16,6 +17,13 @@ setFormat(
 \item{schema}{[\code{schema(1)}]\cr In case this information is added to an
 already existing schema, provide that schema here (overwrites previous
 information).}
+
+\item{header}{[\code{integerish(1)}]\cr The number of header rows. Optimally,
+a table is read so that column names are ignored (for example
+\code{readr::read_csv(file = ..., col_names = FALSE)}). If relatively well
+defined tables are processed, where the header is always only one row, the
+table can be read in with the default and the header can be spliced into
+the table by specifying the number of rows here.}
 
 \item{decimal}{[\code{character(1)}]\cr The symbols that should be
 interpreted as decimal separator.}
