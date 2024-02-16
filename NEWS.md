@@ -1,3 +1,8 @@
+# tabshiftr 0.5.0 - variable types
+
+- include the possibility to specify variable data type, which will result in a column of that type
+- include header into `setFormat()` again, which enables providing tables where the column names are in the header, where they will be spliced into the table.
+
 # tabshiftr 0.4.2
 
 - include split and merge functionality for cluster ID.
