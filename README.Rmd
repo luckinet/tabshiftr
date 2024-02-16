@@ -46,29 +46,29 @@ install.packages("tabshiftr")
 or the latest development version from github:
 
 ```{r, eval=FALSE}
-devtools::install_github("EhrmannS/tabshiftr")
+devtools::install_github("luckinet/tabshiftr")
 ```
 
-2) The [vignette](https://luckinet.github.io/tabshiftr/articles/tabshiftr.html) gives an introduction, provides an instruction on how to set up schema descriptions by going step by step through certain dimensions of disorganisation to show which table arrangements can be reorganised and how that works.
+2) The [vignette](https://luckinet.github.io/tabshiftr/articles/tabshiftr.html) 
+ - gives an introduction of the nature of tabular data and of the dimensions of disorganization dealt with here, 
+ - provides an instruction on how to set up a schema description
+ - shows a wide range of table arrangements that can be reshaped with the tools provided here.
 
 
 ## Examples
 
-A disorganised table may look like the following table:
+A disorganized table may look like the following table:
 
 ```{r}
 library(tabshiftr)
 library(knitr)
 
-# a rather disorganised table with messy clusters and a distinct variable
+# a rather disorganized table with messy clusters and a distinct variable
 input <- tabs2shift$clusters_messy
 kable(input)
 ```
 
-If we were to transform this data into tidy data by merely using the functions in `tidyr` (or the extended `tidyverse` in general), we'd potentially end up with a massive algorithm, especially for such complicated table arrangements.
-For other tables that may or may not be as complicated, we'd have to set up yet more algorithms and while a pipeline of tidy functions is relatively easy to set up, it would still become very laborious to repeat this for the dozens of potential table arrangements.
-In `tabshiftr` we solve that by describing the schema of the input table and providing this schema description to the `reorganise()` function.
-This requires us to use a vastly smaller set of code and makes it thus a lot more efficient to bring multiple heterogeneous data into an interoperable format.
+If we were to transform this data into tidy data by merely using the functions in `tidyr` (or the extended `tidyverse` in general), we'd potentially end up with a massive algorithm, especially for such complicated table arrangements. For other tables that may or may not be as complicated, we'd have to set up yet more algorithms and while a pipeline of tidy functions is relatively easy to set up, it would still become very laborious to repeat this for the dozens of potential table arrangements. In `tabshiftr` we solve that by describing the schema of the input table and providing this schema description to the `reorganise()` function. This requires us to use a vastly smaller set of code and makes it thus a lot more efficient to bring multiple heterogeneous data into an interoperable format.
 
 ```{r}
 # put together schema description by ...
@@ -123,7 +123,7 @@ kable(output)
 
 # Contributions
 
-* tabshiftr is still in development. So far it reliably reorganises 20 different types of tables, but additional dimensions of disorganisation might show themselves. If you encounter a table that can't be reorganised with the current infrastructure, we'd be more than happy to collaborate on advancing `tabshiftr`.
+* tabshiftr is still in development. So far it reliably reorganizes 20 different types of tables, but additional dimensions of disorganization might show themselves. If you encounter a table that can't be reorganized with the current infrastructure, we'd be more than happy to collaborate on advancing `tabshiftr`.
 * Informative error management is work in process.
 * Moreover, the resulting schema descriptions can be useful for data archiving or database building and `tabshiftr` should at some point support that those schemas can be exported into data-formats that are used by downstream applications (xml, json, ...), following proper (ISO) standards. In case you have experience with those standards and would like to collaborate on it, please get in touch!
 

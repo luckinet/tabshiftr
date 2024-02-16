@@ -1,5 +1,5 @@
 ---
-title: "tabshiftr - Reshape disorganised messy data"
+title: "tabshiftr - Reshape disorganized messy data"
 output: 
   bookdown::html_document2:
     fig_caption: yes
@@ -33,27 +33,16 @@ library(knitr)
 
 # Rationale
 
-Tables as places where data are recorded can be pretty messy.
-The 'tidy' paradigm in R proposes that data are organised so that variables are recorded in columns, observations in rows and that there is only one value per cell [@Wickham2014].
-This, however, is only one interpretation of how data should be organised [@Broman] and especially when scraping data off the internet, one frequently encounters spreadsheets that don't follow this paradigm.
+Tables as places where data are recorded can be pretty messy. The 'tidy' paradigm in R proposes that data are organised so that variables are recorded in columns, observations in rows and that there is only one value per cell [@Wickham2014]. This, however, is only one interpretation of how data should be organised [@Broman] and especially when scraping data off the internet, one frequently encounters spreadsheets that don't follow this paradigm.
 
-The `tidyr` package is one of the most popular tools to bring data into a tidy format. 
-However, up until today it is limited to tables that are already organised into topologically coherent (rectangular) chunks and any messiness beyond that requires dedicated scripts for reorganisation.
-In `tabshiftr` we try to describe and work with a further dimension of messiness, where data are available as so-called *disorganised (messy) data*, data that are not yet arranged into rectangular form.
+The `tidyr` package is one of the most popular tools to bring data into a tidy format. However, up until today it is limited to tables that are already organised into topologically coherent (rectangular) chunks and any messiness beyond that requires dedicated scripts for reorganization. In `tabshiftr` we try to describe and work with a further dimension of messiness, where data are available as so-called *disorganized (messy) data*, data that are not yet arranged into rectangular form.
 
-The approach of `tabshiftr` is based on describing the arrangement of such tables in a so-called [schema](https://en.wikipedia.org/wiki/Database_schema) description, which is then the basis for automatic reorganisation via the function `reorganise()`.
-Typically there is an input and an output schema, describing the arrangement of the input and output tables, respectively.
-The advantage of this procedure is that input and output tables exist explicitly and the schema maps the transformation of the data.
-As we want to end up with tidy tables, the output schema is pre-determined by a tidy table of the included variables and the input [schema needs to be put together](#makeSchema) by you, the user.
+The approach of `tabshiftr` is based on describing the arrangement of such tables in a so-called [schema](https://en.wikipedia.org/wiki/Database_schema) description, which is then the basis for automatic reorganization via the function `reorganise()`. Typically there is an input and an output schema, describing the arrangement of the input and output tables, respectively. The advantage of this procedure is that input and output tables exist explicitly and the schema maps the transformation of the data. As we want to end up with tidy tables, the output schema is pre-determined by a tidy table of the included variables and the input [schema needs to be put together](#makeSchema) by you, the user.
 
 
 # The basics
 
-Data can be disorganised according to multiple dimensions.
-To understand those dimensions, we first need to understand the nature of data.
-Data \"of the same kind\" are collected in a **variable**, which is always a combination of a **name** and the **values**. 
-In a table, names are typically in the topmost row and values are in the column below that name ([Tab. 1](#tabExample1)).
-Conceptually, there are two types of variables in any table:
+Data can be disorganised according to multiple dimensions. To understand those dimensions, we first need to understand the nature of data. Data \"of the same kind\" are collected in a **variable**, which is always a combination of a **name** and the **values**. In a table, names are typically in the topmost row and values are in the column below that name ([Tab. 1](#tabExample1)). Conceptually, there are two types of variables in any table:
 
 1. Variables that contain categorical levels that identify the units for which values have been observed (they are called *identifying variables* here).
 2. Variables that have been measured or observed and that consequently represent the target values of that measurement, be they continuous or categorical (they are called *observed variables* here).
@@ -84,28 +73,12 @@ Here, we do use the term **spreadsheet** to denote what would typically be seen 
 
 Table: <a name="tabExample2"></a>Table 2: An example of a table with several clusters of comparable variables.
 
-<!-- ## Dimensions of disorganisation -->
-
-<!-- Several of the following dimensions of disorganisation can co-occur in one table. -->
-<!-- Examples of each of them are presented in the section [Table types](#table-types). -->
-
-<!-- 1) Each level of an identifying variable, or a categorical observed variable are organised into separate topologically coherent chunks (clusters) of data, instead of all variables in one cluster/table. -->
-<!-- 2) The names of several observed variables are treated as if they were the levels of an identifying variable (they are *listed*), instead of each observed variable in its own column. This is also called \"long\" data. -->
-<!-- 3) The levels of one or more identifying variable are spread over several columns, instead of all levels in only one column. This is also called \"wide\" data. -->
-<!-- 4) Several identifying variables are stored in the same column or one identifying variable is split up into several columns. -->
-<!-- 5) A table is organised so that one or more variables are \"not in one piece\" (e.g., empty rows and/or columns). -->
-<!-- 6) One or more variables are merely implicitly available (e.g., as table or file name or in a \"meta-data header\") -->
-<!-- 7) Tables that are part of the same series (i.e., that contain the same variables), contain variables in different columns in each table. -->
-<!-- 8) Some columns of a particular chunk are misplaced vertically or some rows are misplaced horizontally so that variables and observations don't match across the whole table (not yet explicitly solved here). -->
-
-
 # How to make a schema description
 <a name="makeSchema"></a>
 
 ## Decision tree
 
-To set up a schema description, go through the following questions step by step and provide the respective answer in the respective function.
-[Linked tables](#tablesTypes) can serve as examples to compare against and right after the decision tree there is a step-by-step hands-on example of how to build a schema description.
+To set up a schema description, go through the following questions step by step and provide the respective answer in the respective function. [Linked tables](#tablesTypes) can serve as examples to compare against and right after the decision tree there is a step-by-step hands-on example of how to build a schema description.
 
 1. **Variables**: Clarify which are the identifying variables and which are the observed variables. Make sure not to mistake a listed observed variable ([Tab. 10](#long)) as an identifying variable.
 
@@ -187,8 +160,7 @@ validateSchema(schema = schema, input = input) %>%
   getIDVars(input = input)
 ```
 
-The id variable `commodities` is clearly wide (more than one column) and its' values are not repeated four times, as it should be, judging by the combination of the other variables.
-However, this is an expected tentative output that will be handled in a later step and the id variables have been specified correctly.
+The id variable `commodities` is clearly wide (more than one column) and its' values are not repeated four times, as it should be, judging by the combination of the other variables. However, this is an expected tentative output that will be handled in a later step and the id variables have been specified correctly.
 
 Next, we set the listed observed variables. *Listed* means that the column names of the observed variables are treated as if they were the values of an identifying variable (in column 4), while the values are in the columns 6 and 7. In this case, the values need to be filtered by `value` (i.e., the values of that variable are found in columns 6 and 7, where column 4 contains `value`).
 
@@ -207,7 +179,7 @@ validateSchema(schema = schema, input = input) %>%
 
 From both, the output of `getIDVars` and `getObsVars` we can calculate how many and which combinations of data exist (e.g., the two columns in the observed variables correspond to the two values of the identifying variable `commodities`) and that they still need to be pivoted to be in a tidy arrangement.
 
-The `reorganise()` function carries out the steps of validating, extracting the variables, pivoting the tentative output and putting the final table together automatically, so it merely requires the finalised (non-validated) `schema` and the `input` table.
+The `reorganise()` function carries out the steps of validating, extracting the variables, pivoting the tentative output and putting the final table together automatically, so it merely requires the finalized (non-validated) `schema` and the `input` table.
 
 ```{r}
 schema # has a pretty print function
@@ -218,10 +190,9 @@ reorganise(input = input, schema = schema)
 # Table types
 <a name="tablesTypes"></a>
 
-In this section we look at some examples of disorganised data, discuss the dimension along which they are disorganised and show which schema description should be used to reorganise them.
+In this section we look at some examples of disorganized data, discuss the dimension along which they are disorganized and show which schema description should be used to reorganize them.
 
-All of the following examples contain an `other_observed`, an `empty_col` column and an empty row, which serve the purpose of dummy information or formating that could be found in any table and should not disturb the process of reorganising.
-You can run all the examples by simply loading the schema and calling `reorganise(input = tabs2shift$..., schema = schema)` with the respective table that is plotted for this example.
+All of the following examples contain an `other_observed`, an `empty_col` column and an empty row, which serve the purpose of dummy information or formatting that could be found in any table and should not disturb the process of reorganizing. You can run all the examples by simply loading the schema and calling `reorganise(input = tabs2shift$..., schema = schema)` with the respective table that is plotted for this example.
 
 ## Table contains one cluster
 
@@ -253,8 +224,7 @@ reorganise(input = tabs2shift$tidy, schema = schema)
 
 Sometimes it may be the case that the number of variables is not the same as there are columns because either one variable is spread over several column, or one column contains several variables.
 
-In the former case, columns need to be merged ([Tab. 4](#splitCol)) and in the latter case, columns need to be split via [regular expressions](https://edrub.in/CheatSheets/cheatSheetStringr.pdf) ([Tab. 5](#mergeCol)).
-For example, `.+?(?=_)` gives everything up until the first `_` and `(?<=\\_).*` everything after the `_ `.
+In the former case, columns need to be merged ([Tab. 4](#splitCol)) and in the latter case, columns need to be split via [regular expressions](https://edrub.in/CheatSheets/cheatSheetStringr.pdf) ([Tab. 5](#mergeCol)). For example, `.+?(?=_)` gives everything up until the first `_` and `(?<=\\_).*` everything after the `_ `.
 
 ```{r}
 kable(input <- tabs2shift$split_column)
@@ -289,8 +259,7 @@ schema <-
 
 ### Implicit variables
 
-When data are split up into clusters that are stored in separate files or spreadsheets, the cluster ID is often recorded not in the table as an explicit variable, but is only provided in the file or table name.
-In those cases, we have to register this cluster ID as an identifying variable nevertheless, to output a consistent table.
+When data are split up into clusters that are stored in separate files or spreadsheets, the cluster ID is often recorded not in the table as an explicit variable, but is only provided in the file or table name. In those cases, we have to register this cluster ID as an identifying variable nevertheless, to output a consistent table.
 
 ```{r}
 kable(input <- tabs2shift$implicit_variable)
@@ -311,9 +280,7 @@ schema <- setCluster(id = "territories",
 
 ### Wide variables
 
-In case identifying variables are factors with a small number of levels, those levels may be falsely used as names of other variables, where they would be next to each other and thus \"wide\" ([Tab. 7](#one_wide_id)).
-Those other variables (both identifying and observed variables) would then be \"nested\" in the wide identifying variables.
-In those cases we have to record for the identifying variable(s) the columns and the row in which the **values of the identifying variable** are found (they will look like they are part of the header). For the observed variable(s) we need to record the columns and the row where the **name of that variable** is found.
+In case identifying variables are factors with a small number of levels, those levels may be falsely used as names of other variables, where they would be next to each other and thus \"wide\" ([Tab. 7](#one_wide_id)). Those other variables (both identifying and observed variables) would then be \"nested\" in the wide identifying variables. In those cases we have to record for the identifying variable(s) the columns and the row in which the **values of the identifying variable** are found (they will look like they are part of the header). For the observed variable(s) we need to record the columns and the row where the **name of that variable** is found.
 
 ```{r}
 kable(input <- tabs2shift$one_wide_id)
@@ -370,9 +337,7 @@ schema <-
 
 ### Listed *observed variables*
 
-Some tables contain a column where the names of observed variables (`harvested` and `production`) are treated as if they were the values of an identifying variable (`dimension`), while the values are presented in only one column (`values`) ([Tab. 10](#long)).
-To end up with tidy data in those cases, we need to extract the values associated with the observed variables.
-Thus, we define the observed variables and specify the `key = ` in which the variable names sit, and the `value = ` the variable name has, to extract that variable.
+Some tables contain a column where the names of observed variables (`harvested` and `production`) are treated as if they were the values of an identifying variable (`dimension`), while the values are presented in only one column (`values`) ([Tab. 10](#long)). To end up with tidy data in those cases, we need to extract the values associated with the observed variables. Thus, we define the observed variables and specify the `key = ` in which the variable names sit, and the `value = ` the variable name has, to extract that variable.
 
 ```{r}
 kable(input <- tabs2shift$listed_column)
@@ -416,9 +381,7 @@ WIP
 
 ## Table contains several clusters
 
-Clusters are typically of the same arrangement within one table, they can be repeated along rows (horizontally) or along columns (vertically), but also a non-systematic distribution is possible.
-Moreover, clusters may be nested into some grouping variable in a similar way that data are nested into clusters.
-A table could also be treated like a cluster when the table is not only composed of the table, but perhaps also text in the form of some table description (that may be scattered in the document and) that does not allow the table to start at the table origin in the topmost left cell.
+Clusters are typically of the same arrangement within one table, they can be repeated along rows (horizontally) or along columns (vertically), but also a non-systematic distribution is possible. Moreover, clusters may be nested into some grouping variable in a similar way that data are nested into clusters. A table could also be treated like a cluster when the table is not only composed of the table, but perhaps also text in the form of some table description (that may be scattered in the document and) that does not allow the table to start at the table origin in the topmost left cell.
 
 ### Horizontal clusters
 
@@ -466,9 +429,7 @@ schema <- setCluster(id = "territories",
 
 ### Clusters of observed variables
 
-The previous two types of clusters are clusters of identifying variables, but it may also be the case that the observed variables are split up into distinct clusters.
-Here, we need to specify first of all `setClusters(..., id = "observed")` to indicate that clusters are observed variables.
-Next, we need to set up the observed variables so that they contain `"key = "cluster"` and in `value` the number of the cluster this variable can be found in.
+The previous two types of clusters are clusters of identifying variables, but it may also be the case that the observed variables are split up into distinct clusters. Here, we need to specify first of all `setClusters(..., id = "observed")` to indicate that clusters are observed variables. Next, we need to set up the observed variables so that they contain `"key = "cluster"` and in `value` the number of the cluster this variable can be found in.
 
 ```{r}
 kable(input <- tabs2shift$clusters_observed)
@@ -490,9 +451,7 @@ schema <- setCluster(id = "observed",
 
 ### Clusters that are nested into another variable
 
-When (some) clusters are nested into a (grouping) variable of interest, not only the cluster positions need to be specified, but also their relation to the grouping variable.
-Similar to the cluster ID, this group ID also needs to be specified as an identifying variable and needs to be provided as `group = ...` and the membership of each cluster to a group needs to be specified in `member = ...`. 
-The cluster position needs to be specified just as it would be without groups.
+When (some) clusters are nested into a (grouping) variable of interest, not only the cluster positions need to be specified, but also their relation to the grouping variable. Similar to the cluster ID, this group ID also needs to be specified as an identifying variable and needs to be provided as `group = ...` and the membership of each cluster to a group needs to be specified in `member = ...`. The cluster position needs to be specified just as it would be without groups.
 
 ```{r}
 kable(input <- tabs2shift$clusters_nested)
@@ -516,9 +475,7 @@ schema <- setCluster(id = "sublevel",
 
 ### Variables that are distinct from a cluster
 
-When not all identifying variables can be provided relative to the cluster origin, for example because they are missing for some clusters, it makes more sense to define such a variable as a distinct variable.
-This is done by providing `row` and `col` as absolute values and setting `distinct = TRUE`.
-Other variables that are all arranged in the same way in each cluster can be specified so that their row and column indices are given relative to the cluster position (`relative = TRUE`), as shown in the alternative shema below.
+When not all identifying variables can be provided relative to the cluster origin, for example because they are missing for some clusters, it makes more sense to define such a variable as a distinct variable. This is done by providing `row` and `col` as absolute values and setting `distinct = TRUE`. Other variables that are all arranged in the same way in each cluster can be specified so that their row and column indices are given relative to the cluster position (`relative = TRUE`), as shown in the alternative shema below.
 
 ```{r}
 kable(input <- tabs2shift$clusters_messy)
@@ -548,8 +505,7 @@ schema_alt <- setCluster(id = "territories",
 
 ### Messy clusters
 
-In case several clusters are neither aligned along a row nor a column, and are all of differing size, the respective information need to be provided at the same index of the respective property.
-For example, three clusters, where the first cluster starts at (1,1) and is 3 by 4 cells in size, where the second clusters starts at (5,2) and is 5 by 5 cells in size, and so on, needs to be specified as below.
+In case several clusters are neither aligned along a row nor a column, and are all of differing size, the respective information need to be provided at the same index of the respective property. For example, three clusters, where the first cluster starts at (1,1) and is 3 by 4 cells in size, where the second clusters starts at (5,2) and is 5 by 5 cells in size, and so on, needs to be specified as below.
 
 ```{r, eval=FALSE}
 schema <- setCluster(id = ...,
@@ -560,10 +516,7 @@ schema <- setCluster(id = ...,
   ...
 ```
 
-Additionally, given that at least the tables within each cluster are all arranged in the same way, the contained variables can be specified so that their row and column indices are given relative to the cluster position (`relative = TRUE`).
-If also that is not the case, the row and column values for each cluster need to be provided for the respective variables in the same way as for cluster positions.
-
-
+Additionally, given that at least the tables within each cluster are all arranged in the same way, the contained variables can be specified so that their row and column indices are given relative to the cluster position (`relative = TRUE`). If also that is not the case, the row and column values for each cluster need to be provided for the respective variables in the same way as for cluster positions.
 
 
 # References
