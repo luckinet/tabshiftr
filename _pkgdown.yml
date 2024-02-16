@@ -32,11 +32,13 @@ reference:
   - title: reorganise tables
     contents:
       - reorganise
-  - title: other helpers
+  - title: other helper functions
     contents:
       - .eval_find
       - .eval_sum
       - .expect_valid_table
+      - .getColTypes
+      - .shiftHeader
       - .tidyVars
       - .updateFormat
       - show,schema-method

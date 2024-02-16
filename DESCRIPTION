@@ -1,6 +1,6 @@
 Package: tabshiftr
 Title: Reshape Disorganised Messy Data
-Version: 0.4.2
+Version: 0.5.0
 Authors@R: 
     c(person(given = "Steffen",
              family = "Ehrmann",
@@ -59,7 +59,8 @@ Imports:
     crayon,
     methods,
     purrr,
-    stringr
+    stringr,
+    lubridate
 RoxygenNote: 7.2.3
 Suggests: 
     knitr,

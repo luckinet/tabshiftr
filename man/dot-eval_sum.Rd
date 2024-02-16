@@ -7,7 +7,7 @@
 .eval_sum(input = NULL, groups = NULL, data = NULL)
 }
 \arguments{
-\item{input}{[\code{character(1)}]\cr table to reorganise.}
+\item{input}{[\code{data.frame(1)}]\cr table to reorganise.}
 
 \item{groups}{[\code{list(3)}]\cr the groups-slot from a schema.}
 
