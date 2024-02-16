@@ -39,7 +39,7 @@ Description: Helps the user to build and register schema descriptions of
     be used for reshaping. The schema description documents the arrangement of 
     input tables and is used to reshape them into a standardised (tidy) output 
     format.
-URL: https://github.com/luckinet/tabshiftr
+URL: https://luckinet.github.io/tabshiftr/, https://github.com/luckinet/tabshiftr
 BugReports: https://github.com/luckinet/tabshiftr/issues
 Depends:
     R (>= 2.10)
