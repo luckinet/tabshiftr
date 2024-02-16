@@ -59,7 +59,8 @@ Imports:
     crayon,
     methods,
     purrr,
-    stringr
+    stringr,
+    lubridate
 RoxygenNote: 7.2.3
 Suggests: 
     knitr,
