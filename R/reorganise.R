@@ -45,8 +45,7 @@ reorganise <- function(input = NULL, schema = NULL){
   # check validity of arguments
   assertDataFrame(x = input)
 
-  input <- input %>%
-    mutate_all(as.character)
+  input <- .spliceHeader(input = input, rows = schema@format$header)
 
   # 1. add missing information in schema ----
   schema <- validateSchema(input = input, schema = schema)

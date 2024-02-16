@@ -135,6 +135,87 @@
 
 }
 
+
+#' Get the column types of a tibble
+#'
+#' @param input [\code{data.frame(1)}]\cr table of which to get the column
+#'   types.
+#' @param collapse [\code{logical(1)}]\cr whether or not to paste all column
+#'   types into one string.
+#' @importFrom checkmate assertDataFrame assertLogical
+#' @importFrom tibble tibble
+#' @importFrom purrr map
+#' @importFrom dplyr left_join pull
+#' @importFrom stringr str_c
+
+.getColTypes <- function(input = NULL, collapse = TRUE){
+
+  assertDataFrame(x = input)
+  assertLogical(x = collapse, len = 1)
+
+  types <- tibble(col_type = c("character", "integer", "numeric", "double", "logical", "Date", "units", "sfc_POLYGON", "arrow_binary"),
+                  code = c("c", "i", "n", "d", "l", "D", "u", "g", "a"))
+
+  out <- map(1:dim(input)[2], function(ix){
+    class(input[[ix]])[1]
+  }) %>%
+    unlist() %>%
+    tibble(col_type = .) %>%
+    left_join(y = types, by = "col_type") %>%
+    pull("code")
+
+  if(collapse){
+    out <- out %>%
+      str_c(collapse = "")
+  }
+
+  return(out)
+
+}
+
+
+#' Splice the header into the table
+#'
+#' @param input [\code{data.frame(1)}]\cr table of which the header should be
+#'   shifted into the table.
+#' @param rows [\{integeris(1)]\cr the number of rows to shift into the table.
+#' @importFrom checkmate assertDataFrame assertIntegerish
+#' @importFrom dplyr mutate across bind_rows
+#' @importFrom tidyselect where
+#' @importFrom lubridate is.Date
+#' @importFrom tibble as_tibble_row
+
+.spliceHeader <- function(input, rows = NULL){
+
+  assertDataFrame(x = input)
+  assertIntegerish(x = rows, len = 1, lower = 0, upper = dim(input)[1], any.missing = FALSE)
+
+  input <- input %>%
+    mutate(across(where(is.double) | where(is.integer) |  where(is.logical) | where(is.Date), as.character))
+
+  if(rows != 0L){
+
+    non_char <- .getColTypes(input = input, collapse = FALSE) != "c"
+
+    if(rows != 1){
+      stop("! implement case where more than one rows need to be shifted !")
+    } else {
+      vec <- colnames(input)
+      names(vec) <- paste0("X", seq_along(vec))
+      vec <- as_tibble_row(vec)
+      vec[, non_char] <- NA
+
+      colnames(input) <- paste0("X", seq_along(vec))
+
+      input <- bind_rows(vec, input)
+    }
+
+  }
+
+  return(input)
+}
+
+
 #' Match variables
 #'
 #' This function matches id and observed variables and reshapes them accordingly
@@ -454,7 +535,7 @@
 
 #' Evaluate .sum constructs
 #'
-#' @param input [\code{character(1)}]\cr table to reorganise.
+#' @param input [\code{data.frame(1)}]\cr table to reorganise.
 #' @param groups [\code{list(3)}]\cr the groups-slot from a schema.
 #' @param data [\code{integerish(.)}]\cr the cell column or row that should be
 #'   adapted to groupings.
@@ -509,7 +590,7 @@
 
 #' Evaluate .find constructs
 #'
-#' @param input [\code{character(1)}]\cr table to reorganise.
+#' @param input [\code{data.frame(1)}]\cr table to reorganise.
 #' @param col [\code{list(2)}]\cr the output of the respective .find construct
 #'   used to match in columns.
 #' @param row [\code{list(2)}]\cr the output of the respective .find construct

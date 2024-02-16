@@ -7,6 +7,12 @@
 #' @param schema [\code{schema(1)}]\cr In case this information is added to an
 #'   already existing schema, provide that schema here (overwrites previous
 #'   information).
+#' @param header [\code{integerish(1)}]\cr The number of header rows. Optimally,
+#'   a table is read so that column names are ignored (for example
+#'   \code{readr::read_csv(file = ..., col_names = FALSE)}). If relatively well
+#'   defined tables are processed, where the header is always only one row, the
+#'   table can be read in with the default and the header can be spliced into
+#'   the table by specifying the number of rows here.
 #' @param decimal [\code{character(1)}]\cr The symbols that should be
 #'   interpreted as decimal separator.
 #' @param thousand [\code{character(1)}]\cr The symbols that should be
@@ -27,10 +33,11 @@
 #' @importFrom dplyr bind_rows
 #' @export
 
-setFormat <- function(schema = NULL, decimal = NULL, thousand = NULL,
-                      na_values = NULL, flags = NULL){
+setFormat <- function(schema = NULL, header = 0L, decimal = NULL,
+                      thousand = NULL, na_values = NULL, flags = NULL){
 
   assertClass(x = schema, classes = "schema", null.ok = TRUE)
+  assertIntegerish(x = header, len = 1, lower = 0L, any.missing = FALSE)
   assertCharacter(x = decimal, len = 1, any.missing = FALSE, null.ok = TRUE)
   assertCharacter(x = thousand, len = 1, any.missing = FALSE, null.ok = TRUE)
   assertCharacter(x = na_values, any.missing = FALSE, null.ok = TRUE)
@@ -41,6 +48,10 @@ setFormat <- function(schema = NULL, decimal = NULL, thousand = NULL,
 
   if(is.null(schema)){
     schema <- schema_default
+  }
+
+  if(!is.null(header)){
+    schema@format$header <- header
   }
 
   if(!is.null(decimal)){
