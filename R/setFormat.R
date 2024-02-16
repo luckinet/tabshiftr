@@ -30,6 +30,7 @@
 setFormat <- function(schema = NULL, decimal = NULL, thousand = NULL,
                       na_values = NULL, flags = NULL){
 
+  # assertions ----
   assertClass(x = schema, classes = "schema", null.ok = TRUE)
   assertCharacter(x = decimal, len = 1, any.missing = FALSE, null.ok = TRUE)
   assertCharacter(x = thousand, len = 1, any.missing = FALSE, null.ok = TRUE)
@@ -39,6 +40,7 @@ setFormat <- function(schema = NULL, decimal = NULL, thousand = NULL,
     assertNames(x = names(flags), must.include = c("flag", "value"))
   }
 
+  # update schema ----
   if(is.null(schema)){
     schema <- schema_default
   }
@@ -58,6 +60,9 @@ setFormat <- function(schema = NULL, decimal = NULL, thousand = NULL,
   if(!is.null(flags)){
     schema@format$flags <- bind_rows(schema@format$flags, flags)
   }
+
+  # test for problems ----
+  .reportProblems(schema = schema)
 
   return(schema)
 }

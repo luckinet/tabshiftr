@@ -76,14 +76,6 @@ setObsVar <- function(schema = NULL, name = NULL, type = "numeric",
   if(is.null(schema)){
     schema <- schema_default
   }
-  # nClusters <- max(lengths(schema@clusters))
-  # if(nClusters == 0) nClusters <- 1
-
-  # error management ----
-
-  # ensure that 'value' is actually a value of th provided column in 'key'
-
-
 
   # update schema ----
   temp <- list(vartype = "observed",
@@ -95,6 +87,9 @@ setObsVar <- function(schema = NULL, name = NULL, type = "numeric",
                key = key,
                value = value)
   schema@variables[[name]] <- temp
+
+  # test for problems ----
+  .reportProblems(schema = schema)
 
   return(schema)
 }

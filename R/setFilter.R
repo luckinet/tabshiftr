@@ -44,6 +44,7 @@ setFilter <- function(schema = NULL, rows = NULL, columns = NULL,
   if(rowList) assertSubset(x = names(rows), choices = c("find"))
   if(colList) assertSubset(x = names(columns), choices = c("find"))
 
+  # update schema ----
   if(is.null(schema)){
     schema <- schema_default
   }
@@ -71,6 +72,9 @@ setFilter <- function(schema = NULL, rows = NULL, columns = NULL,
     }
     schema@filter$col <- c(schema@filter$col, columns)
   }
+
+  # test for problems ----
+  .reportProblems(schema = schema)
 
   return(schema)
 

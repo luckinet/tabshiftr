@@ -33,6 +33,7 @@ setGroups <- function(schema = NULL, rows = NULL, columns = NULL){
   # clustList <- testList(x = clusters)
   # assert(clustInt, clustList)
 
+  # update schema ----
   if(is.null(schema)){
     schema <- schema_default
   }
@@ -45,9 +46,8 @@ setGroups <- function(schema = NULL, rows = NULL, columns = NULL){
     schema@groups$cols <- c(schema@groups$cols, columns)
   }
 
-  # if(!is.null(clusters)){
-  #   schema@groups$clusters <- c(schema@groups$clusters, clusters)
-  # }
+  # test for problems ----
+  .reportProblems(schema = schema)
 
   return(schema)
 

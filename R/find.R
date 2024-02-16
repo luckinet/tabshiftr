@@ -66,6 +66,7 @@
 .find <- function(fun = NULL, pattern = NULL, col = NULL, row = NULL,
                   invert = FALSE, relative = FALSE){
 
+  # assertions ----
   assertFunction(x = fun, null.ok = TRUE)
   assertCharacter(x = pattern, null.ok = TRUE)
   assertLogical(x = invert, len = 1)
