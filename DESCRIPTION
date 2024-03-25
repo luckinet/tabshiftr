@@ -61,7 +61,7 @@ Imports:
     purrr,
     stringr,
     lubridate
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 Suggests: 
     knitr,
     rmarkdown,
