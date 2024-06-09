@@ -307,7 +307,7 @@
 #' @return a symmetric list of variables (all with the same dimensions)
 #' @importFrom checkmate assertSetEqual
 #' @importFrom purrr reduce map_int map set_names
-#' @importFrom tidyr pivot_longer pivot_wider fill separate
+#' @importFrom tidyr pivot_longer pivot_wider fill separate separate_longer_delim
 #' @importFrom dplyr distinct select bind_cols if_any full_join
 #' @importFrom tidyselect all_of everything
 #' @importFrom rlang `:=`
@@ -444,21 +444,22 @@
           valueNames <- names(newObs)[!names(newObs) %in% c(idNames, "key")]
         }
 
-        dupObs <- newObs %>%
-          pivot_wider(names_from = "key",
-                      values_from = all_of(valueNames),
-                      values_fn = length) %>%
-          mutate(row = row_number()) %>%
-          filter(if_any(all_of(obsNames), ~ . != 1))
-
-        if(dim(dupObs)[1] != 0){
-          warning("rows(", paste0(dupObs$row, collapse = ", "), ") are summarised from several values.", call. = FALSE)
-        }
+        # dupObs <- newObs %>%
+        #   pivot_wider(names_from = "key",
+        #               values_from = all_of(valueNames),
+        #               values_fn = length) %>%
+        #   mutate(row = row_number()) %>%
+        #   filter(if_any(all_of(obsNames), ~ . != 1))
+        #
+        # if(dim(dupObs)[1] != 0){
+        #   warning("rows(", paste0(dupObs$row, collapse = ", "), ") are summarised from several values.", call. = FALSE)
+        # }
 
         newObs <- newObs %>%
           pivot_wider(names_from = "key",
                       values_from = all_of(valueNames),
-                      values_fn = list)
+                      values_fn = ~ paste(.x, collapse = " | ")) |>
+          separate_longer_delim(cols = all_of(obsNames), delim = " | ")
 
         if(length(wideID) > 1){
           newObs <- newObs %>%

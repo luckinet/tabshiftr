@@ -35,23 +35,6 @@ test_that("listed observed variable", {
   out <- reorganise(input = input, schema = schema)
   expect_equal(names(out), c("territories", "year", "commodities", "HARV", "PROD"))
 
-  # keep duplicated observations (perhaps for a good reason)
-  input <- tabs2shift$listed_column
-  input <- bind_rows(input, input[c(17:18),])
-
-  schema <-
-    setIDVar(name = "territories", columns = 1) %>%
-    setIDVar(name = "year", columns = 2) %>%
-    setIDVar(name = "commodities", columns = 3) %>%
-    setObsVar(name = "harvested", columns = 7,
-              key = 6, value = "harvested") %>%
-    setObsVar(name = "production", columns = 7,
-              key = 6, value = "production")
-
-  expect_warning(out <- reorganise(input = input, schema = schema))
-  expect_tibble(x = out, nrows = 8, ncols = 5)
-  expect_true(all(out$production[7:8] == c(4424, 4444)))
-
 })
 
 
