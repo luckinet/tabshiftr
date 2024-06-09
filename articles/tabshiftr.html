@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png">
 <link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
@@ -657,8 +657,9 @@ the finalized (non-validated) <code>schema</code> and the
 <span><span class="co">#&gt;    <span style="color: #BBBB00;">year</span>          id               2                        </span></span>
 <span><span class="co">#&gt;    <span style="color: #BBBB00;">commodities</span>   id         1     6:7                      </span></span>
 <span><span class="co">#&gt;    <span style="color: #BBBB00;">harvested</span>     observed         6:7   4     harvested    </span></span>
-<span><span class="co">#&gt;    <span style="color: #BBBB00;">production</span>    observed         6:7   4     production</span></span>
-<span></span>
+<span><span class="co">#&gt;    <span style="color: #BBBB00;">production</span>    observed         6:7   4     production</span></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="../reference/reorganise.html">reorganise</a></span><span class="op">(</span>input <span class="op">=</span> <span class="va">input</span>, schema <span class="op">=</span> <span class="va">schema</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 8 × 5</span></span></span>
 <span><span class="co">#&gt;   territories year   commodities harvested production</span></span>
@@ -698,7 +699,7 @@ the respective table that is plotted for this example.</p>
 which are largely already in the target arrangement. The tidy table may
 however, still contain unneeded data, need different names, or
 transformation factors for the values.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">tabs2shift</span><span class="op">$</span><span class="va">tidy</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>
@@ -814,7 +815,7 @@ transformation factors for the values.</p>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">schema</span> <span class="op">&lt;-</span></span>
 <span>  <span class="fu"><a href="../reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"territories"</span>, columns <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"year"</span>, columns <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
@@ -846,7 +847,7 @@ split via <a href="https://edrub.in/CheatSheets/cheatSheetStringr.pdf" class="ex
 expressions</a> (<a href="#mergeCol">Tab. 5</a>). For example,
 <code>.+?(?=_)</code> gives everything up until the first <code>_</code>
 and <code>(?&lt;=\\_).*</code> everything after the <code>_</code>.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">input</span> <span class="op">&lt;-</span> <span class="va">tabs2shift</span><span class="op">$</span><span class="va">split_column</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>
@@ -975,14 +976,14 @@ is split up into two columns.</caption>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">schema</span> <span class="op">&lt;-</span></span>
 <span>  <span class="fu"><a href="../reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"territories"</span>, columns <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"year"</span>, columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">4</span><span class="op">)</span>, merge <span class="op">=</span> <span class="st">" "</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"commodities"</span>, columns <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/setObsVar.html">setObsVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"harvested"</span>, columns <span class="op">=</span> <span class="fl">6</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/setObsVar.html">setObsVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"production"</span>, columns <span class="op">=</span> <span class="fl">7</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">tabs2shift</span><span class="op">$</span><span class="va">merged_column</span><span class="op">)</span></span></code></pre></div>
 <table style="width:100%;" class="table">
 <caption>
@@ -1087,7 +1088,7 @@ and <code>commodities</code> are stored in the same column.</caption>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">schema</span> <span class="op">&lt;-</span></span>
 <span>  <span class="fu"><a href="../reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"territories"</span>, columns <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"year"</span>, columns <span class="op">=</span> <span class="fl">2</span>, split <span class="op">=</span> <span class="st">".+?(?=_)"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
@@ -1103,7 +1104,7 @@ files or spreadsheets, the cluster ID is often recorded not in the table
 as an explicit variable, but is only provided in the file or table name.
 In those cases, we have to register this cluster ID as an identifying
 variable nevertheless, to output a consistent table.</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">input</span> <span class="op">&lt;-</span> <span class="va">tabs2shift</span><span class="op">$</span><span class="va">implicit_variable</span><span class="op">)</span></span></code></pre></div>
 <table style="width:100%;" class="table">
 <caption>
@@ -1175,7 +1176,7 @@ context</td>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">schema</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/setCluster.html">setCluster</a></span><span class="op">(</span>id <span class="op">=</span> <span class="st">"territories"</span>,</span>
 <span>                     left <span class="op">=</span> <span class="fl">1</span>, top <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"territories"</span>, value <span class="op">=</span> <span class="st">"unit 1"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
@@ -1197,7 +1198,7 @@ identifying variable</strong> are found (they will look like they are
 part of the header). For the observed variable(s) we need to record the
 columns and the row where the <strong>name of that variable</strong> is
 found.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">input</span> <span class="op">&lt;-</span> <span class="va">tabs2shift</span><span class="op">$</span><span class="va">one_wide_id</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>
@@ -1297,7 +1298,7 @@ nested within the identifying variable
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">schema</span> <span class="op">&lt;-</span></span>
 <span>  <span class="fu"><a href="../reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"territories"</span>, columns <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"year"</span>, columns <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
@@ -1309,7 +1310,7 @@ nested within the observed variables, i.e., the names of the observed
 variables are on top of the names of the id variables (<a href="#wide_obs">Tab. 8</a>). However, if an observed variables is in
 the topmost row (and there are no clusters), <code>top = 1</code> can be
 omitted.</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">input</span> <span class="op">&lt;-</span> <span class="va">tabs2shift</span><span class="op">$</span><span class="va">wide_obs</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>
@@ -1375,7 +1376,7 @@ variables.</caption>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">schema</span> <span class="op">&lt;-</span></span>
 <span>  <span class="fu"><a href="../reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"territories"</span>, columns <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"year"</span>, columns <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
@@ -1385,7 +1386,7 @@ variables.</caption>
 <p>In case several variables are nested within other variables, we have
 to specify for all nested or nesting variables in which respective rows
 their values sit.</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">input</span> <span class="op">&lt;-</span> <span class="va">tabs2shift</span><span class="op">$</span><span class="va">two_wide_id</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>
@@ -1472,7 +1473,7 @@ nested within the identifying variable <code>year</code> and
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">schema</span> <span class="op">&lt;-</span></span>
 <span>  <span class="fu"><a href="../reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"territories"</span>, columns <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"year"</span>, columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">6</span><span class="op">)</span>, rows <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
@@ -1493,7 +1494,7 @@ with the observed variables. Thus, we define the observed variables and
 specify the <code>key =</code> in which the variable names sit, and the
 <code>value =</code> the variable name has, to extract that
 variable.</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">input</span> <span class="op">&lt;-</span> <span class="va">tabs2shift</span><span class="op">$</span><span class="va">listed_column</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>
@@ -1703,7 +1704,7 @@ variable <code>dimension</code>.</caption>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">schema</span> <span class="op">&lt;-</span></span>
 <span>  <span class="fu"><a href="../reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"territories"</span>, columns <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"year"</span>, columns <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
@@ -1713,7 +1714,7 @@ variable <code>dimension</code>.</caption>
 <p>Moreover, (several) identifying variables may be wide additionally
 and we have to proceed as mentioned above, by providing the columns and
 the rows of the variable values (which appear to be names).</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">input</span> <span class="op">&lt;-</span> <span class="va">tabs2shift</span><span class="op">$</span><span class="va">listed_column_wide</span><span class="op">)</span></span></code></pre></div>
 <table style="width:100%;" class="table">
 <caption>
@@ -1845,7 +1846,7 @@ were the values of the identifying variable
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">schema</span> <span class="op">&lt;-</span></span>
 <span>  <span class="fu"><a href="../reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"territories"</span>, columns <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"year"</span>, columns <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
@@ -1878,7 +1879,7 @@ in the topmost left cell.</p>
 origin row (<a href="#clusHor">Tab. 12</a>), it is sufficient to provide
 the topmost row and all leftmost columns at which a new cluster
 starts.</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">input</span> <span class="op">&lt;-</span> <span class="va">tabs2shift</span><span class="op">$</span><span class="va">clusters_horizontal</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>
@@ -1983,7 +1984,7 @@ identifying variable <code>period</code>.</caption>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">schema</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/setCluster.html">setCluster</a></span><span class="op">(</span>id <span class="op">=</span> <span class="st">"territories"</span>,</span>
 <span>                     left <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">6</span><span class="op">)</span>, top <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"territories"</span>, columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">6</span><span class="op">)</span>, rows <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
@@ -1998,7 +1999,7 @@ identifying variable <code>period</code>.</caption>
 <p>For vertically arranged clusters (<a href="#clusId">Tab. 13</a>),
 just like for the horizontal case, the respective rows and columns need
 to be provided.</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">input</span> <span class="op">&lt;-</span> <span class="va">tabs2shift</span><span class="op">$</span><span class="va">clusters_vertical</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>
@@ -2157,7 +2158,7 @@ identifying variable <code>period</code>.</caption>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">schema</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/setCluster.html">setCluster</a></span><span class="op">(</span>id <span class="op">=</span> <span class="st">"territories"</span>,</span>
 <span>                     left <span class="op">=</span> <span class="fl">1</span>, top <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">9</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"territories"</span>, columns <span class="op">=</span> <span class="fl">1</span>, rows <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">9</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
@@ -2177,7 +2178,7 @@ are observed variables. Next, we need to set up the observed variables
 so that they contain <code>"key = "cluster"</code> and in
 <code>value</code> the number of the cluster this variable can be found
 in.</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">input</span> <span class="op">&lt;-</span> <span class="va">tabs2shift</span><span class="op">$</span><span class="va">clusters_observed</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>
@@ -2406,7 +2407,7 @@ observed variables.</caption>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">schema</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/setCluster.html">setCluster</a></span><span class="op">(</span>id <span class="op">=</span> <span class="st">"observed"</span>,</span>
 <span>                     left <span class="op">=</span> <span class="fl">1</span>, top <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">12</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"territories"</span>, columns <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
@@ -2426,7 +2427,7 @@ to be provided as <code>group = ...</code> and the membership of each
 cluster to a group needs to be specified in <code>member = ...</code>.
 The cluster position needs to be specified just as it would be without
 groups.</p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">input</span> <span class="op">&lt;-</span> <span class="va">tabs2shift</span><span class="op">$</span><span class="va">clusters_nested</span><span class="op">)</span></span></code></pre></div>
 <table style="width:100%;" class="table">
 <caption>
@@ -2646,7 +2647,7 @@ captured.</caption>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">schema</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/setCluster.html">setCluster</a></span><span class="op">(</span>id <span class="op">=</span> <span class="st">"sublevel"</span>,</span>
 <span>                     group <span class="op">=</span> <span class="st">"territories"</span>, member <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>,</span>
 <span>                     left <span class="op">=</span> <span class="fl">1</span>, top <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">8</span>, <span class="fl">15</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
@@ -2669,7 +2670,7 @@ variables that are all arranged in the same way in each cluster can be
 specified so that their row and column indices are given relative to the
 cluster position (<code>relative = TRUE</code>), as shown in the
 alternative shema below.</p>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">input</span> <span class="op">&lt;-</span> <span class="va">tabs2shift</span><span class="op">$</span><span class="va">clusters_messy</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>
@@ -2814,7 +2815,7 @@ them.</caption>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">schema</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/setCluster.html">setCluster</a></span><span class="op">(</span>id <span class="op">=</span> <span class="st">"territories"</span>,</span>
 <span>                     left <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">4</span><span class="op">)</span>, top <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">8</span>, <span class="fl">8</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/setIDVar.html">setIDVar</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"territories"</span>, columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">4</span><span class="op">)</span>, rows <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">9</span>, <span class="fl">9</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
@@ -2840,7 +2841,7 @@ to be provided at the same index of the respective property. For
 example, three clusters, where the first cluster starts at (1,1) and is
 3 by 4 cells in size, where the second clusters starts at (5,2) and is 5
 by 5 cells in size, and so on, needs to be specified as below.</p>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">schema</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/setCluster.html">setCluster</a></span><span class="op">(</span>id <span class="op">=</span> <span class="va">...</span>,</span>
 <span>                     left <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">5</span><span class="op">)</span>, top <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">5</span>, <span class="fl">1</span><span class="op">)</span>,  </span>
 <span>                     width <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">5</span>, <span class="fl">2</span><span class="op">)</span>, height <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">3</span><span class="op">)</span>, </span>
@@ -2889,7 +2890,7 @@ Statistical Software</em> 59 (10): 1–23. <a href="https://doi.org/10.18637/jss
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
 </div>
 
       </footer>
