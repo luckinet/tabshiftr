@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tabshiftr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.1</span>
       </span>
     </div>
 
@@ -62,7 +62,13 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">setFilter</span><span class="op">(</span>schema <span class="op">=</span> <span class="cn">NULL</span>, rows <span class="op">=</span> <span class="cn">NULL</span>, columns <span class="op">=</span> <span class="cn">NULL</span>, operator <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">setFilter</span><span class="op">(</span></span>
+<span>  schema <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  rows <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  columns <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  invert <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  operator <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -80,6 +86,11 @@ information).</p></dd>
 <dt>columns</dt>
 <dd><p>[<code>integerish(.)</code>]<br> columns that are mentioned here are
 kept.</p></dd>
+
+
+<dt>invert</dt>
+<dd><p>[<code>logical(1)</code>]<br> whether or not to invert the specified
+columns or rows.</p></dd>
 
 
 <dt>operator</dt>
