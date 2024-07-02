@@ -1,3 +1,7 @@
+# tabshiftr 0.5.1
+
+- reinclude inverting a filter on rows.
+
 # tabshiftr 0.5.0 - variable types
 
 - include the possibility to specify variable data type, which will result in a column of that type
