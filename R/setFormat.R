@@ -33,12 +33,12 @@
 #' @importFrom dplyr bind_rows
 #' @export
 
-setFormat <- function(schema = NULL, header = 0L, decimal = NULL,
+setFormat <- function(schema = NULL, header = 0, decimal = NULL,
                       thousand = NULL, na_values = NULL, flags = NULL){
 
   # assertions ----
   assertClass(x = schema, classes = "schema", null.ok = TRUE)
-  assertIntegerish(x = header, len = 1, lower = 0L, any.missing = FALSE)
+  assertIntegerish(x = header, len = 1, lower = 0, any.missing = FALSE)
   assertCharacter(x = decimal, len = 1, any.missing = FALSE, null.ok = TRUE)
   assertCharacter(x = thousand, len = 1, any.missing = FALSE, null.ok = TRUE)
   assertCharacter(x = na_values, any.missing = FALSE, null.ok = TRUE)

@@ -6,7 +6,7 @@
 \usage{
 setFormat(
   schema = NULL,
-  header = 0L,
+  header = 0,
   decimal = NULL,
   thousand = NULL,
   na_values = NULL,

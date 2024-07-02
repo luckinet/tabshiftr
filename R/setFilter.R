@@ -7,6 +7,8 @@
 #' @param rows [\code{integerish(.)}]\cr rows that are mentioned here are kept.
 #' @param columns [\code{integerish(.)}]\cr columns that are mentioned here are
 #'   kept.
+#' @param invert [\code{logical(1)}]\cr whether or not to invert the specified
+#'   columns or rows.
 #' @param operator [\code{function(1)}]\cr \code{\link[base]{Logic}} operators
 #'   by which the current filter should be combined with the directly preceeding
 #'   filter; hence this argument is not used in case no other filter was defined
@@ -27,10 +29,10 @@
 #'
 #' reorganise(schema = schema, input = input)
 #' @family functions to describe table arrangement
-#' @importFrom checkmate assertClass testIntegerish testClass
+#' @importFrom checkmate assertClass testIntegerish testClass assertLogical
 #' @export
 
-setFilter <- function(schema = NULL, rows = NULL, columns = NULL,
+setFilter <- function(schema = NULL, rows = NULL, columns = NULL, invert = FALSE,
                       operator = NULL){
 
   # assertions ----
@@ -43,6 +45,7 @@ setFilter <- function(schema = NULL, rows = NULL, columns = NULL,
   assert(colInt, colList)
   if(rowList) assertSubset(x = names(rows), choices = c("find"))
   if(colList) assertSubset(x = names(columns), choices = c("find"))
+  assertLogical(x = invert, any.missing = FALSE)
 
   # update schema ----
   if(is.null(schema)){
@@ -55,7 +58,7 @@ setFilter <- function(schema = NULL, rows = NULL, columns = NULL,
 
   if(!is.null(rows)){
     if(!is.list(rows)){
-      rows <- list(position = rows)
+      rows <- list(position = rows, invert = invert)
     }
     if(!is.null(schema@filter$row)){
       rows <- c(operator = operator, rows)

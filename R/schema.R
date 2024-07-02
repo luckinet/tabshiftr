@@ -162,7 +162,7 @@ setValidity(Class = "schema", function(object){
       errors <- c(errors, "'names(schema$format)' must be a permutation of set {header,del,dec,na,flags}")
     }
     if(!is.null(object@format$header)){
-      if(!is.integer(object@format$header)){
+      if(!is_integerish(object@format$header)){
         errors <- c(errors, "'schema$format$header' must must have a integer value.")
       }
     }

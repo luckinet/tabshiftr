@@ -4,7 +4,13 @@
 \alias{setFilter}
 \title{Set filters}
 \usage{
-setFilter(schema = NULL, rows = NULL, columns = NULL, operator = NULL)
+setFilter(
+  schema = NULL,
+  rows = NULL,
+  columns = NULL,
+  invert = FALSE,
+  operator = NULL
+)
 }
 \arguments{
 \item{schema}{[\code{schema(1)}]\cr In case this information is added to an
@@ -15,6 +21,9 @@ information).}
 
 \item{columns}{[\code{integerish(.)}]\cr columns that are mentioned here are
 kept.}
+
+\item{invert}{[\code{logical(1)}]\cr whether or not to invert the specified
+columns or rows.}
 
 \item{operator}{[\code{function(1)}]\cr \code{\link[base]{Logic}} operators
 by which the current filter should be combined with the directly preceeding

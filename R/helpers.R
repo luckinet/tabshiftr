@@ -791,8 +791,18 @@
     for(i in seq_along(row)){
 
       if(names(row)[i] == "position"){
+        inVal <- 1
+        outVal <- 0
+
+        if(any(names(row) %in% "invert")){
+          if(row$invert){
+            inVal <- 0
+            outVal <- 1
+          }
+        }
+
         rows <- input %>%
-          mutate(it = if_else(row_number() %in% row[[i]], 1, 0)) %>%
+          mutate(it = if_else(row_number() %in% row[[i]], inVal, outVal)) %>%
           pull(it)
       } else if(names(row)[i] == "find"){
 
