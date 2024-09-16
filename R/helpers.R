@@ -685,7 +685,7 @@
 #' @param clusters [\code{list(7)}]\cr the cluster slot of the schema.
 #' @return the columns or rows of the evaluated position
 #' @importFrom checkmate assertNumeric assertList assertDataFrame
-#' @importFrom rlang eval_tidy
+#' @importFrom rlang eval_tidy prim_name
 #' @importFrom purrr map_int map_lgl
 #' @importFrom tibble rownames_to_column
 #' @importFrom tidyr pivot_longer pivot_wider
@@ -732,7 +732,11 @@
               mutate(across(.cols = where(function(x) suppressWarnings(!anyNA(as.numeric(x[!is.na(x)]))) & !all(is.na(x))), .fns = as.numeric))
 
             cols <- map_int(.x = 1:dim(input)[2], .f = function(ix){
-              map(subset[,ix], term)[[1]] & !all(is.na(subset[,ix]))
+              if(prim_name(term) != "is.na"){
+                map(subset[,ix], term)[[1]] & !all(is.na(subset[,ix]))
+              } else {
+                map(subset[,ix], term)[[1]]
+              }
             })
 
           } else {
