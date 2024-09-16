@@ -407,6 +407,7 @@
       if(varName == "listed"){
 
         obsNames <- unique(outObs$listed$key)
+        obsNames <- obsNames[!is.na(obsNames)]
         idNames <- names(ids)
 
         equalID <- map(.x = seq_along(outIDs), .f = function(ix){
