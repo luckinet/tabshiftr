@@ -89,6 +89,13 @@ getIDVars <- function(schema = NULL, input = NULL){
 
           }
 
+          # copy missing values downwards
+          if(anyNA(temp[1])){
+            message("filling NA-values in downwards direction in column '", names(idVars[i]),"'.")
+            temp <- temp %>%
+              fill(1, .direction = "down")
+          }
+
           # split ...
           if(!is.null(tempVar$split)){
             # need to distinguish between one and several columns
@@ -121,13 +128,6 @@ getIDVars <- function(schema = NULL, input = NULL){
           if(!is.null(colFilter)){
             temp <- temp %>%
               select(all_of(colFilter))
-          }
-
-          # and copy missing values downwards
-          if(anyNA(temp[1])){
-            message("filling NA-values in downwards direction in column '", names(idVars[i]),"'.")
-            temp <- temp %>%
-              fill(1, .direction = "down")
           }
 
         }
