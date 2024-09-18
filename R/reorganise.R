@@ -51,7 +51,7 @@ reorganise <- function(input = NULL, schema = NULL){
   schema <- validateSchema(input = input, schema = schema)
 
   # 2. select data ----
-  input <- getData(input = input, schema = schema)
+  input <- .groupTable(input = input, schema = schema)
 
   # if a cluster id has been specified, extract the variable values
   clusterVar <- getClusterVar(input = input, schema = schema)

@@ -200,7 +200,7 @@ validateSchema <- function(schema = NULL, input = NULL){
       }
     }
     if(any(varName == groupID)){
-      if(!is.null(varProp$row)){
+      if(!is.null(varProp$col)){
         varProp$col <- rep(x = varProp$col, length.out = length(varProp$row))
       }
     } else {
@@ -221,8 +221,7 @@ validateSchema <- function(schema = NULL, input = NULL){
     }
 
     # adapt rows and columns if there are groups ----
-    varProp$row <- .eval_sum(input = input, groups = groups,
-                               data = varProp$row)
+    varProp$row <- .eval_sum(input = input, groups = groups, data = varProp$row)
 
     variables[[i]] <- varProp
     names(variables)[i] <- varName
@@ -244,6 +243,8 @@ validateSchema <- function(schema = NULL, input = NULL){
                            data = filterOut)
   allRows <- .eval_sum(input = input, groups = groups,
                          data = allRows)
+  emptyRows <- .eval_sum(input = input, groups = groups,
+                         data = emptyRows)
 
   if(!is.null(filter$row)){
     filter$row <- filter$row[filter$row %in% sort(unique(allRows[!allRows %in% c(filterOut, emptyRows)]))]
