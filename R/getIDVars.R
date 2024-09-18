@@ -89,9 +89,21 @@ getIDVars <- function(schema = NULL, input = NULL){
 
           }
 
+          # apply a row filter ...
+          if(!is.null(rowFilter)){
+            temp <- temp %>%
+              filter(row_number() %in% rowFilter)
+          }
+
+          # ... and column filter
+          if(!is.null(colFilter)){
+            temp <- temp %>%
+              select(all_of(colFilter))
+          }
+
           # copy missing values downwards
           if(anyNA(temp[1])){
-            message("filling NA-values in downwards direction in column '", names(idVars[i]),"'.")
+            message("filling NA-values in variable '", names(idVars[i]),"'.")
             temp <- temp %>%
               fill(1, .direction = "down")
           }
@@ -116,18 +128,6 @@ getIDVars <- function(schema = NULL, input = NULL){
             newName <- paste0(names(temp), collapse = tempVar$merge)
             temp <- temp %>%
               unite(col = !!newName, sep = tempVar$merge)
-          }
-
-          # apply a row filter ...
-          if(!is.null(rowFilter)){
-            temp <- temp %>%
-              filter(row_number() %in% rowFilter)
-          }
-
-          # ... and column filter
-          if(!is.null(colFilter)){
-            temp <- temp %>%
-              select(all_of(colFilter))
           }
 
         }
