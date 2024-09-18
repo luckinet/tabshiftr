@@ -2,9 +2,9 @@
 
 export("%>%")
 export(.find)
+export(.groupTable)
 export(.sum)
 export(getClusterVar)
-export(getData)
 export(getGroupVar)
 export(getIDVars)
 export(getObsVars)
