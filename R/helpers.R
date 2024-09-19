@@ -143,8 +143,8 @@
 #'   possible values are "down", "up" and "right"; if several directions are
 #'   required, provide them in the order required.
 #' @importFrom checkmate assertDataFrame assertCharacter
-#' @importFrom tidyr pivot_longer pivot_wider
-#' @importFrom dplyr group_by fill everything ungroup
+#' @importFrom tidyr pivot_longer pivot_wider fill
+#' @importFrom dplyr group_by everything ungroup
 
 .fill <- function(x = NULL, direction = TRUE){
 
@@ -739,7 +739,7 @@
           if(is.function(term)){
 
             if(!is.null(theRow$col)){
-              assertNumeric(x = theRow$col, len = 1, any.missing = FALSE)
+              assertNumeric(x = theRow$col, min.len = 1, any.missing = FALSE)
               subset <- input[,unique(theRow$col)]
             } else {
               subset <- input
@@ -754,7 +754,7 @@
               mutate(across(.cols = where(function(x) suppressWarnings(!anyNA(as.numeric(x)))), .fns = as.numeric))
 
             rows <- map_int(.x = 1:dim(subset)[2], .f = function(ix){
-              map(subset[,ix], term)[[1]]
+              all(map(subset[,ix], term)[[1]])
             })
           } else {
 
