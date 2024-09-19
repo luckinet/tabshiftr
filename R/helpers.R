@@ -136,6 +136,49 @@
 }
 
 
+#' Convenience wrapper around tidyr::fill()
+#'
+#' @param x [\code{data.frame(1)}]\cr table in which to fill NA values.
+#' @param direction [\code{character(3)}]\cr direction in which to fill missing values,
+#'   possible values are "down", "up" and "right"; if several directions are
+#'   required, provide them in the order required.
+#' @importFrom checkmate assertDataFrame assertCharacter
+#' @importFrom tidyr pivot_longer pivot_wider
+#' @importFrom dplyr group_by fill everything ungroup
+
+.fill <- function(x = NULL, direction = TRUE){
+
+  assertDataFrame(x = x)
+  assertCharacter(x = direction, len = 1)
+
+  if(direction == "down"){
+
+    out <- x |>
+      fill(everything(), .direction = "down")
+
+  } else if(direction == "up"){
+
+    out <- x |>
+      fill(everything(), .direction = "up")
+
+  } else if(direction == "right"){
+
+    out <- x |>
+      rownames_to_column("rn") |>
+      pivot_longer(!rn) %>%
+      group_by(rn) %>%
+      fill(value) %>%
+      pivot_wider(names_from = name, values_from = value) %>%
+      ungroup() |>
+      select(-rn)
+
+  }
+
+  return(out)
+
+}
+
+
 #' Get the column types of a tibble
 #'
 #' @param input [\code{data.frame(1)}]\cr table of which to get the column
