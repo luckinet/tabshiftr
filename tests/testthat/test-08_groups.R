@@ -8,7 +8,7 @@ test_that("groups of rows", {
   input <- tabs2shift$group_simple
 
   schema <-
-    setGroups(rows = .sum(c(1, 2))) %>%
+    setGroups(rows = .sum(c(1, 2), fill = c("down", "up", "right"), character = function(x) paste0(unique(na.omit(x)), collapse = "--"))) %>%
     setGroups(rows = .sum(c(4, 5))) %>%
     setGroups(rows = .sum(c(7, 8))) %>%
     setIDVar(name = "territories", columns = 1) %>%
