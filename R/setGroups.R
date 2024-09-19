@@ -47,7 +47,7 @@ setGroups <- function(schema = NULL, rows = NULL, columns = NULL){
   }
 
   # test for problems ----
-  .reportProblems(schema = schema)
+  # reportProblems(schema = schema)
 
   return(schema)
 

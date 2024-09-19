@@ -93,7 +93,7 @@ setCluster <- function(schema = NULL, id = NULL, group = NULL, member = NULL,
   }
 
   # test for problems ----
-  .reportProblems(schema = schema)
+  reportProblems(schema = schema)
 
   return(schema)
 }

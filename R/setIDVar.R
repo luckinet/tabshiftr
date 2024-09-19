@@ -90,7 +90,7 @@ setIDVar <- function(schema = NULL, name = NULL, type = "character",
   schema@variables[[name]] <- temp
 
   # test for problems ----
-  .reportProblems(schema = schema)
+  # reportProblems(schema = schema)
 
   return(schema)
 }

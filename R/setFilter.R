@@ -77,7 +77,7 @@ setFilter <- function(schema = NULL, rows = NULL, columns = NULL, invert = FALSE
   }
 
   # test for problems ----
-  .reportProblems(schema = schema)
+  # reportProblems(schema = schema)
 
   return(schema)
 

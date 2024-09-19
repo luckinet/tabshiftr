@@ -73,7 +73,7 @@ setFormat <- function(schema = NULL, header = 0, decimal = NULL,
   }
 
   # test for problems ----
-  .reportProblems(schema = schema)
+  # reportProblems(schema = schema)
 
   return(schema)
 }
