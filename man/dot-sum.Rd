@@ -4,7 +4,7 @@
 \alias{.sum}
 \title{Summarise groups of rows or columns}
 \usage{
-.sum(..., character = NULL, numeric = NULL)
+.sum(..., character = NULL, numeric = NULL, fill = NULL)
 }
 \arguments{
 \item{...}{[\code{integerish(1)}]\cr columns or rows that shall be combined.
@@ -17,6 +17,10 @@ or rows shall be combined.}
 
 \item{numeric}{[\code{function(1)}]\cr function by which numeric columns or
 rows shall be combined.}
+
+\item{fill}{[\code{character(3)}]\cr direction in which to fill missing values,
+possible values are "down", "up" and "right"; if several directions are
+required, provide them in the order required.}
 }
 \value{
 the index values where the target was found.
