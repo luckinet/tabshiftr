@@ -49,18 +49,32 @@ validateSchema <- function(schema = NULL, input = NULL){
   assertClass(x = schema, classes = "schema")
 
   filter <- schema@filter
-  groups <- schema@groups
-  tabDim <- dim(input)
-  variables <- schema@variables
-
-  # 1. complete cluster information ----
   clusters <- schema@clusters
+  groups <- schema@groups
+  variables <- schema@variables
+  tabDim <- dim(input)
 
+  # 1. evaluate filter ----
+  allRows <- 1:dim(input)[1]
+  if(!is.null(filter$row)){
+    filter$row <- .eval_find(input = input, row = filter$row)
+  }
+  if(!is.null(filter$col)){
+    filter$col <- .eval_find(input = input, col = filter$col)
+  }
+
+  # 2. complete cluster information ----
   # set cluster start if it is NULL or a qousure
   if(is.null(clusters$row)){
     clusters$row <- 1
   } else if(is.list(clusters$row)){
     clusters$row <- .eval_find(input = input, row = clusters$row, clusters = clusters)
+
+    # ignore filter rows
+    if(!is.null(filter$row)){
+      clusters$row <- clusters$row[clusters$row %in% filter$row]
+    }
+    clusters$row <- .eval_sum(input = input, groups = groups, data = clusters$row)
   }
 
   if(is.null(clusters$col)){
@@ -94,15 +108,6 @@ validateSchema <- function(schema = NULL, input = NULL){
   clusters$width <- rep(x = clusters$width, length.out = nClusters)
   clusters$height <- rep(x = clusters$height, length.out = nClusters)
 
-  # 2. evaluate filter ----
-  allRows <- 1:dim(input)[1]
-  if(!is.null(filter$row)){
-    filter$row <- .eval_find(input = input, row = filter$row)
-  }
-  if(!is.null(filter$col)){
-    filter$col <- .eval_find(input = input, col = filter$col)
-  }
-
 
   # 3. adjust variables ----
   outsideCluster <- filterOut <- isAbs <- NULL
@@ -133,6 +138,11 @@ validateSchema <- function(schema = NULL, input = NULL){
     if(!is.null(varProp$row)){
       if(is.list(varProp$row)){
         varProp$row <- .eval_find(input = input, row = varProp$row, clusters = clusters)
+
+        # ignore filter rows
+        if(!is.null(filter$row)){
+          varProp$row <- varProp$row[varProp$row %in% filter$row]
+        }
 
         # ignore header rows
         varProp$row <- varProp$row[!varProp$row %in% headerRows]
@@ -234,22 +244,14 @@ validateSchema <- function(schema = NULL, input = NULL){
 
 
   # 5. adapt filter and cluster position to groups ----
-  clusters$row <- .eval_sum(input = input, groups = groups,
-                              data = clusters$row)
-  clusters$height <- .eval_sum(input = input, groups = groups,
-                                 data = clusters$height)
-
-  filterOut <- .eval_sum(input = input, groups = groups,
-                           data = filterOut)
-  allRows <- .eval_sum(input = input, groups = groups,
-                         data = allRows)
-  emptyRows <- .eval_sum(input = input, groups = groups,
-                         data = emptyRows)
+  filterOut <- .eval_sum(input = input, groups = groups, data = filterOut)
+  allRows <- .eval_sum(input = input, groups = groups, data = allRows)
+  emptyRows <- .eval_sum(input = input, groups = groups, data = emptyRows)
+  groupRows <- eval_tidy(groups$rows$group$groups[[1]])
 
   if(!is.null(filter$row)){
-    filter$row <- filter$row[filter$row %in% sort(unique(allRows[!allRows %in% c(filterOut, emptyRows)]))]
-    filter$row <- .eval_sum(input = input, groups = groups,
-                              data = filter$row)
+    filter$row <- unique(.eval_sum(input = input, groups = groups, data = filter$row))
+    filter$row <- filter$row[filter$row %in% sort(unique(allRows[!allRows %in% c(filterOut, emptyRows, groupRows)]))]
   } else {
     filter$row <- sort(unique(allRows[!allRows %in% c(filterOut, emptyRows)]))
   }
