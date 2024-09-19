@@ -8,6 +8,9 @@
 #'   or rows shall be combined.
 #' @param numeric [\code{function(1)}]\cr function by which numeric columns or
 #'   rows shall be combined.
+#' @param fill [\code{character(3)}]\cr direction in which to fill missing values,
+#'   possible values are "down", "up" and "right"; if several directions are
+#'   required, provide them in the order required.
 #' @details By default \code{character} values are summarised with the function
 #'   \code{paste0(na.omit(x), collapse = "-/-")} and \code{numeric} values with
 #'   the function \code{sum(x, na.rm = TRUE)}. To avoid un-intuitive behavior,
@@ -20,17 +23,18 @@
 #' @importFrom stats na.omit
 #' @export
 
-.sum <- function(..., character = NULL, numeric = NULL){
+.sum <- function(..., character = NULL, numeric = NULL, fill = NULL){
 
   charFun <- testFunction(x = character)
   numFun <- testFunction(x = numeric)
+  assertSubset(x = fill, choices = c("down", "up", "right"), empty.ok = TRUE)
 
-  if(!charFun){
-    character <- function(x) paste0(na.omit(x), collapse = "-/-")
-  }
-  if(!numFun){
-    numeric <- function(x) sum(x, na.rm = TRUE)
-  }
+  # if(!charFun){
+  #   character <- function(x) paste0(na.omit(x), collapse = "-/-")
+  # }
+  # if(!numFun){
+  #   numeric <- function(x) sum(x, na.rm = TRUE)
+  # }
 
   temp <- list(char = enquo(character), num = enquo(numeric))
   grps <- unlist(enquos(...))
@@ -46,7 +50,7 @@
       sort()
   }
 
-  out <- list(group = list(by = temp, groups = grps))
+  out <- list(group = list(by = temp, groups = grps, fill = fill))
 
   return(out)
 
