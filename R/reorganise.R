@@ -45,13 +45,11 @@ reorganise <- function(input = NULL, schema = NULL){
   # check validity of arguments
   assertDataFrame(x = input)
 
-  input <- .spliceHeader(input = input, rows = schema@format$header)
-
   # 1. add missing information in schema ----
   schema <- validateSchema(input = input, schema = schema)
 
   # 2. select data ----
-  input <- .groupTable(input = input, schema = schema)
+  input <- validateInput(input = input, schema = schema)
 
   # if a cluster id has been specified, extract the variable values
   clusterVar <- getClusterVar(input = input, schema = schema)
