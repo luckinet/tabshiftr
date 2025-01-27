@@ -82,6 +82,11 @@
           tmp[tmp %in% format$na] <- NA
         }
 
+        # replace zero values
+        if(!is.null(format$zero)){
+          tmp[tmp %in% format$zero] <- 0
+        }
+
         # replace thousands seperator
         if(!is.null(format$del)){
           tmp <- gsub(format$del, "", tmp)
@@ -716,6 +721,7 @@
     for(i in seq_along(row)){
 
       if(names(row)[i] == "position"){
+
         inVal <- 1
         outVal <- 0
 
@@ -729,6 +735,7 @@
         rows <- input %>%
           mutate(it = if_else(row_number() %in% row[[i]], inVal, outVal)) %>%
           pull(it)
+
       } else if(names(row)[i] == "find"){
 
         theRow <- row[[i]]

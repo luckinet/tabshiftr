@@ -19,6 +19,8 @@
 #'   interpreted as thousand separator.
 #' @param na_values [\code{character(.)}]\cr The symbols that should be
 #'   interpreted as \code{NA}.
+#' @param zero_values [\code{character(.)}]\cr The symbols that should be
+#'   interpreted as \code{0}.
 #' @param flags [\code{data.frame(2)}]\cr The typically character based flags
 #'   that should be shaved off of observed variables to make them identifiable
 #'   as numeric values. This must be a data.frame with two columns with names
@@ -34,7 +36,8 @@
 #' @export
 
 setFormat <- function(schema = NULL, header = 0, decimal = NULL,
-                      thousand = NULL, na_values = NULL, flags = NULL){
+                      thousand = NULL, na_values = NULL, zero_values = NULL,
+                      flags = NULL){
 
   # assertions ----
   assertClass(x = schema, classes = "schema", null.ok = TRUE)
@@ -42,6 +45,7 @@ setFormat <- function(schema = NULL, header = 0, decimal = NULL,
   assertCharacter(x = decimal, len = 1, any.missing = FALSE, null.ok = TRUE)
   assertCharacter(x = thousand, len = 1, any.missing = FALSE, null.ok = TRUE)
   assertCharacter(x = na_values, any.missing = FALSE, null.ok = TRUE)
+  assertCharacter(x = zero_values, any.missing = FALSE, null.ok = TRUE)
   assertDataFrame(x = flags, any.missing = FALSE, ncols = 2, null.ok = TRUE)
   if(!is.null(flags)){
     assertNames(x = names(flags), must.include = c("flag", "value"))
@@ -66,6 +70,10 @@ setFormat <- function(schema = NULL, header = 0, decimal = NULL,
 
   if(!is.null(na_values)){
     schema@format$na <- na_values
+  }
+
+  if(!is.null(zero_values)){
+    schema@format$zero <- zero_values
   }
 
   if(!is.null(flags)){

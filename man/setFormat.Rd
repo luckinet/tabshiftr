@@ -10,6 +10,7 @@ setFormat(
   decimal = NULL,
   thousand = NULL,
   na_values = NULL,
+  zero_values = NULL,
   flags = NULL
 )
 }
