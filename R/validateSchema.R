@@ -145,9 +145,8 @@ validateSchema <- function(schema = NULL, input = NULL){
         }
 
         # ignore header rows
-        varProp$row <- varProp$row[!varProp$row %in% headerRows]
-        if(length(varProp$row) == 0){
-          varProp$row <- NULL
+        if(varProp$vartype == "observed"){
+          varProp$row <- varProp$row[!varProp$row %in% headerRows]
         }
       }
     }

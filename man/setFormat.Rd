@@ -35,6 +35,9 @@ interpreted as thousand separator.}
 \item{na_values}{[\code{character(.)}]\cr The symbols that should be
 interpreted as \code{NA}.}
 
+\item{zero_values}{[\code{character(.)}]\cr The symbols that should be
+interpreted as \code{0}.}
+
 \item{flags}{[\code{data.frame(2)}]\cr The typically character based flags
 that should be shaved off of observed variables to make them identifiable
 as numeric values. This must be a data.frame with two columns with names
