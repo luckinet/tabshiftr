@@ -9,6 +9,7 @@ setFilter(
   rows = NULL,
   columns = NULL,
   invert = FALSE,
+  clusters = TRUE,
   operator = NULL
 )
 }
@@ -24,6 +25,8 @@ kept.}
 
 \item{invert}{[\code{logical(1)}]\cr whether or not to invert the specified
 columns or rows.}
+
+\item{clusters}{[\code{logical(1)}]\cr whether or not to filter cluster rows.}
 
 \item{operator}{[\code{function(1)}]\cr \code{\link[base]{Logic}} operators
 by which the current filter should be combined with the directly preceeding

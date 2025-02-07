@@ -42,7 +42,7 @@ Description: Helps the user to build and register schema descriptions of
 URL: https://luckinet.github.io/tabshiftr/, https://github.com/luckinet/tabshiftr
 BugReports: https://github.com/luckinet/tabshiftr/issues
 Depends:
-    R (>= 2.10)
+    R (>= 3.5)
 Language: en-gb
 License: GPL-3
 Encoding: UTF-8

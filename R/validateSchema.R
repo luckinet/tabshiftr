@@ -71,7 +71,7 @@ validateSchema <- function(schema = NULL, input = NULL){
     clusters$row <- .eval_find(input = input, row = clusters$row, clusters = clusters)
 
     # ignore filter rows
-    if(!is.null(filter$row)){
+    if(filter$clusters & !is.null(filter$row)){
       clusters$row <- clusters$row[clusters$row %in% filter$row]
     }
     clusters$row <- .eval_sum(input = input, groups = groups, data = clusters$row)

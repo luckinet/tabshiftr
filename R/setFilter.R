@@ -9,6 +9,7 @@
 #'   kept.
 #' @param invert [\code{logical(1)}]\cr whether or not to invert the specified
 #'   columns or rows.
+#' @param clusters [\code{logical(1)}]\cr whether or not to filter cluster rows.
 #' @param operator [\code{function(1)}]\cr \code{\link[base]{Logic}} operators
 #'   by which the current filter should be combined with the directly preceeding
 #'   filter; hence this argument is not used in case no other filter was defined
@@ -33,7 +34,7 @@
 #' @export
 
 setFilter <- function(schema = NULL, rows = NULL, columns = NULL, invert = FALSE,
-                      operator = NULL){
+                      clusters = TRUE, operator = NULL){
 
   # assertions ----
   assertClass(x = schema, classes = "schema", null.ok = TRUE)
@@ -46,6 +47,7 @@ setFilter <- function(schema = NULL, rows = NULL, columns = NULL, invert = FALSE
   if(rowList) assertSubset(x = names(rows), choices = c("find"))
   if(colList) assertSubset(x = names(columns), choices = c("find"))
   assertLogical(x = invert, any.missing = FALSE)
+  assertLogical(x = clusters, any.missing = FALSE)
 
   # update schema ----
   if(is.null(schema)){
@@ -75,6 +77,8 @@ setFilter <- function(schema = NULL, rows = NULL, columns = NULL, invert = FALSE
     }
     schema@filter$col <- c(schema@filter$col, columns)
   }
+
+  schema@filter$clusters <- clusters
 
   # test for problems ----
   # reportProblems(schema = schema)

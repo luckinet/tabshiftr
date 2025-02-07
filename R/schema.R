@@ -228,8 +228,8 @@ setValidity(Class = "schema", function(object){
     if(length(object@filter) == 0){
       errors <- c(errors, "the slot 'filter' does not contain any entries.")
     }
-    if(!all(names(object@filter) %in% c("row", "col"))){
-      errors <- c(errors, "'names(schema$filter)' must be a permutation of set {row,col}")
+    if(!all(names(object@filter) %in% c("row", "col", "clusters"))){
+      errors <- c(errors, "'names(schema$filter)' must be a permutation of set {row,col, clusters}")
     }
     if(!is.null(object@filter$row)){
       if(!is.numeric(object@filter$row)){
@@ -239,6 +239,11 @@ setValidity(Class = "schema", function(object){
     if(!is.null(object@filter$col)){
       if(!is.numeric(object@filter$col)){
         errors <- c(errors, "'schema$filter$col' must have a numeric value.")
+      }
+    }
+    if(!is.null(object@filter$clusters)){
+      if(!is.logical(object@filter$clusters)){
+        errors <- c(errors, "'schema$filter$clusters' must have a logical value.")
       }
     }
   }
