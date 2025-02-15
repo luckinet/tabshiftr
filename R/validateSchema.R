@@ -108,6 +108,11 @@ validateSchema <- function(schema = NULL, input = NULL){
   clusters$width <- rep(x = clusters$width, length.out = nClusters)
   clusters$height <- rep(x = clusters$height, length.out = nClusters)
 
+  # if cluster-rows should not be filtered, add them again to the filter-rows
+  if(!filter$clusters & !is.null(filter$row)){
+    filter$row <- unique(sort(c(filter$row, clusters$row)))
+  }
+
 
   # 3. adjust variables ----
   outsideCluster <- filterOut <- isAbs <- NULL
