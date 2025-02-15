@@ -61,8 +61,8 @@ getIDVars <- function(schema = NULL, input = NULL){
 
           if(!is.null(tempVar$row[ix])){
             if(!tempVar$dist){
-              # in case a row value is set, this means we deal with a variable that is not tidy ...
-              temp <- input[tempVar$row[ix], tempVar$col]
+              # in case a row value is set, this means we deal with a variable that is not long ...
+              temp <- input[tempVar$row[ix], unique(tempVar$col)]
               rowFilter <- NULL
               if(!is.null(filter$col)){
                 colFilter <- colnames(temp)[tempVar$col %in% filter$col]

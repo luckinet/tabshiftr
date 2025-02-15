@@ -106,25 +106,16 @@ getObsVars <- function(schema = NULL, input = NULL){
           varRows <- clusters$row[ix]:(clusters$row[ix]+clusters$height[ix] - 1)
 
           if(!is.null(tempVar$key)){
+            temp <- input[varRows, unique(tempVar$col)]
+            rowFilter <- which(varRows %in% filter$row)
+            colFilter <- NULL
             if(tempVar$key == "cluster"){
               if(tempVar$value != ix){
                 next
               }
-              if(length(unique(tempVar$col)) == 1){
-                temp <- input[varRows, tempVar$col[ix]]
-              } else {
-                temp <- input[varRows, tempVar$col]
-              }
-              rowFilter <- which(varRows %in% filter$row)
-              colFilter <- NULL
             } else if(is.numeric(tempVar$key)){
-              temp <- input[varRows, tempVar$col]
               if(!tempVar$key == 0){
                 rowFilter <- NULL
-                colFilter <- NULL
-              } else {
-                rowFilter <- which(varRows %in% filter$row)
-                colFilter <- NULL
               }
             }
           } else {
