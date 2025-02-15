@@ -72,6 +72,7 @@ reorganise <- function(input = NULL, schema = NULL){
     # ids = idVars[[i]]; obs = obsVars[[i]]; clust = clusterVar[i]; grp = groupVar[i]
     tidyVars <- .tidyVars(ids = idVars[[i]], obs = obsVars[[i]],
                           clust = clusterVar[i], grp = groupVar[i])
+    if(is.null(tidyVars)) next
 
     # put together the table
     theTable <- bind_cols(tidyVars, .name_repair = "minimal")

@@ -242,6 +242,9 @@
   outIDs <- ids
   outObs <- obs
 
+  # first, test that any column contains any value
+  if(!any(!is.na(obs[[1]]))) return(NULL)
+
   uniqueIDs <- map(.x = seq_along(ids), .f = function(ix){
     unique(unlist(ids[[ix]]))
   })
@@ -304,7 +307,6 @@
           wideID[[1]] <- wideID[[1]] %>%
             select(-all_of(naCol))
         }
-
       }
       tempDim <- dim(temp)
 
