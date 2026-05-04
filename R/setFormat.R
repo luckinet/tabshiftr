@@ -7,12 +7,12 @@
 #' @param schema [\code{schema(1)}]\cr In case this information is added to an
 #'   already existing schema, provide that schema here (overwrites previous
 #'   information).
-#' @param header [\code{integerish(1)}]\cr The number of header rows. Optimally,
-#'   a table is read so that column names are ignored (for example
-#'   \code{readr::read_csv(file = ..., col_names = FALSE)}). If relatively well
-#'   defined tables are processed, where the header is always only one row, the
-#'   table can be read in with the default and the header can be spliced into
-#'   the table by specifying the number of rows here.
+#' @param header [\code{logical(1)}]\cr Whether the table was read with a header
+#'   row already consumed as column names (e.g. via \code{read.csv} default).
+#'   If \code{TRUE}, the column names are spliced back into the table as row 1
+#'   before variable extraction. Optimally, tables are read with
+#'   \code{header = FALSE} so row numbers are stable, in which case this should
+#'   be left as \code{FALSE} (the default).
 #' @param decimal [\code{character(1)}]\cr The symbols that should be
 #'   interpreted as decimal separator.
 #' @param thousand [\code{character(1)}]\cr The symbols that should be
@@ -31,25 +31,38 @@
 #' @examples
 #' # please check the vignette for examples
 #' @family functions to describe table arrangement
-#' @importFrom checkmate assertClass assertCharacter
 #' @importFrom dplyr bind_rows
 #' @export
 
-setFormat <- function(schema = NULL, header = 0, decimal = NULL,
+setFormat <- function(schema = NULL, header = FALSE, decimal = NULL,
                       thousand = NULL, na_values = NULL, zero_values = NULL,
                       flags = NULL){
 
   # assertions ----
-  assertClass(x = schema, classes = "schema", null.ok = TRUE)
-  assertIntegerish(x = header, len = 1, lower = 0, any.missing = FALSE)
-  assertCharacter(x = decimal, len = 1, any.missing = FALSE, null.ok = TRUE)
-  assertCharacter(x = thousand, len = 1, any.missing = FALSE, null.ok = TRUE)
-  assertCharacter(x = na_values, any.missing = FALSE, null.ok = TRUE)
-  assertCharacter(x = zero_values, any.missing = FALSE, null.ok = TRUE)
-  assertDataFrame(x = flags, any.missing = FALSE, ncols = 2, null.ok = TRUE)
+  if(!is.null(schema) && !inherits(schema, "schema"))
+    stop("setFormat(): 'schema' must be a schema object (created by a previous setter call) or NULL.")
+  if(!is.logical(header) || length(header) != 1 || is.na(header))
+    stop("setFormat(): 'header' must be TRUE or FALSE.")
+  if(!is.null(decimal) && (!is.character(decimal) || length(decimal) != 1))
+    stop("setFormat(): 'decimal' must be a single character string, e.g. decimal = \",\".")
+  if(!is.null(thousand) && (!is.character(thousand) || length(thousand) != 1))
+    stop("setFormat(): 'thousand' must be a single character string, e.g. thousand = \".\".")
+  if(!is.null(na_values) && !is.character(na_values))
+    stop("setFormat(): 'na_values' must be a character vector of strings to treat as NA, e.g. na_values = c(\"n/a\", \"-\").")
+  if(!is.null(zero_values) && !is.character(zero_values))
+    stop("setFormat(): 'zero_values' must be a character vector of strings to treat as 0, e.g. zero_values = c(\"F\").")
   if(!is.null(flags)){
-    assertNames(x = names(flags), must.include = c("flag", "value"))
+    if(!is.data.frame(flags) || ncol(flags) != 2)
+      stop("setFormat(): 'flags' must be a data.frame with exactly 2 columns named 'flag' and 'value'.")
+    if(!all(c("flag", "value") %in% names(flags)))
+      stop("setFormat(): 'flags' must be a data.frame with columns named 'flag' and 'value'. ",
+           "Got column names: ", paste(names(flags), collapse = ", "), ".")
   }
+
+  # logical constraints ----
+  if(!is.null(decimal) && !is.null(thousand) && decimal == thousand)
+    stop("setFormat(): 'decimal' and 'thousand' cannot be the same character ('", decimal, "'). ",
+         "A number cannot be unambiguously parsed when both separators are identical.")
 
   # update schema ----
   if(is.null(schema)){
@@ -79,9 +92,6 @@ setFormat <- function(schema = NULL, header = 0, decimal = NULL,
   if(!is.null(flags)){
     schema@format$flags <- bind_rows(schema@format$flags, flags)
   }
-
-  # test for problems ----
-  # reportProblems(schema = schema)
 
   return(schema)
 }

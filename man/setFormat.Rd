@@ -6,7 +6,7 @@
 \usage{
 setFormat(
   schema = NULL,
-  header = 0,
+  header = FALSE,
   decimal = NULL,
   thousand = NULL,
   na_values = NULL,
@@ -19,12 +19,12 @@ setFormat(
 already existing schema, provide that schema here (overwrites previous
 information).}
 
-\item{header}{[\code{integerish(1)}]\cr The number of header rows. Optimally,
-a table is read so that column names are ignored (for example
-\code{readr::read_csv(file = ..., col_names = FALSE)}). If relatively well
-defined tables are processed, where the header is always only one row, the
-table can be read in with the default and the header can be spliced into
-the table by specifying the number of rows here.}
+\item{header}{[\code{logical(1)}]\cr Whether the table was read with a header
+row already consumed as column names (e.g. via \code{read.csv} default).
+If \code{TRUE}, the column names are spliced back into the table as row 1
+before variable extraction. Optimally, tables are read with
+\code{header = FALSE} so row numbers are stable, in which case this should
+be left as \code{FALSE} (the default).}
 
 \item{decimal}{[\code{character(1)}]\cr The symbols that should be
 interpreted as decimal separator.}

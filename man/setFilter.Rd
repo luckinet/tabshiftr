@@ -24,7 +24,11 @@ information).}
 kept.}
 
 \item{invert}{[\code{logical(1)}]\cr whether or not to invert the specified
-columns or rows.}
+columns or rows. When inverting row filters to select data rows (i.e.,
+specifying the rows to exclude rather than keep), the column-header row must
+be included explicitly in \code{rows}. This is because the header is
+reconstructed from column names at a later stage and is not present in the
+table when the schema is evaluated; it will not be excluded automatically.}
 
 \item{clusters}{[\code{logical(1)}]\cr whether or not to filter cluster rows.}
 

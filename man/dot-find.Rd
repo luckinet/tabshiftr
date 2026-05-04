@@ -65,7 +65,7 @@ This functions is basically a wild-card for when columns or rows are
 (input <- tabs2shift$clusters_messy)
 
 schema <- setCluster(id = "territories",
-                     left = .find(pattern = "comm*"), top = .find(pattern = "comm*")) \%>\%
+                     left = .find(pattern = "comm*"), top = .find(pattern = "unit")) \%>\%
   setIDVar(name = "territories", columns = c(1, 1, 4), rows = c(2, 9, 9)) \%>\%
   setIDVar(name = "year", columns = 4, rows = c(3:6), distinct = TRUE) \%>\%
   setIDVar(name = "commodities", columns = c(1, 1, 4)) \%>\%

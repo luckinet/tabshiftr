@@ -38,8 +38,7 @@
 #' @examples
 #' # please check the vignette for examples
 #' @family functions to describe table arrangement
-#' @importFrom checkmate assertClass assertIntegerish assertLogical assertSubset
-#'   assertCharacter assertNumeric testIntegerish testCharacter assert
+#' @importFrom checkmate testIntegerish testList
 #' @importFrom dplyr case_when
 #' @export
 
@@ -48,21 +47,43 @@ setObsVar <- function(schema = NULL, name = NULL, type = "numeric",
                       key = NULL, value = NULL){
 
   # assertions ----
-  assertClass(x = schema, classes = "schema", null.ok = TRUE)
-  assertCharacter(x = name, len = 1, any.missing = FALSE)
+  if(!is.null(schema) && !inherits(schema, "schema"))
+    stop("setObsVar(): 'schema' must be a schema object (created by a previous setter call) or NULL.")
+  if(is.null(name) || !is.character(name) || length(name) != 1 || nchar(name) == 0)
+    stop("setObsVar(): 'name' must be a non-empty character string, e.g. name = \"harvested\".")
   colInt <- testIntegerish(x = columns, lower = 1, min.len = 1, null.ok = TRUE)
   colList <- testList(x = columns, len = 1)
-  assert(colInt, colList)
-  if(colList) assertSubset(x = names(columns), choices = c("find"))
+  if(!is.null(columns) && !colInt && !colList)
+    stop("setObsVar(): 'columns' must be a positive integer vector (>= 1) or a .find() call. Got: ",
+         paste(class(columns), collapse = "/"), ".")
+  if(colList) {
+    if(!identical(names(columns), "find"))
+      stop("setObsVar(): a list passed to 'columns' must be a .find() call (named 'find').")
+  }
   rowInt <- testIntegerish(x = top, lower = 1, min.len = 1, null.ok = TRUE)
   rowList <- testList(x = top, len = 1)
-  assert(rowInt, rowList)
-  if(rowList) assertSubset(x = names(top), choices = c("find"))
-  assertLogical(x = distinct, any.missing = FALSE, len = 1)
-  assertNumeric(x = factor, len = 1, any.missing = FALSE)
-  if(is.character(key)){
-    assertSubset(x = key, choices = "cluster", empty.ok = FALSE)
+  if(!is.null(top) && !rowInt && !rowList)
+    stop("setObsVar(): 'top' must be a positive integer (>= 1) or a .find() call. Got: ",
+         paste(class(top), collapse = "/"), ".")
+  if(rowList) {
+    if(!identical(names(top), "find"))
+      stop("setObsVar(): a list passed to 'top' must be a .find() call (named 'find').")
   }
+  if(!is.logical(distinct) || length(distinct) != 1 || is.na(distinct))
+    stop("setObsVar(): 'distinct' must be TRUE or FALSE.")
+  if(!is.numeric(factor) || length(factor) != 1 || is.na(factor))
+    stop("setObsVar(): 'factor' must be a single numeric value, e.g. factor = 0.40468.")
+  if(is.character(key) && !identical(key, "cluster"))
+    stop("setObsVar(): 'key' must be a positive integer (the column number containing variable names) ",
+         "or the string \"cluster\". Got: \"", key, "\".")
+  if(!is.null(key) && !is.character(key) && !testIntegerish(key, lower = 1, len = 1))
+    stop("setObsVar(): 'key' must be a positive integer (>= 1) or \"cluster\". Got: ",
+         paste(class(key), collapse = "/"), ".")
+
+  # logical constraints ----
+  if(!is.null(factor) && factor == 0)
+    warning("setObsVar(): factor = 0 for variable '", name, "'. All values will be set to 0. ",
+            "If this is intentional, ignore this warning. If not, check your unit conversion.")
 
   data_type <- case_when(
     type %in% c("i", "integer") ~ "integer",
@@ -87,9 +108,6 @@ setObsVar <- function(schema = NULL, name = NULL, type = "numeric",
                key = key,
                value = value)
   schema@variables[[name]] <- temp
-
-  # test for problems ----
-  # reportProblems(schema = schema)
 
   return(schema)
 }

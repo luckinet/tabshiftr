@@ -250,8 +250,8 @@ Table: <a name="splitCol"></a>Table 5: The variables `year` and `commodities` ar
 ```{r, eval=FALSE}
 schema <-
   setIDVar(name = "territories", columns = 1) %>%
-  setIDVar(name = "year", columns = 2, split = ".+?(?=_)") %>%
-  setIDVar(name = "commodities", columns = 2, split = "(?<=\\_).*") %>%
+  setIDVar(name = "year", columns = 2, split = "(.+?(?=_))") %>%
+  setIDVar(name = "commodities", columns = 2, split = "((?<=\\_).*)") %>%
   setObsVar(name = "harvested", columns = 4) %>%
   setObsVar(name = "production", columns = 5)
 ```
@@ -404,6 +404,7 @@ schema <- setCluster(id = "territories",
   setObsVar(name = "production", columns = c(4, 9))
 ```
 
+thanks. I think that's it for today. tomorrow I will try out the other combinations and perhaps there's something else to fix, but for now this looks really awesome! I will probably share this on my linkedin page, really nice work!
 
 ### Vertical clusters
 
@@ -486,7 +487,7 @@ Table: <a name="distVar"></a>Table 16: Several clusters where one variable is no
 
 ```{r, eval=FALSE}
 schema <- setCluster(id = "territories",
-                     left = c(1, 1, 4), top = c(1, 8, 8)) %>%
+                     left = c(1, 1, 4), top = c(2, 9, 9)) %>%
   setIDVar(name = "territories", columns = c(1, 1, 4), rows = c(2, 9, 9)) %>%
   setIDVar(name = "year", columns = 4, rows = c(3:6), distinct = TRUE) %>%
   setIDVar(name = "commodities", columns = c(1, 1, 4)) %>%
@@ -494,7 +495,7 @@ schema <- setCluster(id = "territories",
   setObsVar(name = "production", columns = c(3, 3, 6))
 
 schema_alt <- setCluster(id = "territories",
-                         left = c(1, 1, 4), top = c(1, 8, 8)) %>%
+                         left = c(1, 1, 4), top = c(2, 9, 9)) %>%
   setIDVar(name = "territories", columns = 1, rows = .find(row = 2, relative = TRUE)) %>%
   setIDVar(name = "year", columns = 4, rows = c(3:6), distinct = TRUE) %>%
   setIDVar(name = "commodities", columns = .find(col = 1, relative = TRUE)) %>%

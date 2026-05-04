@@ -17,7 +17,7 @@
 #'   it is wisest to explicitly specify how all exceptions, such as NA-values,
 #'   shall be handled and thus to provide a new function.
 #' @return the index values where the target was found.
-#' @importFrom checkmate assertFunction
+#' @importFrom checkmate assertFunction assertSubset
 #' @importFrom rlang enquo enquos eval_tidy
 #' @importFrom purrr map
 #' @importFrom stats na.omit

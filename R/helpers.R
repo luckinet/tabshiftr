@@ -55,12 +55,13 @@
 
   # set all observed variables to the correct format
   for(i in seq_along(obsVars)){
+
     theVar <- input[[which(names(obsVars)[i] == names(input))]]
 
     # capture flags
     if(length(format$flags$flag) != 0){
       theFlags <- map(seq_along(theVar), function(ix){
-        temp <- str_extract_all(string = theVar[[ix]], pattern = coll(paste0(format$flags$flag, collapse = ""))) %>%
+        temp <- str_extract_all(string = theVar[[ix]], pattern = paste0(format$flags$flag, collapse = "")) %>%
           unlist()
         if(length(temp) == 0){
           NA
@@ -74,8 +75,15 @@
       tmp <- theVar[[ix]]
 
       if(length(tmp) != 0){
-        # replace white-spaces
-        tmp <- gsub(" |\xe2\x80\x80|\xe2\x80\x81|\xe2\x80\x82|\xe2\x80\x83|\xe2\x80\x84|\xe2\x80\x85|\xe2\x80\x86|\xe2\x80\x87|\xe2\x80\x88|\xe2\x80\x89|\xe2\x80\x8a|\xe2\x80\x8b|\xe2\x80\x8c|\xe2\x80\x8d|", "", tmp)
+        # normalise whitespace: numeric/integer obs vars get all whitespace
+        # stripped (so "1 234.56" parses as 1234.56); character obs vars get
+        # whitespace collapsed to a single regular space and trimmed
+        wsPattern <- " |\xe2\x80\x80|\xe2\x80\x81|\xe2\x80\x82|\xe2\x80\x83|\xe2\x80\x84|\xe2\x80\x85|\xe2\x80\x86|\xe2\x80\x87|\xe2\x80\x88|\xe2\x80\x89|\xe2\x80\x8a|\xe2\x80\x8b|\xe2\x80\x8c|\xe2\x80\x8d"
+        if(obsVars[[i]]$datype %in% c("integer", "numeric")){
+          tmp <- gsub(paste0("(", wsPattern, ")+"), "", tmp)
+        } else {
+          tmp <- trimws(gsub(paste0("(", wsPattern, ")+"), " ", tmp))
+        }
 
         # replace NA values
         if(!is.null(format$na)){
@@ -103,7 +111,7 @@
         }
 
         # multiply with factor
-        if(!all(is.na(as.numeric(tmp)))){
+        if(obsVars[[i]]$datype %in% c("integer", "numeric")){
           tmp <- suppressWarnings(as.numeric(tmp)) * obsVars[[i]]$factor
         }
 
@@ -124,8 +132,8 @@
 
     input[[which(names(obsVars)[i] == names(input))]] <- unlist(theVar)
 
-    # ... also set the desired type
     class(input[[which(names(obsVars)[i] == names(input))]]) <- obsVars[[i]]$datype
+
   }
 
   if(length(format$flags$flag) != 0){

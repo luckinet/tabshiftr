@@ -8,7 +8,11 @@
 #' @param columns [\code{integerish(.)}]\cr columns that are mentioned here are
 #'   kept.
 #' @param invert [\code{logical(1)}]\cr whether or not to invert the specified
-#'   columns or rows.
+#'   columns or rows. When inverting row filters to select data rows (i.e.,
+#'   specifying the rows to exclude rather than keep), the column-header row must
+#'   be included explicitly in \code{rows}. This is because the header is
+#'   reconstructed from column names at a later stage and is not present in the
+#'   table when the schema is evaluated; it will not be excluded automatically.
 #' @param clusters [\code{logical(1)}]\cr whether or not to filter cluster rows.
 #' @param operator [\code{function(1)}]\cr \code{\link[base]{Logic}} operators
 #'   by which the current filter should be combined with the directly preceeding
@@ -30,24 +34,41 @@
 #'
 #' reorganise(schema = schema, input = input)
 #' @family functions to describe table arrangement
-#' @importFrom checkmate assertClass testIntegerish testClass assertLogical
+#' @importFrom checkmate testIntegerish testList
 #' @export
 
 setFilter <- function(schema = NULL, rows = NULL, columns = NULL, invert = FALSE,
                       clusters = TRUE, operator = NULL){
 
   # assertions ----
-  assertClass(x = schema, classes = "schema", null.ok = TRUE)
+  if(!is.null(schema) && !inherits(schema, "schema"))
+    stop("setFilter(): 'schema' must be a schema object (created by a previous setter call) or NULL.")
   rowInt <- testIntegerish(x = rows, lower = 1, min.len = 1, null.ok = TRUE)
   rowList <- testList(x = rows, len = 1)
-  assert(rowInt, rowList)
+  if(!is.null(rows) && !rowInt && !rowList)
+    stop("setFilter(): 'rows' must be a positive integer vector (>= 1) or a .find() call. Got: ",
+         paste(class(rows), collapse = "/"), ".")
+  if(rowList) {
+    if(!identical(names(rows), "find"))
+      stop("setFilter(): a list passed to 'rows' must be a .find() call (named 'find').")
+  }
   colInt <- testIntegerish(x = columns, lower = 1, min.len = 1, null.ok = TRUE)
   colList <- testList(x = columns, len = 1)
-  assert(colInt, colList)
-  if(rowList) assertSubset(x = names(rows), choices = c("find"))
-  if(colList) assertSubset(x = names(columns), choices = c("find"))
-  assertLogical(x = invert, any.missing = FALSE)
-  assertLogical(x = clusters, any.missing = FALSE)
+  if(!is.null(columns) && !colInt && !colList)
+    stop("setFilter(): 'columns' must be a positive integer vector (>= 1) or a .find() call. Got: ",
+         paste(class(columns), collapse = "/"), ".")
+  if(colList) {
+    if(!identical(names(columns), "find"))
+      stop("setFilter(): a list passed to 'columns' must be a .find() call (named 'find').")
+  }
+  if(!is.logical(invert) || anyNA(invert))
+    stop("setFilter(): 'invert' must be TRUE or FALSE.")
+  if(!is.logical(clusters) || anyNA(clusters))
+    stop("setFilter(): 'clusters' must be TRUE or FALSE.")
+
+  # logical constraints ----
+  if(is.null(rows) && is.null(columns))
+    message("setFilter(): called with both 'rows' and 'columns' as NULL. This call has no effect.")
 
   # update schema ----
   if(is.null(schema)){
@@ -79,9 +100,6 @@ setFilter <- function(schema = NULL, rows = NULL, columns = NULL, invert = FALSE
   }
 
   schema@filter$clusters <- clusters
-
-  # test for problems ----
-  # reportProblems(schema = schema)
 
   return(schema)
 

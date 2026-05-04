@@ -45,7 +45,7 @@ test_that("recognise a distinct variable that is not available for every cluster
   input <- tabs2shift$clusters_messy
 
   schema <- setCluster(id = "territories",
-                       left = c(1, 1, 4), top = c(1, 8, 8)) %>%
+                       left = c(1, 1, 4), top = c(2, 9, 9)) %>%
     setIDVar(name = "territories", columns = c(1, 1, 4), rows = c(2, 9, 9)) %>%
     setIDVar(name = "year", columns = 4, rows = c(3:6), distinct = TRUE) %>%
     setIDVar(name = "commodities", columns = c(1, 1, 4)) %>%

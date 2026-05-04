@@ -33,27 +33,61 @@
 #' @examples
 #' # please check the vignette for examples
 #' @family functions to describe table arrangement
-#' @importFrom checkmate assertClass assertCharacter assertIntegerish
+#' @importFrom checkmate testIntegerish testList
 #' @export
 
 setCluster <- function(schema = NULL, id = NULL, group = NULL, member = NULL,
                        left = NULL, top = NULL, width = NULL, height = NULL){
 
   # assertions ----
-  assertClass(x = schema, classes = "schema", null.ok = TRUE)
-  assertCharacter(x = id, len = 1, any.missing = FALSE)
-  assertCharacter(x = group, len = 1, any.missing = FALSE, null.ok = TRUE)
+  if(!is.null(schema) && !inherits(schema, "schema"))
+    stop("setCluster(): 'schema' must be a schema object (created by a previous setter call) or NULL.")
+  if(is.null(id) || !is.character(id) || length(id) != 1 || nchar(id) == 0)
+    stop("setCluster(): 'id' must be a non-empty character string naming the cluster variable, ",
+         "e.g. id = \"territories\". Every cluster must have an identifying variable name.")
+  if(!is.null(group) && (!is.character(group) || length(group) != 1 || nchar(group) == 0))
+    stop("setCluster(): 'group' must be a non-empty character string naming the grouping variable, ",
+         "e.g. group = \"region\".")
   colInt <- testIntegerish(x = left, lower = 1, min.len = 1, null.ok = TRUE)
   colList <- testList(x = left, len = 1)
-  assert(colInt, colList)
-  if(colList) assertSubset(x = names(left), choices = c("find"))
+  if(!is.null(left) && !colInt && !colList)
+    stop("setCluster(): 'left' must be a positive integer vector (>= 1) or a .find() call. Got: ",
+         paste(class(left), collapse = "/"), ".")
+  if(colList) {
+    if(!identical(names(left), "find"))
+      stop("setCluster(): a list passed to 'left' must be a .find() call (named 'find').")
+  }
   rowInt <- testIntegerish(x = top, lower = 1, min.len = 1, null.ok = TRUE)
   rowList <- testList(x = top, len = 1)
-  assert(rowInt, rowList)
-  if(rowList) assertSubset(x = names(top), choices = c("find"))
-  assertIntegerish(x = width, null.ok = TRUE)
-  assertIntegerish(x = height, null.ok = TRUE)
-  assertIntegerish(x = member, null.ok = TRUE)
+  if(!is.null(top) && !rowInt && !rowList)
+    stop("setCluster(): 'top' must be a positive integer vector (>= 1) or a .find() call. Got: ",
+         paste(class(top), collapse = "/"), ".")
+  if(rowList) {
+    if(!identical(names(top), "find"))
+      stop("setCluster(): a list passed to 'top' must be a .find() call (named 'find').")
+  }
+  if(!is.null(width) && !testIntegerish(width, lower = 1))
+    stop("setCluster(): 'width' must be a positive integer (>= 1). Got: ", paste(width, collapse = ", "), ".")
+  if(!is.null(height) && !testIntegerish(height, lower = 1))
+    stop("setCluster(): 'height' must be a positive integer (>= 1). Got: ", paste(height, collapse = ", "), ".")
+  if(!is.null(member) && !testIntegerish(member, lower = 1))
+    stop("setCluster(): 'member' must be a positive integer vector (>= 1). Got: ",
+         paste(class(member), collapse = "/"), ".")
+
+  # logical constraints ----
+  if(!is.null(schema) && !is.null(schema@clusters$id))
+    warning("setCluster(): the schema already has a cluster definition. Calling setCluster() again will overwrite it. ",
+            "If you meant to define multiple clusters, provide all origins in a single setCluster() call (e.g., top = c(3, 9), left = c(1, 1)).")
+  if(!is.null(group) && is.null(member))
+    stop("setCluster(): 'group' is set to '", group, "' but 'member' is not provided. ",
+         "For nested clusters, 'member' must be an integer vector assigning each cluster to a group.")
+  if(is.null(group) && !is.null(member))
+    stop("setCluster(): 'member' is set but 'group' is not. ",
+         "'member' only makes sense with 'group' (nested clusters). Did you forget group = \"...\"?")
+  nOrigins <- max(length(top), length(left), na.rm = TRUE)
+  if(!is.null(member) && nOrigins > 0 && length(member) != nOrigins)
+    stop("setCluster(): 'member' has length ", length(member), " but there are ", nOrigins,
+         " clusters (from 'top'/'left'). 'member' must have one entry per cluster.")
 
   # update schema ----
   if(is.null(schema)){
@@ -91,9 +125,6 @@ setCluster <- function(schema = NULL, id = NULL, group = NULL, member = NULL,
   if(!is.null(member)){
     schema@clusters$member <- member
   }
-
-  # test for problems ----
-  reportProblems(schema = schema)
 
   return(schema)
 }

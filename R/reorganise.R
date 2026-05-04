@@ -83,6 +83,10 @@ reorganise <- function(input = NULL, schema = NULL){
 
   }
 
+  if (length(theValues) == 0) {
+    return(tibble::tibble())
+  }
+
   clustNames <- map(.x = seq_along(theValues), .f = function(ix){
     names(theValues[[ix]])
   })

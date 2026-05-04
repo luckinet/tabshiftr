@@ -1,3 +1,10 @@
+# tabshiftr 0.6.0 - comprehensive error handling and interactive schema builder
+
+- new function `schema_builder()`: an interactive Shiny app that guides users through building a schema description step by step, with a live grid preview and code download
+- all setter functions (`setIDVar`, `setObsVar`, `setCluster`, `setFilter`, `setFormat`, `setGroups`) now emit explicit, instructive error or warning messages for every detectable misspecification, replacing opaque checkmate assertions and cryptic downstream crashes
+- `validateSchema()` now catches a further 23 schema problems before `reorganise()` is called, covering missing variables, out-of-bounds column/row references, incoherent cluster and key/value specifications, and contradictory argument combinations
+- `validateInput()` gains `@details` and `@examples` documentation
+
 # tabshiftr 0.5.1
 
 - reinclude inverting a filter on rows.

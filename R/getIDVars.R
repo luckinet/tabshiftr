@@ -127,7 +127,7 @@ getIDVars <- function(schema = NULL, input = NULL){
           if(!is.null(tempVar$merge)){
             newName <- paste0(names(temp), collapse = tempVar$merge)
             temp <- temp %>%
-              unite(col = !!newName, sep = tempVar$merge)
+              unite(col = !!newName, sep = tempVar$merge, na.rm = TRUE)
           }
 
         }

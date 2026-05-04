@@ -1,6 +1,6 @@
 Package: tabshiftr
 Title: Reshape Disorganised Messy Data
-Version: 0.5.1
+Version: 0.6.0
 Authors@R: 
     c(person(given = "Steffen",
              family = "Ehrmann",
@@ -42,7 +42,7 @@ Description: Helps the user to build and register schema descriptions of
 URL: https://luckinet.github.io/tabshiftr/, https://github.com/luckinet/tabshiftr
 BugReports: https://github.com/luckinet/tabshiftr/issues
 Depends:
-    R (>= 3.5)
+    R (>= 4.1.0)
 Language: en-gb
 License: GPL-3
 Encoding: UTF-8
@@ -61,10 +61,12 @@ Imports:
     purrr,
     stringr,
     lubridate
-RoxygenNote: 7.3.2
-Suggests: 
+RoxygenNote: 7.3.3
+Suggests:
     knitr,
     rmarkdown,
     bookdown,
-    readr
+    readr,
+    shiny,
+    DT
 VignetteBuilder: knitr

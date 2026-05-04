@@ -14,24 +14,26 @@
 #' @examples
 #' # please check the vignette for examples
 #' @family functions to describe table arrangement
-#' @importFrom checkmate assertClass assertList
 #' @export
 
 setGroups <- function(schema = NULL, rows = NULL, columns = NULL){
 
   # assertions ----
-  assertClass(x = schema, classes = "schema", null.ok = TRUE)
-  # rowInt <- testIntegerish(x = rows, lower = 1, min.len = 1, null.ok = TRUE)
-  # rowList <- testList(x = rows)
-  assertList(x = rows, len = 1, null.ok = TRUE)
-  # assert(rowInt, rowList)
-  # colInt <- testIntegerish(x = columns, lower = 1, min.len = 1, null.ok = TRUE)
-  # colList <- testList(x = columns)
-  assertList(x = columns, len = 1, null.ok = TRUE)
-  # assert(colInt, colList)
-  # clustInt <- testIntegerish(x = clusters, lower = 1, min.len = 1, null.ok = TRUE)
-  # clustList <- testList(x = clusters)
-  # assert(clustInt, clustList)
+  if(!is.null(schema) && !inherits(schema, "schema"))
+    stop("setGroups(): 'schema' must be a schema object (created by a previous setter call) or NULL.")
+
+  # logical constraints ----
+  # .sum() returns list(group = list(by = ..., groups = ..., fill = ...))
+  if(!is.null(rows)) {
+    if(!is.list(rows) || length(rows) != 1 || !all(c("by", "groups") %in% names(rows[[1]])))
+      stop("setGroups(): 'rows' must be the output of .sum(...), not a plain list or vector. ",
+           "Use rows = .sum(c(row1, row2), fill = \"down\") to define grouped rows.")
+  }
+  if(!is.null(columns)) {
+    if(!is.list(columns) || length(columns) != 1 || !all(c("by", "groups") %in% names(columns[[1]])))
+      stop("setGroups(): 'columns' must be the output of .sum(...), not a plain list or vector. ",
+           "Use columns = .sum(c(col1, col2), fill = \"down\") to define grouped columns.")
+  }
 
   # update schema ----
   if(is.null(schema)){
@@ -45,9 +47,6 @@ setGroups <- function(schema = NULL, rows = NULL, columns = NULL){
   if(!is.null(columns)){
     schema@groups$cols <- c(schema@groups$cols, columns)
   }
-
-  # test for problems ----
-  # reportProblems(schema = schema)
 
   return(schema)
 

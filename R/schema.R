@@ -88,6 +88,7 @@
 #'   where \code{values} has the cluster number the variable refers to. } } }
 #' @importFrom rlang is_integerish
 #' @importFrom stringr str_sub
+#' @importFrom checkmate testClass
 
 schema <- setClass(Class = "schema",
                    slots = c(clusters = "list",
@@ -162,8 +163,8 @@ setValidity(Class = "schema", function(object){
       errors <- c(errors, "'names(schema$format)' must be a permutation of set {header,del,dec,na,zero,flags}")
     }
     if(!is.null(object@format$header)){
-      if(!is_integerish(object@format$header)){
-        errors <- c(errors, "'schema$format$header' must must have a integer value.")
+      if(!is.logical(object@format$header)){
+        errors <- c(errors, "'schema$format$header' must be a logical value.")
       }
     }
     if(!is.null(object@format$del)){

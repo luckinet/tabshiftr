@@ -36,8 +36,7 @@
 #' @examples
 #' # please check the vignette for examples
 #' @family functions to describe table arrangement
-#' @importFrom checkmate assertClass assertCharacter assertLogical
-#'   testIntegerish testList
+#' @importFrom checkmate testIntegerish testList
 #' @importFrom dplyr case_when
 #' @export
 
@@ -46,19 +45,44 @@ setIDVar <- function(schema = NULL, name = NULL, type = "character",
                      merge = NULL, distinct = FALSE){
 
   # assertions ----
-  assertClass(x = schema, classes = "schema", null.ok = TRUE)
-  assertCharacter(x = name, len = 1, any.missing = FALSE)
+  if(!is.null(schema) && !inherits(schema, "schema"))
+    stop("setIDVar(): 'schema' must be a schema object (created by a previous setter call) or NULL.")
+  if(is.null(name) || !is.character(name) || length(name) != 1 || nchar(name) == 0)
+    stop("setIDVar(): 'name' must be a non-empty character string, e.g. name = \"year\".")
   colInt <- testIntegerish(x = columns, lower = 1, min.len = 1, null.ok = TRUE)
   colList <- testList(x = columns, len = 1)
-  assert(colInt, colList)
-  if(colList) assertSubset(x = names(columns), choices = c("find"))
+  if(!is.null(columns) && !colInt && !colList)
+    stop("setIDVar(): 'columns' must be a positive integer vector (>= 1) or a .find() call. Got: ",
+         paste(class(columns), collapse = "/"), ".")
+  if(colList) {
+    if(!identical(names(columns), "find"))
+      stop("setIDVar(): a list passed to 'columns' must be a .find() call (named 'find').")
+  }
   rowInt <- testIntegerish(x = rows, lower = 1, min.len = 1, null.ok = TRUE)
   rowList <- testList(x = rows, len = 1)
-  assert(rowInt, rowList)
-  if(rowList) assertSubset(x = names(rows), choices = c("find"))
-  assertCharacter(x = split, len = 1, any.missing = FALSE, null.ok = TRUE)
-  assertCharacter(x = merge, len = 1, any.missing = FALSE, null.ok = TRUE)
-  assertLogical(x = distinct, any.missing = FALSE, len = 1)
+  if(!is.null(rows) && !rowInt && !rowList)
+    stop("setIDVar(): 'rows' must be a positive integer vector (>= 1) or a .find() call. Got: ",
+         paste(class(rows), collapse = "/"), ".")
+  if(rowList) {
+    if(!identical(names(rows), "find"))
+      stop("setIDVar(): a list passed to 'rows' must be a .find() call (named 'find').")
+  }
+  if(!is.null(split) && (!is.character(split) || length(split) != 1))
+    stop("setIDVar(): 'split' must be a single character string (a regex), e.g. split = \"(\\\\w+)_.*\".")
+  if(!is.null(merge) && (!is.character(merge) || length(merge) != 1))
+    stop("setIDVar(): 'merge' must be a single character string (the separator), e.g. merge = \" \".")
+  if(!is.logical(distinct) || length(distinct) != 1 || is.na(distinct))
+    stop("setIDVar(): 'distinct' must be TRUE or FALSE.")
+
+  # logical constraints ----
+  if(!is.null(merge) && !is.null(split))
+    stop("setIDVar(): 'merge' and 'split' cannot both be set for variable '", name, "'. ",
+         "Use 'merge' to join multiple columns, or 'split' to extract from a compound column -- not both.")
+  if(!is.null(value) && !is.null(columns))
+    stop("setIDVar(): variable '", name, "' has both 'value' and 'columns' set. ",
+         "Use 'value' for implicit variables (not in the table) OR 'columns' for variables in the table, not both.")
+  if(!is.null(schema) && !is.null(schema@variables[[name]]))
+    message("setIDVar(): variable '", name, "' is already defined in the schema. The existing definition will be overwritten.")
 
   data_type <- case_when(
     type %in% c("i", "integer") ~ "integer",
@@ -69,10 +93,9 @@ setIDVar <- function(schema = NULL, name = NULL, type = "character",
     .default = "character"
   )
 
-  # if type-check should be skipped, don't assert class
-  if(data_type != "skip" & !is.null(value)){
-    assertClass(x = value, classes = data_type)
-  }
+  if(data_type != "skip" && !is.null(value) && !inherits(value, data_type))
+    stop("setIDVar(): 'value' must be of type '", data_type, "' (as declared in 'type'), ",
+         "but got '", class(value), "'.")
 
   if(is.null(schema)){
     schema <- schema_default
@@ -88,9 +111,6 @@ setIDVar <- function(schema = NULL, name = NULL, type = "character",
                merge = merge,
                dist = distinct)
   schema@variables[[name]] <- temp
-
-  # test for problems ----
-  # reportProblems(schema = schema)
 
   return(schema)
 }

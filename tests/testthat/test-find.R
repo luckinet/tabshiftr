@@ -45,7 +45,7 @@ test_that(".find cluster positions based on regular expressions", {
   input <- tabs2shift$clusters_messy
 
   schema <- setCluster(id = "territories",
-                       left = .find(pattern = "comm*"), top = .find(pattern = "comm*")) %>%
+                       left = .find(pattern = "comm*"), top = .find(pattern = "unit")) %>%
     setIDVar(name = "territories", columns = c(1, 1, 4), rows = c(2, 9, 9)) %>%
     setIDVar(name = "year", columns = 4, rows = c(3:6), distinct = TRUE) %>%
     setIDVar(name = "commodities", columns = c(1, 1, 4)) %>%
@@ -133,8 +133,8 @@ test_that("relative positions in clusters", {
   input <- tabs2shift$clusters_messy
 
   schema <- setCluster(id = "territories",
-                       left = c(1, 1, 4), top = c(1, 8, 8)) %>%
-    setIDVar(name = "territories", columns = .find(col = 1, relative = TRUE), rows = .find(row = 2, relative = TRUE)) %>%
+                       left = c(1, 1, 4), top = c(2, 9, 9)) %>%
+    setIDVar(name = "territories", columns = .find(col = 1, relative = TRUE), rows = .find(row = 1, relative = TRUE)) %>%
     setIDVar(name = "year", columns = 4, rows = c(3:6), distinct = TRUE) %>%
     setIDVar(name = "commodities", columns = .find(col = 1, relative = TRUE)) %>%
     setObsVar(name = "harvested", columns = .find(col = 2, relative = TRUE)) %>%

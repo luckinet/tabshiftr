@@ -13,10 +13,45 @@ validateInput(schema = NULL, input = NULL)
 \item{input}{[\code{character(1)}]\cr table to reorganise.}
 }
 \value{
-a table where columns and rows are grouped and headers are spliced
-  into the table.
+a table where grouped rows are summarised and, if applicable, the
+  header row is spliced back in as row 1.
 }
 \description{
 This function groups rows, splices the header into the table and fills
 missing values where they should not exist.
+}
+\details{
+\code{validateInput} is called automatically by \code{\link{reorganise}} and
+does not usually need to be called directly. It performs two pre-processing
+steps on the input table before variable extraction begins:
+\enumerate{
+  \item If \code{setFormat(header = TRUE)} was used, the column names that
+  were consumed by R when reading the file are spliced back into the table as
+  row 1. This makes row numbers stable and consistent with the schema
+  description.
+  \item If \code{\link{setGroups}} was used, the specified groups of rows are
+  summarised into single rows according to the aggregation functions provided
+  to \code{\link{.sum}}. Character columns are collapsed with
+  \code{paste0(na.omit(x), collapse = " ")} by default; numeric columns are
+  summed. Missing values within a group can be filled before aggregation by
+  passing a \code{fill} direction to \code{\link{.sum}}.
+}
+}
+\examples{
+# validateInput is called implicitly by reorganise(); the example below shows
+# its effect when setGroups is used to collapse pairs of rows before extraction.
+(input <- tabs2shift$group_sum)
+
+schema <-
+  setGroups(rows = .sum(c(3, 4))) |>
+  setGroups(rows = .sum(c(6, 7))) |>
+  setIDVar(name = "territories", columns = 1) |>
+  setIDVar(name = "year", columns = 2) |>
+  setIDVar(name = "commodities", columns = c(3:6), rows = 2) |>
+  setObsVar(name = "harvested", columns = c(3, 4)) |>
+  setObsVar(name = "production", columns = c(5, 6))
+
+# inspect the pre-processed table directly
+schema_validated <- validateSchema(schema = schema, input = input)
+validateInput(schema = schema_validated, input = input)
 }
