@@ -9,6 +9,7 @@
 #' @importFrom dplyr row_number arrange_at
 #' @importFrom stringr str_remove_all str_extract_all coll
 #' @importFrom tidyselect starts_with
+#' @noRd
 
 .updateFormat <- function(input = NULL, schema = NULL){
 
@@ -152,14 +153,17 @@
 #' Convenience wrapper around tidyr::fill()
 #'
 #' @param x [\code{data.frame(1)}]\cr table in which to fill NA values.
-#' @param direction [\code{character(3)}]\cr direction in which to fill missing values,
-#'   possible values are "down", "up" and "right"; if several directions are
-#'   required, provide them in the order required.
+#' @param direction [\code{character(1)}]\cr direction in which to fill missing
+#'   values, possible values are "down", "up" and "right".
+#' @param cols tidyselect specification of columns to fill; defaults to
+#'   \code{everything()}. Only honoured for directions "down" and "up"; for
+#'   "right" all columns are pivoted.
 #' @importFrom checkmate assertDataFrame assertCharacter
 #' @importFrom tidyr pivot_longer pivot_wider fill
 #' @importFrom dplyr group_by everything ungroup
+#' @noRd
 
-.fill <- function(x = NULL, direction = TRUE){
+.fill <- function(x = NULL, direction = TRUE, cols = everything()){
 
   assertDataFrame(x = x)
   assertCharacter(x = direction, len = 1)
@@ -167,12 +171,12 @@
   if(direction == "down"){
 
     out <- x |>
-      fill(everything(), .direction = "down")
+      fill({{ cols }}, .direction = "down")
 
   } else if(direction == "up"){
 
     out <- x |>
-      fill(everything(), .direction = "up")
+      fill({{ cols }}, .direction = "up")
 
   } else if(direction == "right"){
 
@@ -203,6 +207,7 @@
 #' @importFrom purrr map
 #' @importFrom dplyr left_join pull
 #' @importFrom stringr str_c
+#' @noRd
 
 .getColTypes <- function(input = NULL, collapse = TRUE){
 
@@ -244,6 +249,7 @@
 #' @importFrom dplyr distinct select bind_cols if_any full_join
 #' @importFrom tidyselect all_of everything
 #' @importFrom rlang `:=`
+#' @noRd
 
 .tidyVars <- function(ids = NULL, obs = NULL, clust = NULL, grp = NULL){
 
@@ -566,6 +572,7 @@
 #' @importFrom dplyr mutate row_number if_else group_by summarise n ungroup
 #'   left_join pull
 #' @importFrom rlang eval_tidy
+#' @noRd
 
 .eval_sum <- function(input = NULL, groups = NULL, data = NULL){
 
@@ -627,6 +634,7 @@
 #' @importFrom tidyr pivot_longer pivot_wider
 #' @importFrom dplyr select mutate across pull if_else
 #' @importFrom stringr str_count str_detect
+#' @noRd
 
 .eval_find <- function(input = NULL, col = NULL, row = NULL, clusters = NULL){
 
@@ -870,6 +878,7 @@
 #'   the last successful expectation.
 #' @importFrom testthat expect_identical
 #' @importFrom checkmate expect_names expect_tibble expect_list assertChoice
+#' @noRd
 
 .expect_valid_table <- function(x = NULL, units = 1, variables = NULL,
                                 groups = FALSE, flags = FALSE){

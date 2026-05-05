@@ -12,6 +12,8 @@ reference:
   - title: build a schema description
     contents:
       - schema
+      - show,schema-method
+      - schema_default
       - schema_builder
       - setCluster
       - setFilter
@@ -32,15 +34,6 @@ reference:
   - title: reorganise tables
     contents:
       - reorganise
-  - title: other helper functions
-    contents:
-      - .eval_find
-      - .eval_sum
-      - .expect_valid_table
-      - .getColTypes
-      - .tidyVars
-      - .updateFormat
-      - show,schema-method
   - title: example data
     contents:
       - tabs2shift
