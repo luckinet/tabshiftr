@@ -121,6 +121,11 @@ getIDVars <- function(schema = NULL, input = NULL){
                   tidyr::extract(col = 1, into = names(temp)[iy], regex = tempVar$split)
               }) %>% bind_cols(.name_repair = "check_unique")
             }
+            # fill NAs introduced by non-matching rows after split
+            if(anyNA(temp[1])){
+              temp <- temp %>%
+                fill(1, .direction = "down")
+            }
           }
 
           # ... or merge the variable

@@ -38,8 +38,6 @@ reference:
       - .eval_sum
       - .expect_valid_table
       - .getColTypes
-      - .reportProblems
-      - .spliceHeader
       - .tidyVars
       - .updateFormat
       - show,schema-method
