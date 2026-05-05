@@ -76,20 +76,20 @@ If we were to transform this data into tidy data by merely using the functions i
 schema <- setCluster(id = "territories", left = c(1, 1, 4), top = c(1, 8, 8))
 
 # ... specifying the cluster ID as id variable (obligatory for when we deal with clusters)
-schema <- schema %>%
+schema <- schema |>
    setIDVar(name = "territories", columns = c(1, 1, 4), rows = c(2, 9, 9))
 
 # ... specifying a distinct variable (explicit position)
-schema <- schema %>%
+schema <- schema |>
    setIDVar(name = "year", columns = 4, rows = c(3:6), distinct = TRUE)
 
 # ... specifying a tidy identifying variable (by giving the column values)
-schema <- schema %>%
+schema <- schema |>
    setIDVar(name = "commodities", columns = c(1, 1, 4))
 
 # ... identifying the (tidy) observed variables
-schema <- schema %>%
-   setObsVar(name = "harvested", columns = c(2, 2, 5)) %>%
+schema <- schema |>
+   setObsVar(name = "harvested", columns = c(2, 2, 5)) |>
    setObsVar(name = "production", columns = c(3, 3, 6))
 
 # to potentially debug the schema description, first validate the schema ...
@@ -98,16 +98,15 @@ schema_valid <- validateSchema(schema = schema, input = input)
 # ... and extract parts of it per cluster (also check out the other getters in
 # this package)
 getIDVars(schema = schema_valid, input = input)
-getObsVars(schema = schema_valid, input = input)
 
 # alternatively, if the clusters are regular, relative values starting from the
 # cluster origin could be set
 schema_alt <- setCluster(id = "territories",
-                         left = c(1, 1, 4), top = c(1, 8, 8)) %>%
-  setIDVar(name = "territories", columns = 1, rows = .find(row = 2, relative = TRUE)) %>%
-  setIDVar(name = "year", columns = 4, rows = c(3:6), distinct = TRUE) %>%
-  setIDVar(name = "commodities", columns = .find(col = 1, relative = TRUE)) %>%
-  setObsVar(name = "harvested", columns = .find(col = 2, relative = TRUE)) %>%
+                         left = c(1, 1, 4), top = c(1, 8, 8)) |>
+  setIDVar(name = "territories", columns = 1, rows = .find(row = 2, relative = TRUE)) |>
+  setIDVar(name = "year", columns = 4, rows = c(3:6), distinct = TRUE) |>
+  setIDVar(name = "commodities", columns = .find(col = 1, relative = TRUE)) |>
+  setObsVar(name = "harvested", columns = .find(col = 2, relative = TRUE)) |>
   setObsVar(name = "production", columns = .find(col = 3, relative = TRUE))
 ```
 
@@ -123,9 +122,7 @@ kable(output)
 
 # Contributions
 
-* tabshiftr is still in development. So far it reliably reorganizes 20 different types of tables, but additional dimensions of disorganization might show themselves. If you encounter a table that can't be reorganized with the current infrastructure, we'd be more than happy to collaborate on advancing `tabshiftr`.
-* Informative error management is work in process.
-* Moreover, the resulting schema descriptions can be useful for data archiving or database building and `tabshiftr` should at some point support that those schemas can be exported into data-formats that are used by downstream applications (xml, json, ...), following proper (ISO) standards. In case you have experience with those standards and would like to collaborate on it, please get in touch!
+* `tabshiftr` reliably reorganises a wide and growing range of table arrangements, but new dimensions of disorganisation can always show up. If you encounter a table that the current infrastructure can't handle, please open an issue or get in touch — we are happy to collaborate on extending the package.
 
 
 # Acknowledgement

@@ -48,7 +48,5 @@ navbar:
     - text: "Changelog"
       href: news/index.html
   right:
-    - icon: fa-twitter fa-lg
-      href: http://www.twitter.com/DerEhrmann
     - icon: fa-github
       href: https://github.com/EhrmannS/tabshiftr

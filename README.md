@@ -102,20 +102,20 @@ heterogeneous data into an interoperable format.
 schema <- setCluster(id = "territories", left = c(1, 1, 4), top = c(1, 8, 8))
 
 # ... specifying the cluster ID as id variable (obligatory for when we deal with clusters)
-schema <- schema %>%
+schema <- schema |>
    setIDVar(name = "territories", columns = c(1, 1, 4), rows = c(2, 9, 9))
 
 # ... specifying a distinct variable (explicit position)
-schema <- schema %>%
+schema <- schema |>
    setIDVar(name = "year", columns = 4, rows = c(3:6), distinct = TRUE)
 
 # ... specifying a tidy identifying variable (by giving the column values)
-schema <- schema %>%
+schema <- schema |>
    setIDVar(name = "commodities", columns = c(1, 1, 4))
 
 # ... identifying the (tidy) observed variables
-schema <- schema %>%
-   setObsVar(name = "harvested", columns = c(2, 2, 5)) %>%
+schema <- schema |>
+   setObsVar(name = "harvested", columns = c(2, 2, 5)) |>
    setObsVar(name = "production", columns = c(3, 3, 6))
 
 # to potentially debug the schema description, first validate the schema ...
@@ -182,74 +182,15 @@ getIDVars(schema = schema_valid, input = input)
 #> 2 maize  
 #> 3 soybean
 #> 4 maize
-getObsVars(schema = schema_valid, input = input)
-#> [[1]]
-#> [[1]]$harvested
-#> # A tibble: 4 × 1
-#>   X2   
-#>   <chr>
-#> 1 1111 
-#> 2 1121 
-#> 3 1211 
-#> 4 1221 
-#> 
-#> [[1]]$production
-#> # A tibble: 4 × 1
-#>   X3   
-#>   <chr>
-#> 1 1112 
-#> 2 1122 
-#> 3 1212 
-#> 4 1222 
-#> 
-#> 
-#> [[2]]
-#> [[2]]$harvested
-#> # A tibble: 4 × 1
-#>   X2   
-#>   <chr>
-#> 1 2111 
-#> 2 2121 
-#> 3 2211 
-#> 4 2221 
-#> 
-#> [[2]]$production
-#> # A tibble: 4 × 1
-#>   X3   
-#>   <chr>
-#> 1 2112 
-#> 2 2122 
-#> 3 2212 
-#> 4 2222 
-#> 
-#> 
-#> [[3]]
-#> [[3]]$harvested
-#> # A tibble: 4 × 1
-#>   X5   
-#>   <chr>
-#> 1 3111 
-#> 2 3121 
-#> 3 3211 
-#> 4 3221 
-#> 
-#> [[3]]$production
-#> # A tibble: 4 × 1
-#>   X6   
-#>   <chr>
-#> 1 3112 
-#> 2 3122 
-#> 3 3212 
-#> 4 3222
 
 # alternatively, if the clusters are regular, relative values starting from the
 # cluster origin could be set
 schema_alt <- setCluster(id = "territories",
-                         left = c(1, 1, 4), top = c(1, 8, 8)) %>%
-  setIDVar(name = "territories", columns = 1, rows = .find(row = 2, relative = TRUE)) %>%
-  setIDVar(name = "year", columns = 4, rows = c(3:6), distinct = TRUE) %>%
-  setIDVar(name = "commodities", columns = .find(col = 1, relative = TRUE)) %>%
-  setObsVar(name = "harvested", columns = .find(col = 2, relative = TRUE)) %>%
+                         left = c(1, 1, 4), top = c(1, 8, 8)) |>
+  setIDVar(name = "territories", columns = 1, rows = .find(row = 2, relative = TRUE)) |>
+  setIDVar(name = "year", columns = 4, rows = c(3:6), distinct = TRUE) |>
+  setIDVar(name = "commodities", columns = .find(col = 1, relative = TRUE)) |>
+  setObsVar(name = "harvested", columns = .find(col = 2, relative = TRUE)) |>
   setObsVar(name = "production", columns = .find(col = 3, relative = TRUE))
 ```
 
@@ -293,18 +234,11 @@ kable(output)
 
 # Contributions
 
-- tabshiftr is still in development. So far it reliably reorganizes 20
-  different types of tables, but additional dimensions of
-  disorganization might show themselves. If you encounter a table that
-  can’t be reorganized with the current infrastructure, we’d be more
-  than happy to collaborate on advancing `tabshiftr`.
-- Informative error management is work in process.
-- Moreover, the resulting schema descriptions can be useful for data
-  archiving or database building and `tabshiftr` should at some point
-  support that those schemas can be exported into data-formats that are
-  used by downstream applications (xml, json, …), following proper (ISO)
-  standards. In case you have experience with those standards and would
-  like to collaborate on it, please get in touch!
+- `tabshiftr` reliably reorganises a wide and growing range of table
+  arrangements, but new dimensions of disorganisation can always show
+  up. If you encounter a table that the current infrastructure can’t
+  handle, please open an issue or get in touch — we are happy to
+  collaborate on extending the package.
 
 # Acknowledgement
 
