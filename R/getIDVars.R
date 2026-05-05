@@ -104,8 +104,7 @@ getIDVars <- function(schema = NULL, input = NULL){
           # copy missing values downwards
           if(anyNA(temp[1])){
             message("filling NA-values in variable '", names(idVars[i]),"'.")
-            temp <- temp %>%
-              fill(1, .direction = "down")
+            temp <- .fill(x = temp, direction = "down", cols = 1)
           }
 
           # split ...
@@ -123,8 +122,7 @@ getIDVars <- function(schema = NULL, input = NULL){
             }
             # fill NAs introduced by non-matching rows after split
             if(anyNA(temp[1])){
-              temp <- temp %>%
-                fill(1, .direction = "down")
+              temp <- .fill(x = temp, direction = "down", cols = 1)
             }
           }
 
