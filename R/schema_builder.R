@@ -247,8 +247,8 @@ schema_builder <- function(input = NULL) {
     /* two-column layout */
     #sb-outer { display: flex; gap: 16px; padding: 16px;
                 max-width: 1200px; margin: auto; align-items: flex-start; }
-    #sb-left  { flex: 1 1 60%; min-width: 0; }
-    #sb-right { flex: 0 0 360px; position: sticky; top: 16px;
+    #sb-left  { flex: 1 1 50%; min-width: 0; }
+    #sb-right { flex: 1 1 50%; min-width: 0; position: sticky; top: 16px;
                 display: flex; flex-direction: column; gap: 12px; }
 
     /* panels */
@@ -299,9 +299,10 @@ schema_builder <- function(input = NULL) {
                      border: 1px solid #ccc; flex-shrink: 0; }
 
     /* grid */
-    #sb_grid table { border-collapse: collapse; font-size: 12px; width: 100%; }
+    #sb_grid { display: block; }
+    #sb_grid table { border-collapse: collapse; font-size: 12px; }
     #sb_grid td, #sb_grid th { border: 1px solid #ccc; padding: 3px 6px;
-      cursor: pointer; min-width: 36px; text-align: center; }
+      cursor: pointer; min-width: 36px; text-align: center; white-space: nowrap; }
     #sb_grid th { background: #e9ecef; font-weight: normal;
                   font-size: 11px; color: #666; }
     #sb_grid td:hover { outline: 2px solid #333; }
@@ -952,7 +953,9 @@ schema_builder <- function(input = NULL) {
         cols         = integer(0),
         invert       = FALSE,
         use_find       = FALSE,
+        find_mode      = "pattern", # "pattern" or "fun"
         find_pattern   = "",
+        find_fun       = "",
         find_search_in = "row",    # which dimension to scan: "row" or "col"
         find_dim       = "",       # specific row/col number to scan (optional)
         find_select    = "rows",   # what setFilter receives: "rows" or "columns"
@@ -988,9 +991,17 @@ schema_builder <- function(input = NULL) {
           }
         }, ignoreNULL = TRUE, ignoreInit = TRUE)
         # finder fields
+        shiny::observeEvent(input[[paste0("flt_find_mode_", n)]], {
+          fl <- rv$filters
+          if (n <= length(fl)) { fl[[n]]$find_mode <- input[[paste0("flt_find_mode_", n)]]; rv$filters <- fl }
+        }, ignoreNULL = TRUE, ignoreInit = TRUE)
         shiny::observeEvent(input[[paste0("flt_pattern_", n)]], {
           fl <- rv$filters
           if (n <= length(fl)) { fl[[n]]$find_pattern <- input[[paste0("flt_pattern_", n)]]; rv$filters <- fl }
+        }, ignoreNULL = FALSE, ignoreInit = TRUE)
+        shiny::observeEvent(input[[paste0("flt_fun_", n)]], {
+          fl <- rv$filters
+          if (n <= length(fl)) { fl[[n]]$find_fun <- input[[paste0("flt_fun_", n)]]; rv$filters <- fl }
         }, ignoreNULL = FALSE, ignoreInit = TRUE)
         shiny::observeEvent(input[[paste0("flt_in_", n)]], {
           fl <- rv$filters
@@ -1440,45 +1451,101 @@ schema_builder <- function(input = NULL) {
               if (length(flt$cols) > 0) paste(flt$cols, collapse=", ") else "none"))
         )
 
-        find_err <- if (is_find && nchar(flt$find_pattern) > 0)
-          tryCatch({ grepl(flt$find_pattern, ""); NULL },
-                   error = function(e) paste("Regex error:", conditionMessage(e)))
-        else NULL
+        find_mode <- flt$find_mode %||% "pattern"
+        find_err <- if (is_find) {
+          if (find_mode == "pattern" && nchar(flt$find_pattern) > 0)
+            tryCatch({ grepl(flt$find_pattern, ""); NULL },
+                     error = function(e) paste("Regex error:", conditionMessage(e)))
+          else if (find_mode == "fun" && nchar(flt$find_fun) > 0)
+            tryCatch({
+              setTimeLimit(elapsed = 2, transient = TRUE)
+              on.exit(setTimeLimit(elapsed = Inf, transient = FALSE), add = TRUE)
+              f <- eval(parse(text = paste0("function(x) ", flt$find_fun)))
+              f(c(1L, "a", NA))
+              NULL
+            }, error = function(e) paste("Function error:", conditionMessage(e)))
+          else NULL
+        } else NULL
 
         search_in <- flt$find_search_in %||% "row"
         find_content <- shiny::tagList(
-          shiny::tags$div(style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;margin-bottom:6px;",
-            shiny::tags$div(
-              shiny::tags$label(style="font-size:12px;color:#555;display:block;margin-bottom:3px;",
-                "Regex pattern"),
-              shiny::textInput(paste0("flt_pattern_", i), NULL,
-                value = flt$find_pattern, placeholder = "e.g. ^NA$", width = "160px")
-            ),
-            shiny::tags$div(
-              shiny::tags$label(style="font-size:12px;color:#555;display:block;margin-bottom:3px;",
-                "Search in"),
-              shiny::selectInput(paste0("flt_in_", i), NULL,
-                choices = c("Rows" = "row", "Columns" = "col"),
-                selected = search_in, width = "100px")
-            ),
-            shiny::tags$div(
-              shiny::tags$label(style="font-size:12px;color:#555;display:block;margin-bottom:3px;",
-                paste0(if (search_in == "col") "Column" else "Row", " number (optional)")),
-              shiny::textInput(paste0("flt_dim_", i), NULL,
-                value = flt$find_dim, placeholder = "e.g. 1", width = "80px")
-            ),
-            shiny::tags$div(
-              shiny::tags$label(style="font-size:12px;color:#555;display:block;margin-bottom:3px;",
-                "Select"),
-              shiny::selectInput(paste0("flt_select_", i), NULL,
-                choices = c("Rows" = "rows", "Columns" = "columns"),
-                selected = flt$find_select %||% "rows", width = "100px")
-            )
+          shiny::tags$div(style="margin-bottom:6px;",
+            shiny::radioButtons(paste0("flt_find_mode_", i), NULL,
+              choices = c("Regex pattern" = "pattern", "Function body" = "fun"),
+              selected = find_mode, inline = TRUE)
           ),
+          if (find_mode == "pattern")
+            shiny::tags$div(style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;margin-bottom:6px;",
+              shiny::tags$div(
+                shiny::tags$label(style="font-size:12px;color:#555;display:block;margin-bottom:3px;",
+                  "Regex pattern"),
+                shiny::textInput(paste0("flt_pattern_", i), NULL,
+                  value = flt$find_pattern, placeholder = "e.g. ^NA$", width = "160px")
+              ),
+              shiny::tags$div(
+                shiny::tags$label(style="font-size:12px;color:#555;display:block;margin-bottom:3px;",
+                  "Search in"),
+                shiny::selectInput(paste0("flt_in_", i), NULL,
+                  choices = c("Rows" = "row", "Columns" = "col"),
+                  selected = search_in, width = "100px")
+              ),
+              shiny::tags$div(
+                shiny::tags$label(style="font-size:12px;color:#555;display:block;margin-bottom:3px;",
+                  paste0(if (search_in == "col") "Column" else "Row", " number (optional)")),
+                shiny::textInput(paste0("flt_dim_", i), NULL,
+                  value = flt$find_dim, placeholder = "e.g. 1", width = "80px")
+              ),
+              shiny::tags$div(
+                shiny::tags$label(style="font-size:12px;color:#555;display:block;margin-bottom:3px;",
+                  "Select"),
+                shiny::selectInput(paste0("flt_select_", i), NULL,
+                  choices = c("Rows" = "rows", "Columns" = "columns"),
+                  selected = flt$find_select %||% "rows", width = "100px")
+              )
+            )
+          else
+            shiny::tagList(
+              shiny::tags$div(style="margin-bottom:6px;",
+                shiny::tags$label(style="font-size:12px;color:#555;display:block;margin-bottom:3px;",
+                  "Function body \u2014 receives one cell value x, must return TRUE/FALSE"),
+                shiny::tags$div(style="display:flex;gap:8px;align-items:flex-start;",
+                  shiny::tags$div(style="font-size:12px;color:#888;padding-top:6px;white-space:nowrap;",
+                    "function(x)"),
+                  shiny::tags$div(style="flex:1;",
+                    shiny::textAreaInput(paste0("flt_fun_", i), NULL,
+                      value = flt$find_fun, placeholder = "e.g. !is.na(x) && as.numeric(x) > 100",
+                      width = "100%", rows = 2))
+                )
+              ),
+              shiny::tags$div(style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;margin-bottom:6px;",
+                shiny::tags$div(
+                  shiny::tags$label(style="font-size:12px;color:#555;display:block;margin-bottom:3px;",
+                    "Search in"),
+                  shiny::selectInput(paste0("flt_in_", i), NULL,
+                    choices = c("Rows" = "row", "Columns" = "col"),
+                    selected = search_in, width = "100px")
+                ),
+                shiny::tags$div(
+                  shiny::tags$label(style="font-size:12px;color:#555;display:block;margin-bottom:3px;",
+                    paste0(if (search_in == "col") "Column" else "Row", " number (optional)")),
+                  shiny::textInput(paste0("flt_dim_", i), NULL,
+                    value = flt$find_dim, placeholder = "e.g. 1", width = "80px")
+                ),
+                shiny::tags$div(
+                  shiny::tags$label(style="font-size:12px;color:#555;display:block;margin-bottom:3px;",
+                    "Select"),
+                  shiny::selectInput(paste0("flt_select_", i), NULL,
+                    choices = c("Rows" = "rows", "Columns" = "columns"),
+                    selected = flt$find_select %||% "rows", width = "100px")
+                )
+              )
+            ),
           if (!is.null(find_err))
             shiny::tags$p(style="font-size:12px;color:#c0392b;", find_err)
-          else if (nchar(flt$find_pattern) > 0)
+          else if (find_mode == "pattern" && nchar(flt$find_pattern) > 0)
             shiny::tags$p(style="font-size:12px;color:#2d6a16;", "\u2713 Valid regex \u2014 matching cells highlighted in table")
+          else if (find_mode == "fun" && nchar(flt$find_fun) > 0)
+            shiny::tags$p(style="font-size:12px;color:#2d6a16;", "\u2713 Valid function \u2014 matching cells highlighted in table")
         )
 
         shiny::tags$div(
@@ -1631,49 +1698,61 @@ schema_builder <- function(input = NULL) {
         # invert is read from live input to avoid rv write -> re-render -> resize
         inv <- isTRUE(input[[paste0("flt_invert_", fi)]])
 
-        # Finder mode -- evaluate regex against the table and highlight matches
-        if (isTRUE(flt$use_find) && nchar(flt$find_pattern) > 0) {
-          pat_ok <- tryCatch({ grepl(flt$find_pattern, ""); TRUE }, error = function(e) FALSE)
-          if (pat_ok) {
+        # Finder mode -- evaluate pattern/fun against the table and highlight matches
+        find_mode_hl <- flt$find_mode %||% "pattern"
+        has_find_input <- if (find_mode_hl == "fun") nchar(flt$find_fun) > 0
+                          else nchar(flt$find_pattern) > 0
+        if (isTRUE(flt$use_find) && has_find_input) {
+          cell_match <- if (find_mode_hl == "fun") {
+            f_ok <- tryCatch({
+              setTimeLimit(elapsed = 2, transient = TRUE)
+              on.exit(setTimeLimit(elapsed = Inf, transient = FALSE), add = TRUE)
+              f <- eval(parse(text = paste0("function(x) ", flt$find_fun)))
+              f(c(1L, "a", NA))
+              f
+            }, error = function(e) NULL)
+            if (is.null(f_ok)) NULL else function(vals) {
+              vapply(vals, function(v) isTRUE(tryCatch(f_ok(v), error=function(e) FALSE)), logical(1))
+            }
+          } else {
+            pat_ok <- tryCatch({ grepl(flt$find_pattern, ""); TRUE }, error = function(e) FALSE)
+            if (!pat_ok) NULL else function(vals) grepl(flt$find_pattern, as.character(vals))
+          }
+
+          if (!is.null(cell_match)) {
             dim_num    <- suppressWarnings(as.integer(flt$find_dim))
             search_in  <- flt$find_search_in %||% "row"
             sel        <- flt$find_select    %||% "rows"
             tbl_chr    <- as.data.frame(lapply(rv$tbl, as.character), stringsAsFactors = FALSE)
             if (search_in == "row") {
-              # Pattern is matched against values within a specific row (or all rows)
               search_rows <- if (!is.na(dim_num) && dim_num >= 1 && dim_num <= nr) dim_num else seq_len(nr)
-              # Find which COLUMNS have a match in those rows
               matched_cols <- which(vapply(seq_len(nc), function(cl) {
-                any(grepl(flt$find_pattern, as.character(tbl_chr[search_rows, cl])))
+                any(cell_match(tbl_chr[search_rows, cl]))
               }, logical(1)))
               if (sel == "columns") {
                 tint_cols <- if (inv) setdiff(seq_len(nc), matched_cols) else matched_cols
                 if (length(tint_cols) > 0)
                   hl <- c(hl, list(list(row=seq_len(nr), col=tint_cols, color="#fff3cd")))
               } else {
-                # select = "rows": highlight matched columns as a preview of what was found,
-                # but shade the rows that would be selected (all rows matching any pattern hit)
                 matched_rows <- which(vapply(seq_len(nr), function(r) {
-                  any(grepl(flt$find_pattern, as.character(tbl_chr[r, seq_len(nc)])))
+                  any(cell_match(unlist(tbl_chr[r, seq_len(nc)])))
                 }, logical(1)))
                 tint_rows <- if (inv) setdiff(seq_len(nr), matched_rows) else matched_rows
                 if (length(tint_rows) > 0)
                   hl <- c(hl, list(list(row=tint_rows, col=seq_len(nc), color="#fff3cd")))
               }
             } else {
-              # Pattern is matched against values within a specific column (or all columns)
               search_cols <- if (!is.na(dim_num) && dim_num >= 1 && dim_num <= nc) dim_num else seq_len(nc)
               matched_rows <- which(vapply(seq_len(nr), function(r) {
-                any(grepl(flt$find_pattern, as.character(tbl_chr[r, search_cols])))
+                any(cell_match(unlist(tbl_chr[r, search_cols])))
               }, logical(1)))
               if (sel == "rows") {
                 tint_rows <- if (inv) setdiff(seq_len(nr), matched_rows) else matched_rows
                 if (length(tint_rows) > 0)
                   hl <- c(hl, list(list(row=tint_rows, col=seq_len(nc), color="#fff3cd")))
               } else {
-                # select = "columns": find which columns have a match
                 matched_cols <- which(vapply(seq_len(nc), function(cl) {
-                  any(grepl(flt$find_pattern, as.character(tbl_chr[seq_len(nr), cl])))
+                  any(cell_match(unlist(tbl_chr[seq_len(nr), cl])))
                 }, logical(1)))
                 tint_cols <- if (inv) setdiff(seq_len(nc), matched_cols) else matched_cols
                 if (length(tint_cols) > 0)
@@ -2902,12 +2981,24 @@ schema_builder <- function(input = NULL) {
     if (isTRUE(flt$use_find)) {
       # .find() based -- search_in determines the col/row arg to .find();
       # find_select determines whether the result is rows = or columns =
-      pat <- flt$find_pattern
-      if (nchar(pat) > 0) {
+      find_mode_cg <- flt$find_mode %||% "pattern"
+      sel <- flt$find_select %||% "rows"
+      if (find_mode_cg == "fun" && nchar(flt$find_fun) > 0) {
         search_in <- flt$find_search_in %||% "row"
-        sel       <- flt$find_select    %||% "rows"
         dim_num   <- suppressWarnings(as.integer(flt$find_dim))
-        find_args <- sprintf('pattern = "%s"', pat)
+        find_args <- sprintf("fun = function(x) %s", flt$find_fun)
+        if (!is.na(dim_num)) {
+          if (search_in == "col")
+            find_args <- paste0(find_args, sprintf(", col = %d", dim_num))
+          else
+            find_args <- paste0(find_args, sprintf(", row = %d", dim_num))
+        }
+        if (inv) find_args <- paste0(find_args, ", invert = TRUE")
+        flt_args <- c(flt_args, sprintf("%s = .find(%s)", sel, find_args))
+      } else if (find_mode_cg == "pattern" && nchar(flt$find_pattern) > 0) {
+        search_in <- flt$find_search_in %||% "row"
+        dim_num   <- suppressWarnings(as.integer(flt$find_dim))
+        find_args <- sprintf('pattern = "%s"', flt$find_pattern)
         if (!is.na(dim_num)) {
           if (search_in == "col")
             find_args <- paste0(find_args, sprintf(", col = %d", dim_num))

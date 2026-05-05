@@ -667,8 +667,9 @@
             subset <- subset %>%
               mutate(across(.cols = where(function(x) suppressWarnings(!anyNA(as.numeric(x[!is.na(x)]))) & !all(is.na(x))), .fns = as.numeric))
 
+            is_isna <- is_primitive(term) && prim_name(term) == "is.na"
             cols <- map_int(.x = 1:dim(input)[2], .f = function(ix){
-              if(prim_name(term) != "is.na"){
+              if(!is_isna){
                 map(subset[,ix], term)[[1]] & !all(is.na(subset[,ix]))
               } else {
                 map(subset[,ix], term)[[1]]

@@ -12,7 +12,7 @@ reference:
   - title: build a schema description
     contents:
       - schema
-      - schema_default
+      - schema_builder
       - setCluster
       - setFilter
       - setFormat
@@ -24,10 +24,10 @@ reference:
   - title: validate and debug the schema description
     contents:
       - getClusterVar
-      - getData
       - getGroupVar
       - getIDVars
       - getObsVars
+      - validateInput
       - validateSchema
   - title: reorganise tables
     contents:
