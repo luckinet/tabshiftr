@@ -1861,6 +1861,15 @@ schema_builder <- function(input = NULL) {
       sc <- tryCatch(eval(parse(text=code), envir=new.env(parent=asNamespace("tabshiftr"))),
                      error = function(e) NULL)
       result_env$schema <- sc
+      result_env$saved <- TRUE
+      shiny::stopApp()
+    })
+
+    # if the user closes the browser tab/window without clicking Finish, the
+    # Shiny session ends and would otherwise leave runApp blocking. Treat that
+    # as a cancel: don't commit a schema, unblock the R side.
+    session$onSessionEnded(function() {
+      if (isTRUE(result_env$saved)) return(invisible())
       shiny::stopApp()
     })
 
